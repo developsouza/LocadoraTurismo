@@ -18,6 +18,7 @@
 </div>
 
 <div class="row">
+    <!-- Card de Informações da Reserva -->
     <div class="col-md-4">
         <div class="card">
             <div class="card-header bg-primary text-white">
@@ -51,8 +52,17 @@
                     {
                         var dias = (Model.DataViagem - DateTime.Now).Days;
                         <br>
-                    
-                        <small class="text-info">Em @dias dias</small>
+                        <small class="text-info">Em @dias dia(s)</small>
+                    }
+                    else if (Model.DataViagem.Date == DateTime.Now.Date)
+                    {
+                        <br>
+                        <small class="text-warning"><strong>HOJE!</strong></small>
+                    }
+                    else
+                    {
+                        <br>
+                        <small class="text-muted">Viagem realizada</small>
                     }
                 </div>
                 <div class="mb-3">
@@ -60,12 +70,27 @@
                     <strong>@Model.Quantidade</strong>
                 </div>
                 <div class="mb-3">
-                    <small class="text-muted">Valor Total:</small><br>
+                    <small class="text-muted">Valor do Pacote:</small><br>
                     <h4 class="text-success mb-0">@Model.ValorTotal.ToString("C")</h4>
                 </div>
-                @if (!string.IsNullOrEmpty(Model.Observacoes))
+                @if (Model.ServicosAdicionais.Any())
                 {
                     <div class="mb-3">
+                        <small class="text-muted">Serviços Adicionais:</small><br>
+                        <h5 class="text-info mb-0">@Model.ServicosAdicionais.Sum(s => s.Preco).ToString("C")</h5>
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <small class="text-muted">VALOR TOTAL GERAL:</small><br>
+                        <h3 class="text-primary mb-0">
+                            @((Model.ValorTotal + Model.ServicosAdicionais.Sum(s => s.Preco)).ToString("C"))
+                        </h3>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(Model.Observacoes))
+                {
+                    <hr>
+                    <div class="mb-0">
                         <small class="text-muted">Observações:</small><br>
                         <span>@Model.Observacoes</span>
                     </div>
@@ -74,26 +99,34 @@
             <div class="card-footer">
                 @if (Model.StatusReservaViagem.Status == "Pendente")
                 {
-                    <form method="post" class="d-inline">
-                        <button type="button" class="btn btn-success btn-sm" onclick="confirmarReserva(@Model.Id)">
+                    <form asp-action="ConfirmarReserva" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <button type="submit" class="btn btn-success btn-sm"
+                                onclick="return confirm('Confirmar esta reserva?');">
                             <i class="fas fa-check me-1"></i>Confirmar
                         </button>
                     </form>
-                    <form method="post" class="d-inline ms-1">
-                        <button type="button" class="btn btn-danger btn-sm" onclick="cancelarReserva(@Model.Id)">
-                            <i class="fas fa-times me-1"></i>Cancelar
-                        </button>
-                    </form>
+                    <button type="button" class="btn btn-danger btn-sm"
+                            data-bs-toggle="modal" data-bs-target="#modalCancelar">
+                        <i class="fas fa-times me-1"></i>Cancelar
+                    </button>
                 }
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm">
-                    <i class="fas fa-edit me-1"></i>Editar
-                </a>
+                @if (Model.StatusReservaViagem.Status != "Cancelada" &&
+                                (User.IsInRole("Admin") || User.IsInRole("Manager")))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm">
+                        <i class="fas fa-edit me-1"></i>Editar
+                    </a>
+                }
                 <a asp-action="Index" class="btn btn-secondary btn-sm">
                     <i class="fas fa-arrow-left me-1"></i>Voltar
                 </a>
             </div>
         </div>
     </div>
+
+    <!-- Card do Cliente -->
     <div class="col-md-4">
         <div class="card">
             <div class="card-header bg-success text-white">
@@ -113,18 +146,21 @@
                     <small class="text-muted">Telefone:</small><br>
                     <span>@Model.Cliente.Telefone</span>
                 </div>
-                <div class="mb-3">
+                <div class="mb-0">
                     <small class="text-muted">CPF:</small><br>
                     <span>@Model.Cliente.Cpf</span>
                 </div>
             </div>
             <div class="card-footer">
-                <a asp-controller="Clientes" asp-action="Details" asp-route-id="@Model.Cliente.Id" class="btn btn-outline-primary btn-sm">
+                <a asp-controller="Clientes" asp-action="Details" asp-route-id="@Model.Cliente.Id"
+                   class="btn btn-outline-primary btn-sm">
                     <i class="fas fa-eye me-1"></i>Ver Cliente
                 </a>
             </div>
         </div>
     </div>
+
+    <!-- Card do Pacote -->
     <div class="col-md-4">
         <div class="card">
             <div class="card-header bg-info text-white">
@@ -142,19 +178,20 @@
                 </div>
                 <div class="mb-3">
                     <small class="text-muted">Duração:</small><br>
-                    <span>@Model.PacoteViagem.Duracao dias</span>
+                    <span>@Model.PacoteViagem.Duracao @Model.PacoteViagem.UnidadeTempo</span>
                 </div>
                 <div class="mb-3">
                     <small class="text-muted">Preço por pessoa:</small><br>
                     <span class="text-success fw-bold">@Model.PacoteViagem.Preco.ToString("C")</span>
                 </div>
-                <div class="mb-3">
+                <div class="mb-0">
                     <small class="text-muted">Descrição:</small><br>
                     <span class="small">@Model.PacoteViagem.Descricao</span>
                 </div>
             </div>
             <div class="card-footer">
-                <a asp-controller="PacotesViagens" asp-action="Details" asp-route-id="@Model.PacoteViagem.Id" class="btn btn-outline-info btn-sm">
+                <a asp-controller="PacotesViagens" asp-action="Details" asp-route-id="@Model.PacoteViagem.Id"
+                   class="btn btn-outline-info btn-sm">
                     <i class="fas fa-eye me-1"></i>Ver Pacote
                 </a>
             </div>
@@ -162,7 +199,7 @@
     </div>
 </div>
 
-<!-- Serviços Adicionais -->
+<!-- Seção de Serviços Adicionais -->
 <div class="row mt-4">
     <div class="col-12">
         <div class="card">
@@ -175,13 +212,13 @@
                 @if (Model.ServicosAdicionais.Any())
                 {
                     <div class="table-responsive">
-                        <table class="table">
-                            <thead>
+                        <table class="table table-hover">
+                            <thead class="table-dark">
                                 <tr>
                                     <th>Serviço</th>
                                     <th>Descrição</th>
-                                    <th>Preço</th>
-                                    <th>Ações</th>
+                                    <th class="text-end">Preço</th>
+                                    <th class="text-center" style="width: 150px;">Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -190,70 +227,168 @@
                                     <tr>
                                         <td><strong>@servico.Nome</strong></td>
                                         <td>@servico.Descricao</td>
-                                        <td class="text-success">@servico.Preco.ToString("C")</td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-outline-danger"
-                                                    onclick="removerServico(@servico.Id)">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                        <td class="text-end text-success">
+                                            <strong>@servico.Preco.ToString("C")</strong>
+                                        </td>
+                                        <td class="text-center">
+                                            @if (Model.StatusReservaViagem.Status != "Cancelada" &&
+                                                                                (User.IsInRole("Admin") || User.IsInRole("Manager")))
+                                            {
+                                                <form asp-action="RemoverServico" method="post" class="d-inline"
+                                                      onsubmit="return confirm('Tem certeza que deseja remover o serviço \'@servico.Nome\'?');">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="servicoId" value="@servico.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <i class="fas fa-trash"></i> Remover
+                                                    </button>
+                                                </form>
+                                            }
                                         </td>
                                     </tr>
                                 }
                             </tbody>
+                            <tfoot>
+                                <tr class="table-active">
+                                    <td colspan="2" class="text-end"><strong>Subtotal Pacote:</strong></td>
+                                    <td class="text-end"><strong>@Model.ValorTotal.ToString("C")</strong></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="table-active">
+                                    <td colspan="2" class="text-end"><strong>Total Serviços Adicionais:</strong></td>
+                                    <td class="text-end">
+                                        <strong class="text-success">
+                                            @Model.ServicosAdicionais.Sum(s => s.Preco).ToString("C")
+                                        </strong>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr class="table-primary">
+                                    <td colspan="2" class="text-end"><strong>VALOR TOTAL GERAL:</strong></td>
+                                    <td class="text-end">
+                                        <h5 class="mb-0 text-primary">
+                                            @((Model.ValorTotal + Model.ServicosAdicionais.Sum(s => s.Preco)).ToString("C"))
+                                        </h5>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
                         </table>
-                    </div>
-                    <div class="text-end">
-                        <strong>Total dos Serviços: @Model.ServicosAdicionais.Sum(s => s.Preco).ToString("C")</strong>
                     </div>
                 }
                 else
                 {
-                    <div class="text-center text-muted">
+                    <div class="text-center text-muted py-4">
                         <i class="fas fa-plus-circle fa-3x mb-3"></i>
                         <p>Nenhum serviço adicional contratado.</p>
                     </div>
                 }
 
-                <div class="mt-3">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#servicoModal">
-                        <i class="fas fa-plus me-1"></i>Adicionar Serviço
-                    </button>
-                </div>
+                @if (Model.StatusReservaViagem.Status != "Cancelada")
+                {
+                    <!-- Formulário inline para adicionar serviço -->
+                    <div class="card mt-3 border-primary">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-plus me-1"></i>Adicionar Novo Serviço
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <form asp-action="AdicionarServico" asp-controller="ReservasViagens" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="reservaId" value="@Model.Id" />
+
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="nome" class="form-label">
+                                            <span class="text-danger">*</span> Nome do Serviço
+                                        </label>
+                                        <input type="text" class="form-control" id="nome" name="nome"
+                                               required maxlength="100"
+                                               placeholder="Ex: Transfer do aeroporto">
+                                    </div>
+
+                                    <div class="col-md-5 mb-3">
+                                        <label for="descricao" class="form-label">
+                                            <span class="text-danger">*</span> Descrição
+                                        </label>
+                                        <input type="text" class="form-control" id="descricao" name="descricao"
+                                               required maxlength="500"
+                                               placeholder="Descreva o serviço">
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label for="preco" class="form-label">
+                                            <span class="text-danger">*</span> Preço
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">R$</span>
+                                            <input type="number" class="form-control" id="preco" name="preco"
+                                                   step="0.01" min="0.01" required
+                                                   placeholder="0,00">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-plus me-1"></i>Adicionar Serviço
+                                    </button>
+                                    <button type="reset" class="btn btn-outline-secondary">
+                                        <i class="fas fa-undo me-1"></i>Limpar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning mt-3">
+                        <i class="fas fa-ban me-1"></i>
+                        Não é possível adicionar serviços a uma reserva cancelada.
+                    </div>
+                }
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal para adicionar serviço -->
-<div class="modal fade" id="servicoModal" tabindex="-1">
+<!-- Modal para cancelar reserva -->
+<div class="modal fade" id="modalCancelar" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Adicionar Serviço Adicional</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Cancelar Reserva
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form action="/ReservasViagens/AdicionarServico" method="post">
+            <form asp-action="CancelarReserva" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
                 <div class="modal-body">
-                    <input type="hidden" name="reservaId" value="@Model.Id" />
-                    <div class="mb-3">
-                        <label for="nome" class="form-label">Nome do Serviço</label>
-                        <input type="text" class="form-control" id="nome" name="nome" required>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        Esta ação não pode ser revertida. O cliente deverá fazer uma nova reserva se desejar.
                     </div>
+
                     <div class="mb-3">
-                        <label for="descricao" class="form-label">Descrição</label>
-                        <textarea class="form-control" id="descricao" name="descricao" rows="3" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="preco" class="form-label">Preço</label>
-                        <div class="input-group">
-                            <span class="input-group-text">R$</span>
-                            <input type="number" class="form-control" id="preco" name="preco" step="0.01" min="0" required>
-                        </div>
+                        <label for="motivo" class="form-label">
+                            <span class="text-danger">*</span> Motivo do Cancelamento
+                        </label>
+                        <textarea class="form-control" id="motivo" name="motivo"
+                                  rows="3" required maxlength="500"
+                                  placeholder="Informe o motivo do cancelamento..."></textarea>
+                        <div class="form-text">Obrigatório informar o motivo</div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Adicionar Serviço</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Não, manter reserva
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-ban me-1"></i>Sim, cancelar reserva
+                    </button>
                 </div>
             </form>
         </div>
@@ -262,40 +397,23 @@
 
 @section Scripts {
     <script>
-        function confirmarReserva(id) {
-            if (confirm('Confirmar esta reserva?')) {
-                fetch('/ReservasViagens/ConfirmarReserva/' + id, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
-                    }
-                }).then(() => location.reload());
-            }
-        }
+        // Contador de caracteres para campos de texto
+        document.addEventListener('DOMContentLoaded', function() {
+            // Campo de motivo do cancelamento
+            const motivoCancelamento = document.getElementById('motivo');
+            if (motivoCancelamento) {
+                motivoCancelamento.addEventListener('input', function() {
+                    const atual = this.value.length;
+                    const max = 500;
+                    const restante = max - atual;
+                    const formText = this.parentNode.querySelector('.form-text');
 
-        function cancelarReserva(id) {
-            if (confirm('Cancelar esta reserva?')) {
-                fetch('/ReservasViagens/CancelarReserva/' + id, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                    if (formText) {
+                        const cor = restante < 50 ? 'text-warning' : restante < 20 ? 'text-danger' : 'text-muted';
+                        formText.innerHTML = `Restam <span class="${cor}">${restante}</span> de ${max} caracteres (obrigatório informar o motivo)`;
                     }
-                }).then(() => location.reload());
+                });
             }
-        }
-
-        function removerServico(servicoId) {
-            if (confirm('Remover este serviço adicional?')) {
-                fetch('/ReservasViagens/RemoverServico/' + servicoId, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
-                    }
-                }).then(() => location.reload());
-            }
-        }
+        });
     </script>
 }

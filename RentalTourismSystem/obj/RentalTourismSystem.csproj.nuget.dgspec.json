@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Projetos\\LitoralSul\\SistemaIntegrado\\RentalTourismSystem\\RentalTourismSystem\\RentalTourismSystem.csproj": {}
+    "C:\\Projetos\\LitoralSul\\SistemaAtual\\RentalTourismSystem\\RentalTourismSystem\\RentalTourismSystem.csproj": {}
   },
   "projects": {
-    "C:\\Projetos\\LitoralSul\\SistemaIntegrado\\RentalTourismSystem\\RentalTourismSystem\\RentalTourismSystem.csproj": {
+    "C:\\Projetos\\LitoralSul\\SistemaAtual\\RentalTourismSystem\\RentalTourismSystem\\RentalTourismSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Projetos\\LitoralSul\\SistemaIntegrado\\RentalTourismSystem\\RentalTourismSystem\\RentalTourismSystem.csproj",
+        "projectUniqueName": "C:\\Projetos\\LitoralSul\\SistemaAtual\\RentalTourismSystem\\RentalTourismSystem\\RentalTourismSystem.csproj",
         "projectName": "RentalTourismSystem",
-        "projectPath": "C:\\Projetos\\LitoralSul\\SistemaIntegrado\\RentalTourismSystem\\RentalTourismSystem\\RentalTourismSystem.csproj",
+        "projectPath": "C:\\Projetos\\LitoralSul\\SistemaAtual\\RentalTourismSystem\\RentalTourismSystem\\RentalTourismSystem.csproj",
         "packagesPath": "C:\\Users\\Gilney Souza\\.nuget\\packages\\",
-        "outputPath": "C:\\Projetos\\LitoralSul\\SistemaIntegrado\\RentalTourismSystem\\RentalTourismSystem\\obj\\",
+        "outputPath": "C:\\Projetos\\LitoralSul\\SistemaAtual\\RentalTourismSystem\\RentalTourismSystem\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

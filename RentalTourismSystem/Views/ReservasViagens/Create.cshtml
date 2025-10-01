@@ -82,14 +82,14 @@
                             <label class="form-label">Valor Total</label>
                             <div class="input-group">
                                 <span class="input-group-text">R$</span>
-                                <input type="text" id="valorTotalDisplay" class="form-control" readonly 
+                                <input type="text" id="valorTotalDisplay" class="form-control" readonly
                                        placeholder="0,00" style="background-color: #f8f9fa;" />
                             </div>
                             <div class="form-text">Calculado automaticamente: pacote × quantidade</div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="statusReserva" class="form-label">Status Inicial</label>
-                            <input type="text" id="statusReserva" class="form-control" value="Pendente" readonly 
+                            <input type="text" id="statusReserva" class="form-control" value="Pendente" readonly
                                    style="background-color: #f8f9fa;" />
                             <div class="form-text">Reservas iniciam como "Pendente"</div>
                         </div>
@@ -177,132 +177,190 @@
 </div>
 
 @section Scripts {
-        <script>
-            // JAVASCRIPT SIMPLIFICADO - SEM JQUERY PARA EVITAR CONFLITOS
-            document.addEventListener('DOMContentLoaded', function() {
-                console.log('Formulário de reserva carregado');
+    <script>
+        // Variável global para armazenar o preço do pacote selecionado
+        let precoPacoteAtual = 0;
 
-                // Configurar data mínima e inicial
-                const hoje = new Date().toISOString().split('T')[0];
-                document.getElementById('DataReserva').value = hoje;
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Formulário de reserva carregado');
 
-                const amanha = new Date();
-                amanha.setDate(amanha.getDate() + 1);
-                const dataViagem = document.getElementById('DataViagem');
-                dataViagem.min = amanha.toISOString().split('T')[0];
-                dataViagem.value = amanha.toISOString().split('T')[0];
+            // Configurar data mínima e inicial
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('DataReserva').value = hoje;
 
-                // Contador de caracteres para observações
-                const observacoes = document.getElementById('Observacoes');
+            const amanha = new Date();
+            amanha.setDate(amanha.getDate() + 1);
+            const dataViagem = document.getElementById('DataViagem');
+            dataViagem.min = amanha.toISOString().split('T')[0];
+            dataViagem.value = amanha.toISOString().split('T')[0];
+
+            // Contador de caracteres para observações
+            const observacoes = document.getElementById('Observacoes');
+            if (observacoes) {
                 observacoes.addEventListener('input', function() {
                     const atual = this.value.length;
                     const max = 500;
                     const restante = max - atual;
-                
+
                     let formText = this.parentNode.querySelector('.form-text');
                     if (formText) {
                         const cor = restante < 50 ? 'text-warning' : restante < 20 ? 'text-danger' : 'text-muted';
                         formText.innerHTML = `Restam <span class="${cor}">${restante}</span> caracteres (máximo ${max})`;
                     }
                 });
-            });
+            }
+        });
 
-            // FUNÇÃO SIMPLIFICADA PARA CARREGAR INFO DO CLIENTE
-            async function carregarInfoCliente() {
-                const clienteId = document.getElementById('ClienteId').value;
-                const infoDiv = document.getElementById('infoCliente');
-                const dadosDiv = document.getElementById('dadosCliente');
+        // FUNÇÃO CORRIGIDA PARA CARREGAR INFO DO CLIENTE
+        async function carregarInfoCliente() {
+            const clienteId = document.getElementById('ClienteId').value;
+            const infoDiv = document.getElementById('infoCliente');
+            const dadosDiv = document.getElementById('dadosCliente');
 
-                if (!clienteId) {
-                    infoDiv.style.display = 'none';
-                    return;
-                }
-
-                try {
-                    const response = await fetch(`/api/Api/cliente/${clienteId}`);
-                    if (response.ok) {
-                        const cliente = await response.json();
-
-                        dadosDiv.innerHTML = 
-                            '<p class="mb-1"><strong>' + cliente.nome + '</strong></p>' +
-                            '<p class="mb-1">CPF: ' + cliente.cpf + '</p>' +
-                            '<p class="mb-1">Tel: ' + cliente.telefone + '</p>' +
-                            '<p class="mb-0">Email: ' + cliente.email + '</p>';
-
-                        infoDiv.style.display = 'block';
-                    } else {
-                        // Fallback usando nome do select
-                        const clienteSelect = document.getElementById('ClienteId');
-                        const clienteNome = clienteSelect.options[clienteSelect.selectedIndex].text;
-
-                        dadosDiv.innerHTML = 
-                            '<p class="mb-1"><strong>' + clienteNome + '</strong></p>' +
-                            '<small class="text-muted">Dados detalhados não disponíveis</small>';
-                    
-                        infoDiv.style.display = 'block';
-                    }
-                } catch (error) {
-                    console.error('Erro na requisição:', error);
-                
-                    // Fallback simples
-                    const clienteSelect = document.getElementById('ClienteId');
-                    const clienteNome = clienteSelect.options[clienteSelect.selectedIndex].text;
-                
-                    dadosDiv.innerHTML = 
-                        '<p class="mb-1"><strong>' + clienteNome + '</strong></p>' +
-                        '<small class="text-muted">Erro ao carregar dados</small>';
-                
-                    infoDiv.style.display = 'block';
-                }
+            if (!clienteId) {
+                infoDiv.style.display = 'none';
+                return;
             }
 
-            // FUNÇÃO SIMPLIFICADA PARA CALCULAR VALOR TOTAL
-            async function calcularValorTotal() {
-                const pacoteId = document.getElementById('PacoteViagemId').value;
-                const quantidade = parseInt(document.getElementById('Quantidade').value) || 1;
-                const valorDisplay = document.getElementById('valorTotalDisplay');
-                const infoPacote = document.getElementById('infoPacote');
-                const dadosPacote = document.getElementById('dadosPacote');
+            try {
+                const response = await fetch(`/api/Api/cliente/${clienteId}`);
+                if (response.ok) {
+                    const cliente = await response.json();
 
-                if (!pacoteId) {
-                    valorDisplay.value = '';
-                    infoPacote.style.display = 'none';
-                    return;
+                    dadosDiv.innerHTML =
+                        '<p class="mb-1"><strong>' + cliente.nome + '</strong></p>' +
+                        '<p class="mb-1">CPF: ' + cliente.cpf + '</p>' +
+                        '<p class="mb-1">Tel: ' + cliente.telefone + '</p>' +
+                        '<p class="mb-0">Email: ' + cliente.email + '</p>';
+
+                    infoDiv.style.display = 'block';
+                } else {
+                    // Fallback usando nome do select
+                    const clienteSelect = document.getElementById('ClienteId');
+                    const clienteNome = clienteSelect.options[clienteSelect.selectedIndex].text;
+
+                    dadosDiv.innerHTML =
+                        '<p class="mb-1"><strong>' + clienteNome + '</strong></p>' +
+                        '<small class="text-muted">Dados detalhados não disponíveis</small>';
+
+                    infoDiv.style.display = 'block';
                 }
+            } catch (error) {
+                console.error('Erro ao carregar cliente:', error);
 
-                try {
-                    // Tentar primeira rota
-                    let response = await fetch('/ReservasViagens/ObterPrecoPacote/' + pacoteId);
-                
-                    // Se falhar, tentar rota alternativa
-                    if (!response.ok) {
-                        response = await fetch('/api/pacotes/' + pacoteId + '/preco');
+                // Fallback simples
+                const clienteSelect = document.getElementById('ClienteId');
+                const clienteNome = clienteSelect.options[clienteSelect.selectedIndex].text;
+
+                dadosDiv.innerHTML =
+                    '<p class="mb-1"><strong>' + clienteNome + '</strong></p>' +
+                    '<small class="text-muted">Erro ao carregar dados</small>';
+
+                infoDiv.style.display = 'block';
+            }
+        }
+
+        // FUNÇÃO CORRIGIDA PARA CALCULAR VALOR TOTAL
+        async function calcularValorTotal() {
+            const pacoteId = document.getElementById('PacoteViagemId').value;
+            const quantidade = parseInt(document.getElementById('Quantidade').value) || 1;
+            const valorDisplay = document.getElementById('valorTotalDisplay');
+            const infoPacote = document.getElementById('infoPacote');
+            const dadosPacote = document.getElementById('dadosPacote');
+
+            if (!pacoteId) {
+                valorDisplay.value = '';
+                infoPacote.style.display = 'none';
+                precoPacoteAtual = 0;
+                return;
+            }
+
+            try {
+                console.log('Buscando preço do pacote:', pacoteId);
+
+                // CORRIGIDO: Usar a rota correta da API
+                const response = await fetch(`/api/Api/pacote/${pacoteId}/preco`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Resposta da API:', data);
+
+                    const preco = data.preco || data.Preco || data.valor || data.Valor;
+
+                    if (preco && !isNaN(preco)) {
+                        precoPacoteAtual = parseFloat(preco);
+                        const valorTotal = precoPacoteAtual * quantidade;
+
+                        // Formatar valor para exibição
+                        valorDisplay.value = valorTotal.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+
+                        // Obter informações do pacote do select
+                        const pacoteSelect = document.getElementById('PacoteViagemId');
+                        const pacoteTexto = pacoteSelect.options[pacoteSelect.selectedIndex].text;
+
+                        // Extrair nome do pacote (parte antes do primeiro " - ")
+                        const pacoteNome = pacoteTexto.split(' - ')[0];
+
+                        // Atualizar informações do pacote
+                        dadosPacote.innerHTML =
+                            '<p class="mb-1"><strong>' + pacoteNome + '</strong></p>' +
+                            '<p class="mb-1">Preço: <span class="text-success">R$ ' +
+                            precoPacoteAtual.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) +
+                            '</span> por pessoa</p>' +
+                            '<p class="mb-1">Quantidade: <strong>' + quantidade +
+                            (quantidade === 1 ? ' pessoa' : ' pessoas') + '</strong></p>' +
+                            '<hr>' +
+                            '<p class="mb-0">Total: <strong class="text-success">R$ ' +
+                            valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) +
+                            '</strong></p>';
+
+                        infoPacote.style.display = 'block';
+
+                        console.log('Cálculo realizado com sucesso:', {
+                            preco: precoPacoteAtual,
+                            quantidade: quantidade,
+                            total: valorTotal
+                        });
+                    } else {
+                        throw new Error('Preço não encontrado ou inválido na resposta');
                     }
+                } else {
+                    throw new Error('Erro HTTP: ' + response.status);
+                }
+            } catch (error) {
+                console.error('Erro ao calcular valor total:', error);
 
-                    if (response.ok) {
-                        const data = await response.json();
-                        const preco = data.preco;
-                    
-                        if (preco) {
-                            const valorTotal = preco * quantidade;
+                // FALLBACK: Extrair preço do texto do select
+                try {
+                    const pacoteSelect = document.getElementById('PacoteViagemId');
+                    const pacoteTexto = pacoteSelect.options[pacoteSelect.selectedIndex].text;
 
-                            // Formatar valor
+                    // Tentar extrair o preço do formato: "... - R$ 120,00"
+                    const precoMatch = pacoteTexto.match(/R\$\s*([\d.,]+)/);
+
+                    if (precoMatch) {
+                        const precoString = precoMatch[1].replace('.', '').replace(',', '.');
+                        precoPacoteAtual = parseFloat(precoString);
+
+                        if (!isNaN(precoPacoteAtual)) {
+                            const valorTotal = precoPacoteAtual * quantidade;
+
                             valorDisplay.value = valorTotal.toLocaleString('pt-BR', {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2
                             });
 
-                            // Obter nome do pacote do select
-                            const pacoteSelect = document.getElementById('PacoteViagemId');
-                            const pacoteNome = pacoteSelect.options[pacoteSelect.selectedIndex].text;
-                        
-                            // Atualizar informações do pacote
-                            dadosPacote.innerHTML = 
+                            const pacoteNome = pacoteTexto.split(' - ')[0];
+
+                            dadosPacote.innerHTML =
                                 '<p class="mb-1"><strong>' + pacoteNome + '</strong></p>' +
-                                '<p class="mb-1">Preço: <span class="text-success">R$ ' + 
-                                preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) +
+                                '<p class="mb-1">Preço: <span class="text-success">R$ ' +
+                                precoPacoteAtual.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) +
                                 '</span> por pessoa</p>' +
-                                '<p class="mb-1">Quantidade: <strong>' + quantidade + 
+                                '<p class="mb-1">Quantidade: <strong>' + quantidade +
                                 (quantidade === 1 ? ' pessoa' : ' pessoas') + '</strong></p>' +
                                 '<hr>' +
                                 '<p class="mb-0">Total: <strong class="text-success">R$ ' +
@@ -310,17 +368,24 @@
                                 '</strong></p>';
 
                             infoPacote.style.display = 'block';
-                        } else {
-                            throw new Error('Preço não encontrado na resposta');
+
+                            console.log('Preço extraído do texto do select (fallback):', precoPacoteAtual);
+                            return;
                         }
-                    } else {
-                        throw new Error('Erro HTTP: ' + response.status);
                     }
-                } catch (error) {
-                    console.error('Erro ao calcular valor total:', error);
-                    valorDisplay.value = 'Erro ao calcular';
-                    infoPacote.style.display = 'none';
+                } catch (fallbackError) {
+                    console.error('Erro no fallback:', fallbackError);
+                }
+
+                // Se tudo falhar
+                valorDisplay.value = 'Erro ao calcular';
+                infoPacote.style.display = 'none';
+                precoPacoteAtual = 0;
+
+                if (window.RentalTourismSystem?.NotificationSystem) {
+                    window.RentalTourismSystem.NotificationSystem.error('Erro ao buscar preço do pacote. Tente novamente.');
                 }
             }
-        </script>
+        }
+    </script>
 }

@@ -222,12 +222,24 @@
             }
 
             if (preco) {
-                const precoFormatado = parseFloat(preco.replace(',', '.')).toLocaleString('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-                });
-                previewContent += `<div class="mt-1"><i class="fas fa-money-bill me-1"></i><strong>${precoFormatado} por pessoa</strong></div>`;
-                hasContent = true;
+                // CORRIGIDO: Tratamento robusto do valor monetário
+                // Remove todos os caracteres exceto números e vírgula
+                const precoLimpo = preco.replace(/[^\d,]/g, '').replace(',', '.');
+                const precoNumerico = parseFloat(precoLimpo);
+
+                // Verifica se é um número válido
+                if (!isNaN(precoNumerico) && precoNumerico > 0) {
+                    const precoFormatado = precoNumerico.toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                    });
+                    previewContent += `<div class="mt-1"><i class="fas fa-money-bill me-1"></i><strong>${precoFormatado} por pessoa</strong></div>`;
+                    hasContent = true;
+                } else {
+                    // Se não for um número válido, mostra mensagem de espera
+                    previewContent += `<div class="mt-1 text-muted"><i class="fas fa-money-bill me-1"></i><small>Digite um valor válido</small></div>`;
+                    hasContent = true;
+                }
             }
 
             if (hasContent) {
@@ -257,18 +269,22 @@
                     }
 
                     if (precoSugerido > 0) {
-                        $('#Preco').val(precoSugerido.toLocaleString('pt-BR', {
+                        // CORRIGIDO: Formatar corretamente para o formato brasileiro
+                        const precoFormatado = precoSugerido.toLocaleString('pt-BR', {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2
-                        }));
+                        });
 
-                        if (typeof NotificacaoValidacao !== 'undefined') {
-                            NotificacaoValidacao.info(`Preço sugerido aplicado: R$ ${precoSugerido.toLocaleString('pt-BR', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}`);
+                        $('#Preco').val(precoFormatado);
+
+                        // Notificação
+                        if (window.RentalTourismSystem?.NotificationSystem) {
+                            window.RentalTourismSystem.NotificationSystem.info(`Preço sugerido aplicado: R$ ${precoFormatado}`);
+                        } else if (typeof NotificacaoValidacao !== 'undefined') {
+                            NotificacaoValidacao.info(`Preço sugerido aplicado: R$ ${precoFormatado}`);
                         }
 
+                        // Atualizar preview
                         atualizarPreview();
                     }
                 }

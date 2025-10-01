@@ -143,6 +143,7 @@ namespace RentalTourismSystem.Controllers
                 ModelState.Remove("Cliente");
                 ModelState.Remove("PacoteViagem");
                 ModelState.Remove("StatusReservaViagem");
+                ModelState.Remove("ValorTotal");
 
                 if (ModelState.IsValid)
                 {
@@ -277,6 +278,7 @@ namespace RentalTourismSystem.Controllers
                 ModelState.Remove("Cliente");
                 ModelState.Remove("PacoteViagem");
                 ModelState.Remove("StatusReservaViagem");
+                ModelState.Remove("ValorTotal");
 
                 if (ModelState.IsValid)
                 {
@@ -590,79 +592,101 @@ namespace RentalTourismSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ========== GESTÃO DE SERVIÇOS ADICIONAIS ==========
+        // ========== GESTÃO DE SERVIÇOS ADICIONAIS - CÁLCULO CORRETO ==========
 
-        // POST: Adicionar Serviço Adicional
+        // POST: Adicionar Serviço Adicional - CORRIGIDO
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager,Employee")]
-        public async Task<IActionResult> AdicionarServico(int reservaId, string descricao, decimal valor)
+        public async Task<IActionResult> AdicionarServico(int reservaId, string nome, string descricao, decimal preco)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(descricao) || valor <= 0)
+                // Validações
+                if (string.IsNullOrWhiteSpace(nome))
                 {
-                    return Json(new { success = false, message = "Descrição e valor são obrigatórios." });
+                    TempData["Erro"] = "O nome do serviço é obrigatório.";
+                    return RedirectToAction(nameof(Details), new { id = reservaId });
+                }
+
+                if (string.IsNullOrWhiteSpace(descricao))
+                {
+                    TempData["Erro"] = "A descrição do serviço é obrigatória.";
+                    return RedirectToAction(nameof(Details), new { id = reservaId });
+                }
+
+                if (preco <= 0)
+                {
+                    TempData["Erro"] = "O preço deve ser maior que zero.";
+                    return RedirectToAction(nameof(Details), new { id = reservaId });
                 }
 
                 var reserva = await _context.ReservasViagens
                     .Include(r => r.StatusReservaViagem)
+                    .Include(r => r.ServicosAdicionais)
                     .FirstOrDefaultAsync(r => r.Id == reservaId);
 
                 if (reserva == null)
                 {
-                    return Json(new { success = false, message = "Reserva não encontrada." });
+                    _logger.LogWarning("Tentativa de adicionar serviço a reserva inexistente {ReservaId} por {User}",
+                        reservaId, User.Identity?.Name);
+                    TempData["Erro"] = "Reserva não encontrada.";
+                    return RedirectToAction(nameof(Index));
                 }
 
                 if (reserva.StatusReservaViagem.Status == "Cancelada")
                 {
-                    return Json(new { success = false, message = "Não é possível adicionar serviços a uma reserva cancelada." });
+                    TempData["Erro"] = "Não é possível adicionar serviços a uma reserva cancelada.";
+                    return RedirectToAction(nameof(Details), new { id = reservaId });
                 }
 
                 using var transaction = await _context.Database.BeginTransactionAsync();
                 try
                 {
+                    // Criar serviço
                     var servico = new ServicoAdicional
                     {
                         ReservaViagemId = reservaId,
+                        Nome = nome,
                         Descricao = descricao,
-                        Preco = valor
+                        Preco = preco
                     };
 
                     _context.ServicosAdicionais.Add(servico);
 
-                    // Atualizar valor total da reserva
-                    reserva.ValorTotal += valor;
-                    _context.Update(reserva);
+                    // ✅ NÃO atualiza o ValorTotal - ele continua sendo apenas o valor do pacote
+                    // Os serviços são somados apenas na exibição
 
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
 
-                    _logger.LogInformation("Serviço adicional '{Descricao}' (R$ {Valor:N2}) adicionado à reserva {ReservaId} por {User}",
-                        descricao, valor, reservaId, User.Identity?.Name);
+                    // Calcular total geral para mostrar na mensagem
+                    var totalGeral = reserva.ValorTotal + reserva.ServicosAdicionais.Sum(s => s.Preco) + preco;
 
-                    return Json(new
-                    {
-                        success = true,
-                        message = "Serviço adicional adicionado com sucesso!",
-                        novoValorTotal = reserva.ValorTotal
-                    });
+                    _logger.LogInformation("Serviço adicional '{Nome}' (R$ {Valor:N2}) adicionado à reserva {ReservaId} por {User}",
+                        nome, preco, reservaId, User.Identity?.Name);
+
+                    TempData["Sucesso"] = $"Serviço '{nome}' adicionado com sucesso! Valor total geral: {totalGeral:C}";
+                    return RedirectToAction(nameof(Details), new { id = reservaId });
                 }
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
-                    _logger.LogError(ex, "Erro ao adicionar serviço adicional à reserva {ReservaId} por {User}", reservaId, User.Identity?.Name);
-                    return Json(new { success = false, message = "Erro ao adicionar serviço." });
+                    _logger.LogError(ex, "Erro ao adicionar serviço adicional à reserva {ReservaId} por {User}",
+                        reservaId, User.Identity?.Name);
+                    TempData["Erro"] = "Erro ao adicionar serviço. Tente novamente.";
+                    return RedirectToAction(nameof(Details), new { id = reservaId });
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro inesperado ao adicionar serviço adicional por {User}", User.Identity?.Name);
-                return Json(new { success = false, message = "Erro interno do sistema." });
+                TempData["Erro"] = "Erro interno do sistema. Tente novamente.";
+                return RedirectToAction(nameof(Index));
             }
         }
 
-        // POST: Remover Serviço Adicional
+        // POST: Remover Serviço Adicional - CORRIGIDO
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
@@ -673,50 +697,58 @@ namespace RentalTourismSystem.Controllers
                 var servico = await _context.ServicosAdicionais
                     .Include(s => s.ReservaViagem)
                         .ThenInclude(r => r.StatusReservaViagem)
+                    .Include(s => s.ReservaViagem)
+                        .ThenInclude(r => r.ServicosAdicionais)
                     .FirstOrDefaultAsync(s => s.Id == servicoId);
 
                 if (servico == null)
                 {
-                    return Json(new { success = false, message = "Serviço não encontrado." });
+                    _logger.LogWarning("Tentativa de remover serviço inexistente {ServicoId} por {User}",
+                        servicoId, User.Identity?.Name);
+                    TempData["Erro"] = "Serviço não encontrado.";
+                    return RedirectToAction(nameof(Index));
                 }
+
+                var reservaId = servico.ReservaViagemId;
 
                 if (servico.ReservaViagem.StatusReservaViagem.Status == "Cancelada")
                 {
-                    return Json(new { success = false, message = "Não é possível remover serviços de uma reserva cancelada." });
+                    TempData["Erro"] = "Não é possível remover serviços de uma reserva cancelada.";
+                    return RedirectToAction(nameof(Details), new { id = reservaId });
                 }
 
                 using var transaction = await _context.Database.BeginTransactionAsync();
                 try
                 {
-                    // Atualizar valor total da reserva
-                    servico.ReservaViagem.ValorTotal -= servico.Preco;
-                    _context.Update(servico.ReservaViagem);
+                    // Os serviços são somados apenas na exibição
 
                     _context.ServicosAdicionais.Remove(servico);
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
 
-                    _logger.LogInformation("Serviço adicional '{Descricao}' removido da reserva {ReservaId} por {User}",
-                        servico.Descricao, servico.ReservaViagemId, User.Identity?.Name);
+                    // Calcular total geral para mostrar na mensagem
+                    var servicosRestantes = servico.ReservaViagem.ServicosAdicionais.Where(s => s.Id != servicoId).Sum(s => s.Preco);
+                    var totalGeral = servico.ReservaViagem.ValorTotal + servicosRestantes;
 
-                    return Json(new
-                    {
-                        success = true,
-                        message = "Serviço removido com sucesso!",
-                        novoValorTotal = servico.ReservaViagem.ValorTotal
-                    });
+                    _logger.LogInformation("Serviço adicional '{Nome}' removido da reserva {ReservaId} por {User}",
+                        servico.Nome, reservaId, User.Identity?.Name);
+
+                    TempData["Sucesso"] = $"Serviço '{servico.Nome}' removido com sucesso! Valor total geral: {totalGeral:C}";
+                    return RedirectToAction(nameof(Details), new { id = reservaId });
                 }
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
                     _logger.LogError(ex, "Erro ao remover serviço adicional {ServicoId} por {User}", servicoId, User.Identity?.Name);
-                    return Json(new { success = false, message = "Erro ao remover serviço." });
+                    TempData["Erro"] = "Erro ao remover serviço. Tente novamente.";
+                    return RedirectToAction(nameof(Details), new { id = reservaId });
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro inesperado ao remover serviço adicional por {User}", User.Identity?.Name);
-                return Json(new { success = false, message = "Erro interno do sistema." });
+                TempData["Erro"] = "Erro interno do sistema. Tente novamente.";
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -733,16 +765,23 @@ namespace RentalTourismSystem.Controllers
                 await _context.Clientes.OrderBy(c => c.Nome).ToListAsync(),
                 "Id", "Nome", reserva?.ClienteId);
 
+            // CORRIGIDO: Buscar primeiro, formatar depois
+            var pacotes = await _context.PacotesViagens
+                .Where(p => p.Ativo)
+                .OrderBy(p => p.Nome)
+                .ToListAsync();
+
+            var pacotesFormatados = pacotes.Select(p => new
+            {
+                Id = p.Id,
+                Descricao = $"{p.Nome} - {p.Destino} ({p.Duracao} {p.UnidadeTempo}) - R$ {p.Preco:N2}"
+            }).ToList();
+
             ViewBag.PacoteViagemId = new SelectList(
-                await _context.PacotesViagens
-                    .Select(p => new
-                    {
-                        Id = p.Id,
-                        Descricao = $"{p.Nome} - {p.Destino} ({p.Duracao} dias) - R$ {p.Preco:N2}"
-                    })
-                    .OrderBy(p => p.Descricao)
-                    .ToListAsync(),
-                "Id", "Descricao", reserva?.PacoteViagemId);
+                pacotesFormatados,
+                "Id",
+                "Descricao",
+                reserva?.PacoteViagemId);
 
             ViewBag.StatusReservaViagemId = new SelectList(
                 await _context.StatusReservaViagens.ToListAsync(),

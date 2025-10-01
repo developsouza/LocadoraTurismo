@@ -108,14 +108,69 @@
                                 </a>
                                 @if (item.StatusReservaViagem.Status == "Pendente")
                                 {
-                                    <button type="button" class="btn btn-sm btn-outline-success"
-                                            onclick="confirmarReserva(@item.Id)" title="Confirmar">
-                                        <i class="fas fa-check"></i>
-                                    </button>
+                                    <!-- Formulário para Confirmar - CORRIGIDO -->
+                                    <form asp-action="ConfirmarReserva" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-success"
+                                                title="Confirmar"
+                                                onclick="return confirm('Confirmar esta reserva?');">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </form>
+
+                                    <!-- Botão para abrir modal de cancelar -->
                                     <button type="button" class="btn btn-sm btn-outline-danger"
-                                            onclick="cancelarReserva(@item.Id)" title="Cancelar">
+                                            title="Cancelar"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalCancelar@(item.Id)">
                                         <i class="fas fa-times"></i>
                                     </button>
+
+                                    <!-- Modal de cancelamento para cada reserva -->
+                                    <div class="modal fade" id="modalCancelar@(item.Id)" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title">
+                                                        <i class="fas fa-exclamation-triangle me-2"></i>Cancelar Reserva #@item.Id
+                                                    </h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <form asp-action="CancelarReserva" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@item.Id" />
+                                                    <div class="modal-body">
+                                                        <div class="alert alert-warning">
+                                                            <i class="fas fa-exclamation-triangle me-1"></i>
+                                                            Tem certeza que deseja cancelar a reserva de <strong>@item.Cliente.Nome</strong>?
+                                                        </div>
+
+                                                        <div class="mb-3">
+                                                            <label for="motivo@(item.Id)" class="form-label">
+                                                                <span class="text-danger">*</span> Motivo do Cancelamento
+                                                            </label>
+                                                            <textarea class="form-control"
+                                                              id="motivo@(item.Id)"
+                                                              name="motivo"
+                                                              rows="3"
+                                                              required
+                                                              maxlength="500"
+                                                              placeholder="Informe o motivo do cancelamento..."></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                            <i class="fas fa-times me-1"></i>Não, manter reserva
+                                                        </button>
+                                                        <button type="submit" class="btn btn-danger">
+                                                            <i class="fas fa-ban me-1"></i>Sim, cancelar
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 }
                             </td>
                         </tr>
@@ -135,28 +190,6 @@
 
 @section Scripts {
     <script>
-        function confirmarReserva(id) {
-            if (confirm('Confirmar esta reserva?')) {
-                fetch('/ReservasViagens/ConfirmarReserva/' + id, {
-                    method: 'POST',
-                    headers: {
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
-                    }
-                }).then(() => location.reload());
-            }
-        }
-
-        function cancelarReserva(id) {
-            if (confirm('Cancelar esta reserva?')) {
-                fetch('/ReservasViagens/CancelarReserva/' + id, {
-                    method: 'POST',
-                    headers: {
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
-                    }
-                }).then(() => location.reload());
-            }
-        }
-
         // Filtros por período
         document.addEventListener('DOMContentLoaded', function() {
             const filtros = document.querySelectorAll('input[name="periodo"]');
@@ -165,7 +198,6 @@
             filtros.forEach(filtro => {
                 filtro.addEventListener('change', function() {
                     const rows = tabela.querySelectorAll('tr');
-                    const hoje = new Date();
 
                     rows.forEach(row => {
                         const dataCell = row.cells[2];

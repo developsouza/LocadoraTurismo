@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FY/oC0aq9CM=",
+  "dgSpecHash": "0V3nj8zgqTk=",
   "success": true,
-  "projectFilePath": "C:\\Projetos\\LitoralSul\\SistemaIntegrado\\RentalTourismSystem\\RentalTourismSystem\\RentalTourismSystem.csproj",
+  "projectFilePath": "C:\\Projetos\\LitoralSul\\SistemaAtual\\RentalTourismSystem\\RentalTourismSystem\\RentalTourismSystem.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Gilney Souza\\.nuget\\packages\\asp.versioning.abstractions\\8.1.0\\asp.versioning.abstractions.8.1.0.nupkg.sha512",
     "C:\\Users\\Gilney Souza\\.nuget\\packages\\asp.versioning.http\\8.1.0\\asp.versioning.http.8.1.0.nupkg.sha512",
@@ -134,5 +134,15 @@
     "C:\\Users\\Gilney Souza\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
     "C:\\Users\\Gilney Souza\\.nuget\\packages\\yamldotnet\\16.0.0\\yamldotnet.16.0.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "message": "Ocorreu um erro ao obter os dados de vulnerabilidade do pacote: O tempo limite para o download de 'https://api.nuget.org/v3-vulnerabilities/2025.09.20.05.25.56/vulnerability.base.json' foi atingido porque nenhum dado foi recebido por 60000 ms.",
+      "projectPath": "C:\\Projetos\\LitoralSul\\SistemaAtual\\RentalTourismSystem\\RentalTourismSystem\\RentalTourismSystem.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Projetos\\LitoralSul\\SistemaAtual\\RentalTourismSystem\\RentalTourismSystem\\RentalTourismSystem.csproj",
+      "targetGraphs": []
+    }
+  ]
 }
