@@ -1,0 +1,606 @@
+﻿@model IEnumerable<RentalTourismSystem.Models.Locacao>
+@{
+    ViewData["Title"] = "Locações";
+    var totalLocacoes = Model.Count();
+    var locacoesAtivas = Model.Count(l => l.DataDevolucaoReal == null);
+    var locacoesFinalizadas = Model.Count(l => l.DataDevolucaoReal != null);
+    var locacoesAtrasadas = Model.Count(l => l.DataDevolucaoReal == null && l.DataDevolucao < DateTime.Now);
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-gradient">
+            <i class="fas fa-clipboard-list me-2"></i>Gestão de Locações
+        </h2>
+        <p class="text-muted">Gerencie todas as locações de veículos do sistema</p>
+    </div>
+</div>
+
+<!-- Estatísticas Rápidas -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas fa-clipboard-list fa-2x mb-2"></i>
+                <h3 class="stat-number">@totalLocacoes</h3>
+                <p class="stat-label mb-0">Total de Locações</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3" style="background: linear-gradient(135deg, var(--success) 0%, var(--success-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                <h3 class="stat-number">@locacoesAtivas</h3>
+                <p class="stat-label mb-0">Locações Ativas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3" style="background: linear-gradient(135deg, var(--info) 0%, var(--info-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas fa-flag-checkered fa-2x mb-2"></i>
+                <h3 class="stat-number">@locacoesFinalizadas</h3>
+                <p class="stat-label mb-0">Finalizadas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3" style="background: linear-gradient(135deg, var(--danger) 0%, var(--danger-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                <h3 class="stat-number">@locacoesAtrasadas</h3>
+                <p class="stat-label mb-0">Atrasadas</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Barra de Ferramentas -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <form method="get" class="d-flex" id="formFiltros">
+                    <div class="input-group me-2">
+                        <span class="input-group-text">
+                            <i class="fas fa-filter"></i>
+                        </span>
+                        <select name="status" class="form-select" onchange="aplicarFiltros()">
+                            <option value="">Todos os Status</option>
+                            <option value="ativa" selected="@(ViewBag.Status == "ativa")">Ativas</option>
+                            <option value="finalizada" selected="@(ViewBag.Status == "finalizada")">Finalizadas</option>
+                            <option value="atrasada" selected="@(ViewBag.Status == "atrasada")">Atrasadas</option>
+                        </select>
+                    </div>
+                    <div class="input-group me-2">
+                        <span class="input-group-text">
+                            <i class="fas fa-calendar"></i>
+                        </span>
+                        <input type="date" name="dataInicio" value="@ViewBag.DataInicio" class="form-control" 
+                               placeholder="Data Início" onchange="aplicarFiltros()">
+                    </div>
+                    <div class="input-group me-2">
+                        <span class="input-group-text">
+                            <i class="fas fa-calendar"></i>
+                        </span>
+                        <input type="date" name="dataFim" value="@ViewBag.DataFim" class="form-control" 
+                               placeholder="Data Fim" onchange="aplicarFiltros()">
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary me-2">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    @if (!string.IsNullOrEmpty(ViewBag.Status as string) || !string.IsNullOrEmpty(ViewBag.DataInicio as string) || !string.IsNullOrEmpty(ViewBag.DataFim as string))
+                    {
+                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-1"></i>Limpar
+                        </a>
+                    }
+                </form>
+            </div>
+            <div class="col-md-6 text-end">
+                <div class="btn-group">
+                    <a asp-action="Create" class="btn btn-primary hover-lift">
+                        <i class="fas fa-plus me-1"></i>Nova Locação
+                    </a>
+                    <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="#" onclick="exportarLocacoes()">
+                                <i class="fas fa-download me-2"></i>Exportar Lista
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#" onclick="imprimirLista()">
+                                <i class="fas fa-print me-2"></i>Imprimir
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="#" onclick="atualizarLista()">
+                                <i class="fas fa-refresh me-2"></i>Atualizar
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela de Locações -->
+<div class="card">
+    <div class="card-header bg-adaptive-light">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 text-adaptive-primary">
+                <i class="fas fa-table me-2"></i>Lista de Locações
+            </h5>
+            <small class="text-adaptive-muted" id="contadorResultados">
+                @(string.IsNullOrEmpty(ViewBag.Status as string) && string.IsNullOrEmpty(ViewBag.DataInicio as string) ?
+                    $"Total: {totalLocacoes} locações" :
+                    $"Encontradas: {totalLocacoes} locações")
+            </small>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="tabelaLocacoes">
+                <thead class="bg-adaptive-surface">
+                    <tr>
+                        <th class="sortable" data-sort="cliente">
+                            <i class="fas fa-user me-1"></i>Cliente
+                            <i class="fas fa-sort sort-icon text-muted"></i>
+                        </th>
+                        <th class="sortable" data-sort="veiculo">
+                            <i class="fas fa-car me-1"></i>Veículo
+                            <i class="fas fa-sort sort-icon text-muted"></i>
+                        </th>
+                        <th class="sortable" data-sort="data-retirada">
+                            <i class="fas fa-calendar-plus me-1"></i>Retirada
+                            <i class="fas fa-sort sort-icon text-muted"></i>
+                        </th>
+                        <th class="sortable" data-sort="data-devolucao">
+                            <i class="fas fa-calendar-minus me-1"></i>Devolução
+                            <i class="fas fa-sort sort-icon text-muted"></i>
+                        </th>
+                        <th>
+                            <i class="fas fa-info-circle me-1"></i>Status
+                        </th>
+                        <th class="sortable" data-sort="valor">
+                            <i class="fas fa-dollar-sign me-1"></i>Valor
+                            <i class="fas fa-sort sort-icon text-muted"></i>
+                        </th>
+                        <th class="text-center">
+                            <i class="fas fa-cogs me-1"></i>Ações
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var locacao in Model)
+                    {
+                        var statusInfo = GetStatusInfo(locacao);
+                        
+                        <tr data-locacao-id="@locacao.Id" class="animate-fade-in" data-status="@statusInfo.Status">
+                            <td data-sort-value="@locacao.Cliente.Nome">
+                                <div class="d-flex align-items-center">
+                                    <div class="user-avatar me-2" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                        @locacao.Cliente.Nome.Substring(0, 1).ToUpper()
+                                    </div>
+                                    <div>
+                                        <strong>@locacao.Cliente.Nome</strong>
+                                        <br><small class="text-muted">@locacao.Cliente.Telefone</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td data-sort-value="@locacao.Veiculo.Marca @locacao.Veiculo.Modelo">
+                                <div>
+                                    <strong>@locacao.Veiculo.Marca @locacao.Veiculo.Modelo</strong>
+                                    <br>
+                                    <code class="bg-adaptive-surface text-adaptive-primary px-2 py-1 rounded">
+                                        @locacao.Veiculo.Placa
+                                    </code>
+                                </div>
+                            </td>
+                            <td data-sort-value="@locacao.DataRetirada.ToString("yyyyMMdd")">
+                                <strong>@locacao.DataRetirada.ToString("dd/MM/yyyy")</strong>
+                                <br><small class="text-muted">@locacao.DataRetirada.ToString("HH:mm")</small>
+                            </td>
+                            <td data-sort-value="@locacao.DataDevolucao.ToString("yyyyMMdd")">
+                                <strong>@locacao.DataDevolucao.ToString("dd/MM/yyyy")</strong>
+                                <br><small class="text-muted">@locacao.DataDevolucao.ToString("HH:mm")</small>
+                                @if (locacao.DataDevolucaoReal.HasValue)
+                                {
+                                    <br><small class="@(locacao.DataDevolucaoReal.Value > locacao.DataDevolucao ? "text-warning" : "text-success")">
+                                        Real: @locacao.DataDevolucaoReal.Value.ToString("dd/MM")
+                                    </small>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge @statusInfo.BadgeClass">
+                                    <i class="fas @statusInfo.Icon me-1"></i>@statusInfo.Text
+                                </span>
+                                @if (statusInfo.Status == "atrasada")
+                                {
+                                    <br><small class="text-danger">
+                                        @((DateTime.Now.Date - locacao.DataDevolucao.Date).Days) dias
+                                    </small>
+                                }
+                            </td>
+                            <td data-sort-value="@locacao.ValorTotal">
+                                <strong class="text-success">@locacao.ValorTotal.ToString("C")</strong>
+                                @{
+                                    var dias = Math.Max(1, (locacao.DataDevolucao - locacao.DataRetirada).Days);
+                                    var valorDia = locacao.ValorTotal / dias;
+                                }
+                                <br><small class="text-muted">@valorDia.ToString("C")/dia</small>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm">
+                                    <a asp-action="Details" asp-route-id="@locacao.Id"
+                                       class="btn btn-outline-primary" title="Ver Detalhes"
+                                       data-bs-toggle="tooltip">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@locacao.Id"
+                                           class="btn btn-outline-warning" title="Editar"
+                                           data-bs-toggle="tooltip">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    }
+                                    
+                                    @if (!locacao.DataDevolucaoReal.HasValue)
+                                    {
+                                        <button type="button" class="btn btn-outline-success"
+                                                title="Finalizar Locação" data-bs-toggle="tooltip"
+                                                onclick="abrirModalFinalizar(@locacao.Id, '@Html.Raw(locacao.Cliente.Nome)', '@Html.Raw(locacao.Veiculo.Marca + " " + locacao.Veiculo.Modelo + " - " + locacao.Veiculo.Placa)')">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center text-muted py-5">
+                <i class="fas fa-clipboard-list fa-4x mb-3 text-adaptive-muted"></i>
+                <h5 class="text-adaptive-primary">Nenhuma locação encontrada</h5>
+                @if (!string.IsNullOrEmpty(ViewBag.Status as string) || !string.IsNullOrEmpty(ViewBag.DataInicio as string))
+                {
+                    <p>Não encontramos locações que atendam aos filtros aplicados.</p>
+                    <a href="@Url.Action("Index")" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-1"></i>Ver todas as locações
+                    </a>
+                }
+                else
+                {
+                    <p>Comece criando a primeira locação do sistema.</p>
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Criar Primeira Locação
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal para Finalizar Locação -->
+<div class="modal fade" id="modalFinalizarLocacao" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-check-circle me-2"></i>Finalizar Locação
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formFinalizarLocacao" method="post">
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Finalizando locação para: <strong id="clienteVeiculoInfo"></strong>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="dataDevolucaoReal" class="form-label required">
+                                <i class="fas fa-calendar-check me-1"></i>Data e Hora de Devolução Real
+                            </label>
+                            <input type="datetime-local" class="form-control" id="dataDevolucaoReal"
+                                   name="dataDevolucaoReal" required>
+                            <div class="form-text">
+                                <i class="fas fa-clock me-1"></i>Data e hora exata da devolução
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="quilometragemFinal" class="form-label">
+                                <i class="fas fa-tachometer-alt me-1"></i>Quilometragem Final
+                            </label>
+                            <input type="number" class="form-control" id="quilometragemFinal"
+                                   name="quilometragemDevolucao" min="0" step="1">
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>Deixe em branco se não souber
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informações do veículo -->
+                    <div id="infoVeiculoModal" class="alert alert-light border" style="display: none;">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-car me-1"></i>Informações do Veículo
+                        </h6>
+                        <div id="dadosVeiculoModal"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="observacoesDevolucao" class="form-label">
+                            <i class="fas fa-sticky-note me-1"></i>Observações da Devolução
+                        </label>
+                        <textarea class="form-control" id="observacoesDevolucao" name="observacoesDevolucao"
+                                  rows="3" placeholder="Estado do veículo, danos encontrados, nível de combustível, etc..." maxlength="500"></textarea>
+                        <div id="observacoes-counter" class="form-text">Máximo 500 caracteres</div>
+                    </div>
+
+                    <div class="alert alert-warning mb-0">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-exclamation-triangle me-1"></i>Importante
+                        </h6>
+                        <p class="mb-1">Ao finalizar a locação:</p>
+                        <ul class="mb-0 small">
+                            <li>O veículo ficará automaticamente <strong>disponível</strong></li>
+                            <li>A quilometragem será atualizada se informada</li>
+                            <li>Esta ação pode ser revertida apenas por administradores</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check me-1"></i>Finalizar Locação
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Configurar sistema de busca avançada
+            setupAdvancedSearch('#searchInput', '#tabelaLocacoes', {
+                delay: 300,
+                minLength: 1,
+                highlightMatches: true
+            });
+
+            // Configurar ordenação de tabela
+            setupAdvancedTableSort('#tabelaLocacoes');
+
+            // Configurar tooltips
+            initializeTooltips();
+
+            // Configurar contador de observações no modal
+            configurarContadorObservacoesModal();
+
+            // Configurar validação do formulário de finalização
+            configurarValidacaoFinalizacao();
+
+            console.log('Página de locações inicializada');
+        });
+
+        function configurarContadorObservacoesModal() {
+            const observacoes = document.getElementById('observacoesDevolucao');
+            const counter = document.getElementById('observacoes-counter');
+            
+            if (observacoes && counter) {
+                observacoes.addEventListener('input', function() {
+                    const atual = this.value.length;
+                    const max = 500;
+                    const restante = max - atual;
+                    const porcentagem = (atual / max) * 100;
+                    
+                    let classe = 'text-muted';
+                    if (porcentagem > 80) classe = 'text-warning';
+                    if (porcentagem > 95) classe = 'text-danger';
+                    
+                    counter.className = `form-text ${classe}`;
+                    counter.innerHTML = `${atual}/${max} caracteres (${restante} restantes)`;
+                });
+            }
+        }
+
+        function configurarValidacaoFinalizacao() {
+            const form = document.getElementById('formFinalizarLocacao');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const quilometragemFinal = document.getElementById('quilometragemFinal').value;
+                    const quilometragemMinima = document.getElementById('quilometragemFinal').min;
+
+                    if (quilometragemFinal && quilometragemMinima && 
+                        parseInt(quilometragemFinal) < parseInt(quilometragemMinima)) {
+                        e.preventDefault();
+                        mostrarErro(`A quilometragem final (${parseInt(quilometragemFinal).toLocaleString('pt-BR')} km) deve ser maior que a quilometragem atual (${parseInt(quilometragemMinima).toLocaleString('pt-BR')} km).`);
+                        return;
+                    }
+
+                    // Loading no botão
+                    const btnSubmit = e.target.querySelector('button[type="submit"]');
+                    const textoOriginal = btnSubmit.innerHTML;
+                    btnSubmit.disabled = true;
+                    btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Finalizando...';
+                    
+                    // Se não cancelou, o form vai submeter naturalmente
+                    setTimeout(() => {
+                        if (!e.defaultPrevented) {
+                            showLoadingOverlay();
+                        }
+                    }, 100);
+                });
+            }
+        }
+
+        function aplicarFiltros() {
+            const form = document.getElementById('formFiltros');
+            if (form) {
+                // Pequeno delay para melhor UX
+                setTimeout(() => {
+                    form.submit();
+                }, 100);
+            }
+        }
+
+        async function abrirModalFinalizar(locacaoId, clienteNome, veiculoInfo) {
+            try {
+                // Configurar o modal
+                document.getElementById('clienteVeiculoInfo').textContent = `${clienteNome} - ${veiculoInfo}`;
+                document.getElementById('formFinalizarLocacao').action = `/Locacoes/FinalizarLocacao/${locacaoId}`;
+                
+                // Definir data/hora atual
+                const agora = new Date();
+                document.getElementById('dataDevolucaoReal').value = agora.toISOString().slice(0, 16);
+                
+                // Limpar campos anteriores
+                document.getElementById('quilometragemFinal').value = '';
+                document.getElementById('observacoesDevolucao').value = '';
+                document.getElementById('infoVeiculoModal').style.display = 'none';
+                
+                // Tentar carregar informações do veículo
+                await carregarInfoVeiculoParaFinalizacao(locacaoId);
+                
+                // Mostrar modal
+                const modal = new bootstrap.Modal(document.getElementById('modalFinalizarLocacao'));
+                modal.show();
+                
+            } catch (error) {
+                console.error('Erro ao abrir modal de finalização:', error);
+                mostrarErro('Erro ao carregar dados para finalização');
+            }
+        }
+
+        async function carregarInfoVeiculoParaFinalizacao(locacaoId) {
+            try {
+                // Buscar dados do veículo da locação via API
+                const response = await fetch(`/Locacoes/Details/${locacaoId}`);
+                if (response.ok) {
+                    // Como não temos API específica para isso, vamos simular ou usar uma das existentes
+                    // Por enquanto, vamos usar uma abordagem simplificada
+                    mostrarInfo('Carregando informações do veículo...');
+                }
+            } catch (error) {
+                console.warn('Não foi possível carregar informações detalhadas do veículo:', error);
+            }
+        }
+
+        function exportarLocacoes() {
+            mostrarInfo('Funcionalidade de exportação em desenvolvimento');
+        }
+
+        function imprimirLista() {
+            window.print();
+        }
+
+        function atualizarLista() {
+            location.reload();
+        }
+
+        function showLoadingOverlay() {
+            if (!document.querySelector('.loading-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.className = 'loading-overlay';
+                overlay.innerHTML = '<div class="spinner-modern"></div>';
+                document.body.appendChild(overlay);
+            }
+        }
+
+        // Funções de notificação usando sistema consolidado
+        function mostrarSucesso(mensagem) {
+            if (window.RentalTourismSystem?.NotificationSystem) {
+                window.RentalTourismSystem.NotificationSystem.success(mensagem);
+            } else {
+                console.log('Sucesso:', mensagem);
+            }
+        }
+
+        function mostrarErro(mensagem) {
+            if (window.RentalTourismSystem?.NotificationSystem) {
+                window.RentalTourismSystem.NotificationSystem.error(mensagem);
+            } else {
+                console.error('Erro:', mensagem);
+                alert(mensagem);
+            }
+        }
+
+        function mostrarAviso(mensagem) {
+            if (window.RentalTourismSystem?.NotificationSystem) {
+                window.RentalTourismSystem.NotificationSystem.warning(mensagem);
+            } else {
+                console.warn('Aviso:', mensagem);
+            }
+        }
+
+        function mostrarInfo(mensagem) {
+            if (window.RentalTourismSystem?.NotificationSystem) {
+                window.RentalTourismSystem.NotificationSystem.info(mensagem);
+            } else {
+                console.info('Info:', mensagem);
+            }
+        }
+    </script>
+}
+
+@functions {
+    public class StatusInfo
+    {
+        public string Status { get; set; }
+        public string Text { get; set; }
+        public string BadgeClass { get; set; }
+        public string Icon { get; set; }
+    }
+
+    private static StatusInfo GetStatusInfo(RentalTourismSystem.Models.Locacao locacao)
+    {
+        if (locacao.DataDevolucaoReal.HasValue)
+        {
+            var foiAtrasada = locacao.DataDevolucaoReal.Value.Date > locacao.DataDevolucao.Date;
+            return new StatusInfo
+            {
+                Status = "finalizada",
+                Text = foiAtrasada ? "Finalizada (Atraso)" : "Finalizada",
+                BadgeClass = foiAtrasada ? "bg-warning" : "bg-success",
+                Icon = "fa-check-circle"
+            };
+        }
+        else if (locacao.DataDevolucao.Date < DateTime.Now.Date)
+        {
+            return new StatusInfo
+            {
+                Status = "atrasada",
+                Text = "Atrasada",
+                BadgeClass = "bg-danger",
+                Icon = "fa-exclamation-triangle"
+            };
+        }
+        else
+        {
+            return new StatusInfo
+            {
+                Status = "ativa",
+                Text = "Ativa",
+                BadgeClass = "bg-primary",
+                Icon = "fa-clock"
+            };
+        }
+    }
+}

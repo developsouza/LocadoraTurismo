@@ -1,0 +1,555 @@
+﻿@model RentalTourismSystem.Models.Cliente
+@{
+    ViewData["Title"] = "Excluir Cliente";
+
+    // Análise de impedimentos baseada no controller
+    var locacoes = Model.Locacoes ?? new List<RentalTourismSystem.Models.Locacao>();
+    var reservas = Model.ReservasViagens ?? new List<RentalTourismSystem.Models.ReservaViagem>();
+
+    var locacoesAtivas = locacoes.Where(l => l.DataDevolucaoReal == null).Count();
+    var locacoesFinalizadas = locacoes.Where(l => l.DataDevolucaoReal != null).Count();
+    var reservasAtivas = 0;
+
+    try
+    {
+        reservasAtivas = reservas.Where(r =>
+            r.StatusReservaViagem != null &&
+            (r.StatusReservaViagem.Status == "Confirmada" || r.StatusReservaViagem.Status == "Pendente")
+        ).Count();
+    }
+    catch
+    {
+        reservasAtivas = 0;
+    }
+
+    var temImpedimentos = locacoesAtivas > 0 || reservasAtivas > 0;
+    var podeExcluir = !temImpedimentos;
+    var totalTransacoes = locacoes.Count() + reservas.Count();
+    var valorTotalHistorico = locacoes.Sum(l => l.ValorTotal) + reservas.Sum(r => r.ValorTotal);
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="@(podeExcluir ? "text-danger" : "text-warning")">
+            <i class="fas @(podeExcluir ? "fa-exclamation-triangle" : "fa-ban") me-2"></i>
+            @(podeExcluir ? "Confirmar Exclusão" : "Exclusão Não Permitida")
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Clientes</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id" class="text-decoration-none">@Model.Nome</a></li>
+                <li class="breadcrumb-item active">Excluir</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Alert Principal -->
+<div class="row mb-4">
+    <div class="col-12">
+        @if (podeExcluir)
+        {
+            <div class="alert alert-danger border-danger animate-fade-in">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle fa-3x me-3"></i>
+                    <div>
+                        <h5 class="alert-heading mb-2">
+                            <i class="fas fa-warning me-1"></i>ATENÇÃO: Ação Irreversível!
+                        </h5>
+                        <p class="mb-1">
+                            Você está prestes a <strong>excluir permanentemente</strong> o cliente <strong>"@Model.Nome"</strong>.
+                        </p>
+                        <p class="mb-0 small">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Esta ação <strong>NÃO PODE ser desfeita</strong> e removerá todos os dados do cliente do sistema.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning border-warning animate-fade-in">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-ban fa-3x me-3"></i>
+                    <div>
+                        <h5 class="alert-heading mb-2">
+                            <i class="fas fa-shield-alt me-1"></i>Exclusão Bloqueada por Segurança
+                        </h5>
+                        <p class="mb-1">
+                            O cliente <strong>"@Model.Nome"</strong> <strong>NÃO PODE ser excluído</strong> no momento.
+                        </p>
+                        <p class="mb-0 small">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Existem transações ativas que impedem a exclusão. Finalize todas as atividades antes de tentar novamente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <!-- Coluna Principal -->
+    <div class="col-lg-8">
+        <!-- Card Principal com Dados do Cliente -->
+        <div class="card @(podeExcluir ? "border-danger" : "border-warning") hover-lift mb-4">
+            <div class="card-header @(podeExcluir ? "bg-danger" : "bg-warning") text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-user me-2"></i>Dados do Cliente a ser @(podeExcluir ? "Excluído" : "Analisado")
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Informações Básicas do Cliente -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="client-info">
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Nome Completo:</label>
+                                <p class="h6 mb-0">@Model.Nome</p>
+                            </div>
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">CPF:</label>
+                                <p class="mb-0">
+                                    <code class="bg-adaptive-surface text-adaptive-primary px-2 py-1 rounded">
+                                        @Model.Cpf
+                                    </code>
+                                </p>
+                            </div>
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Email:</label>
+                                <p class="mb-0">@Model.Email</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="client-info">
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Telefone:</label>
+                                <p class="mb-0">@Model.Telefone</p>
+                            </div>
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Data de Nascimento:</label>
+                                <p class="mb-0">
+                                    @Model.DataNascimento.ToString("dd/MM/yyyy")
+                                    <small class="text-muted">(@Model.Idade anos)</small>
+                                </p>
+                            </div>
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Cliente desde:</label>
+                                <p class="mb-0">
+                                    @Model.DataCadastro.ToString("dd/MM/yyyy")
+                                    <small class="text-muted">(@((DateTime.Now - Model.DataCadastro).Days) dias)</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CNH (se informada) -->
+                @if (!string.IsNullOrEmpty(Model.NumeroHabilitacao))
+                {
+                    <div class="alert alert-info">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-id-card me-1"></i>Carteira de Habilitação
+                        </h6>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Número:</strong> @Model.NumeroHabilitacao
+                            </div>
+                            <div class="col-sm-6">
+                                <strong>Validade:</strong> @(Model.ValidadeCNH?.ToString("dd/MM/yyyy") ?? "Não informada")
+                                @if (Model.ValidadeCNH.HasValue)
+                                {
+                                    <span class="badge @(Model.CNHValida ? "bg-success" : "bg-danger") ms-1">
+                                        @(Model.CNHValida ? "Válida" : "Vencida")
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Endereço -->
+                <div class="mb-3">
+                    <label class="text-muted small">Endereço Completo:</label>
+                    <p class="mb-0">
+                        <i class="fas fa-map-marker-alt text-primary me-1"></i>@Model.Endereco
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Análise de Dependências -->
+        @if (totalTransacoes > 0)
+        {
+            <div class="card @(temImpedimentos ? "border-danger" : "border-warning") mb-4">
+                <div class="card-header @(temImpedimentos ? "bg-danger" : "bg-warning") text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-database me-2"></i>Análise de Dependências no Sistema
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Detalhamento dos impedimentos -->
+                    @if (locacoesAtivas > 0)
+                    {
+                        <div class="alert alert-danger small">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            <strong>@locacoesAtivas locação(ões) ATIVA(S)</strong>
+                            <br>Veículos ainda não devolvidos - <strong>IMPEDE EXCLUSÃO</strong>
+                        </div>
+                    }
+
+                    @if (reservasAtivas > 0)
+                    {
+                        <div class="alert alert-danger small">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            <strong>@reservasAtivas reserva(s) ATIVA(S)</strong>
+                            <br>Pendentes ou confirmadas - <strong>IMPEDE EXCLUSÃO</strong>
+                        </div>
+                    }
+
+                    @if (temImpedimentos)
+                    {
+                        <div class="action-plan border-top pt-3 mt-3">
+                            <h6 class="text-danger mb-3">
+                                <i class="fas fa-clipboard-list me-2"></i>Para permitir exclusão:
+                            </h6>
+                            <ol class="text-danger">
+                                @if (locacoesAtivas > 0)
+                                {
+                                    <li>Finalizar @locacoesAtivas locação(ões) ativa(s) - processar devoluções</li>
+                                }
+                                @if (reservasAtivas > 0)
+                                {
+                                    <li>Resolver @reservasAtivas reserva(s) ativa(s) - cancelar ou concluir</li>
+                                }
+                            </ol>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Botões de Ação -->
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex gap-2 justify-content-between align-items-center">
+                    <div class="action-buttons">
+                        @if (podeExcluir)
+                        {
+                            <!-- FORMULÁRIO CORRIGIDO - Sem classe que aciona loading automático -->
+                            <form asp-action="Delete" method="post" id="formExclusaoFinal" class="d-inline no-loading">
+                                <input type="hidden" asp-for="Id" />
+                                <button type="button" class="btn btn-danger hover-lift" id="btnConfirmarExclusao">
+                                    <i class="fas fa-trash-alt me-1"></i>Sim, Excluir Permanentemente
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-danger" disabled>
+                                <i class="fas fa-ban me-1"></i>Exclusão Não Permitida
+                            </button>
+                        }
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Voltar aos Detalhes
+                        </a>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-list me-1"></i>Lista de Clientes
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Direita -->
+    <div class="col-lg-4">
+        <!-- Card de Alternativas -->
+        <div class="card border-info mb-4">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightbulb me-1"></i>Alternativas Recomendadas
+                </h6>
+            </div>
+            <div class="card-body">
+                @if (temImpedimentos)
+                {
+                    <div class="alert alert-warning small">
+                        <i class="fas fa-ban me-1"></i>
+                        <strong>Exclusão bloqueada</strong> por transações ativas.
+                    </div>
+                }
+
+                <p class="small mb-3">Em vez de excluir, considere:</p>
+                <div class="d-grid gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-sm">
+                        <i class="fas fa-edit me-1"></i>Editar Dados do Cliente
+                    </a>
+
+                    @if (locacoesAtivas > 0)
+                    {
+                        <a asp-controller="Locacoes" asp-action="Index" asp-route-clienteId="@Model.Id" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-car me-1"></i>Gerenciar Locações Ativas
+                        </a>
+                    }
+
+                    @if (reservasAtivas > 0)
+                    {
+                        <a asp-controller="ReservasViagens" asp-action="Index" asp-route-clienteId="@Model.Id" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-plane me-1"></i>Gerenciar Reservas Ativas
+                        </a>
+                    }
+
+                    <button type="button" class="btn btn-outline-info btn-sm" onclick="gerarBackup()">
+                        <i class="fas fa-download me-1"></i>Fazer Backup dos Dados
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Impacto -->
+        @if (totalTransacoes > 0)
+        {
+            <div class="card border-warning mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-bar me-1"></i>Impacto da Exclusão
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="impact-metrics">
+                        <div class="metric-item mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted small">Transações perdidas:</span>
+                                <strong class="text-danger">@totalTransacoes</strong>
+                            </div>
+                        </div>
+                        <div class="metric-item mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted small">Histórico financeiro:</span>
+                                <strong class="text-danger">@valorTotalHistorico.ToString("C")</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-danger small mt-3 mb-0">
+                        <i class="fas fa-warning me-1"></i>
+                        <strong>Dados irrecuperáveis!</strong> Todos estes dados serão perdidos permanentemente.
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal de Confirmação Final - CORRIGIDO -->
+@if (podeExcluir)
+{
+    <div class="modal fade" id="modalConfirmacaoFinal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-danger">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle me-2"></i>CONFIRMAÇÃO FINAL DE EXCLUSÃO
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-exclamation-triangle fa-4x text-danger mb-3"></i>
+                        <h4 class="text-danger">ÚLTIMA CHANCE!</h4>
+                        <p class="lead">Você está prestes a excluir permanentemente:</p>
+                    </div>
+
+                    <div class="alert alert-danger text-center">
+                        <h5 class="mb-3">
+                            <strong>"@Model.Nome"</strong><br>
+                            <code>@Model.Cpf</code>
+                        </h5>
+
+                        @if (totalTransacoes > 0)
+                        {
+                            <div class="border-top pt-3">
+                                <p class="mb-1">
+                                    <strong>@totalTransacoes transações</strong> no valor de <strong>@valorTotalHistorico.ToString("C")</strong>
+                                </p>
+                                <p class="mb-0 small text-muted">
+                                    Relacionamento de @((DateTime.Now - Model.DataCadastro).Days) dias será perdido
+                                </p>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="checklist-confirmacao">
+                        <h6 class="mb-3">Para prosseguir, confirme que você:</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="confirmData">
+                            <label class="form-check-label" for="confirmData">
+                                Verificou que todos os dados estão corretos
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="confirmUndo">
+                            <label class="form-check-label" for="confirmUndo">
+                                Entendo que esta ação <strong>NÃO PODE ser desfeita</strong>
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmResponsibility">
+                            <label class="form-check-label" for="confirmResponsibility">
+                                Assumo total responsabilidade por esta exclusão
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="final-confirmation bg-dark text-white p-3 rounded">
+                        <h6 class="text-center mb-3">CONFIRMAÇÃO TEXTUAL OBRIGATÓRIA</h6>
+                        <p class="text-center mb-2 small">
+                            Digite <strong>"EXCLUIR"</strong> para confirmar:
+                        </p>
+                        <input type="text" id="confirmationText" class="form-control text-center"
+                               placeholder="Digite aqui..." autocomplete="off">
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancelar
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarFinalModal" disabled>
+                        <i class="fas fa-trash-alt me-1"></i>EXCLUIR PERMANENTEMENTE
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Configurar tooltips
+            initializeTooltips();
+
+            @if (podeExcluir)
+            {
+                    <text>
+                    // Configurar sistema de exclusão corrigido
+                    setupDeleteSystem();
+                    </text>
+            }
+        });
+
+        @if (podeExcluir)
+        {
+                <text>
+                // SISTEMA DE EXCLUSÃO CORRIGIDO
+                function setupDeleteSystem() {
+                    const btnConfirmarExclusao = document.getElementById('btnConfirmarExclusao');
+                    const modalConfirmacao = document.getElementById('modalConfirmacaoFinal');
+                    const btnConfirmarFinalModal = document.getElementById('btnConfirmarFinalModal');
+                    const formExclusaoFinal = document.getElementById('formExclusaoFinal');
+
+                    // Checkboxes de confirmação
+                    const checkboxes = ['#confirmData', '#confirmUndo', '#confirmResponsibility'];
+                    const confirmationText = document.getElementById('confirmationText');
+                    const textoEsperado = 'EXCLUIR';
+
+                    // 1. Botão inicial - abrir modal (SEM LOADING)
+                    if (btnConfirmarExclusao) {
+                        btnConfirmarExclusao.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            // Resetar modal
+                            resetModal();
+
+                            // Mostrar modal
+                            const modal = new bootstrap.Modal(modalConfirmacao);
+                            modal.show();
+                        });
+                    }
+
+                    // 2. Monitorar mudanças para habilitar botão final
+                    function verificarConfirmacoes() {
+                        const todosChecked = checkboxes.every(cb => document.querySelector(cb)?.checked);
+                        const textoCorreto = confirmationText.value.trim() === textoEsperado;
+
+                        btnConfirmarFinalModal.disabled = !(todosChecked && textoCorreto);
+                    }
+
+                    // Events nos checkboxes
+                    checkboxes.forEach(cb => {
+                        const checkbox = document.querySelector(cb);
+                        if (checkbox) {
+                            checkbox.addEventListener('change', verificarConfirmacoes);
+                        }
+                    });
+
+                    // Event no campo de texto
+                    if (confirmationText) {
+                        confirmationText.addEventListener('input', verificarConfirmacoes);
+                    }
+
+                    // 3. Botão final - executar exclusão COM LOADING
+                    if (btnConfirmarFinalModal) {
+                        btnConfirmarFinalModal.addEventListener('click', function(e) {
+                            e.preventDefault();
+
+                            if (this.disabled) return;
+
+                            // Fechar modal
+                            const modal = bootstrap.Modal.getInstance(modalConfirmacao);
+                            if (modal) {
+                                modal.hide();
+                            }
+
+                            // Executar exclusão com loading
+                            executarExclusaoComLoading();
+                        });
+                    }
+
+                    function resetModal() {
+                        // Limpar checkboxes
+                        checkboxes.forEach(cb => {
+                            const checkbox = document.querySelector(cb);
+                            if (checkbox) checkbox.checked = false;
+                        });
+
+                        // Limpar texto
+                        if (confirmationText) {
+                            confirmationText.value = '';
+                        }
+
+                        // Desabilitar botão
+                        btnConfirmarFinalModal.disabled = true;
+                    }
+
+                    function executarExclusaoComLoading() {
+                        // Mostrar loading específico para exclusão
+                        window.RentalTourismSystem.LoadingOverlaySystem.show('body', {
+                            message: 'Excluindo cliente...'
+                        });
+
+                        // Delay para UX e depois enviar
+                        setTimeout(() => {
+                            if (formExclusaoFinal) {
+                                console.log('Enviando formulário de exclusão...');
+                                formExclusaoFinal.submit();
+                            }
+                        }, 1500);
+                    }
+                }
+                </text>
+        }
+
+        // Funções auxiliares
+        function gerarBackup() {
+            window.RentalTourismSystem.NotificationSystem.info('Funcionalidade de backup em desenvolvimento.');
+        }
+    </script>
+}

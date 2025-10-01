@@ -1,0 +1,775 @@
+﻿@model RentalTourismSystem.Models.Cliente
+@{
+    ViewData["Title"] = "Editar Cliente";
+    ViewData["EnableValidation"] = true;
+    var diasParaVencimentoCNH = Model.DiasParaVencimentoCNH;
+    var cnhStatus = Model.CNHValida ? "válida" : "vencida";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="text-gradient">
+            <i class="fas fa-user-edit me-2"></i>Editar Cliente
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Clientes</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id" class="text-decoration-none">@Model.Nome</a></li>
+                <li class="breadcrumb-item active">Editar</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card hover-lift">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>Atualizar Informações do Cliente
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- FORMULÁRIO CORRIGIDO -->
+                <form asp-action="Edit" id="formEditarCliente" class="needs-validation form-cliente" novalidate>
+                    <!-- Exibir erros do ModelState -->
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none" role="alert" id="validationSummary">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Corrija os erros abaixo:</strong>
+                    </div>
+                    
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="DataCadastro" />
+
+                    <!-- Seção: Dados Pessoais -->
+                    <div class="mb-4">
+                        <h6 class="text-warning border-bottom pb-2 mb-3">
+                            <i class="fas fa-user me-2"></i>Dados Pessoais
+                        </h6>
+                        
+                        <div class="row">
+                            <div class="col-lg-8 mb-3">
+                                <label asp-for="Nome" class="form-label required">
+                                    <i class="fas fa-user me-1"></i>Nome Completo
+                                </label>
+                                <input asp-for="Nome" class="form-control" 
+                                       required minlength="2" maxlength="100" />
+                                <span asp-validation-for="Nome" class="invalid-feedback"></span>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label asp-for="Cpf" class="form-label">
+                                    <i class="fas fa-id-card me-1"></i>CPF
+                                    <span class="badge bg-secondary">Não editável</span>
+                                </label>
+                                <div class="input-group">
+                                    <input asp-for="Cpf" class="form-control" readonly />
+                                    <span class="input-group-text">
+                                        <i class="fas fa-lock text-muted"></i>
+                                    </span>
+                                </div>
+                                <div class="form-text">
+                                    <i class="fas fa-shield-alt me-1"></i>CPF não pode ser alterado
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4 mb-3">
+                                <label asp-for="DataNascimento" class="form-label required">
+                                    <i class="fas fa-calendar-alt me-1"></i>Data de Nascimento
+                                </label>
+                                <input asp-for="DataNascimento" class="form-control" type="date" 
+                                       required max="@DateTime.Now.AddYears(-18).ToString("yyyy-MM-dd")" />
+                                <span asp-validation-for="DataNascimento" class="invalid-feedback"></span>
+                                <div class="form-text">
+                                    <i class="fas fa-birthday-cake me-1"></i>Idade atual: @Model.Idade anos
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label asp-for="Telefone" class="form-label required">
+                                    <i class="fas fa-phone me-1"></i>Telefone
+                                </label>
+                                <input asp-for="Telefone" class="form-control phone-mask" 
+                                       placeholder="(11) 99999-9999" required 
+                                       data-mask="telefone" />
+                                <span asp-validation-for="Telefone" class="invalid-feedback"></span>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label asp-for="Email" class="form-label required">
+                                    <i class="fas fa-envelope me-1"></i>Email
+                                </label>
+                                <input asp-for="Email" class="form-control" type="email" 
+                                       placeholder="email@exemplo.com" required />
+                                <span asp-validation-for="Email" class="invalid-feedback"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Endereco" class="form-label required">
+                                <i class="fas fa-map-marker-alt me-1"></i>Endereço Completo
+                            </label>
+                            <textarea asp-for="Endereco" class="form-control" rows="2"
+                                      required minlength="10" maxlength="200"></textarea>
+                            <span asp-validation-for="Endereco" class="invalid-feedback"></span>
+                        </div>
+                    </div>
+
+                    <!-- Seção: CNH com status atual -->
+                    <div class="mb-4">
+                        <h6 class="text-success border-bottom pb-2 mb-3">
+                            <i class="fas fa-id-badge me-2"></i>Carteira de Habilitação
+                            @if (!string.IsNullOrEmpty(Model.NumeroHabilitacao))
+                            {
+                                <span class="badge @(Model.CNHValida ? "bg-success" : "bg-danger") ms-2">
+                                    CNH @cnhStatus.ToUpper()
+                                </span>
+                            }
+                        </h6>
+
+                        @if (!string.IsNullOrEmpty(Model.NumeroHabilitacao))
+                        {
+                            <!-- Status atual da CNH -->
+                            <div class="alert @(Model.CNHValida ? "alert-success" : "alert-danger") mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas @(Model.CNHValida ? "fa-check-circle" : "fa-exclamation-triangle") fa-2x me-3"></i>
+                                    <div>
+                                        <h6 class="mb-1">Status da CNH: @cnhStatus.ToUpper()</h6>
+                                        @if (Model.CNHValida)
+                                        {
+                                            @if (diasParaVencimentoCNH.HasValue && diasParaVencimentoCNH.Value <= 30)
+                                            {
+                                                <p class="mb-0">
+                                                    <i class="fas fa-exclamation-triangle text-warning me-1"></i>
+                                                    <strong>Atenção:</strong> CNH vence em @diasParaVencimentoCNH dias (@Model.ValidadeCNH?.ToString("dd/MM/yyyy"))
+                                                </p>
+                                            }
+                                            else
+                                            {
+                                                <p class="mb-0">CNH válida até @Model.ValidadeCNH?.ToString("dd/MM/yyyy")</p>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <p class="mb-0">
+                                                <strong>CNH vencida em @Model.ValidadeCNH?.ToString("dd/MM/yyyy")</strong>
+                                                - Cliente não pode alugar veículos
+                                            </p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label asp-for="NumeroHabilitacao" class="form-label">
+                                    <i class="fas fa-id-badge me-1"></i>Número da CNH
+                                    <span class="text-muted">(opcional)</span>
+                                </label>
+                                <input asp-for="NumeroHabilitacao" class="form-control" 
+                                       placeholder="Digite o número da habilitação" 
+                                       minlength="11" maxlength="20" />
+                                <span asp-validation-for="NumeroHabilitacao" class="invalid-feedback"></span>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label asp-for="ValidadeCNH" class="form-label">
+                                    <i class="fas fa-calendar-check me-1"></i>Validade da CNH
+                                    <span class="text-muted">(opcional)</span>
+                                </label>
+                                <input asp-for="ValidadeCNH" class="form-control" type="date" 
+                                       min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                <span asp-validation-for="ValidadeCNH" class="invalid-feedback"></span>
+                            </div>
+                        </div>
+
+                        <!-- Validação de CNH em tempo real -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button type="button" class="btn btn-outline-info btn-sm" 
+                                        onclick="validarCNHViaAPI()" id="btnValidarCNH">
+                                    <i class="fas fa-check-circle me-1"></i>Validar CNH via Sistema
+                                </button>
+                                <small class="text-muted ms-2">
+                                    Clique para verificar a validade da CNH no sistema
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-warning hover-lift" id="btnSalvar">
+                            <i class="fas fa-save me-1"></i>Salvar Alterações
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="restaurarDados()">
+                            <i class="fas fa-undo me-1"></i>Restaurar
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Voltar
+                        </a>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-list me-1"></i>Lista de Clientes
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar com Informações -->
+    <div class="col-lg-4">
+        <!-- Card de Estatísticas -->
+        <div class="card mb-4 border-info">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-chart-bar me-1"></i>Estatísticas do Cliente
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="border-end">
+                            <h4 class="text-primary mb-0">@Model.TotalLocacoes</h4>
+                            <small class="text-muted">Locações</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-success mb-0">@Model.TotalReservas</h4>
+                        <small class="text-muted">Reservas</small>
+                    </div>
+                </div>
+                
+                @if (Model.ValorTotalGasto > 0)
+                {
+                    <hr>
+                    <div class="text-center">
+                        <small class="text-muted">Valor Total Gasto:</small><br>
+                        <strong class="text-success h5">@Model.ValorTotalGasto.ToString("C")</strong>
+                    </div>
+                }
+
+                <hr>
+                <div class="small">
+                    <p class="mb-1">
+                        <i class="fas fa-calendar-plus text-info me-1"></i>
+                        <strong>Cliente desde:</strong> @Model.DataCadastro.ToString("dd/MM/yyyy")
+                    </p>
+                    <p class="mb-0">
+                        <i class="fas fa-clock text-warning me-1"></i>
+                        <strong>Relacionamento:</strong> @((DateTime.Now - Model.DataCadastro).Days) dias
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Status de Validação -->
+        <div class="card mb-4 border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0">
+                    <i class="fas fa-check-circle me-1"></i>Status dos Campos
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="validation-status">
+                    <div class="validation-item mb-2" id="status-nome">
+                        <i class="fas fa-circle text-success me-2"></i>
+                        <span>Nome válido</span>
+                    </div>
+                    <div class="validation-item mb-2" id="status-email">
+                        <i class="fas fa-circle text-muted me-2"></i>
+                        <span>Email único</span>
+                    </div>
+                    <div class="validation-item mb-2" id="status-telefone">
+                        <i class="fas fa-circle text-muted me-2"></i>
+                        <span>Telefone válido</span>
+                    </div>
+                    <div class="validation-item mb-2" id="status-idade">
+                        <i class="fas fa-circle text-success me-2"></i>
+                        <span>Idade: @Model.Idade anos</span>
+                    </div>
+                    <div class="validation-item mb-2" id="status-cnh">
+                        <i class="fas fa-circle @(Model.CNHValida ? "text-success" : "text-warning") me-2"></i>
+                        <span>CNH @(Model.CNHValida ? "válida" : "vencida/não informada")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Importante -->
+        <div class="card mb-4 border-danger">
+            <div class="card-header bg-danger text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-1"></i>Importante
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning small">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Alterações nos dados pessoais podem afetar:
+                    <ul class="mb-0 mt-1">
+                        <li>Contratos de locação ativos</li>
+                        <li>Reservas de viagem confirmadas</li>
+                        <li>Relatórios e histórico</li>
+                    </ul>
+                </div>
+
+                @if ((Model.TotalLocacoes > 0 || Model.TotalReservas > 0))
+                {
+                    <div class="alert alert-info small">
+                        <i class="fas fa-database me-1"></i>
+                        <strong>Este cliente possui histórico no sistema.</strong>
+                        Alterações serão registradas para auditoria.
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Card de Ações Rápidas -->
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-tools me-1"></i>Ações Rápidas
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-info btn-sm" 
+                            onclick="verificarDadosCliente()">
+                        <i class="fas fa-search me-1"></i>Verificar Dados Completos
+                    </button>
+                    
+                    @if (Model.TotalLocacoes > 0)
+                    {
+                        <a asp-controller="Locacoes" asp-action="Index" 
+                           asp-route-clienteId="@Model.Id" 
+                           class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-car me-1"></i>Ver Locações (@Model.TotalLocacoes)
+                        </a>
+                    }
+
+                    @if (Model.TotalReservas > 0)
+                    {
+                        <a asp-controller="ReservasViagens" asp-action="Index" 
+                           asp-route-clienteId="@Model.Id" 
+                           class="btn btn-outline-warning btn-sm">
+                            <i class="fas fa-plane me-1"></i>Ver Reservas (@Model.TotalReservas)
+                        </a>
+                    }
+
+                    <button type="button" class="btn btn-outline-secondary btn-sm" 
+                            onclick="gerarRelatorioCliente()">
+                        <i class="fas fa-file-pdf me-1"></i>Gerar Relatório
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Dados originais para restauração
+        const dadosOriginais = {
+            nome: '@Html.Raw(Html.Encode(Model.Nome))',
+            email: '@Html.Raw(Html.Encode(Model.Email))',
+            telefone: '@Html.Raw(Html.Encode(Model.Telefone))',
+            endereco: '@Html.Raw(Html.Encode(Model.Endereco))',
+            dataNascimento: '@Model.DataNascimento.ToString("yyyy-MM-dd")',
+            numeroHabilitacao: '@Html.Raw(Html.Encode(Model.NumeroHabilitacao ?? ""))',
+            validadeCNH: '@(Model.ValidadeCNH?.ToString("yyyy-MM-dd") ?? "")'
+        };
+
+        $(document).ready(function() {
+            // Aguardar sistema principal carregar
+            setTimeout(() => {
+                initializeEditForm();
+            }, 300);
+        });
+
+        function initializeEditForm() {
+            console.log('Inicializando formulário de edição...');
+
+            // 1. Configurar tooltips
+            initializeTooltips();
+
+            // 2. Sistema de validação específico
+            setupEditValidation();
+
+            // 3. Validação em tempo real
+            setupRealTimeEditValidation();
+
+            // 4. Configurar status inicial
+            updateInitialStatus();
+
+            console.log('Formulário de edição inicializado');
+        }
+
+        function setupEditValidation() {
+            const form = document.getElementById('formEditarCliente');
+            if (!form) return;
+
+            // Interceptar submit
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                console.log('Validando formulário de edição...');
+
+                // Validar todos os campos
+                const isValid = validateAllEditFields();
+
+                if (isValid) {
+                    console.log('Formulário válido, enviando...');
+                    submitEditForm();
+                } else {
+                    console.log('Formulário inválido');
+                    form.classList.add('was-validated');
+                    showValidationSummary();
+                    focusFirstInvalidField();
+                }
+            });
+        }
+
+        function setupRealTimeEditValidation() {
+            // Email com validação de unicidade (excluindo próprio cliente)
+            const emailField = document.querySelector('input[name="Email"]');
+            if (emailField) {
+                let emailTimeout;
+                emailField.addEventListener('input', function() {
+                    clearTimeout(emailTimeout);
+                    emailTimeout = setTimeout(() => {
+                        validateEmailFieldEdit(this);
+                    }, 1000);
+                });
+            }
+
+            // Data de nascimento
+            const birthField = document.querySelector('input[name="DataNascimento"]');
+            if (birthField) {
+                birthField.addEventListener('change', function() {
+                    validateAgeFieldEdit(this);
+                });
+            }
+
+            // CNH com validação condicional
+            const cnhField = document.querySelector('input[name="NumeroHabilitacao"]');
+            const cnhValidadeField = document.querySelector('input[name="ValidadeCNH"]');
+            
+            [cnhField, cnhValidadeField].forEach(field => {
+                if (field) {
+                    field.addEventListener('change', function() {
+                        validateCNHFieldsEdit();
+                    });
+                }
+            });
+
+            // Telefone
+            const phoneField = document.querySelector('input[name="Telefone"]');
+            if (phoneField) {
+                phoneField.addEventListener('blur', function() {
+                    validatePhoneFieldEdit(this);
+                });
+            }
+        }
+
+        function validateAllEditFields() {
+            const form = document.getElementById('formEditarCliente');
+            const inputs = form.querySelectorAll('input[required]:not([readonly]), input[type="email"]:not([readonly])');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (!validateSingleEditField(input)) {
+                    isValid = false;
+                }
+            });
+
+            // Validar CNH se informada
+            if (!validateCNHFieldsEdit()) {
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function validateSingleEditField(field) {
+            if (!field || field.readOnly) return true;
+
+            const fieldName = field.name;
+            let isValid = true;
+            let message = '';
+
+            // Campo obrigatório vazio
+            if (field.required && !field.value.trim()) {
+                isValid = false;
+                message = `${getFieldDisplayName(fieldName)} é obrigatório`;
+            }
+            // Telefone
+            else if (fieldName === 'Telefone' && field.value) {
+                const numbers = field.value.replace(/\D/g, '');
+                isValid = numbers.length >= 10 && numbers.length <= 11;
+                message = isValid ? '' : 'Telefone deve ter 10 ou 11 dígitos';
+            }
+            // Data de nascimento
+            else if (fieldName === 'DataNascimento' && field.value) {
+                const age = calculateAge(new Date(field.value));
+                isValid = age >= 21 && age <= 120;
+                message = isValid ? '' : 'Cliente deve ter entre 21 e 120 anos';
+            }
+
+            // Aplicar classes visuais
+            field.classList.toggle('is-valid', isValid && field.value.trim());
+            field.classList.toggle('is-invalid', !isValid);
+
+            // Atualizar status visual
+            updateEditFieldStatus(fieldName, isValid, message);
+
+            return isValid;
+        }
+
+        function validateAgeFieldEdit(field) {
+            if (!field.value) return true;
+            
+            const age = calculateAge(new Date(field.value));
+            const isValid = age >= 21 && age <= 120;
+            
+            field.classList.toggle('is-valid', isValid);
+            field.classList.toggle('is-invalid', !isValid);
+            
+            updateEditFieldStatus('DataNascimento', isValid, `Idade: ${age} anos`);
+            return isValid;
+        }
+
+        function validatePhoneFieldEdit(field) {
+            if (!field.value) return false; // Telefone é obrigatório
+            
+            const numbers = field.value.replace(/\D/g, '');
+            const isValid = numbers.length >= 10 && numbers.length <= 11;
+            
+            field.classList.toggle('is-valid', isValid);
+            field.classList.toggle('is-invalid', !isValid);
+            
+            updateEditFieldStatus('Telefone', isValid, isValid ? 'Telefone válido' : 'Telefone inválido');
+            return isValid;
+        }
+
+        function validateCNHFieldsEdit() {
+            const numeroCNH = document.querySelector('input[name="NumeroHabilitacao"]')?.value || '';
+            const validadeCNH = document.querySelector('input[name="ValidadeCNH"]')?.value || '';
+            
+            // CNH é opcional, mas se uma for preenchida, a outra deve ser também
+            if (numeroCNH && !validadeCNH) {
+                updateEditFieldStatus('NumeroHabilitacao', false, 'Informe a validade da CNH');
+                return false;
+            }
+            
+            if (validadeCNH && !numeroCNH) {
+                updateEditFieldStatus('ValidadeCNH', false, 'Informe o número da CNH');
+                return false;
+            }
+            
+            // Se ambas preenchidas, validar data
+            if (numeroCNH && validadeCNH) {
+                const dataValidade = new Date(validadeCNH);
+                const hoje = new Date();
+                const isValid = dataValidade >= hoje;
+                
+                updateEditFieldStatus('ValidadeCNH', isValid, isValid ? 'CNH válida' : 'CNH vencida');
+                return isValid;
+            }
+            
+            // Se nenhuma preenchida, ok
+            updateEditFieldStatus('NumeroHabilitacao', true, 'CNH não informada');
+            return true;
+        }
+
+        function updateInitialStatus() {
+            // Atualizar status inicial dos campos
+            updateEditFieldStatus('nome', true, 'Nome válido');
+            updateEditFieldStatus('idade', true, `Idade: @Model.Idade anos`);
+            updateEditFieldStatus('cnh', @Model.CNHValida.ToString().ToLower(), '@(Model.CNHValida ? "CNH válida" : "CNH vencida/não informada")');
+        }
+
+        function updateEditFieldStatus(fieldName, isValid, message) {
+            const statusElement = document.getElementById(`status-${fieldName.toLowerCase()}`);
+            if (statusElement) {
+                const icon = statusElement.querySelector('i');
+                const text = statusElement.querySelector('span');
+                
+                if (icon) {
+                    icon.className = `fas fa-circle me-2 ${isValid ? 'text-success' : 'text-danger'}`;
+                }
+                if (text && message) {
+                    text.textContent = message;
+                }
+            }
+        }
+
+        function submitEditForm() {
+            const form = document.getElementById('formEditarCliente');
+            const btnSalvar = document.getElementById('btnSalvar');
+            
+            if (btnSalvar) {
+                const originalText = btnSalvar.innerHTML;
+                btnSalvar.disabled = true;
+                btnSalvar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Salvando Alterações...';
+            }
+            
+            // Mostrar loading overlay
+            window.RentalTourismSystem.LoadingOverlaySystem.show('body', { 
+                message: 'Salvando alterações...' 
+            });
+            
+            // Enviar formulário
+            setTimeout(() => {
+                form.submit();
+            }, 500);
+        }
+
+        function restaurarDados() {
+            if (confirm('Tem certeza que deseja restaurar todos os dados para os valores originais?')) {
+                document.querySelector('input[name="Nome"]').value = dadosOriginais.nome;
+                document.querySelector('input[name="Email"]').value = dadosOriginais.email;
+                document.querySelector('input[name="Telefone"]').value = dadosOriginais.telefone;
+                document.querySelector('textarea[name="Endereco"]').value = dadosOriginais.endereco;
+                document.querySelector('input[name="DataNascimento"]').value = dadosOriginais.dataNascimento;
+                document.querySelector('input[name="NumeroHabilitacao"]').value = dadosOriginais.numeroHabilitacao;
+                document.querySelector('input[name="ValidadeCNH"]').value = dadosOriginais.validadeCNH;
+                
+                // Limpar validações
+                document.querySelectorAll('.is-valid, .is-invalid').forEach(el => {
+                    el.classList.remove('is-valid', 'is-invalid');
+                });
+                
+                // Revalidar CNH
+                validateCNHFieldsEdit();
+                updateInitialStatus();
+                
+                window.RentalTourismSystem.NotificationSystem.info('Dados restaurados para os valores originais');
+            }
+        }
+
+        // Validar CNH via API do controller
+        async function validarCNHViaAPI() {
+            const clienteId = document.querySelector('input[name="Id"]').value;
+            const btn = document.getElementById('btnValidarCNH');
+            const textoOriginal = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Validando...';
+            
+            try {
+                const response = await fetch(`@Url.Action("ValidarCNH")?clienteId=${clienteId}`);
+                if (response.ok) {
+                    const resultado = await response.json();
+                    
+                    if (resultado.valida) {
+                        window.RentalTourismSystem.NotificationSystem.success(`CNH válida: ${resultado.mensagem}`);
+                    } else {
+                        window.RentalTourismSystem.NotificationSystem.warning(`CNH: ${resultado.mensagem}`);
+                    }
+                } else {
+                    window.RentalTourismSystem.NotificationSystem.error('Erro ao validar CNH');
+                }
+            } catch (error) {
+                console.error('Erro na validação da CNH:', error);
+                window.RentalTourismSystem.NotificationSystem.error('Erro ao validar CNH via sistema');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = textoOriginal;
+            }
+        }
+
+        // Verificar dados completos do cliente via API
+        async function verificarDadosCliente() {
+            const clienteId = document.querySelector('input[name="Id"]').value;
+            
+            try {
+                window.RentalTourismSystem.LoadingOverlaySystem.show('body', { message: 'Verificando dados...' });
+                
+                const response = await fetch(`@Url.Action("GetClienteData")?id=${clienteId}`);
+                if (response.ok) {
+                    const cliente = await response.json();
+                    
+                    const detalhes = `
+                        <div class="row small">
+                            <div class="col-12">
+                                <h6>Dados Atuais no Sistema:</h6>
+                                <p><strong>Nome:</strong> ${cliente.nome}</p>
+                                <p><strong>Email:</strong> ${cliente.email}</p>
+                                <p><strong>Telefone:</strong> ${cliente.telefone}</p>
+                                <p><strong>Idade:</strong> ${cliente.idade} anos</p>
+                                ${cliente.numeroHabilitacao ? `
+                                    <p><strong>CNH:</strong> ${cliente.numeroHabilitacao}</p>
+                                    <p><strong>Status CNH:</strong> 
+                                        <span class="badge ${cliente.cnhValida ? 'bg-success' : 'bg-danger'}">
+                                            ${cliente.cnhValida ? 'Válida' : 'Vencida'}
+                                        </span>
+                                    </p>
+                                ` : '<p><strong>CNH:</strong> Não informada</p>'}
+                            </div>
+                        </div>
+                    `;
+                    
+                    window.RentalTourismSystem.NotificationSystem.info(detalhes);
+                } else {
+                    window.RentalTourismSystem.NotificationSystem.error('Erro ao verificar dados do cliente');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                window.RentalTourismSystem.NotificationSystem.error('Erro ao verificar dados do cliente');
+            } finally {
+                window.RentalTourismSystem.LoadingOverlaySystem.hide('body');
+            }
+        }
+
+        function gerarRelatorioCliente() {
+            window.RentalTourismSystem.NotificationSystem.info('Funcionalidade de relatório em desenvolvimento');
+        }
+
+        function showValidationSummary() {
+            const summary = document.getElementById('validationSummary');
+            if (summary) {
+                summary.classList.remove('d-none');
+                summary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                setTimeout(() => {
+                    summary.classList.add('d-none');
+                }, 5000);
+            }
+        }
+
+        function focusFirstInvalidField() {
+            const firstInvalid = document.querySelector('.is-invalid');
+            if (firstInvalid) {
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalid.focus();
+            }
+        }
+
+        // Funções auxiliares
+        function calculateAge(birthDate) {
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+
+        function getFieldDisplayName(fieldName) {
+            const names = {
+                'Nome': 'Nome',
+                'Cpf': 'CPF',
+                'Email': 'Email',
+                'Telefone': 'Telefone',
+                'DataNascimento': 'Data de nascimento',
+                'Endereco': 'Endereço',
+                'NumeroHabilitacao': 'Número da CNH',
+                'ValidadeCNH': 'Validade da CNH'
+            };
+            return names[fieldName] || fieldName;
+        }
+    </script>
+}

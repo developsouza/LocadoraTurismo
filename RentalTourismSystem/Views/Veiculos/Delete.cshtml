@@ -1,0 +1,817 @@
+﻿@model RentalTourismSystem.Models.Veiculo
+@{
+    ViewData["Title"] = "Excluir Veículo";
+
+    // Análise de impedimentos baseada no controller
+    var locacoes = Model.Locacoes ?? new List<RentalTourismSystem.Models.Locacao>();
+
+    var locacoesAtivas = locacoes.Where(l => l.DataDevolucaoReal == null).Count();
+    var locacoesFinalizadas = locacoes.Where(l => l.DataDevolucaoReal != null).Count();
+
+    var temImpedimentos = locacoesAtivas > 0;
+    var podeExcluir = !temImpedimentos;
+    var temHistorico = locacoesFinalizadas > 0;
+
+    var totalLocacoes = locacoes.Count();
+    var valorTotalHistorico = locacoes.Sum(l => l.ValorTotal);
+    var statusAtual = Model.StatusCarro?.Status ?? "Indefinido";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="@(podeExcluir ? "text-danger" : "text-warning")">
+            <i class="fas @(podeExcluir ? "fa-exclamation-triangle" : "fa-ban") me-2"></i>
+            @(podeExcluir ? "Confirmar Exclusão" : "Exclusão Não Permitida")
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Veículos</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id" class="text-decoration-none">@Model.Marca @Model.Modelo</a></li>
+                <li class="breadcrumb-item active">Excluir</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Alert Principal -->
+<div class="row mb-4">
+    <div class="col-12">
+        @if (podeExcluir)
+        {
+            <div class="alert alert-danger border-danger animate-fade-in">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle fa-3x me-3"></i>
+                    <div>
+                        <h5 class="alert-heading mb-2">
+                            <i class="fas fa-warning me-1"></i>ATENÇÃO: Ação Irreversível!
+                        </h5>
+                        <p class="mb-1">
+                            Você está prestes a <strong>excluir permanentemente</strong> o veículo <strong>"@Model.Marca @Model.Modelo - @Model.Placa"</strong>.
+                        </p>
+                        <p class="mb-0 small">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Esta ação <strong>NÃO PODE ser desfeita</strong> e removerá todos os dados do veículo do sistema.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning border-warning animate-fade-in">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-ban fa-3x me-3"></i>
+                    <div>
+                        <h5 class="alert-heading mb-2">
+                            <i class="fas fa-shield-alt me-1"></i>Exclusão Bloqueada por Segurança
+                        </h5>
+                        <p class="mb-1">
+                            O veículo <strong>"@Model.Marca @Model.Modelo - @Model.Placa"</strong> <strong>NÃO PODE ser excluído</strong> no momento.
+                        </p>
+                        <p class="mb-0 small">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Existem locações ativas que impedem a exclusão. Finalize todas as locações antes de tentar novamente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <!-- Coluna Principal -->
+    <div class="col-lg-8">
+        <!-- Card Principal com Dados do Veículo -->
+        <div class="card @(podeExcluir ? "border-danger" : "border-warning") hover-lift mb-4">
+            <div class="card-header @(podeExcluir ? "bg-danger" : "bg-warning") text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-car me-2"></i>Dados do Veículo a ser @(podeExcluir ? "Excluído" : "Analisado")
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Informações Básicas do Veículo -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="vehicle-info">
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Veículo:</label>
+                                <p class="h6 mb-0">@Model.Marca @Model.Modelo</p>
+                            </div>
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Placa:</label>
+                                <p class="mb-0">
+                                    <code class="bg-adaptive-surface text-adaptive-primary px-2 py-1 rounded">
+                                        @Model.Placa
+                                    </code>
+                                </p>
+                            </div>
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Ano:</label>
+                                <p class="mb-0">@Model.Ano <small class="text-muted">(@((DateTime.Now.Year - Model.Ano)) anos)</small></p>
+                            </div>
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Cor:</label>
+                                <p class="mb-0">@Model.Cor</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="vehicle-info">
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Quilometragem:</label>
+                                <p class="mb-0">@Model.Quilometragem.ToString("N0") km</p>
+                            </div>
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Valor da Diária:</label>
+                                <p class="mb-0">
+                                    <strong class="text-success h6">@Model.ValorDiaria.ToString("C")</strong>
+                                </p>
+                            </div>
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Status Atual:</label>
+                                <p class="mb-0">
+                                    @{
+                                        string badgeClass = statusAtual switch
+                                        {
+                                            "Disponível" => "bg-success",
+                                            "Alugado" => "bg-warning",
+                                            "Manutenção" => "bg-danger",
+                                            "Indisponível" => "bg-secondary",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @badgeClass">@statusAtual</span>
+                                </p>
+                            </div>
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Agência:</label>
+                                <p class="mb-0">@Model.Agencia.Nome</p>
+                            </div>
+                                @if (Model.DataCadastro != default(DateTime))
+                                {
+                                    <div class="info-item mb-3">
+                                        <label class="text-muted small">Cadastrado em:</label>
+                                        <p class="mb-0">
+                                            @Model.DataCadastro.ToString("dd/MM/yyyy")
+                                            <small class="text-muted">(@((DateTime.Now - Model.DataCadastro).Days) dias)</small>
+                                        </p>
+                                    </div>
+                                }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Análise de Dependências -->
+        @if (totalLocacoes > 0)
+        {
+            <div class="card @(temImpedimentos ? "border-danger" : "border-warning") mb-4">
+                <div class="card-header @(temImpedimentos ? "bg-danger" : "bg-warning") text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-database me-2"></i>Análise de Dependências no Sistema
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Estatísticas Gerais -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 text-center">
+                            <div class="stat-box">
+                                <h4 class="text-primary mb-0">@totalLocacoes</h4>
+                                <small class="text-muted">Total de Locações</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="stat-box">
+                                <h4 class="@(locacoesAtivas > 0 ? "text-danger" : "text-success") mb-0">@locacoesAtivas</h4>
+                                <small class="text-muted">Ativas</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="stat-box">
+                                <h4 class="text-info mb-0">@locacoesFinalizadas</h4>
+                                <small class="text-muted">Finalizadas</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="stat-box">
+                                <h4 class="text-success mb-0">@valorTotalHistorico.ToString("C0")</h4>
+                                <small class="text-muted">Valor Total</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detalhamento por Locações -->
+                    @if (locacoes.Any())
+                    {
+                        <div class="dependency-section mb-4">
+                            <h6 class="text-primary border-bottom pb-2 mb-3">
+                                <i class="fas fa-handshake me-2"></i>Locações do Veículo
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    @if (locacoesAtivas > 0)
+                                    {
+                                        <div class="alert alert-danger small">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>
+                                            <strong>@locacoesAtivas locação(ões) ATIVA(S)</strong>
+                                            <br>Veículo ainda não devolvido - <strong>IMPEDE EXCLUSÃO</strong>
+                                        </div>
+                                    }
+                                    @if (locacoesFinalizadas > 0)
+                                    {
+                                        <div class="alert alert-info small">
+                                            <i class="fas fa-history me-1"></i>
+                                            <strong>@locacoesFinalizadas locação(ões) no histórico</strong>
+                                            <br>Importantes para relatórios e auditoria
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="small">
+                                        <p class="mb-1">
+                                            <strong>Receita total gerada:</strong>
+                                            @locacoes.Sum(l => l.ValorTotal).ToString("C")
+                                        </p>
+                                        <p class="mb-1">
+                                            <strong>Valor médio por locação:</strong>
+                                            @((locacoes.Sum(l => l.ValorTotal) / locacoes.Count()).ToString("C"))
+                                        </p>
+                                        <p class="mb-0">
+                                            <strong>Período de atividade:</strong>
+                                            @(locacoes.Any() ? locacoes.Min(l => l.DataRetirada).ToString("MM/yyyy") : "N/A") até
+                                            @(locacoes.Any() ? locacoes.Max(l => l.DataRetirada).ToString("MM/yyyy") : "N/A")
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Plano de Ação -->
+                    @if (temImpedimentos)
+                    {
+                        <div class="action-plan border-top pt-3 mt-3">
+                            <h6 class="text-danger mb-3">
+                                <i class="fas fa-clipboard-list me-2"></i>Plano de Ação para Permitir Exclusão
+                            </h6>
+                            <div class="steps">
+                                @if (locacoesAtivas > 0)
+                                {
+                                    <div class="step-item d-flex align-items-start mb-2">
+                                        <div class="step-number bg-danger text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 24px; height: 24px; font-size: 12px;">1</div>
+                                        <div>
+                                            <strong>Finalizar @locacoesAtivas locação(ões) ativa(s)</strong>
+                                            <br><small class="text-muted">Processar devoluções de todos os contratos em aberto</small>
+                                        </div>
+                                    </div>
+                                }
+                                @if (temHistorico)
+                                {
+                                    <div class="step-item d-flex align-items-start mb-2">
+                                        <div class="step-number bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 24px; height: 24px; font-size: 12px;">@(locacoesAtivas > 0 ? "2" : "1")</div>
+                                        <div>
+                                            <strong>Considerar backup do histórico</strong>
+                                            <br><small class="text-muted">Exportar dados históricos para arquivo antes da exclusão</small>
+                                        </div>
+                                    </div>
+                                }
+                                <div class="step-item d-flex align-items-start mb-2">
+                                    <div class="step-number bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 24px; height: 24px; font-size: 12px;">@(temImpedimentos ? "3" : "2")</div>
+                                    <div>
+                                        <strong>Verificar impactos nos relatórios</strong>
+                                        <br><small class="text-muted">Avaliar impacto nos relatórios financeiros e de performance</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Botões de Ação -->
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex gap-2 justify-content-between align-items-center">
+                    <div class="action-buttons">
+                        @if (podeExcluir)
+                        {
+                            <form asp-action="Delete" method="post" id="formExclusao" class="d-inline">
+                                <input type="hidden" asp-for="Id" />
+                                <button type="submit" class="btn btn-danger hover-lift" id="btnConfirmarExclusao">
+                                    <i class="fas fa-trash-alt me-1"></i>Sim, Excluir Permanentemente
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-danger" disabled>
+                                <i class="fas fa-ban me-1"></i>Exclusão Não Permitida
+                            </button>
+                        }
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Voltar aos Detalhes
+                        </a>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-list me-1"></i>Lista de Veículos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Direita -->
+    <div class="col-lg-4">
+        <!-- Card de Alternativas -->
+        <div class="card border-info mb-4">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightbulb me-1"></i>Alternativas Recomendadas
+                </h6>
+            </div>
+            <div class="card-body">
+                @if (temImpedimentos)
+                {
+                    <div class="alert alert-warning small">
+                        <i class="fas fa-ban me-1"></i>
+                        <strong>Exclusão bloqueada</strong> por locações ativas.
+                    </div>
+                }
+
+                <p class="small mb-3">Em vez de excluir, considere:</p>
+                <div class="d-grid gap-2">
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-sm">
+                            <i class="fas fa-edit me-1"></i>Editar Dados do Veículo
+                        </a>
+
+                        @if (statusAtual != "Indisponível")
+                        {
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="alterarStatus(@Model.Id, 'Indisponível')">
+                                <i class="fas fa-pause me-1"></i>Marcar como Indisponível
+                            </button>
+                        }
+
+                        @if (statusAtual != "Manutenção")
+                        {
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="alterarStatus(@Model.Id, 'Manutenção')">
+                                <i class="fas fa-wrench me-1"></i>Enviar para Manutenção
+                            </button>
+                        }
+                    }
+
+                    @if (locacoesAtivas > 0)
+                    {
+                        <a asp-controller="Locacoes" asp-action="Index"
+                           asp-route-veiculoId="@Model.Id" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-handshake me-1"></i>Gerenciar Locações Ativas
+                        </a>
+                    }
+
+                    <button type="button" class="btn btn-outline-info btn-sm" onclick="gerarBackup()">
+                        <i class="fas fa-download me-1"></i>Fazer Backup dos Dados
+                    </button>
+
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="transferirAgencia()">
+                        <i class="fas fa-exchange-alt me-1"></i>Transferir para Outra Agência
+                    </button>
+                </div>
+
+                @if (podeExcluir && temHistorico)
+                {
+                    <div class="alert alert-warning small mt-3">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        <strong>Atenção:</strong> Veículo possui histórico de @totalLocacoes locações no valor de @valorTotalHistorico.ToString("C").
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Card de Estatísticas de Impacto -->
+        @if (totalLocacoes > 0)
+        {
+            <div class="card border-warning mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-bar me-1"></i>Impacto da Exclusão
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="impact-metrics">
+                        <div class="metric-item mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted small">Locações perdidas:</span>
+                                <strong class="text-danger">@totalLocacoes</strong>
+                            </div>
+                        </div>
+                        <div class="metric-item mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted small">Histórico financeiro:</span>
+                                <strong class="text-danger">@valorTotalHistorico.ToString("C")</strong>
+                            </div>
+                        </div>
+                        @if (Model.DataCadastro != default(DateTime))
+                        {
+                            <div class="metric-item mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted small">Tempo de operação:</span>
+                                    <strong class="text-warning">@((DateTime.Now - Model.DataCadastro).Days) dias</strong>
+                                </div>
+                            </div>
+                        }
+                        <div class="metric-item mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted small">Valor médio por locação:</span>
+                                <strong class="text-info">@((valorTotalHistorico / totalLocacoes).ToString("C"))</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-danger small mt-3 mb-0">
+                        <i class="fas fa-warning me-1"></i>
+                        <strong>Dados irrecuperáveis!</strong> Todos estes dados serão perdidos permanentemente.
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Card de Ações de Verificação -->
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-tools me-1"></i>Verificações do Sistema
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-info btn-sm" onclick="verificarDependencias()">
+                        <i class="fas fa-search me-1"></i>Verificar Dependências
+                    </button>
+
+                    <button type="button" class="btn btn-outline-warning btn-sm" onclick="validarIntegridade()">
+                        <i class="fas fa-shield-alt me-1"></i>Validar Integridade
+                    </button>
+
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="simularExclusao()">
+                        <i class="fas fa-calculator me-1"></i>Simular Exclusão
+                    </button>
+
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="verificarDisponibilidade()">
+                        <i class="fas fa-calendar-check me-1"></i>Verificar Disponibilidade
+                    </button>
+                </div>
+
+                <div id="verification-results" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação Final -->
+@if (podeExcluir)
+{
+    <div class="modal fade" id="modalConfirmacaoFinal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-danger">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle me-2"></i>CONFIRMAÇÃO FINAL DE EXCLUSÃO
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-exclamation-triangle fa-4x text-danger mb-3"></i>
+                        <h4 class="text-danger">ÚLTIMA CHANCE!</h4>
+                        <p class="lead">Você está prestes a excluir permanentemente:</p>
+                    </div>
+
+                    <div class="alert alert-danger">
+                        <h5 class="text-center mb-3">
+                            <strong>"@Model.Marca @Model.Modelo"</strong><br>
+                            <code>@Model.Placa</code>
+                        </h5>
+
+                        @if (totalLocacoes > 0)
+                        {
+                            <div class="text-center border-top pt-3">
+                                <p class="mb-1">
+                                    <strong>@totalLocacoes locações</strong> no valor de <strong>@valorTotalHistorico.ToString("C")</strong>
+                                </p>
+                                @if (Model.DataCadastro != default(DateTime))
+                                {
+                                    <p class="mb-0 small text-muted">
+                                        Histórico de @((DateTime.Now - Model.DataCadastro).Days) dias será perdido
+                                    </p>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <div class="checklist-confirmacao">
+                        <h6 class="mb-3">Para prosseguir, confirme que você:</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="confirmData">
+                            <label class="form-check-label" for="confirmData">
+                                Verificou que todos os dados estão corretos
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="confirmBackup">
+                            <label class="form-check-label" for="confirmBackup">
+                                Fez backup dos dados necessários (se aplicável)
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="confirmNoActive">
+                            <label class="form-check-label" for="confirmNoActive">
+                                Confirmei que não há locações ativas
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="confirmUndo">
+                            <label class="form-check-label" for="confirmUndo">
+                                Entendo que esta ação <strong>NÃO PODE ser desfeita</strong>
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="confirmResponsibility">
+                            <label class="form-check-label" for="confirmResponsibility">
+                                Assumo total responsabilidade por esta exclusão
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="final-confirmation bg-dark text-white p-3 rounded">
+                        <h6 class="text-center mb-3">CONFIRMAÇÃO TEXTUAL OBRIGATÓRIA</h6>
+                        <p class="text-center mb-2 small">
+                            Digite <strong>"EXCLUIR VEICULO"</strong> para confirmar:
+                        </p>
+                        <input type="text" id="confirmationText" class="form-control text-center"
+                               placeholder="Digite aqui a confirmação exata..." autocomplete="off">
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancelar - Manter Veículo
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarFinal" disabled>
+                        <i class="fas fa-trash-alt me-1"></i>EXCLUIR PERMANENTEMENTE
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Configurar tooltips e sistema consolidado
+            initializeTooltips();
+
+            @if (podeExcluir)
+            {
+                    <text>
+                    // Configurar modal de confirmação final
+                    setupConfirmationModal();
+
+                    // Interceptar envio do formulário principal
+                    $('#formExclusao').on('submit', function(e) {
+                        e.preventDefault();
+                        showFinalConfirmationModal();
+                    });
+                    </text>
+            }
+        });
+
+        @if (podeExcluir)
+        {
+                <text>
+                // Configurar modal de confirmação
+                function setupConfirmationModal() {
+                    const checkboxes = ['#confirmData', '#confirmBackup', '#confirmNoActive', '#confirmUndo', '#confirmResponsibility'];
+                    const confirmationText = '#confirmationText';
+                    const btnConfirmar = '#btnConfirmarFinal';
+                    const textoEsperado = 'EXCLUIR VEICULO';
+
+                    // Monitorar mudanças nos checkboxes e campo de texto
+                    function verificarConfirmacoes() {
+                        const todosChecked = checkboxes.every(cb => $(cb).is(':checked'));
+                        const textoCorreto = $(confirmationText).val().trim().toUpperCase() === textoEsperado;
+
+                        $(btnConfirmar).prop('disabled', !(todosChecked && textoCorreto));
+                    }
+
+                    // Eventos de mudança
+                    checkboxes.forEach(cb => $(cb).on('change', verificarConfirmacoes));
+                    $(confirmationText).on('input', verificarConfirmacoes);
+
+                    // Ação final de exclusão
+                    $(btnConfirmar).on('click', function() {
+                        if (!$(this).prop('disabled')) {
+                            executarExclusao();
+                        }
+                    });
+                }
+
+                // Mostrar modal de confirmação final
+                function showFinalConfirmationModal() {
+                    const modal = new bootstrap.Modal(document.getElementById('modalConfirmacaoFinal'));
+                    modal.show();
+                }
+
+                // Executar exclusão com loading
+                function executarExclusao() {
+                    const btn = $('#btnConfirmarFinal');
+                    const textoOriginal = btn.html();
+
+                    // Mostrar loading
+                    btn.prop('disabled', true);
+                    btn.html('<i class="fas fa-spinner fa-spin me-1"></i>Excluindo...');
+
+                    // Overlay de loading
+                    showLoadingOverlay();
+
+                    // Simular delay para enfatizar a gravidade da ação
+                    setTimeout(() => {
+                        // Enviar formulário
+                        document.getElementById('formExclusao').submit();
+                    }, 2000);
+                }
+                </text>
+        }
+
+        // Alterar status do veículo
+        async function alterarStatus(veiculoId, novoStatus) {
+            const confirmacao = confirm(`Deseja alterar o status do veículo para "${novoStatus}"?`);
+
+            if (confirmacao) {
+                try {
+                    showLoadingOverlay();
+
+                    // Simular mapeamento de status
+                    const statusIds = {
+                        'Disponível': 1,
+                        'Alugado': 2,
+                        'Manutenção': 3,
+                        'Indisponível': 4
+                    };
+
+                    const formData = new FormData();
+                    formData.append('id', veiculoId);
+                    formData.append('novoStatusId', statusIds[novoStatus]);
+                    formData.append('motivo', `Alteração via tela de exclusão`);
+
+                    const response = await fetch(`@Url.Action("AlterarStatus", "Veiculos")`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const resultado = await response.json();
+
+                        if (resultado.success) {
+                            NotificationSystem.success(resultado.message + ' Redirecionando...');
+                            setTimeout(() => {
+                                window.location.href = `@Url.Action("Details", "Veiculos")/${veiculoId}`;
+                            }, 1500);
+                        } else {
+                            NotificationSystem.error(resultado.message);
+                        }
+                    } else {
+                        NotificationSystem.error('Erro ao alterar status do veículo');
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    NotificationSystem.error('Erro ao alterar status do veículo');
+                } finally {
+                    hideLoadingOverlay();
+                }
+            }
+        }
+
+        // Verificar dependências via sistema
+        async function verificarDependencias() {
+            const veiculoId = @Model.Id;
+
+            try {
+                showLoadingOverlay();
+
+                // Simular verificação usando dados do model
+                const resultado = `
+                    <div class="verification-result">
+                        <h6 class="text-success">Verificação Concluída</h6>
+                        <ul class="small mb-0">
+                            <li>Veículo: @Model.Marca @Model.Modelo (@Model.Placa)</li>
+                            <li>Status: @statusAtual</li>
+                            <li>Locações ativas: @locacoesAtivas</li>
+                            <li>Locações no histórico: @locacoesFinalizadas</li>
+                            <li>Receita gerada: @valorTotalHistorico.ToString("C")</li>
+                        </ul>
+                    </div>
+                `;
+
+                document.getElementById('verification-results').innerHTML = resultado;
+            } catch (error) {
+                console.error('Erro:', error);
+                NotificationSystem.error('Erro ao verificar dependências');
+            } finally {
+                hideLoadingOverlay();
+            }
+        }
+
+        // Validar integridade dos dados
+        function validarIntegridade() {
+            const temProblemas = @(temImpedimentos ? "true" : "false");
+
+            if (temProblemas) {
+                NotificationSystem.warning('Integridade comprometida: Veículo possui locações ativas que impedem exclusão');
+            } else {
+                NotificationSystem.success('Integridade validada: Veículo pode ser excluído com segurança');
+            }
+        }
+
+        // Simular impacto da exclusão
+        function simularExclusao() {
+            const totalLocacoes = @totalLocacoes;
+            const valorTotal = @valorTotalHistorico;
+
+            const simulacao = `
+                <div class="alert alert-info small">
+                    <h6>Simulação de Exclusão:</h6>
+                    <p class="mb-1">• ${totalLocacoes} locações serão removidas do histórico</p>
+                    <p class="mb-1">• Receita de ${valorTotal.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})} será perdida dos relatórios</p>
+                    <p class="mb-1">• Dados de performance do veículo serão perdidos</p>
+                    @if (Model.DataCadastro != default(DateTime))
+                    {
+                            <text>
+                            <p class="mb-0">• Histórico de @((DateTime.Now - Model.DataCadastro).Days) dias será perdido</p>
+                            </text>
+                    }
+                </div>
+            `;
+
+            document.getElementById('verification-results').innerHTML = simulacao;
+        }
+
+        // Verificar disponibilidade atual
+        async function verificarDisponibilidade() {
+            try {
+                const response = await fetch(`@Url.Action("VerificarDisponibilidade", "Veiculos")?veiculoId=@Model.Id&dataInicio=${new Date().toISOString()}&dataFim=${new Date(Date.now() + 7*24*60*60*1000).toISOString()}`);
+
+                if (response.ok) {
+                    const resultado = await response.json();
+
+                    const html = `
+                        <div class="alert alert-${resultado.disponivel ? 'success' : 'warning'} small">
+                            <h6>Status de Disponibilidade:</h6>
+                            <p class="mb-1"><strong>${resultado.disponivel ? 'DISPONÍVEL' : 'NÃO DISPONÍVEL'}</strong></p>
+                            <p class="mb-0">Motivo: ${resultado.motivo}</p>
+                        </div>
+                    `;
+
+                    document.getElementById('verification-results').innerHTML = html;
+                } else {
+                    NotificationSystem.error('Erro ao verificar disponibilidade');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                NotificationSystem.error('Erro ao verificar disponibilidade');
+            }
+        }
+
+        // Gerar backup dos dados
+        function gerarBackup() {
+            NotificationSystem.info('Funcionalidade de backup em desenvolvimento. Recomenda-se exportar relatórios manualmente.');
+        }
+
+        // Transferir para outra agência
+        function transferirAgencia() {
+            NotificationSystem.info('Funcionalidade de transferência em desenvolvimento. Use a edição para alterar a agência.');
+        }
+
+        // Funções auxiliares para loading
+        function showLoadingOverlay() {
+            if (!document.querySelector('.loading-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.className = 'loading-overlay';
+                overlay.innerHTML = '<div class="spinner-modern"></div>';
+                document.body.appendChild(overlay);
+            }
+        }
+
+        function hideLoadingOverlay() {
+            const overlay = document.querySelector('.loading-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+    </script>
+}

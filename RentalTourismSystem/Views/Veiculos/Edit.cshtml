@@ -1,0 +1,667 @@
+﻿@model RentalTourismSystem.Models.Veiculo
+@{
+    ViewData["Title"] = "Editar Veículo";
+    var temLocacoes = Model.Locacoes?.Any() == true;
+    var locacoesAtivas = Model.Locacoes?.Where(l => l.DataDevolucaoReal == null).Count() ?? 0;
+    var statusAtual = Model.StatusCarro?.Status ?? "Indefinido";
+    var podeAlterarStatus = statusAtual != "Alugado" || User.IsInRole("Admin");
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="text-gradient">
+            <i class="fas fa-edit me-2"></i>Editar Veículo
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Veículos</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id" class="text-decoration-none">@Model.Marca @Model.Modelo</a></li>
+                <li class="breadcrumb-item active">Editar</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card hover-lift">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>Atualizar Informações do Veículo
+                </h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" id="formEditarVeiculo" class="needs-validation form-veiculo" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger animate-shake" role="alert"></div>
+                    <input type="hidden" asp-for="Id" />
+
+                    <!-- Seção: Dados Básicos -->
+                    <div class="mb-4">
+                        <h6 class="text-warning border-bottom pb-2 mb-3">
+                            <i class="fas fa-info-circle me-2"></i>Dados Básicos do Veículo
+                        </h6>
+                        
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label asp-for="Marca" class="form-label required">
+                                    <i class="fas fa-tag me-1"></i>Marca
+                                </label>
+                                <input asp-for="Marca" class="form-control" 
+                                       required minlength="2" maxlength="50" />
+                                <span asp-validation-for="Marca" class="invalid-feedback"></span>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label asp-for="Modelo" class="form-label required">
+                                    <i class="fas fa-car me-1"></i>Modelo
+                                </label>
+                                <input asp-for="Modelo" class="form-control" 
+                                       required minlength="2" maxlength="50" />
+                                <span asp-validation-for="Modelo" class="invalid-feedback"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 mb-3">
+                                <label asp-for="Ano" class="form-label required">
+                                    <i class="fas fa-calendar me-1"></i>Ano
+                                </label>
+                                <input asp-for="Ano" class="form-control" type="number"
+                                       min="1990" max="2030" required />
+                                <span asp-validation-for="Ano" class="invalid-feedback"></span>
+                                <div class="form-text">
+                                    <i class="fas fa-birthday-cake me-1"></i>Idade: @((DateTime.Now.Year - Model.Ano)) anos
+                                </div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label asp-for="Placa" class="form-label">
+                                    <i class="fas fa-id-badge me-1"></i>Placa
+                                    <span class="badge bg-secondary">Não editável</span>
+                                </label>
+                                <div class="input-group">
+                                    <input asp-for="Placa" class="form-control" readonly 
+                                           data-bs-toggle="tooltip" data-bs-placement="top"
+                                           title="Placa não pode ser alterada por questões de segurança" />
+                                    <span class="input-group-text">
+                                        <i class="fas fa-lock text-muted"></i>
+                                    </span>
+                                </div>
+                                <div class="form-text">
+                                    <i class="fas fa-shield-alt me-1"></i>Placa não pode ser alterada
+                                </div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label asp-for="Cor" class="form-label required">
+                                    <i class="fas fa-palette me-1"></i>Cor
+                                </label>
+                                <select asp-for="Cor" class="form-select" required>
+                                    <option value="Branco">Branco</option>
+                                    <option value="Prata">Prata</option>
+                                    <option value="Preto">Preto</option>
+                                    <option value="Cinza">Cinza</option>
+                                    <option value="Azul">Azul</option>
+                                    <option value="Vermelho">Vermelho</option>
+                                    <option value="Verde">Verde</option>
+                                    <option value="Amarelo">Amarelo</option>
+                                    <option value="Dourado">Dourado</option>
+                                    <option value="Marrom">Marrom</option>
+                                </select>
+                                <span asp-validation-for="Cor" class="invalid-feedback"></span>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label asp-for="Quilometragem" class="form-label required">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Quilometragem
+                                </label>
+                                <div class="input-group">
+                                    <input asp-for="Quilometragem" class="form-control km-mask"
+                                           type="number" min="0" max="999999" required />
+                                    <span class="input-group-text">km</span>
+                                </div>
+                                <span asp-validation-for="Quilometragem" class="invalid-feedback"></span>
+                                <div id="km-validation-feedback" class="mt-1"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seção: Configurações Operacionais -->
+                    <div class="mb-4">
+                        <h6 class="text-success border-bottom pb-2 mb-3">
+                            <i class="fas fa-cogs me-2"></i>Configurações Operacionais
+                        </h6>
+                        
+                        @if (statusAtual == "Alugado")
+                        {
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Atenção:</strong> Veículo está atualmente alugado. Algumas alterações podem ser restritas.
+                            </div>
+                        }
+                        
+                        <div class="row">
+                            <div class="col-lg-4 mb-3">
+                                <label asp-for="ValorDiaria" class="form-label required">
+                                    <i class="fas fa-dollar-sign me-1"></i>Valor da Diária
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    <input asp-for="ValorDiaria" class="form-control"
+                                           type="number" step="0.01" min="10" required />
+                                </div>
+                                <span asp-validation-for="ValorDiaria" class="invalid-feedback"></span>
+                                <div id="valor-validation-feedback" class="mt-1"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label asp-for="StatusCarroId" class="form-label required">
+                                    <i class="fas fa-traffic-light me-1"></i>Status
+                                    @if (!podeAlterarStatus)
+                                    {
+                                        <span class="badge bg-warning text-dark">Restrito</span>
+                                    }
+                                </label>
+                                <select asp-for="StatusCarroId" class="form-select" asp-items="ViewBag.StatusCarroId" 
+                                        disabled="@(!podeAlterarStatus)" required>
+                                </select>
+                                <span asp-validation-for="StatusCarroId" class="invalid-feedback"></span>
+                                @if (!podeAlterarStatus)
+                                {
+                                    <div class="form-text text-warning">
+                                        <i class="fas fa-lock me-1"></i>Status não pode ser alterado enquanto veículo estiver alugado
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label asp-for="AgenciaId" class="form-label required">
+                                    <i class="fas fa-building me-1"></i>Agência Responsável
+                                </label>
+                                <select asp-for="AgenciaId" class="form-select" asp-items="ViewBag.AgenciaId" required>
+                                </select>
+                                <span asp-validation-for="AgenciaId" class="invalid-feedback"></span>
+                                @if (locacoesAtivas > 0)
+                                {
+                                    <div class="form-text text-warning">
+                                        <i class="fas fa-exclamation-triangle me-1"></i>Mudança de agência pode afetar locações ativas
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-warning hover-lift" id="btnSalvar">
+                            <i class="fas fa-save me-1"></i>Salvar Alterações
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="restaurarDados()">
+                            <i class="fas fa-undo me-1"></i>Restaurar
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Voltar
+                        </a>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-list me-1"></i>Lista de Veículos
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar com Informações -->
+    <div class="col-lg-4">
+        <!-- Card de Estatísticas -->
+        <div class="card mb-4 border-info">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-chart-bar me-1"></i>Estatísticas do Veículo
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="border-end">
+                            <h4 class="text-primary mb-0">@(Model.Locacoes?.Count ?? 0)</h4>
+                            <small class="text-muted">Locações</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-success mb-0">@(Model.Locacoes?.Sum(l => l.ValorTotal).ToString("C") ?? "R$ 0,00")</h4>
+                        <small class="text-muted">Receita</small>
+                    </div>
+                </div>
+                
+                @if (Model.Locacoes?.Any() == true)
+                {
+                    <hr>
+                    <div class="text-center">
+                        <small class="text-muted">Receita Média por Locação:</small><br>
+                        <strong class="text-success h6">@((Model.Locacoes.Sum(l => l.ValorTotal) / Model.Locacoes.Count).ToString("C"))</strong>
+                    </div>
+                }
+
+                <hr>
+                <div class="small">
+                    <p class="mb-1">
+                        <i class="fas fa-calendar-plus text-info me-1"></i>
+                        <strong>Cadastrado em:</strong> @(Model.DataCadastro.ToString("dd/MM/yyyy") ?? "N/A")
+                    </p>
+                    <p class="mb-1">
+                        <i class="fas fa-traffic-light me-1"></i>
+                        <strong>Status atual:</strong> 
+                        <span class="badge @(statusAtual switch {
+                            "Disponível" => "bg-success",
+                            "Alugado" => "bg-warning",
+                            "Manutenção" => "bg-danger",
+                            _ => "bg-secondary"
+                        })">@statusAtual</span>
+                    </p>
+                    <p class="mb-0">
+                        <i class="fas fa-clock text-warning me-1"></i>
+                        <strong>Última edição:</strong> Agora
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Status e Restrições -->
+        <div class="card mb-4 border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-1"></i>Status e Restrições
+                </h6>
+            </div>
+            <div class="card-body">
+                @if (locacoesAtivas > 0)
+                {
+                    <div class="alert alert-danger small">
+                        <i class="fas fa-handshake me-1"></i>
+                        <strong>@locacoesAtivas locação(ões) ativa(s)</strong><br>
+                        Algumas alterações podem ser restritas
+                    </div>
+                }
+                
+                @if (temLocacoes)
+                {
+                    <div class="alert alert-info small">
+                        <i class="fas fa-history me-1"></i>
+                        <strong>Histórico preservado</strong><br>
+                        Veículo com @(Model.Locacoes?.Count ?? 0) locação(ões) no histórico
+                    </div>
+                }
+
+                <div class="alert alert-warning small">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Alterações nos dados podem afetar:
+                    <ul class="mb-0 mt-1">
+                        <li>Locações ativas</li>
+                        <li>Relatórios financeiros</li>
+                        <li>Histórico de manutenção</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Ações Rápidas -->
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-tools me-1"></i>Ações Rápidas
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    @if (statusAtual == "Disponível")
+                    {
+                        <a asp-controller="Locacoes" asp-action="Create" asp-route-veiculoId="@Model.Id" 
+                           class="btn btn-success btn-sm">
+                            <i class="fas fa-plus me-1"></i>Nova Locação
+                        </a>
+                    }
+                    
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        @if (statusAtual != "Manutenção")
+                        {
+                            <button type="button" class="btn btn-outline-danger btn-sm" 
+                                    onclick="alterarStatusRapido(@Model.Id, 'Manutenção')">
+                                <i class="fas fa-wrench me-1"></i>Marcar para Manutenção
+                            </button>
+                        }
+
+                        @if (statusAtual == "Manutenção")
+                        {
+                            <button type="button" class="btn btn-outline-success btn-sm" 
+                                    onclick="alterarStatusRapido(@Model.Id, 'Disponível')">
+                                <i class="fas fa-check me-1"></i>Marcar como Disponível
+                            </button>
+                        }
+
+                        <button type="button" class="btn btn-outline-info btn-sm" 
+                                onclick="verificarDisponibilidade(@Model.Id)">
+                            <i class="fas fa-calendar-check me-1"></i>Verificar Disponibilidade
+                        </button>
+                    }
+
+                    <a asp-action="Details" asp-route-id="@Model.Id" 
+                       class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-eye me-1"></i>Ver Histórico Completo
+                    </a>
+
+                    <button type="button" class="btn btn-outline-secondary btn-sm" 
+                            onclick="gerarRelatorioVeiculo(@Model.Id)">
+                        <i class="fas fa-file-pdf me-1"></i>Gerar Relatório
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Dados originais para restauração
+        const dadosOriginais = {
+            marca: '@Html.Raw(Model.Marca)',
+            modelo: '@Html.Raw(Model.Modelo)',
+            ano: @Model.Ano,
+            cor: '@Html.Raw(Model.Cor)',
+            quilometragem: @Model.Quilometragem,
+            valorDiaria: @Model.ValorDiaria.ToString().Replace(',', '.'),
+            statusCarroId: @Model.StatusCarroId,
+            agenciaId: @Model.AgenciaId
+        };
+
+        $(document).ready(function() {
+            // Configurar tooltips
+            initializeTooltips();
+
+            // Aplicar sistema de validação consolidado
+            setupAdvancedFormValidation();
+
+            // Validação de valor da diária
+            $('input[name="ValorDiaria"]').on('input change', function() {
+                validarValorDiaria($(this).val());
+            });
+
+            // Validação de quilometragem baseada no ano
+            $('input[name="Ano"], input[name="Quilometragem"]').on('input change', function() {
+                validarQuilometragemPorAno();
+            });
+
+            // Interceptar envio do formulário
+            $('#formEditarVeiculo').on('submit', function(e) {
+                e.preventDefault();
+                
+                if (this.checkValidity()) {
+                    enviarFormularioEdicao();
+                } else {
+                    this.classList.add('was-validated');
+                    focusFirstInvalidField();
+                }
+            });
+
+            // Validação inicial
+            validarValorDiaria($('input[name="ValorDiaria"]').val());
+            validarQuilometragemPorAno();
+
+            // Monitorar mudanças para destacar campos alterados
+            $('input, select').on('change', function() {
+                destacarCampoAlterado(this);
+            });
+        });
+
+        // Validar valor da diária
+        function validarValorDiaria(valor) {
+            if (!valor) return;
+
+            const valorNumerico = parseFloat(valor);
+            
+            if (valorNumerico < 10) {
+                mostrarFeedback('valor-validation-feedback', 'danger', 'Valor muito baixo para operação comercial');
+            } else if (valorNumerico < 50) {
+                mostrarFeedback('valor-validation-feedback', 'warning', 'Valor baixo - considere o mercado local');
+            } else if (valorNumerico <= 500) {
+                mostrarFeedback('valor-validation-feedback', 'success', 'Valor adequado para o mercado');
+            } else {
+                mostrarFeedback('valor-validation-feedback', 'info', 'Valor premium - certifique-se da categoria');
+            }
+        }
+
+        // Validar quilometragem baseada no ano
+        function validarQuilometragemPorAno() {
+            const ano = parseInt($('#Ano').val());
+            const km = parseInt($('#Quilometragem').val());
+
+            if (ano && km) {
+                const anoAtual = new Date().getFullYear();
+                const idadeVeiculo = anoAtual - ano;
+                const kmMedioAnual = 15000;
+                const kmEsperado = idadeVeiculo * kmMedioAnual;
+
+                let mensagem, tipo;
+
+                if (idadeVeiculo === 0) {
+                    if (km <= 100) {
+                        mensagem = 'Quilometragem adequada para veículo novo';
+                        tipo = 'success';
+                    } else {
+                        mensagem = 'Quilometragem alta para veículo novo';
+                        tipo = 'warning';
+                    }
+                } else if (km > kmEsperado * 2) {
+                    mensagem = `Quilometragem alta para ${idadeVeiculo} anos (esperado: ~${kmEsperado.toLocaleString()} km)`;
+                    tipo = 'warning';
+                } else if (km < kmEsperado * 0.3 && idadeVeiculo > 2) {
+                    mensagem = 'Quilometragem baixa - excelente conservação';
+                    tipo = 'success';
+                } else {
+                    mensagem = 'Quilometragem coerente com a idade';
+                    tipo = 'success';
+                }
+
+                mostrarFeedback('km-validation-feedback', tipo, mensagem);
+            }
+        }
+
+        // Destacar campo alterado
+        function destacarCampoAlterado(campo) {
+            const nome = campo.name;
+            const valorAtual = campo.value;
+            const valorOriginal = dadosOriginais[nome.charAt(0).toLowerCase() + nome.slice(1)];
+            
+            if (valorAtual != valorOriginal) {
+                $(campo).addClass('campo-alterado');
+                $(campo).css('border-left', '3px solid #ffc107');
+            } else {
+                $(campo).removeClass('campo-alterado');
+                $(campo).css('border-left', '');
+            }
+        }
+
+        // Alterar status rápido
+        async function alterarStatusRapido(veiculoId, novoStatus) {
+            const confirmacao = confirm(`Deseja alterar o status do veículo para "${novoStatus}"?`);
+            
+            if (confirmacao) {
+                try {
+                    showLoadingOverlay();
+
+                    // Buscar ID do status (simulação - implementar quando API estiver disponível)
+                    const statusIds = {
+                        'Disponível': 1,
+                        'Alugado': 2,
+                        'Manutenção': 3,
+                        'Indisponível': 4
+                    };
+
+                    const formData = new FormData();
+                    formData.append('id', veiculoId);
+                    formData.append('novoStatusId', statusIds[novoStatus]);
+                    formData.append('motivo', `Alteração rápida via edição`);
+
+                    const response = await fetch(`@Url.Action("AlterarStatus")`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const resultado = await response.json();
+                        
+                        if (resultado.success) {
+                            NotificationSystem.success(resultado.message);
+                            location.reload();
+                        } else {
+                            NotificationSystem.error(resultado.message);
+                        }
+                    } else {
+                        NotificationSystem.error('Erro ao alterar status do veículo');
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    NotificationSystem.error('Erro ao alterar status do veículo');
+                } finally {
+                    hideLoadingOverlay();
+                }
+            }
+        }
+
+        // Verificar disponibilidade
+        async function verificarDisponibilidade(veiculoId) {
+            try {
+                showLoadingOverlay();
+
+                // Simular verificação de disponibilidade
+                const hoje = new Date();
+                const proximaSemana = new Date(hoje.getTime() + (7 * 24 * 60 * 60 * 1000));
+
+                const response = await fetch(`@Url.Action("VerificarDisponibilidade")?veiculoId=${veiculoId}&dataInicio=${hoje.toISOString()}&dataFim=${proximaSemana.toISOString()}`);
+
+                if (response.ok) {
+                    const resultado = await response.json();
+                    
+                    const mensagem = `Status da disponibilidade:\n\n${resultado.disponivel ? '✅ DISPONÍVEL' : '❌ NÃO DISPONÍVEL'}\n\nMotivo: ${resultado.motivo}`;
+                    
+                    if (resultado.disponivel) {
+                        NotificationSystem.success(mensagem);
+                    } else {
+                        NotificationSystem.warning(mensagem);
+                    }
+                } else {
+                    NotificationSystem.error('Erro ao verificar disponibilidade');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                NotificationSystem.error('Erro ao verificar disponibilidade');
+            } finally {
+                hideLoadingOverlay();
+            }
+        }
+
+        // Restaurar dados originais
+        function restaurarDados() {
+            if (confirm('Tem certeza que deseja restaurar todos os dados para os valores originais?')) {
+                $('input[name="Marca"]').val(dadosOriginais.marca);
+                $('input[name="Modelo"]').val(dadosOriginais.modelo);
+                $('input[name="Ano"]').val(dadosOriginais.ano);
+                $('select[name="Cor"]').val(dadosOriginais.cor);
+                $('input[name="Quilometragem"]').val(dadosOriginais.quilometragem);
+                $('input[name="ValorDiaria"]').val(dadosOriginais.valorDiaria);
+                $('select[name="StatusCarroId"]').val(dadosOriginais.statusCarroId);
+                $('select[name="AgenciaId"]').val(dadosOriginais.agenciaId);
+                
+                // Remover destaque de campos alterados
+                $('.campo-alterada').removeClass('campo-alterada').css('border-left', '');
+                
+                // Limpar validações
+                $('.is-valid, .is-invalid').removeClass('is-valid is-invalid');
+                $('[id$="-validation-feedback"]').html('');
+                
+                // Revalidar
+                validarValorDiaria(dadosOriginais.valorDiaria);
+                validarQuilometragemPorAno();
+                
+                NotificationSystem.info('Dados restaurados para os valores originais');
+            }
+        }
+
+        // Enviar formulário com loading
+        async function enviarFormularioEdicao() {
+            const form = document.getElementById('formEditarVeiculo');
+            const btnSalvar = document.getElementById('btnSalvar');
+            const textoOriginal = btnSalvar.innerHTML;
+            
+            // Mostrar loading
+            btnSalvar.disabled = true;
+            btnSalvar.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Salvando Alterações...';
+            
+            showLoadingOverlay();
+            
+            try {
+                // Enviar formulário
+                form.submit();
+            } catch (error) {
+                console.error('Erro ao enviar formulário:', error);
+                NotificationSystem.error('Erro ao salvar alterações');
+                
+                // Restaurar botão
+                btnSalvar.disabled = false;
+                btnSalvar.innerHTML = textoOriginal;
+                hideLoadingOverlay();
+            }
+        }
+
+        // Gerar relatório do veículo (placeholder)
+        function gerarRelatorioVeiculo(veiculoId) {
+            NotificationSystem.info('Funcionalidade de relatório em desenvolvimento');
+        }
+
+        // Funções auxiliares reutilizadas
+        function mostrarFeedback(elementoId, tipo, mensagem) {
+            const elemento = document.getElementById(elementoId);
+            if (elemento) {
+                const classes = {
+                    'success': 'text-success',
+                    'danger': 'text-danger',
+                    'warning': 'text-warning',
+                    'info': 'text-info'
+                };
+                
+                const icones = {
+                    'success': 'fas fa-check-circle',
+                    'danger': 'fas fa-times-circle',
+                    'warning': 'fas fa-exclamation-triangle',
+                    'info': 'fas fa-info-circle'
+                };
+                
+                elemento.innerHTML = `
+                    <small class="${classes[tipo]} d-flex align-items-center">
+                        <i class="${icones[tipo]} me-1"></i>
+                        ${mensagem}
+                    </small>
+                `;
+            }
+        }
+
+        function focusFirstInvalidField() {
+            const primeiroInvalido = document.querySelector('.form-control:invalid');
+            if (primeiroInvalido) {
+                primeiroInvalido.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                primeiroInvalido.focus();
+            }
+        }
+
+        function showLoadingOverlay() {
+            if (!document.querySelector('.loading-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.className = 'loading-overlay';
+                overlay.innerHTML = '<div class="spinner-modern"></div>';
+                document.body.appendChild(overlay);
+            }
+        }
+
+        function hideLoadingOverlay() {
+            const overlay = document.querySelector('.loading-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+    </script>
+}

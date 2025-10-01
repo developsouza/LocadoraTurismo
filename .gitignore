@@ -1,0 +1,47 @@
+# Dependencies
+/bin/
+/obj/
+/packages/
+*.nupkg
+
+# Visual Studio specific
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+bld/
+[Bb]uild/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio 2019 cache/options
+.vsconfig
+*.vsix
+.DS_Store
+
+# User-specific files
+*.dbmdl
+*.secrets.json
+appsettings.Development.json
+
+# Rider specific
+.idea/
+*.sln.iml
+
+# Mac files
+*.swp
+._*
+
+# Other
+Thumbs.db

@@ -1,0 +1,127 @@
+﻿@model RentalTourismSystem.Models.PacoteViagem
+@{
+    ViewData["Title"] = "Excluir Pacote";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="text-danger">
+            <i class="fas fa-exclamation-triangle me-2"></i>Excluir Pacote de Viagem
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Pacotes</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id">@Model.Nome</a></li>
+                <li class="breadcrumb-item active">Excluir</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Confirmar Exclusão do Pacote</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-exclamation-triangle me-1"></i>Atenção!
+                    </h6>
+                    <p class="mb-0">
+                        Esta ação é <strong>irreversível</strong>. O pacote e todas as reservas
+                        associadas serão excluídos permanentemente.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">@Model.Nome</h5>
+                        <p class="card-text">@Model.Descricao</p>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <small class="text-muted">Destino:</small><br>
+                                <strong>@Model.Destino</strong>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Duração:</small><br>
+                                <strong>@Model.Duracao dias</strong>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Preço:</small><br>
+                                <strong class="text-success">@Model.Preco.ToString("C")</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.ReservasViagens.Any())
+                {
+                    <div class="alert alert-warning mt-3">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-calendar-times me-1"></i>Reservas Existentes
+                        </h6>
+                        <p>Este pacote possui <strong>@Model.ReservasViagens.Count</strong> reserva(s):</p>
+                        <ul class="mb-0">
+                            @foreach (var statusGroup in Model.ReservasViagens.GroupBy(r => r.StatusReservaViagem.Status))
+                            {
+                                <li>@statusGroup.Count() reserva(s) com status <strong>@statusGroup.Key</strong></li>
+                            }
+                        </ul>
+                        <p class="mt-2 mb-0">
+                            <small class="text-danger">
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                Todas essas reservas também serão excluídas!
+                            </small>
+                        </p>
+                    </div>
+                }
+
+                <form asp-action="Delete" method="post" class="mt-4">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="confirmarExclusao" required>
+                        <label class="form-check-label text-danger" for="confirmarExclusao">
+                            Confirmo que entendo que esta ação é irreversível
+                        </label>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>Excluir Pacote
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0">
+                    <i class="fas fa-question-circle me-1"></i>Precisa de Ajuda?
+                </h6>
+            </div>
+            <div class="card-body">
+                <p class="small">Se você tem dúvidas:</p>
+                <ul class="small">
+                    <li>Consulte o administrador do sistema</li>
+                    <li>Faça backup antes de excluir</li>
+                    <li>Considere desativar em vez de excluir</li>
+                </ul>
+
+                <div class="alert alert-info">
+                    <small>
+                        <i class="fas fa-info-circle me-1"></i>
+                        Pacotes muito utilizados podem ser melhor arquivados
+                        do que excluídos para manter histórico.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

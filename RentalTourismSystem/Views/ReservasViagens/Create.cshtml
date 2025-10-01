@@ -1,0 +1,326 @@
+﻿@model RentalTourismSystem.Models.ReservaViagem
+@{
+    ViewData["Title"] = "Nova Reserva de Viagem";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2>
+            <i class="fas fa-plus me-2"></i>Nova Reserva de Viagem
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Reservas</a></li>
+                <li class="breadcrumb-item active">Nova</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Informações da Reserva</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" id="reservaForm" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="ClienteId" class="form-label">
+                                <span class="text-danger">*</span> Cliente
+                            </label>
+                            <select asp-for="ClienteId" class="form-select" asp-items="ViewBag.ClienteId"
+                                    required onchange="carregarInfoCliente()">
+                                <option value="">Selecione um cliente</option>
+                            </select>
+                            <span asp-validation-for="ClienteId" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="PacoteViagemId" class="form-label">
+                                <span class="text-danger">*</span> Pacote de Viagem
+                            </label>
+                            <select asp-for="PacoteViagemId" class="form-select" asp-items="ViewBag.PacoteViagemId"
+                                    required onchange="calcularValorTotal()">
+                                <option value="">Selecione um pacote</option>
+                            </select>
+                            <span asp-validation-for="PacoteViagemId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="DataReserva" class="form-label">
+                                <span class="text-danger">*</span> Data da Reserva
+                            </label>
+                            <input asp-for="DataReserva" class="form-control" type="date" required readonly />
+                            <span asp-validation-for="DataReserva" class="text-danger"></span>
+                            <div class="form-text">Data de hoje (automática)</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="DataViagem" class="form-label">
+                                <span class="text-danger">*</span> Data da Viagem
+                            </label>
+                            <input asp-for="DataViagem" class="form-control" type="date" required />
+                            <span asp-validation-for="DataViagem" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Quantidade" class="form-label">
+                                <span class="text-danger">*</span> Quantidade de Pessoas
+                            </label>
+                            <input asp-for="Quantidade" class="form-control" type="number"
+                                   min="1" max="50" required onchange="calcularValorTotal()" />
+                            <span asp-validation-for="Quantidade" class="text-danger"></span>
+                            <div class="form-text">Máximo 50 pessoas por reserva</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Valor Total</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="text" id="valorTotalDisplay" class="form-control" readonly 
+                                       placeholder="0,00" style="background-color: #f8f9fa;" />
+                            </div>
+                            <div class="form-text">Calculado automaticamente: pacote × quantidade</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="statusReserva" class="form-label">Status Inicial</label>
+                            <input type="text" id="statusReserva" class="form-control" value="Pendente" readonly 
+                                   style="background-color: #f8f9fa;" />
+                            <div class="form-text">Reservas iniciam como "Pendente"</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Observacoes" class="form-label">Observações</label>
+                        <textarea asp-for="Observacoes" class="form-control" rows="3"
+                                  placeholder="Observações adicionais sobre a reserva (opcional)"
+                                  maxlength="500"></textarea>
+                        <span asp-validation-for="Observacoes" class="text-danger"></span>
+                        <div class="form-text">Máximo 500 caracteres</div>
+                    </div>
+
+                    <input asp-for="StatusReservaViagemId" type="hidden" />
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Criar Reserva
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Voltar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <!-- Info do Cliente -->
+        <div class="card mb-3" id="infoCliente" style="display: none;">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-user me-1"></i>Cliente Selecionado
+                </h6>
+            </div>
+            <div class="card-body">
+                <div id="dadosCliente"></div>
+            </div>
+        </div>
+
+        <!-- Info do Pacote -->
+        <div class="card mb-3" id="infoPacote" style="display: none;">
+            <div class="card-header bg-success text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-suitcase-rolling me-1"></i>Pacote Selecionado
+                </h6>
+            </div>
+            <div class="card-body">
+                <div id="dadosPacote"></div>
+            </div>
+        </div>
+
+        <!-- Informações Gerais -->
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0">
+                    <i class="fas fa-info-circle me-1"></i>Informações
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info small">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-calendar-check me-1"></i>Fluxo da Reserva:
+                    </h6>
+                    <ol class="mb-0">
+                        <li><strong>Pendente:</strong> Reserva criada</li>
+                        <li><strong>Confirmada:</strong> Pagamento/confirmação</li>
+                        <li><strong>Realizada:</strong> Viagem concluída</li>
+                        <li><strong>Cancelada:</strong> Se necessário</li>
+                    </ol>
+                </div>
+
+                <div class="alert alert-success small">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-lightbulb me-1"></i>Dica:
+                    </h6>
+                    <p class="mb-0">
+                        A reserva será criada com status "Pendente" e pode ser confirmada posteriormente através da lista de reservas.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+        <script>
+            // JAVASCRIPT SIMPLIFICADO - SEM JQUERY PARA EVITAR CONFLITOS
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('Formulário de reserva carregado');
+
+                // Configurar data mínima e inicial
+                const hoje = new Date().toISOString().split('T')[0];
+                document.getElementById('DataReserva').value = hoje;
+
+                const amanha = new Date();
+                amanha.setDate(amanha.getDate() + 1);
+                const dataViagem = document.getElementById('DataViagem');
+                dataViagem.min = amanha.toISOString().split('T')[0];
+                dataViagem.value = amanha.toISOString().split('T')[0];
+
+                // Contador de caracteres para observações
+                const observacoes = document.getElementById('Observacoes');
+                observacoes.addEventListener('input', function() {
+                    const atual = this.value.length;
+                    const max = 500;
+                    const restante = max - atual;
+                
+                    let formText = this.parentNode.querySelector('.form-text');
+                    if (formText) {
+                        const cor = restante < 50 ? 'text-warning' : restante < 20 ? 'text-danger' : 'text-muted';
+                        formText.innerHTML = `Restam <span class="${cor}">${restante}</span> caracteres (máximo ${max})`;
+                    }
+                });
+            });
+
+            // FUNÇÃO SIMPLIFICADA PARA CARREGAR INFO DO CLIENTE
+            async function carregarInfoCliente() {
+                const clienteId = document.getElementById('ClienteId').value;
+                const infoDiv = document.getElementById('infoCliente');
+                const dadosDiv = document.getElementById('dadosCliente');
+
+                if (!clienteId) {
+                    infoDiv.style.display = 'none';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/Api/cliente/${clienteId}`);
+                    if (response.ok) {
+                        const cliente = await response.json();
+
+                        dadosDiv.innerHTML = 
+                            '<p class="mb-1"><strong>' + cliente.nome + '</strong></p>' +
+                            '<p class="mb-1">CPF: ' + cliente.cpf + '</p>' +
+                            '<p class="mb-1">Tel: ' + cliente.telefone + '</p>' +
+                            '<p class="mb-0">Email: ' + cliente.email + '</p>';
+
+                        infoDiv.style.display = 'block';
+                    } else {
+                        // Fallback usando nome do select
+                        const clienteSelect = document.getElementById('ClienteId');
+                        const clienteNome = clienteSelect.options[clienteSelect.selectedIndex].text;
+
+                        dadosDiv.innerHTML = 
+                            '<p class="mb-1"><strong>' + clienteNome + '</strong></p>' +
+                            '<small class="text-muted">Dados detalhados não disponíveis</small>';
+                    
+                        infoDiv.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Erro na requisição:', error);
+                
+                    // Fallback simples
+                    const clienteSelect = document.getElementById('ClienteId');
+                    const clienteNome = clienteSelect.options[clienteSelect.selectedIndex].text;
+                
+                    dadosDiv.innerHTML = 
+                        '<p class="mb-1"><strong>' + clienteNome + '</strong></p>' +
+                        '<small class="text-muted">Erro ao carregar dados</small>';
+                
+                    infoDiv.style.display = 'block';
+                }
+            }
+
+            // FUNÇÃO SIMPLIFICADA PARA CALCULAR VALOR TOTAL
+            async function calcularValorTotal() {
+                const pacoteId = document.getElementById('PacoteViagemId').value;
+                const quantidade = parseInt(document.getElementById('Quantidade').value) || 1;
+                const valorDisplay = document.getElementById('valorTotalDisplay');
+                const infoPacote = document.getElementById('infoPacote');
+                const dadosPacote = document.getElementById('dadosPacote');
+
+                if (!pacoteId) {
+                    valorDisplay.value = '';
+                    infoPacote.style.display = 'none';
+                    return;
+                }
+
+                try {
+                    // Tentar primeira rota
+                    let response = await fetch('/ReservasViagens/ObterPrecoPacote/' + pacoteId);
+                
+                    // Se falhar, tentar rota alternativa
+                    if (!response.ok) {
+                        response = await fetch('/api/pacotes/' + pacoteId + '/preco');
+                    }
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        const preco = data.preco;
+                    
+                        if (preco) {
+                            const valorTotal = preco * quantidade;
+
+                            // Formatar valor
+                            valorDisplay.value = valorTotal.toLocaleString('pt-BR', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            });
+
+                            // Obter nome do pacote do select
+                            const pacoteSelect = document.getElementById('PacoteViagemId');
+                            const pacoteNome = pacoteSelect.options[pacoteSelect.selectedIndex].text;
+                        
+                            // Atualizar informações do pacote
+                            dadosPacote.innerHTML = 
+                                '<p class="mb-1"><strong>' + pacoteNome + '</strong></p>' +
+                                '<p class="mb-1">Preço: <span class="text-success">R$ ' + 
+                                preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) +
+                                '</span> por pessoa</p>' +
+                                '<p class="mb-1">Quantidade: <strong>' + quantidade + 
+                                (quantidade === 1 ? ' pessoa' : ' pessoas') + '</strong></p>' +
+                                '<hr>' +
+                                '<p class="mb-0">Total: <strong class="text-success">R$ ' +
+                                valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) +
+                                '</strong></p>';
+
+                            infoPacote.style.display = 'block';
+                        } else {
+                            throw new Error('Preço não encontrado na resposta');
+                        }
+                    } else {
+                        throw new Error('Erro HTTP: ' + response.status);
+                    }
+                } catch (error) {
+                    console.error('Erro ao calcular valor total:', error);
+                    valorDisplay.value = 'Erro ao calcular';
+                    infoPacote.style.display = 'none';
+                }
+            }
+        </script>
+}

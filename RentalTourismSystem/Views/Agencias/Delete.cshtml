@@ -1,0 +1,197 @@
+﻿@model RentalTourismSystem.Models.Agencia
+@{
+    ViewData["Title"] = "Excluir Agência";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="text-danger">
+            <i class="fas fa-exclamation-triangle me-2"></i>Excluir Agência
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Agências</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id">@Model.Nome</a></li>
+                <li class="breadcrumb-item active">Excluir</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-trash me-2"></i>Confirmar Exclusão da Agência
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-exclamation-triangle me-1"></i>Atenção!
+                    </h6>
+                    <p class="mb-0">
+                        Esta ação é <strong>extremamente perigosa</strong> e <strong>irreversível</strong>.
+                        Todos os dados relacionados a esta agência serão excluídos permanentemente.
+                    </p>
+                </div>
+
+                <h6 class="mb-3">Dados da agência que será excluída:</h6>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">@Model.Nome</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <dl class="row">
+                                    <dt class="col-4">Endereço:</dt>
+                                    <dd class="col-8">@Model.Endereco</dd>
+
+                                    <dt class="col-4">Telefone:</dt>
+                                    <dd class="col-8">@Model.Telefone</dd>
+
+                                    <dt class="col-4">Email:</dt>
+                                    <dd class="col-8">@Model.Email</dd>
+                                </dl>
+                            </div>
+                            <div class="col-md-6">
+                                <dl class="row">
+                                    <dt class="col-6">Funcionários:</dt>
+                                    <dd class="col-6"><strong>@Model.Funcionarios.Count</strong></dd>
+
+                                    <dt class="col-6">Veículos:</dt>
+                                    <dd class="col-6"><strong>@Model.Veiculos.Count</strong></dd>
+
+                                    <dt class="col-6">Locações:</dt>
+                                    <dd class="col-6"><strong>@Model.Locacoes.Count</strong></dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.Funcionarios.Any() || Model.Veiculos.Any() || Model.Locacoes.Any())
+                {
+                    <div class="alert alert-danger mt-3">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-database me-1"></i>Dados Relacionados que serão PERDIDOS
+                        </h6>
+                        <ul class="mb-0">
+                            @if (Model.Funcionarios.Any())
+                            {
+                                <li><strong>@Model.Funcionarios.Count funcionário(s)</strong> e seus dados</li>
+                            }
+                            @if (Model.Veiculos.Any())
+                            {
+                                <li><strong>@Model.Veiculos.Count veículo(s)</strong> e todo histórico</li>
+                            }
+                            @if (Model.Locacoes.Any())
+                            {
+                                <li><strong>@Model.Locacoes.Count locação(ões)</strong> registrada(s)</li>
+                                <li>Receita histórica de <strong>@Model.Locacoes.Sum(l => l.ValorTotal).ToString("C")</strong></li>
+                            }
+                        </ul>
+                        <p class="mt-2 mb-0">
+                            <small class="fw-bold text-danger">
+                                ⚠️ TODOS ESTES DADOS SERÃO PERDIDOS PARA SEMPRE!
+                            </small>
+                        </p>
+                    </div>
+                }
+
+                @if (Model.Veiculos.Any(v => v.StatusCarro.Status == "Alugado"))
+                {
+                    <div class="alert alert-danger mt-3">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-ban me-1"></i>Impossível Excluir
+                        </h6>
+                        <p class="mb-0">
+                            Esta agência possui <strong>
+                                @Model.Veiculos.Count(v => v.StatusCarro.Status == "Alugado") veículo(s)
+                                atualmente alugado(s)
+                            </strong>. Não é possível excluir a agência neste momento.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <form asp-action="Delete" method="post" class="mt-4">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmarExclusao1" required>
+                            <label class="form-check-label text-danger" for="confirmarExclusao1">
+                                Confirmo que entendo que TODOS os funcionários serão excluídos
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmarExclusao2" required>
+                            <label class="form-check-label text-danger" for="confirmarExclusao2">
+                                Confirmo que entendo que TODOS os veículos serão excluídos
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmarExclusao3" required>
+                            <label class="form-check-label text-danger" for="confirmarExclusao3">
+                                Confirmo que entendo que TODO o histórico será perdido
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmarExclusao4" required>
+                            <label class="form-check-label text-danger" for="confirmarExclusao4">
+                                Confirmo que esta ação é IRREVERSÍVEL
+                            </label>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-1"></i>EXCLUIR AGÊNCIA E TODOS OS DADOS
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Cancelar
+                            </a>
+                        </div>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-1"></i>PARE E PENSE!
+                </h6>
+            </div>
+            <div class="card-body">
+                <p class="small fw-bold">Esta é uma das ações mais destrutivas do sistema!</p>
+                <ul class="small">
+                    <li>Considere desativar temporariamente</li>
+                    <li>Faça backup completo antes</li>
+                    <li>Transfira dados para outra agência</li>
+                    <li>Consulte supervisor/administrador</li>
+                </ul>
+
+                <div class="alert alert-danger">
+                    <small class="fw-bold">
+                        <i class="fas fa-skull-crossbones me-1"></i>
+                        UMA VEZ EXCLUÍDO, NÃO HÁ COMO RECUPERAR!
+                    </small>
+                </div>
+
+                <div class="d-grid gap-2 mt-3">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-sm">
+                        <i class="fas fa-edit me-1"></i>Editar em vez de excluir
+                    </a>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-list me-1"></i>Voltar para lista
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

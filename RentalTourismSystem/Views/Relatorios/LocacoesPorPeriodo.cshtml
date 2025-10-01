@@ -1,0 +1,178 @@
+﻿@model IEnumerable<RentalTourismSystem.Models.Locacao>
+@{
+    ViewData["Title"] = "Relatório de Locações por Período";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>
+            <i class="fas fa-chart-line me-2"></i>Relatório de Locações por Período
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Relatórios</a></li>
+                <li class="breadcrumb-item active">Locações por Período</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-filter me-2"></i>Filtros de Período
+        </h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label for="dataInicio" class="form-label">Data Início</label>
+                <input type="date" class="form-control" id="dataInicio" name="dataInicio" value="@ViewBag.DataInicio">
+            </div>
+            <div class="col-md-4">
+                <label for="dataFim" class="form-label">Data Fim</label>
+                <input type="date" class="form-control" id="dataFim" name="dataFim" value="@ViewBag.DataFim">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary me-2">
+                    <i class="fas fa-search me-1"></i>Filtrar
+                </button>
+                <button type="button" class="btn btn-outline-secondary" onclick="window.print()">
+                    <i class="fas fa-print me-1"></i>Imprimir
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Resumo -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <h4>@Model.Count()</h4>
+                <small>Total de Locações</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <h4>@ViewBag.TotalReceita.ToString("C")</h4>
+                <small>Receita Total</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body text-center">
+                <h4>@(Model.Any() ? (ViewBag.TotalReceita / Model.Count()).ToString("C") : "R$ 0,00")</h4>
+                <small>Ticket Médio</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body text-center">
+                <h4>@Model.Count(l => l.DataDevolucaoReal == null)</h4>
+                <small>Locações Ativas</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela de Locações -->
+<div class="card">
+    <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-list me-2"></i>Detalhes das Locações
+        </h5>
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover" id="tabelaLocacoes">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Data</th>
+                            <th>Cliente</th>
+                            <th>Veículo</th>
+                            <th>Período</th>
+                            <th>Status</th>
+                            <th>Valor</th>
+                            <th>Funcionário</th>
+                            <th>Agência</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var locacao in Model)
+                        {
+                            <tr>
+                                <td>@locacao.DataRetirada.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <strong>@locacao.Cliente.Nome</strong><br>
+                                    <small class="text-muted">@locacao.Cliente.Telefone</small>
+                                </td>
+                                <td>
+                                    <strong>@locacao.Veiculo.Marca @locacao.Veiculo.Modelo</strong><br>
+                                    <small class="text-muted">@locacao.Veiculo.Placa</small>
+                                </td>
+                                <td>
+                                    @locacao.DataRetirada.ToString("dd/MM") até @locacao.DataDevolucao.ToString("dd/MM")<br>
+                                    <small class="text-muted">
+                                        @((locacao.DataDevolucao - locacao.DataRetirada).Days) dia(s)
+                                    </small>
+                                </td>
+                                <td>
+                                    @if (locacao.DataDevolucaoReal.HasValue)
+                                    {
+                                        <span class="badge bg-success">Finalizada</span>
+                                        @if (locacao.DataDevolucaoReal.Value.Date > locacao.DataDevolucao.Date)
+                                        {
+                                            <br>
+                            
+                                            <span class="badge bg-warning">Atraso</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-primary">Ativa</span>
+                                    }
+                                </td>
+                                <td class="text-success fw-bold">@locacao.ValorTotal.ToString("C")</td>
+                                <td>@locacao.Funcionario.Nome</td>
+                                <td>@locacao.Agencia.Nome</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr>
+                            <th colspan="5" class="text-end">Total:</th>
+                            <th class="text-success">@ViewBag.TotalReceita.ToString("C")</th>
+                            <th colspan="2"></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center text-muted py-5">
+                <i class="fas fa-search fa-3x mb-3"></i>
+                <h5>Nenhuma locação encontrada</h5>
+                <p>Não há locações no período selecionado.</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Ordenação de tabela
+        document.addEventListener('DOMContentLoaded', function() {
+            setupTableSort('#tabelaLocacoes');
+        });
+    </script>
+}

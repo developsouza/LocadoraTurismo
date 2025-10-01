@@ -1,0 +1,276 @@
+﻿@model RentalTourismSystem.Models.Funcionario
+@{
+    ViewData["Title"] = "Detalhes do Funcionário";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>
+            <i class="fas fa-user-tie me-2"></i>@Model.Nome
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Funcionários</a></li>
+                <li class="breadcrumb-item active">@Model.Nome</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-user me-2"></i>Informações Pessoais
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <small class="text-muted">Nome Completo:</small><br>
+                    <h5 class="text-primary">@Model.Nome</h5>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">CPF:</small><br>
+                    <strong>@Model.Cpf</strong>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">E-mail:</small><br>
+                    <strong>@Model.Email</strong>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">Telefone:</small><br>
+                    <strong>@Model.Telefone</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-briefcase me-2"></i>Informações Profissionais
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <small class="text-muted">Cargo:</small><br>
+                    <span class="badge bg-secondary fs-6">@Model.Cargo</span>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">Salário:</small><br>
+                    <h5 class="text-success">@Model.Salario.ToString("C")</h5>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">Data de Admissão:</small><br>
+                    <strong>@Model.DataAdmissao.ToString("dd/MM/yyyy")</strong>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">Tempo na Empresa:</small><br>
+                    @{
+                        var tempoEmpresa = DateTime.Now - Model.DataAdmissao;
+                        var anos = tempoEmpresa.Days / 365;
+                        var meses = (tempoEmpresa.Days % 365) / 30;
+                        var dias = (tempoEmpresa.Days % 365) % 30;
+                    }
+                    <strong>
+                        @if (anos > 0)
+                        {
+                            @($"{anos} ano(s)")
+                        }
+                        @if (meses > 0)
+                        {
+                            @($", {meses} mês(es)")
+                        }
+                        @if (anos == 0 && meses == 0)
+                        {
+                            @($"{dias} dia(s)")
+                        }
+                    </strong>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">Agência:</small><br>
+                    <strong>@Model.Agencia.Nome</strong><br>
+                    <small class="text-muted">@Model.Agencia.Endereco</small>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm">
+                    <i class="fas fa-edit me-1"></i>Editar
+                </a>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i>Voltar
+                </a>
+                <a asp-controller="Agencias" asp-action="Details" asp-route-id="@Model.AgenciaId" class="btn btn-info btn-sm">
+                    <i class="fas fa-building me-1"></i>Ver Agência
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <!-- Estatísticas de performance -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body text-center">
+                        <h4>@Model.Locacoes.Count</h4>
+                        <small>Locações Realizadas</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body text-center">
+                        <h4>@Model.Locacoes.Sum(l => l.ValorTotal).ToString("C")</h4>
+                        <small>Receita Gerada</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body text-center">
+                        <h4>@(Model.Locacoes.Any() ? Model.Locacoes.Average(l => l.ValorTotal).ToString("C") : "R$ 0,00")</h4>
+                        <small>Ticket Médio</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body text-center">
+                        <h4>@Model.Locacoes.Count(l => l.DataDevolucaoReal == null)</h4>
+                        <small>Locações Ativas</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance mensal -->
+        @if (Model.Locacoes.Any())
+        {
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-line me-1"></i>Performance dos Últimos 6 Meses
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        @for (int i = 5; i >= 0; i--)
+                        {
+                            var mesAtual = DateTime.Now.AddMonths(-i);
+                            var inicioMes = new DateTime(mesAtual.Year, mesAtual.Month, 1);
+                            var fimMes = inicioMes.AddMonths(1).AddDays(-1);
+                            var locacoesMes = Model.Locacoes.Where(l => l.DataRetirada >= inicioMes && l.DataRetirada <= fimMes);
+                            var quantidadeMes = locacoesMes.Count();
+                            var receitaMes = locacoesMes.Sum(l => l.ValorTotal);
+
+                            <div class="col-2 text-center">
+                                <small class="text-muted">@mesAtual.ToString("MMM/yy")</small><br>
+                                <strong>@quantidadeMes</strong><br>
+                                <small class="text-success">@receitaMes.ToString("C")</small>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Histórico de Locações -->
+        @if (Model.Locacoes.Any())
+        {
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history me-2"></i>Histórico de Locações
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Cliente</th>
+                                    <th>Veículo</th>
+                                    <th>Período</th>
+                                    <th>Status</th>
+                                    <th>Valor</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var locacao in Model.Locacoes.OrderByDescending(l => l.DataRetirada).Take(10))
+                                {
+                                    <tr>
+                                        <td>@locacao.DataRetirada.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            <strong>@locacao.Cliente.Nome</strong><br>
+                                            <small class="text-muted">@locacao.Cliente.Telefone</small>
+                                        </td>
+                                        <td>
+                                            <strong>@locacao.Veiculo.Marca @locacao.Veiculo.Modelo</strong><br>
+                                            <small class="text-muted">@locacao.Veiculo.Placa</small>
+                                        </td>
+                                        <td>
+                                            @locacao.DataRetirada.ToString("dd/MM") até @locacao.DataDevolucao.ToString("dd/MM")<br>
+                                            <small class="text-muted">@((locacao.DataDevolucao - locacao.DataRetirada).Days) dia(s)</small>
+                                        </td>
+                                        <td>
+                                            @if (locacao.DataDevolucaoReal.HasValue)
+                                            {
+                                                <span class="badge bg-success">Finalizada</span>
+                                                @if (locacao.DataDevolucaoReal.Value.Date > locacao.DataDevolucao.Date)
+                                                {
+                                                    <br>
+                                    
+                                                    <span class="badge bg-warning">Atraso</span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @if (locacao.DataDevolucao.Date < DateTime.Now.Date)
+                                                {
+                                                    <span class="badge bg-danger">Atrasada</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-primary">Ativa</span>
+                                                }
+                                            }
+                                        </td>
+                                        <td class="text-success fw-bold">@locacao.ValorTotal.ToString("C")</td>
+                                        <td>
+                                            <a asp-controller="Locacoes" asp-action="Details" asp-route-id="@locacao.Id" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @if (Model.Locacoes.Count > 10)
+                    {
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                Mostrando as 10 locações mais recentes de @Model.Locacoes.Count total.
+                            </small>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card">
+                <div class="card-body text-center text-muted py-5">
+                    <i class="fas fa-clipboard-list fa-4x mb-3"></i>
+                    <h5>Nenhuma locação encontrada</h5>
+                    <p>Este funcionário ainda não realizou nenhuma locação.</p>
+                    <a asp-controller="Locacoes" asp-action="Create" asp-route-funcionarioId="@Model.Id" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Criar Primeira Locação
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>

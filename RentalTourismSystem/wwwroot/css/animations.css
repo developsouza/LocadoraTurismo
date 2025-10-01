@@ -1,0 +1,765 @@
+﻿/* ===== ANIMAÇÕES AVANÇADAS E ESTILOS COMPLEMENTARES ===== */
+
+/* ===== CSS ANIMATIONS ===== */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutLeft {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.7;
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-10px);
+    }
+
+    20%, 40%, 60%, 80% {
+        transform: translateX(10px);
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes scaleUp {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(99, 102, 241, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.6), 0 0 30px rgba(99, 102, 241, 0.4);
+    }
+}
+
+/* ===== THEME TRANSITION ANIMATIONS ===== */
+[data-theme="light"] * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+[data-theme="dark"] * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Theme transition for specific elements */
+.sidebar,
+.main-content,
+.topbar,
+.card,
+.form-control,
+.btn,
+.alert,
+.table {
+    transition: var(--transition-base);
+}
+
+/* ===== SIDEBAR ANIMATIONS ===== */
+.sidebar {
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-brand-text,
+.nav-link-text,
+.nav-section-title,
+.user-info,
+.nav-dropdown-arrow {
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-submenu {
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+}
+
+    .nav-submenu.show {
+        animation: slideInFromTop 0.3s ease;
+    }
+
+.nav-link {
+    position: relative;
+    overflow: hidden;
+}
+
+    .nav-link::before {
+        content: '';
+        position: absolute;
+        left: -100%;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s ease;
+        z-index: 1;
+    }
+
+    .nav-link:hover::before {
+        left: 100%;
+    }
+
+/* ===== CARD HOVER ANIMATIONS ===== */
+.card {
+    position: relative;
+    overflow: hidden;
+}
+
+    .card::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+        transform: rotate(45deg);
+        transition: transform 0.6s ease;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .card:hover::after {
+        transform: rotate(45deg) translateX(100%);
+    }
+
+.dashboard-card {
+    position: relative;
+}
+
+    .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.8s ease;
+        z-index: 1;
+    }
+
+    .dashboard-card:hover::before {
+        left: 100%;
+    }
+
+/* ===== BUTTON ANIMATIONS ===== */
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.3s ease, height 0.3s ease;
+        z-index: 0;
+    }
+
+    .btn:hover::before {
+        width: 200%;
+        height: 200%;
+    }
+
+    .btn > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+    }
+
+/* ===== FORM ANIMATIONS ===== */
+.form-control,
+.form-select {
+    position: relative;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        animation: glowPulse 0.6s ease;
+    }
+
+.form-group {
+    position: relative;
+}
+
+.form-floating .form-control:focus ~ label,
+.form-floating .form-control:not(:placeholder-shown) ~ label {
+    animation: bounceIn 0.3s ease;
+}
+
+/* ===== TABLE ANIMATIONS ===== */
+.table tbody tr {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+    .table tbody tr:hover {
+        transform: translateX(5px);
+        background: var(--bg-surface-hover);
+        box-shadow: var(--shadow-sm);
+    }
+
+/* ===== ALERT ANIMATIONS ===== */
+.alert {
+    animation: slideInFromTop 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+    .alert.fade.show {
+        animation: fadeIn 0.3s ease;
+    }
+
+/* ===== MODAL ANIMATIONS ===== */
+.modal.fade .modal-dialog {
+    transform: scale(0.8) translateY(-20px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* ===== NOTIFICATION ANIMATIONS ===== */
+.notification-toast {
+    animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+    .notification-toast.removing {
+        animation: slideOutRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+/* ===== LOADING ANIMATIONS ===== */
+.spinner-modern {
+    animation: spin 1s linear infinite;
+}
+
+.loading-overlay {
+    animation: fadeIn 0.2s ease;
+}
+
+    .loading-overlay.hide {
+        animation: fadeOut 0.2s ease;
+    }
+
+/* ===== UTILITY ANIMATION CLASSES ===== */
+.animate-bounce-in {
+    animation: bounceIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-pulse {
+    animation: pulse 2s infinite;
+}
+
+.animate-rotate {
+    animation: rotate 1s linear infinite;
+}
+
+.animate-scale-up {
+    animation: scaleUp 0.3s ease forwards;
+}
+
+.animate-shake {
+    animation: shake 0.5s ease;
+}
+
+/* ===== HOVER EFFECTS ===== */
+.hover-lift {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+    .hover-lift:hover {
+        transform: translateY(-5px);
+    }
+
+.hover-glow {
+    transition: box-shadow 0.3s ease;
+}
+
+    .hover-glow:hover {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    }
+
+.hover-scale {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+    .hover-scale:hover {
+        transform: scale(1.05);
+    }
+
+.hover-brightness {
+    transition: filter 0.3s ease;
+}
+
+    .hover-brightness:hover {
+        filter: brightness(1.1);
+    }
+
+/* ===== STATUS INDICATORS ===== */
+.status-indicator {
+    position: relative;
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+    .status-indicator.success {
+        background: var(--success);
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+    }
+
+    .status-indicator.warning {
+        background: var(--warning);
+        box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+    }
+
+    .status-indicator.danger {
+        background: var(--danger);
+        box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+    }
+
+    .status-indicator.info {
+        background: var(--info);
+        box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+    }
+
+/* ===== PROGRESS ANIMATIONS ===== */
+.progress-bar {
+    position: relative;
+    overflow: hidden;
+}
+
+    .progress-bar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        animation: slideInRight 2s infinite;
+    }
+
+/* ===== SKELETON LOADING ===== */
+.skeleton {
+    background: linear-gradient(90deg, var(--bg-surface-secondary) 25%, var(--bg-surface-hover) 50%, var(--bg-surface-secondary) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--border-radius);
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.skeleton-text {
+    height: 1em;
+    margin-bottom: 0.5em;
+}
+
+    .skeleton-text:last-child {
+        width: 60%;
+    }
+
+.skeleton-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.skeleton-button {
+    height: 38px;
+    width: 120px;
+    border-radius: var(--border-radius);
+}
+
+/* ===== DARK MODE SPECIFIC ANIMATIONS ===== */
+[data-theme="dark"] .card:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .dashboard-card:hover {
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="dark"] .btn:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== ACCESSIBILITY ANIMATIONS ===== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .animate-bounce-in,
+    .animate-fade-in-scale,
+    .animate-slide-in,
+    .animate-pulse {
+        animation: none;
+    }
+
+    .status-indicator {
+        animation: none;
+    }
+}
+
+/* ===== FOCUS ANIMATIONS ===== */
+.btn:focus,
+.form-control:focus,
+.form-select:focus,
+.nav-link:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    animation: glowPulse 0.6s ease;
+}
+
+.dashboard-card:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    animation: glowPulse 0.6s ease;
+}
+
+/* ===== INTERACTIVE ELEMENTS ===== */
+.interactive-element {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+    .interactive-element:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .interactive-element:active {
+        transform: translateY(0);
+    }
+
+/* ===== THEME TOGGLE ANIMATION ===== */
+.theme-toggle {
+    position: relative;
+    overflow: hidden;
+}
+
+    .theme-toggle i {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .theme-toggle:hover i {
+        transform: rotate(180deg);
+    }
+
+    .theme-toggle::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.3s ease, height 0.3s ease;
+        z-index: 0;
+    }
+
+    .theme-toggle:hover::before {
+        width: 200%;
+        height: 200%;
+    }
+
+    .theme-toggle > * {
+        position: relative;
+        z-index: 1;
+    }
+
+/* ===== PERFORMANCE OPTIMIZATIONS ===== */
+.gpu-accelerated {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.sidebar,
+.dashboard-card,
+.btn,
+.card {
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+    .sidebar,
+    .topbar,
+    .btn,
+    .animate-bounce-in,
+    .animate-fade-in-scale,
+    .animate-slide-in,
+    .notification-toast,
+    .loading-overlay {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+    }
+
+    .card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+
+    .dashboard-card {
+        background: white !important;
+        color: black !important;
+    }
+}
+
+/* ===== HIGH CONTRAST MODE ===== */
+@media (prefers-contrast: high) {
+    .btn {
+        border: 2px solid currentColor;
+    }
+
+    .card {
+        border: 2px solid var(--border-color);
+    }
+
+    .dashboard-card {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .status-indicator {
+        border: 2px solid currentColor;
+    }
+}
+
+/* ===== RESPONSIVE ANIMATIONS ===== */
+@media (max-width: 768px) {
+    .dashboard-card:hover {
+        transform: none;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .card:hover {
+        transform: none;
+    }
+
+    .hover-lift:hover,
+    .hover-scale:hover {
+        transform: none;
+    }
+
+    .sidebar {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+}
+
+@media (max-width: 576px) {
+    .btn {
+        min-height: 44px; /* Touch target size */
+    }
+
+    .dashboard-card {
+        min-height: 120px;
+    }
+
+    .nav-link {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+/* ===== ANIMATION DELAYS FOR STAGGERED EFFECTS ===== */
+.stagger-1 {
+    animation-delay: 0.1s;
+}
+
+.stagger-2 {
+    animation-delay: 0.2s;
+}
+
+.stagger-3 {
+    animation-delay: 0.3s;
+}
+
+.stagger-4 {
+    animation-delay: 0.4s;
+}
+
+.stagger-5 {
+    animation-delay: 0.5s;
+}
+
+.stagger-6 {
+    animation-delay: 0.6s;
+}
+
+/* ===== CSS CUSTOM PROPERTIES FOR DYNAMIC ANIMATIONS ===== */
+:root {
+    --animation-duration-fast: 0.15s;
+    --animation-duration-normal: 0.3s;
+    --animation-duration-slow: 0.5s;
+    --animation-ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --animation-ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --animation-ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --animation-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Apply dynamic animation properties */
+.dynamic-animation {
+    transition: all var(--animation-duration-normal) var(--animation-ease);
+}
+
+.dynamic-animation-fast {
+    transition: all var(--animation-duration-fast) var(--animation-ease);
+}
+
+.dynamic-animation-slow {
+    transition: all var(--animation-duration-slow) var(--animation-ease);
+}

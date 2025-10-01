@@ -1,0 +1,213 @@
+﻿@{
+    ViewData["Title"] = "Relatórios";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>
+            <i class="fas fa-chart-bar me-2"></i>Relatórios e Estatísticas
+        </h2>
+        <p class="text-muted">Análise detalhada do desempenho do negócio</p>
+    </div>
+</div>
+
+<!-- Cards de estatísticas principais -->
+<div class="row mb-4">
+    <div class="col-md-2">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-2x mb-2"></i>
+                <h4>@ViewBag.TotalClientes</h4>
+                <small>Total de Clientes</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-car fa-2x mb-2"></i>
+                <h4>@ViewBag.TotalVeiculos</h4>
+                <small>Total de Veículos</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card bg-warning text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                <h4>@ViewBag.VeiculosDisponiveis</h4>
+                <small>Disponíveis</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card bg-info text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-clipboard-list fa-2x mb-2"></i>
+                <h4>@ViewBag.LocacoesMes</h4>
+                <small>Locações/Mês</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card bg-secondary text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-plane fa-2x mb-2"></i>
+                <h4>@ViewBag.ReservasMes</h4>
+                <small>Reservas/Mês</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card bg-dark text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-dollar-sign fa-2x mb-2"></i>
+                <h4>@((ViewBag.ReceitaLocacoesMes + ViewBag.ReceitaReservasMes).ToString("C"))</h4>
+                <small>Receita Total/Mês</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Receita mensal detalhada -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-car me-2"></i>Receita de Locações - Mês Atual
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="text-success mb-1">@ViewBag.ReceitaLocacoesMes.ToString("C")</h3>
+                        <p class="text-muted mb-0">@ViewBag.LocacoesMes locações realizadas</p>
+                    </div>
+                    <div class="text-end">
+                        <a asp-action="LocacoesPorPeriodo" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-chart-line me-1"></i>Ver Detalhes
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-plane me-2"></i>Receita de Turismo - Mês Atual
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="text-info mb-1">@ViewBag.ReceitaReservasMes.ToString("C")</h3>
+                        <p class="text-muted mb-0">@ViewBag.ReservasMes reservas confirmadas</p>
+                    </div>
+                    <div class="text-end">
+                        <a asp-action="ReservasPorPeriodo" class="btn btn-outline-info btn-sm">
+                            <i class="fas fa-chart-line me-1"></i>Ver Detalhes
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Top 5 Clientes -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-crown me-2"></i>Top 5 Clientes por Valor Gasto
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Total Gasto</th>
+                                <th>Locações</th>
+                                <th>Reservas</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cliente in ViewBag.TopClientes)
+                            {
+                                <tr>
+                                    <td>@cliente.Nome</td>
+                                    <td class="fw-bold text-success">@cliente.TotalGasto.ToString("C")</td>
+                                    <td>@cliente.TotalLocacoes</td>
+                                    <td>@cliente.TotalReservas</td>
+                                    <td>
+                                        @if (cliente.TotalGasto > 5000)
+                                        {
+                                            <span class="badge bg-warning">VIP</span>
+                                        }
+                                        else if (cliente.TotalGasto > 2000)
+                                        {
+                                            <span class="badge bg-info">Premium</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Regular</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Links para relatórios detalhados -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-car me-2"></i>Relatórios de Locação
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-action="LocacoesPorPeriodo" class="btn btn-outline-primary">
+                        <i class="fas fa-calendar me-1"></i>Locações por Período
+                    </a>
+                    <a asp-action="VeiculosMaisAlugados" class="btn btn-outline-success">
+                        <i class="fas fa-trophy me-1"></i>Veículos Mais Alugados
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-plane me-2"></i>Relatórios de Turismo
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-action="ReservasPorPeriodo" class="btn btn-outline-primary">
+                        <i class="fas fa-calendar me-1"></i>Reservas por Período
+                    </a>
+                    <a asp-action="PacotesMaisVendidos" class="btn btn-outline-success">
+                        <i class="fas fa-medal me-1"></i>Pacotes Mais Vendidos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

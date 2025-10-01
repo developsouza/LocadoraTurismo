@@ -1,0 +1,134 @@
+﻿@model RentalTourismSystem.Models.Agencia
+@{
+    ViewData["Title"] = "Nova Agência";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2>
+            <i class="fas fa-building me-2"></i>Nova Agência
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Agências</a></li>
+                <li class="breadcrumb-item active">Nova</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Dados da Agência</h5>
+            </div>
+            <div class="card-body">
+                <!-- ATUALIZADO: Adicionadas classes de validação -->
+                <form asp-action="Create" class="needs-validation form-agencia" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <!-- ATUALIZADO: Label com classe required -->
+                        <label asp-for="Nome" class="form-label required">Nome da Agência</label>
+                        <input asp-for="Nome" class="form-control"
+                               placeholder="Ex: Agência Centro, Filial Shopping..."
+                               required minlength="2" maxlength="100" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Endereco" class="form-label required">Endereço Completo</label>
+                        <input asp-for="Endereco" class="form-control"
+                               placeholder="Rua, número, bairro, cidade - UF"
+                               required minlength="5" maxlength="200" />
+                        <span asp-validation-for="Endereco" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Telefone" class="form-label required">Telefone</label>
+                            <!-- ATUALIZADO: Máscara de telefone -->
+                            <input asp-for="Telefone" class="form-control phone-mask"
+                                   placeholder="(11) 99999-9999" required />
+                            <span asp-validation-for="Telefone" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Email" class="form-label required">E-mail</label>
+                            <input asp-for="Email" class="form-control" type="email"
+                                   placeholder="agencia@empresa.com.br" required />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Criar Agência
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Voltar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightbulb me-1"></i>Dicas
+                </h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled small">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-1"></i>
+                        Use nomes que identifiquem a localização
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-1"></i>
+                        Forneça endereço completo e atualizado
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-1"></i>
+                        Verifique se telefone e email estão corretos
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-1"></i>
+                        Após criar, cadastre funcionários e veículos
+                    </li>
+                </ul>
+
+                <div class="mt-3 p-2 bg-light rounded">
+                    <small class="text-muted">
+                        <strong>Próximos passos:</strong><br>
+                        1. Criar agência<br>
+                        2. Cadastrar funcionários<br>
+                        3. Adicionar veículos<br>
+                        4. Começar operação
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Validações automáticas aplicadas pela classe form-agencia
+            console.log('Validações de agência aplicadas');
+
+            // Validação de email único (exemplo)
+            $('#Email').on('blur', async function() {
+                const email = $(this).val();
+                if (email) {
+                    // Aqui você pode implementar validação de email único
+                    // const response = await fetch(`/Agencias/ValidarEmailUnico?email=${encodeURIComponent(email)}`);
+                    console.log('Validando email único:', email);
+                }
+            });
+        });
+    </script>
+}

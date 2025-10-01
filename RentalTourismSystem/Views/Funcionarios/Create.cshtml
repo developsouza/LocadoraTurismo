@@ -1,0 +1,251 @@
+﻿@model RentalTourismSystem.Models.Funcionario
+@{
+    ViewData["Title"] = "Novo Funcionário";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2>
+            <i class="fas fa-user-plus me-2"></i>Novo Funcionário
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Funcionários</a></li>
+                <li class="breadcrumb-item active">Novo</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-user-tie me-1"></i>Dados do Funcionário
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- ATUALIZADO: Adicionadas classes de validação -->
+                <form asp-action="Create" class="needs-validation form-funcionario" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <!-- ATUALIZADO: Label com classe required -->
+                            <label asp-for="Nome" class="form-label required">Nome Completo</label>
+                            <input asp-for="Nome" class="form-control"
+                                   placeholder="Nome completo"
+                                   required minlength="2" maxlength="100" />
+                            <span asp-validation-for="Nome" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Cpf" class="form-label required">CPF</label>
+                            <!-- ATUALIZADO: Máscara de CPF -->
+                            <input asp-for="Cpf" class="form-control cpf-mask"
+                                   placeholder="000.000.000-00" required />
+                            <span asp-validation-for="Cpf" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Email" class="form-label required">Email</label>
+                            <input asp-for="Email" class="form-control" type="email"
+                                   placeholder="email@exemplo.com" required />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Telefone" class="form-label required">Telefone</label>
+                            <!-- ATUALIZADO: Máscara de telefone -->
+                            <input asp-for="Telefone" class="form-control phone-mask"
+                                   placeholder="(11) 99999-9999" required />
+                            <span asp-validation-for="Telefone" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Cargo" class="form-label required">Cargo</label>
+                            <select asp-for="Cargo" class="form-select" required>
+                                <option value="">Selecione um cargo</option>
+                                <option value="Gerente">Gerente</option>
+                                <option value="Atendente">Atendente</option>
+                                <option value="Vendedor">Vendedor</option>
+                                <option value="Mecânico">Mecânico</option>
+                                <option value="Guia Turístico">Guia Turístico</option>
+                                <option value="Auxiliar Administrativo">Auxiliar Administrativo</option>
+                            </select>
+                            <span asp-validation-for="Cargo" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Salario" class="form-label required">Salário</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <!-- ATUALIZADO: Máscara monetária e validação de valor mínimo -->
+                                <input asp-for="Salario" class="form-control money-mask"
+                                       required data-rule-valor-minimo="1412" />
+                            </div>
+                            <span asp-validation-for="Salario" class="text-danger"></span>
+                            <div class="form-text">Valor mínimo: R$ 1.412,00 (salário mínimo)</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="DataAdmissao" class="form-label required">Data de Admissão</label>
+                            <!-- ATUALIZADO: Validação de data válida -->
+                            <input asp-for="DataAdmissao" class="form-control" type="date"
+                                   required max="9999-12-31" />
+                            <span asp-validation-for="DataAdmissao" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="AgenciaId" class="form-label required">Agência</label>
+                        <select asp-for="AgenciaId" class="form-select" asp-items="ViewBag.AgenciaId" required>
+                            <option value="">Selecione uma agência</option>
+                        </select>
+                        <span asp-validation-for="AgenciaId" class="text-danger"></span>
+                        <div class="form-text">Agência onde o funcionário irá trabalhar</div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Salvar Funcionário
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Voltar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-info-circle me-1"></i>Informações
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-user-check me-1"></i>Campos obrigatórios:
+                    </h6>
+                    <ul class="mb-0 small">
+                        <li>Nome completo</li>
+                        <li>CPF (único)</li>
+                        <li>Email (único)</li>
+                        <li>Telefone</li>
+                        <li>Cargo</li>
+                        <li>Salário</li>
+                        <li>Data de admissão</li>
+                        <li>Agência</li>
+                    </ul>
+                </div>
+
+                <div class="alert alert-warning">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-exclamation-triangle me-1"></i>Validações:
+                    </h6>
+                    <ul class="mb-0 small">
+                        <li>CPF deve ser válido</li>
+                        <li>Email deve ser válido</li>
+                        <li>Salário mínimo: R$ 1.412,00</li>
+                        <li>Data de admissão válida</li>
+                    </ul>
+                </div>
+
+                <div class="alert alert-success">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-lightbulb me-1"></i>Dica:
+                    </h6>
+                    <p class="mb-0 small">
+                        Após criar o funcionário, ele poderá ser atribuído a locações e reservas.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Validações automáticas aplicadas pela classe form-funcionario
+            console.log('Validações de funcionário aplicadas');
+
+            // Definir data de admissão como hoje por padrão
+            const hoje = new Date().toISOString().split('T')[0];
+            $('#DataAdmissao').val(hoje);
+
+            // Validação de CPF em tempo real
+            $('#Cpf').on('blur', async function() {
+                const cpf = limparMascara($(this).val(), 'cpf');
+
+                if (cpf && cpf.length === 11) {
+                    try {
+                        const validacao = await validarCpf(cpf);
+                        if (!validacao.valido) {
+                            if (typeof NotificacaoValidacao !== 'undefined') {
+                                NotificacaoValidacao.erro('CPF inválido: ' + validacao.mensagem);
+                            }
+                        }
+                    } catch (error) {
+                        console.log('Erro na validação do CPF:', error);
+                    }
+                }
+            });
+
+            // Validação de salário baseada no cargo
+            $('#Cargo').on('change', function() {
+                const cargo = $(this).val();
+                let salarioSugerido = 1412; // Salário mínimo
+
+                switch(cargo) {
+                    case 'Gerente':
+                        salarioSugerido = 8000;
+                        break;
+                    case 'Vendedor':
+                        salarioSugerido = 3000;
+                        break;
+                    case 'Atendente':
+                        salarioSugerido = 2500;
+                        break;
+                    case 'Guia Turístico':
+                        salarioSugerido = 2800;
+                        break;
+                    case 'Mecânico':
+                        salarioSugerido = 3500;
+                        break;
+                    case 'Auxiliar Administrativo':
+                        salarioSugerido = 2000;
+                        break;
+                }
+
+                // Sugerir valor no campo (não obrigatório)
+                const salarioAtual = $('#Salario').val();
+                if (!salarioAtual || salarioAtual == '0' || salarioAtual == '0,00') {
+                    $('#Salario').val(salarioSugerido.toLocaleString('pt-BR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }));
+                }
+            });
+
+            // Validação de email único
+            $('#Email').on('blur', async function() {
+                const email = $(this).val();
+
+                if (email && email.length > 0) {
+                    try {
+                        // Implementar validação de email único se necessário
+                        // const response = await fetch(`/Funcionarios/ValidarEmailUnico?email=${encodeURIComponent(email)}`);
+                        console.log('Validando email único para funcionário:', email);
+                    } catch (error) {
+                        console.log('Erro na validação do email:', error);
+                    }
+                }
+            });
+        });
+    </script>
+}

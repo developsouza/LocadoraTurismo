@@ -1,0 +1,782 @@
+﻿@model RentalTourismSystem.Models.Veiculo
+@{
+    ViewData["Title"] = $"Veículo: {Model.Marca} {Model.Modelo}";
+    
+    // Verificações seguras para evitar null reference
+    var locacoes = Model.Locacoes ?? new List<RentalTourismSystem.Models.Locacao>();
+    
+    // Cálculos seguros
+    var totalLocacoes = locacoes.Count();
+    var temAtividades = totalLocacoes > 0;
+    var locacoesAtivas = locacoes.Where(l => l.DataDevolucaoReal == null).Count();
+    var locacoesFinalizadas = locacoes.Where(l => l.DataDevolucaoReal != null).Count();
+    
+    // Cálculos financeiros seguros
+    var valorTotalGerado = locacoes.Sum(l => l.ValorTotal);
+    var valorMedioLocacao = totalLocacoes > 0 ? valorTotalGerado / totalLocacoes : 0;
+    
+    // Status atual
+    var statusAtual = Model.StatusCarro?.Status ?? "Indefinido";
+    var statusIcon = statusAtual switch {
+        "Disponível" => "fa-check-circle",
+        "Alugado" => "fa-handshake", 
+        "Manutenção" => "fa-wrench",
+        "Indisponível" => "fa-pause-circle",
+        _ => "fa-question-circle"
+    };
+    
+    // Análise de performance - Corrigindo o erro de HasValue/Value
+    var diasNoSistema = Model.DataCadastro != DateTime.MinValue ? Math.Max((DateTime.Now - Model.DataCadastro).Days, 1) : 1;
+    var frequenciaUso = totalLocacoes > 0 ? (double)totalLocacoes / Math.Max((diasNoSistema / 30.0), 1) : 0;
+    
+    // Classificação de performance
+    string classificacaoPerformance = valorTotalGerado switch {
+        > 10000 => "Excelente",
+        > 5000 => "Boa",
+        > 1000 => "Regular",
+        _ => "Inicial"
+    };
+    
+    // Verificação de CNH para novas locações
+    var podeLocar = statusAtual == "Disponível";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h2 class="text-gradient mb-1">
+                    <i class="fas fa-car me-2"></i>@Model.Marca @Model.Modelo
+                    @if (locacoesAtivas > 0)
+                    {
+                        <span class="badge bg-warning ms-2">Veículo Ativo</span>
+                    }
+                    @if (statusAtual == "Manutenção")
+                    {
+                        <span class="badge bg-danger ms-2">Em Manutenção</span>
+                    }
+                </h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Veículos</a></li>
+                        <li class="breadcrumb-item active">@Model.Marca @Model.Modelo</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-info btn-sm" onclick="validarDadosVeiculo()">
+                    <i class="fas fa-check-circle me-1"></i>Validar Dados
+                </button>
+                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning hover-lift">
+                        <i class="fas fa-edit me-1"></i>Editar
+                    </a>
+                }
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="gerarRelatorioVeiculo()">
+                            <i class="fas fa-file-pdf me-2"></i>Gerar Relatório
+                        </a></li>
+                        <li><a class="dropdown-item" href="#" onclick="exportarDados()">
+                            <i class="fas fa-download me-2"></i>Exportar Dados
+                        </a></li>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="alterarStatusModal(@Model.Id)">
+                                <i class="fas fa-exchange-alt me-2"></i>Alterar Status
+                            </a></li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" asp-action="Delete" asp-route-id="@Model.Id">
+                                <i class="fas fa-trash me-2 text-danger"></i>Excluir Veículo
+                            </a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cards de Estatísticas Principais -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3 hover-lift" 
+             style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas fa-handshake fa-2x mb-2"></i>
+                <h3 class="stat-number">@totalLocacoes</h3>
+                <p class="stat-label mb-0">Locações Realizadas</p>
+                @if (locacoesAtivas > 0)
+                {
+                    <small class="badge bg-warning mt-1">@locacoesAtivas ativa(s)</small>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3 hover-lift" 
+             style="background: linear-gradient(135deg, var(--success) 0%, var(--success-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas fa-dollar-sign fa-2x mb-2"></i>
+                <h3 class="stat-number">@valorTotalGerado.ToString("C0")</h3>
+                <p class="stat-label mb-0">Receita Gerada</p>
+                <small class="opacity-75">Total arrecadado</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3 hover-lift" 
+             style="background: linear-gradient(135deg, var(--info) 0%, var(--info-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas @statusIcon fa-2x mb-2"></i>
+                <h3 class="stat-number" style="font-size: 1.5rem;">@statusAtual</h3>
+                <p class="stat-label mb-0">Status Atual</p>
+                <small class="opacity-75">@(DateTime.Now.ToString("dd/MM/yyyy"))</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3 hover-lift" 
+             style="background: linear-gradient(135deg, var(--warning) 0%, var(--warning-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas fa-tachometer-alt fa-2x mb-2"></i>
+                <h3 class="stat-number">@Model.Quilometragem.ToString("N0")</h3>
+                <p class="stat-label mb-0">Quilometragem</p>
+                <small class="opacity-75">km rodados</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Coluna Principal - Informações e Atividades -->
+    <div class="col-lg-8">
+        <!-- Card de Informações do Veículo -->
+        <div class="card mb-4 hover-lift">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Informações do Veículo
+                    <button type="button" class="btn btn-sm btn-outline-light float-end" 
+                            onclick="copiarDadosVeiculo()">
+                        <i class="fas fa-copy me-1"></i>Copiar Dados
+                    </button>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="info-group mb-3">
+                            <label class="text-muted small">Marca/Modelo:</label>
+                            <p class="h6 mb-0">@Model.Marca @Model.Modelo</p>
+                        </div>
+                        <div class="info-group mb-3">
+                            <label class="text-muted small">Ano de Fabricação:</label>
+                            <p class="mb-0">
+                                @Model.Ano
+                                <small class="text-muted">(@((DateTime.Now.Year - Model.Ano)) anos)</small>
+                            </p>
+                        </div>
+                        <div class="info-group mb-3">
+                            <label class="text-muted small">Placa:</label>
+                            <p class="mb-0">
+                                <code class="bg-adaptive-surface text-adaptive-primary px-2 py-1 rounded">
+                                    @Model.Placa
+                                </code>
+                                <button type="button" class="btn btn-sm btn-outline-secondary ms-2" 
+                                        onclick="copiarTexto('@Model.Placa')">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <small class="text-muted ms-2">
+                                    @(Model.Placa.Contains("-") ? "Formato Antigo" : "Mercosul")
+                                </small>
+                            </p>
+                        </div>
+                        <div class="info-group mb-3">
+                            <label class="text-muted small">Cor:</label>
+                            <p class="mb-0">@Model.Cor</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-group mb-3">
+                            <label class="text-muted small">Quilometragem:</label>
+                            <p class="mb-0">
+                                @Model.Quilometragem.ToString("N0") km
+                                @{
+                                    var kmPorAno = Model.Quilometragem / Math.Max((DateTime.Now.Year - Model.Ano), 1);
+                                }
+                                <br><small class="text-muted">~@(kmPorAno.ToString("N0")) km/ano</small>
+                            </p>
+                        </div>
+                        <div class="info-group mb-3">
+                            <label class="text-muted small">Valor da Diária:</label>
+                            <p class="mb-0">
+                                <span class="h5 text-success">@Model.ValorDiaria.ToString("C")</span>
+                                @if (valorMedioLocacao > 0)
+                                {
+                                    <br><small class="text-muted">Média cobrada: @valorMedioLocacao.ToString("C")</small>
+                                }
+                            </p>
+                        </div>
+                        <div class="info-group mb-3">
+                            <label class="text-muted small">Status Atual:</label>
+                            <p class="mb-0">
+                                <span class="badge @(statusAtual switch {
+                                    "Disponível" => "bg-success",
+                                    "Alugado" => "bg-warning",
+                                    "Manutenção" => "bg-danger",
+                                    "Indisponível" => "bg-secondary",
+                                    _ => "bg-secondary"
+                                }) fs-6">
+                                    <i class="fas @statusIcon me-1"></i>@statusAtual
+                                </span>
+                            </p>
+                        </div>
+                        <div class="info-group mb-3">
+                            <label class="text-muted small">Agência Responsável:</label>
+                            <p class="mb-0">
+                                <a asp-controller="Agencias" asp-action="Details" asp-route-id="@Model.AgenciaId" 
+                                   class="text-decoration-none">
+                                    <i class="fas fa-building text-primary me-1"></i>@Model.Agencia.Nome
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.DataCadastro != DateTime.MinValue)
+                {
+                    <div class="info-group">
+                        <label class="text-muted small">Informações Adicionais:</label>
+                        <div class="row mt-2">
+                            <div class="col-md-4">
+                                <small><i class="fas fa-calendar-plus text-info me-1"></i>
+                                <strong>Cadastrado:</strong> @Model.DataCadastro.ToString("dd/MM/yyyy")</small>
+                            </div>
+                            <div class="col-md-4">
+                                <small><i class="fas fa-clock text-warning me-1"></i>
+                                <strong>No sistema:</strong> @diasNoSistema dias</small>
+                            </div>
+                            <div class="col-md-4">
+                                <small><i class="fas fa-star text-success me-1"></i>
+                                <strong>Performance:</strong> @classificacaoPerformance</small>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Histórico de Locações -->
+        @if (temAtividades)
+        {
+            <!-- Tabs para diferentes visualizações -->
+            <div class="card">
+                <div class="card-header bg-adaptive-light">
+                    <ul class="nav nav-tabs card-header-tabs" id="atividadesTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="locacoes-tab" data-bs-toggle="tab" href="#locacoes" role="tab">
+                                <i class="fas fa-handshake me-1"></i>Locações (@totalLocacoes)
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="timeline-tab" data-bs-toggle="tab" href="#timeline" role="tab">
+                                <i class="fas fa-clock me-1"></i>Timeline
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="atividadesTabContent">
+                        <div class="tab-pane fade show active" id="locacoes" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Cliente</th>
+                                            <th>Período</th>
+                                            <th>Status</th>
+                                            <th>Valor</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var locacao in locacoes.OrderByDescending(l => l.DataRetirada).Take(10))
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div>
+                                                        <strong>@(locacao.Cliente?.Nome ?? "N/A")</strong>
+                                                        @if (!string.IsNullOrEmpty(locacao.Cliente?.Telefone))
+                                                        {
+                                                            <br><small class="text-muted">@locacao.Cliente.Telefone</small>
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <small>
+                                                        <strong>Retirada:</strong> @locacao.DataRetirada.ToString("dd/MM/yyyy")<br>
+                                                        <strong>Devolução:</strong> @locacao.DataDevolucao.ToString("dd/MM/yyyy")
+                                                        @if (locacao.DataDevolucaoReal.HasValue)
+                                                        {
+                                                            <br><span class="text-success">Real: @locacao.DataDevolucaoReal.Value.ToString("dd/MM/yyyy")</span>
+                                                        }
+                                                    </small>
+                                                </td>
+                                                <td>
+                                                    @if (locacao.DataDevolucaoReal.HasValue)
+                                                    {
+                                                        @if (locacao.DataDevolucaoReal.Value.Date > locacao.DataDevolucao.Date)
+                                                        {
+                                                            <span class="badge bg-warning">
+                                                                <i class="fas fa-exclamation-triangle me-1"></i>Finalizada com Atraso
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge bg-success">
+                                                                <i class="fas fa-check me-1"></i>Finalizada
+                                                            </span>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @if (DateTime.Now.Date > locacao.DataDevolucao.Date)
+                                                        {
+                                                            <span class="badge bg-danger">
+                                                                <i class="fas fa-clock me-1"></i>Atrasada
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge bg-primary">
+                                                                <i class="fas fa-handshake me-1"></i>Ativa
+                                                            </span>
+                                                        }
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <strong class="text-success">@locacao.ValorTotal.ToString("C")</strong>
+                                                </td>
+                                                <td>
+                                                    <a href="#" onclick="verDetalhesLocacao(@locacao.Id)"
+                                                       class="btn btn-sm btn-outline-primary" title="Ver Detalhes">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            @if (totalLocacoes > 10)
+                            {
+                                <div class="text-center mt-3">
+                                    <button type="button" class="btn btn-outline-primary" onclick="verTodasLocacoes()">
+                                        <i class="fas fa-list me-1"></i>Ver Todas as Locações (@totalLocacoes)
+                                    </button>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="tab-pane fade" id="timeline" role="tabpanel">
+                            <div class="timeline">
+                                @foreach (var locacao in locacoes.OrderByDescending(l => l.DataRetirada).Take(5))
+                                {
+                                    <div class="timeline-item">
+                                        <div class="timeline-marker @(locacao.DataDevolucaoReal.HasValue ? "bg-success" : "bg-primary")"></div>
+                                        <div class="timeline-content">
+                                            <h6 class="mb-1">Locação - @(locacao.Cliente?.Nome ?? "Cliente N/A")</h6>
+                                            <p class="mb-1 small text-muted">
+                                                @locacao.DataRetirada.ToString("dd/MM/yyyy") até @locacao.DataDevolucao.ToString("dd/MM/yyyy")
+                                            </p>
+                                            <span class="badge @(locacao.DataDevolucaoReal.HasValue ? "bg-success" : "bg-primary") small">
+                                                @locacao.ValorTotal.ToString("C")
+                                            </span>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Estado Vazio -->
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-handshake fa-4x text-muted mb-3"></i>
+                    <h5 class="text-muted">Nenhuma locação encontrada</h5>
+                    <p class="text-muted">Este veículo ainda não foi alugado.</p>
+                    @if (podeLocar)
+                    {
+                        <div class="d-flex gap-2 justify-content-center">
+                            <a asp-controller="Locacoes" asp-action="Create" asp-route-veiculoId="@Model.Id" class="btn btn-success">
+                                <i class="fas fa-plus me-1"></i>Criar Primeira Locação
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-warning">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            Veículo precisa estar "Disponível" para criar locações
+                        </p>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Sidebar Direita -->
+    <div class="col-lg-4">
+        <!-- Card de Ações Rápidas -->
+        <div class="card mb-4 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightning-bolt me-1"></i>Ações Rápidas
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    @if (podeLocar)
+                    {
+                        <a asp-controller="Locacoes" asp-action="Create" asp-route-veiculoId="@Model.Id" 
+                           class="btn btn-success">
+                            <i class="fas fa-plus me-1"></i>Nova Locação
+                        </a>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-outline-secondary" disabled 
+                                title="Veículo não disponível">
+                            <i class="fas fa-plus me-1"></i>Nova Locação (Status: @statusAtual)
+                        </button>
+                    }
+                    
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <button type="button" class="btn btn-outline-warning" onclick="alterarStatusModal(@Model.Id)">
+                            <i class="fas fa-exchange-alt me-1"></i>Alterar Status
+                        </button>
+                    }
+                    
+                    <button type="button" class="btn btn-outline-info" onclick="verificarDisponibilidade(@Model.Id)">
+                        <i class="fas fa-calendar-check me-1"></i>Verificar Disponibilidade
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Status do Veículo -->
+        <div class="card mb-4 border-info">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-traffic-light me-1"></i>Status do Veículo
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="status-checks">
+                    <div class="status-item d-flex align-items-center mb-2">
+                        <i class="fas fa-circle text-success me-2"></i>
+                        <span>Dados básicos completos</span>
+                    </div>
+                    <div class="status-item d-flex align-items-center mb-2">
+                        <i class="fas fa-circle @(statusAtual == "Disponível" ? "text-success" : statusAtual == "Alugado" ? "text-warning" : "text-danger") me-2"></i>
+                        <span>Status: @statusAtual</span>
+                    </div>
+                    <div class="status-item d-flex align-items-center mb-2">
+                        <i class="fas fa-circle @(temAtividades ? "text-success" : "text-muted") me-2"></i>
+                        <span>@(temAtividades ? $"Veículo ativo ({totalLocacoes} locações)" : "Sem atividades")</span>
+                    </div>
+                    <div class="status-item d-flex align-items-center mb-2">
+                        <i class="fas fa-circle @(locacoesAtivas > 0 ? "text-warning" : "text-success") me-2"></i>
+                        <span>@(locacoesAtivas > 0 ? $"Possui {locacoesAtivas} locação(ões) ativa(s)" : "Sem pendências")</span>
+                    </div>
+                </div>
+
+                @if (locacoesAtivas > 0)
+                {
+                    <hr>
+                    <div class="alert alert-warning small mb-0">
+                        <strong>Atenção:</strong>
+                        <br><span>&bull; @locacoesAtivas locação(ões) ativa(s)</span>
+                        <br><span>&bull; Algumas alterações podem ser restritas</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Card de Análise de Performance -->
+        @if (temAtividades)
+        {
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-line me-1"></i>Análise de Performance
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="small">
+                        <p class="mb-2">
+                            <strong>Classificação:</strong> 
+                            <span class="badge @(classificacaoPerformance switch { 
+                                "Excelente" => "bg-success", 
+                                "Boa" => "bg-info", 
+                                "Regular" => "bg-warning",
+                                _ => "bg-secondary" 
+                            })">
+                                @classificacaoPerformance
+                            </span>
+                        </p>
+                        
+                        <p class="mb-1">
+                            <i class="fas fa-dollar-sign text-success me-1"></i>
+                            <strong>Valor médio por locação:</strong> @valorMedioLocacao.ToString("C")
+                        </p>
+                        
+                        <p class="mb-1">
+                            <i class="fas fa-calendar text-info me-1"></i>
+                            <strong>Frequência de uso:</strong> @frequenciaUso.ToString("F1") locações/mês
+                        </p>
+                        
+                        <p class="mb-1">
+                            <i class="fas fa-percent text-primary me-1"></i>
+                            <strong>Taxa de ocupação:</strong> @((double)locacoesFinalizadas / Math.Max(diasNoSistema / 30.0, 1) * 100).ToString("F0")%
+                        </p>
+                        
+                        <p class="mb-0">
+                            <i class="fas fa-clock text-warning me-1"></i>
+                            <strong>Tempo no sistema:</strong> @diasNoSistema dias
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Variáveis do veículo para JavaScript
+        var veiculoId = @Model.Id;
+        var veiculoInfo = '@Html.Raw(Html.Encode($"{Model.Marca} {Model.Modelo}"))';
+        var veiculoPlaca = '@Html.Raw(Html.Encode(Model.Placa))';
+        var veiculoStatus = '@Html.Raw(Html.Encode(statusAtual))';
+        var valorDiaria = @Model.ValorDiaria;
+
+        $(document).ready(function() {
+            // Configurar tooltips
+            initializeTooltips();
+            
+            // Configurar sistema de abas se existir
+            if (document.getElementById('atividadesTabs')) {
+                var triggerTabList = [].slice.call(document.querySelectorAll('#atividadesTabs a'));
+                triggerTabList.forEach(function (triggerEl) {
+                    var tabTrigger = new bootstrap.Tab(triggerEl);
+                    
+                    triggerEl.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        tabTrigger.show();
+                    });
+                });
+            }
+        });
+
+        // Validar dados completos via API
+        async function validarDadosVeiculo() {
+            try {
+                showLoadingOverlay();
+                const response = await fetch('/Veiculos/GetVeiculoData?id=' + veiculoId);
+                
+                if (response.ok) {
+                    const veiculo = await response.json();
+                    
+                    // Verificar completude dos dados
+                    const checks = {
+                        'Dados básicos': veiculo.marca && veiculo.modelo && veiculo.placa,
+                        'Ano válido': veiculo.ano >= 1990 && veiculo.ano <= new Date().getFullYear() + 1,
+                        'Valor diária': veiculo.valorDiaria > 0,
+                        'Status definido': veiculo.status && veiculo.status !== 'Indefinido',
+                        'Agência definida': veiculo.agencia
+                    };
+                    
+                    let html = '<div class="validation-results"><h6>Resultado da Validação:</h6>';
+                    
+                    for (const [check, valido] of Object.entries(checks)) {
+                        const icon = valido ? 'fas fa-check-circle text-success' : 'fas fa-times-circle text-danger';
+                        html += '<p><i class="' + icon + ' me-2"></i>' + check + '</p>';
+                    }
+                    
+                    html += '</div>';
+                    
+                    NotificationSystem.info(html);
+                } else {
+                    NotificationSystem.error('Erro ao carregar dados do veículo');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                NotificationSystem.error('Erro ao validar dados do veículo');
+            } finally {
+                hideLoadingOverlay();
+            }
+        }
+
+        // Verificar disponibilidade do veículo
+        async function verificarDisponibilidade(veiculoId) {
+            try {
+                showLoadingOverlay();
+
+                // Simular verificação de disponibilidade para próximos 7 dias
+                const hoje = new Date();
+                const proximaSemana = new Date(hoje.getTime() + (7 * 24 * 60 * 60 * 1000));
+
+                const response = await fetch(`/Veiculos/VerificarDisponibilidade?veiculoId=${veiculoId}&dataInicio=${hoje.toISOString()}&dataFim=${proximaSemana.toISOString()}`);
+
+                if (response.ok) {
+                    const resultado = await response.json();
+                    
+                    const mensagem = `Status da disponibilidade (próximos 7 dias):\n\n${resultado.disponivel ? '✅ DISPONÍVEL' : '❌ NÃO DISPONÍVEL'}\n\nMotivo: ${resultado.motivo}`;
+                    
+                    if (resultado.disponivel) {
+                        NotificationSystem.success(mensagem);
+                    } else {
+                        NotificationSystem.warning(mensagem);
+                    }
+                } else {
+                    NotificationSystem.error('Erro ao verificar disponibilidade');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                NotificationSystem.error('Erro ao verificar disponibilidade');
+            } finally {
+                hideLoadingOverlay();
+            }
+        }
+
+        // Modal para alterar status
+        function alterarStatusModal(veiculoId) {
+            // Implementar modal de alteração de status (similar ao Index)
+            NotificationSystem.info('Modal de alteração de status em desenvolvimento');
+        }
+
+        // Copiar dados do veículo
+        function copiarDadosVeiculo() {
+            const dados = `Veículo: ${veiculoInfo}\n` +
+                         `Placa: ${veiculoPlaca}\n` +
+                         `Ano: @Model.Ano\n` +
+                         `Cor: @Model.Cor\n` +
+                         `Quilometragem: @Model.Quilometragem.ToString("N0") km\n` +
+                         `Valor Diária: @Model.ValorDiaria.ToString("C")\n` +
+                         `Status: ${veiculoStatus}\n` +
+                         `Agência: @Model.Agencia.Nome`;
+            
+            copiarTexto(dados);
+            NotificationSystem.success('Dados do veículo copiados para a área de transferência');
+        }
+
+        // Copiar texto para área de transferência
+        function copiarTexto(texto) {
+            navigator.clipboard.writeText(texto).then(function() {
+                NotificationSystem.success('Texto copiado!');
+            }).catch(function() {
+                NotificationSystem.error('Erro ao copiar texto');
+            });
+        }
+
+        // Placeholder functions para ações que podem não ter controllers implementados
+        function verDetalhesLocacao(id) {
+            NotificationSystem.info('Função para ver detalhes da locação será implementada quando o controller estiver disponível');
+        }
+
+        function verTodasLocacoes() {
+            NotificationSystem.info('Função para ver todas as locações será implementada quando o controller estiver disponível');
+        }
+
+        // Gerar relatório do veículo
+        function gerarRelatorioVeiculo() {
+            NotificationSystem.info('Funcionalidade de relatório em desenvolvimento');
+        }
+
+        // Exportar dados do veículo
+        function exportarDados() {
+            NotificationSystem.info('Funcionalidade de exportação em desenvolvimento');
+        }
+
+        // Funções auxiliares para loading
+        function showLoadingOverlay() {
+            if (!document.querySelector('.loading-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.className = 'loading-overlay';
+                overlay.innerHTML = '<div class="spinner-modern"></div>';
+                document.body.appendChild(overlay);
+            }
+        }
+
+        function hideLoadingOverlay() {
+            const overlay = document.querySelector('.loading-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+    </script>
+    
+    <style>
+        /* Estilos para o timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: -1.5rem;
+            top: 0.25rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid var(--bg-surface);
+        }
+
+        .timeline-content h6 {
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .user-avatar, .veiculo-avatar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            border-radius: 50%;
+        }
+    </style>
+}

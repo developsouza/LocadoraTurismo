@@ -1,0 +1,238 @@
+﻿@model RentalTourismSystem.Models.ReservaViagem
+@{
+    ViewData["Title"] = "Editar Reserva";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2>
+            <i class="fas fa-edit me-2"></i>Editar Reserva #@Model.Id
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Reservas</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id">Reserva #@Model.Id</a></li>
+                <li class="breadcrumb-item active">Editar</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">Atualizar Dados da Reserva</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" id="reservaForm">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="ClienteId" class="form-label">Cliente</label>
+                            <select asp-for="ClienteId" class="form-select" asp-items="ViewBag.ClienteId">
+                            </select>
+                            <span asp-validation-for="ClienteId" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="PacoteViagemId" class="form-label">Pacote de Viagem</label>
+                            <select asp-for="PacoteViagemId" class="form-select" asp-items="ViewBag.PacoteViagemId" 
+                                    onchange="atualizarPrecoPacote()">
+                            </select>
+                            <span asp-validation-for="PacoteViagemId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="DataReserva" class="form-label">Data da Reserva</label>
+                            <input asp-for="DataReserva" class="form-control" type="date" readonly />
+                            <small class="text-muted">Data da reserva não pode ser alterada</small>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="DataViagem" class="form-label">Data da Viagem</label>
+                            @if (Model.StatusReservaViagem.Status == "Realizada")
+                            {
+                                <input asp-for="DataViagem" class="form-control" type="date" readonly />
+                            }
+                            else
+                            {
+                                <input asp-for="DataViagem" class="form-control" type="date" />
+                            }
+                            <span asp-validation-for="DataViagem" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Quantidade" class="form-label">Quantidade de Pessoas</label>
+                            <input asp-for="Quantidade" class="form-control" type="number" min="1" 
+                                   onchange="calcularValorTotal()" />
+                            <span asp-validation-for="Quantidade" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="StatusReservaViagemId" class="form-label">Status</label>
+                            <select asp-for="StatusReservaViagemId" class="form-select" asp-items="ViewBag.StatusReservaViagemId">
+                            </select>
+                            <span asp-validation-for="StatusReservaViagemId" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="ValorTotal" class="form-label">Valor Total</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input asp-for="ValorTotal" class="form-control" type="number" step="0.01" readonly />
+                            </div>
+                            <small class="text-muted">Calculado automaticamente</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Observacoes" class="form-label">Observações</label>
+                        <textarea asp-for="Observacoes" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Observacoes" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-save me-1"></i>Salvar Alterações
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Voltar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-info-circle me-1"></i>Status da Reserva
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <small class="text-muted">Status Atual:</small><br>
+                    @{
+                        string badgeClass = Model.StatusReservaViagem.Status switch
+                        {
+                            "Pendente" => "bg-warning",
+                            "Confirmada" => "bg-success",
+                            "Cancelada" => "bg-danger",
+                            "Realizada" => "bg-info",
+                            _ => "bg-secondary"
+                        };
+                    }
+                    <span class="badge @badgeClass fs-6">@Model.StatusReservaViagem.Status</span>
+                </div>
+                
+                @if (Model.DataViagem > DateTime.Now)
+                {
+                    <div class="mb-3">
+                        <small class="text-muted">Dias para a viagem:</small><br>
+                        @{
+                            var diasParaViagem = (Model.DataViagem.Date - DateTime.Now.Date).Days;
+                        }
+                        <strong class="text-primary">@diasParaViagem dia(s)</strong>
+                    </div>
+                }
+
+                <div class="alert alert-info">
+                    <small>
+                        <i class="fas fa-info-circle me-1"></i>
+                        Alterações no status podem afetar a disponibilidade e relatórios.
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header bg-success text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-calculator me-1"></i>Resumo Financeiro
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <small class="text-muted">Preço Unitário:</small><br>
+                        <span id="precoUnitario">@Model.PacoteViagem.Preco.ToString("C")</span>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Quantidade:</small><br>
+                        <span id="quantidadeDisplay">@Model.Quantidade</span>
+                    </div>
+                </div>
+                <hr>
+                <div class="text-center">
+                    <small class="text-muted">Subtotal Pacote:</small><br>
+                    <h5 class="text-success mb-0" id="subtotalPacote">@Model.ValorTotal.ToString("C")</h5>
+                </div>
+                <div class="text-center mt-2">
+                    <small class="text-muted">Serviços Adicionais:</small><br>
+                    <span id="valorServicos">@Model.ServicosAdicionais.Sum(s => s.Preco).ToString("C")</span>
+                </div>
+                <hr>
+                <div class="text-center">
+                    <small class="text-muted">Total Geral:</small><br>
+                    <h4 class="text-success mb-0" id="totalGeral">
+                        @((Model.ValorTotal + Model.ServicosAdicionais.Sum(s => s.Preco)).ToString("C"))
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        let precoUnitarioAtual = @Model.PacoteViagem.Preco;
+        
+        async function atualizarPrecoPacote() {
+            const pacoteId = document.querySelector('select[name="PacoteViagemId"]').value;
+            
+            if (!pacoteId) return;
+            
+            try {
+                const response = await fetch(`/api/Api/pacote/${pacoteId}/preco`);
+                const data = await response.json();
+                
+                precoUnitarioAtual = data.preco;
+                document.getElementById('precoUnitario').textContent = data.preco.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                });
+                
+                calcularValorTotal();
+            } catch (error) {
+                console.error('Erro ao buscar preço do pacote:', error);
+            }
+        }
+        
+        function calcularValorTotal() {
+            const quantidade = parseInt(document.querySelector('input[name="Quantidade"]').value) || 1;
+            const valorTotal = precoUnitarioAtual * quantidade;
+            
+            document.getElementById('quantidadeDisplay').textContent = quantidade;
+            document.getElementById('subtotalPacote').textContent = valorTotal.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+            
+            document.querySelector('input[name="ValorTotal"]').value = valorTotal.toFixed(2);
+            
+            // Atualizar total geral (incluindo serviços)
+            const valorServicos = @Model.ServicosAdicionais.Sum(s => s.Preco);
+            const totalGeral = valorTotal + valorServicos;
+            document.getElementById('totalGeral').textContent = totalGeral.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+        }
+    </script>
+}

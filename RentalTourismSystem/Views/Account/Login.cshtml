@@ -1,0 +1,297 @@
+﻿@model RentalTourismSystem.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Bem-vindo";
+    Layout = "_LayoutLogin";
+}
+
+<div class="login-container">
+    <div class="login-card animate-fade-in-scale">
+        <div class="login-header">
+            <div class="logo-wrapper">
+                <img src="/img/logo-litoral-sul.png" alt="Litoral Sul" class="company-logo">
+            </div>
+            <h2 class="brand-title">Bem-vindo de volta!</h2>
+            <p class="brand-subtitle">Faça login para acessar o sistema</p>
+        </div>
+
+        <div class="login-body">
+            <form asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="needs-validation" novalidate>
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger text-center" role="alert"></div>
+
+                <div class="form-floating mb-3 animate-slide-in stagger-1">
+                    <input asp-for="Email" class="form-control" placeholder="seu@email.com" autocomplete="username" required>
+                    <label asp-for="Email"></label>
+                    <span asp-validation-for="Email" class="invalid-feedback"></span>
+                </div>
+
+                <div class="form-floating mb-4 animate-slide-in stagger-2">
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Senha" autocomplete="current-password" required>
+                    <label asp-for="Password"></label>
+                    <span asp-validation-for="Password" class="invalid-feedback"></span>
+                </div>
+
+                <div class="form-check mb-4 text-start animate-slide-in stagger-3">
+                    <input asp-for="RememberMe" class="form-check-input">
+                    <label asp-for="RememberMe" class="form-check-label">
+                        Lembrar-me
+                    </label>
+                </div>
+
+                <div class="animate-slide-in stagger-4">
+                    <button type="submit" class="btn btn-primary btn-login">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Entrar no Sistema
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="login-footer">
+            <small>
+                &copy; @DateTime.Now.Year Sistema de Locação e Turismo.
+            </small>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        :root {
+            /* CORES BASEADAS NA SUA LOGO */
+            --primary-gold: #FFD700;
+            --secondary-gold: #FFA500;
+            --dark-gold: #B8860B;
+            --black-text: #2C2C2C;
+            --white-text: #FFFFFF;
+        }
+
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            /* MANTENDO SEU FUNDO ORIGINAL */
+            background: linear-gradient(to top, rgba(135, 206, 250, 0.4), rgba(0, 119, 190, 0.6)), url('/img/fundologin.png');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+
+        /* GLASSMORPHISM COM CORES DA LOGO */
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            padding: 2.5rem;
+            text-align: center;
+            /* GLASSMORPHISM COM TOM DOURADO */
+            background: rgba(255, 215, 0, 0.15);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.2);
+            color: var(--black-text);
+        }
+
+        .login-header {
+            margin-bottom: 2rem;
+        }
+
+        .logo-wrapper {
+            margin: 0 auto 1.5rem;
+            width: 200px;
+            height: auto;
+        }
+
+        .company-logo {
+            width: 100%;
+            height: auto;
+            max-width: 200px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .brand-title {
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--black-text);
+            text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+        }
+
+        .brand-subtitle {
+            color: var(--black-text);
+            font-size: 1rem;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        /* CAMPOS DO FORMULÁRIO COM TEMA DOURADO */
+        .form-control {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            backdrop-filter: blur(10px);
+            color: var(--black-text);
+            font-weight: 500;
+        }
+
+            .form-control::placeholder {
+                color: rgba(44, 44, 44, 0.6);
+            }
+
+            .form-control:focus {
+                background: rgba(255, 255, 255, 0.3);
+                border-color: var(--primary-gold);
+                box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+                color: var(--black-text);
+            }
+
+        .form-floating > label {
+            color: var(--black-text);
+            font-weight: 500;
+        }
+
+        .form-floating > .form-control:focus ~ label,
+        .form-floating > .form-control:not(:placeholder-shown) ~ label {
+            color: var(--dark-gold);
+            font-weight: 600;
+        }
+
+        .form-check-label {
+            color: var(--black-text);
+            font-weight: 500;
+        }
+
+        .form-check-input {
+            background-color: rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+        }
+
+            .form-check-input:checked {
+                background-color: var(--primary-gold);
+                border-color: var(--primary-gold);
+            }
+
+        /* BOTÃO COM GRADIENTE DOURADO */
+        .btn-login {
+            width: 100%;
+            padding: 0.875rem;
+            font-size: 1rem;
+            background: linear-gradient(135deg, var(--primary-gold) 0%, var(--secondary-gold) 100%);
+            border: 2px solid var(--dark-gold);
+            backdrop-filter: blur(10px);
+            color: var(--black-text);
+            font-weight: 700;
+            transition: all 0.3s ease;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+            .btn-login:hover {
+                background: linear-gradient(135deg, var(--secondary-gold) 0%, var(--dark-gold) 100%);
+                border-color: var(--dark-gold);
+                transform: translateY(-2px);
+                color: var(--black-text);
+                box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+            }
+
+        .login-footer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(255, 215, 0, 0.3);
+            color: var(--black-text);
+            opacity: 0.8;
+        }
+
+        /* ALERTA DE ERRO COM TEMA DOURADO */
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.15);
+            border: 2px solid rgba(220, 53, 69, 0.4);
+            backdrop-filter: blur(10px);
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* FEEDBACK DE VALIDAÇÃO */
+        .invalid-feedback {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* ANIMAÇÕES SUAVES */
+        .animate-fade-in-scale {
+            animation: fadeInScale 0.6s ease-out;
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .stagger-1 {
+            animation-delay: 0.1s;
+        }
+
+        .stagger-2 {
+            animation-delay: 0.2s;
+        }
+
+        .stagger-3 {
+            animation-delay: 0.3s;
+        }
+
+        .stagger-4 {
+            animation-delay: 0.4s;
+        }
+
+        @@keyframes fadeInScale {
+            from
+
+        {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        }
+
+        @@keyframes slideIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        /* RESPONSIVIDADE */
+        @@media (max-width: 480px) {
+            .login-card
+
+        {
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+        }
+
+        .company-logo {
+            max-width: 150px;
+        }
+
+        .brand-title {
+            font-size: 1.5rem;
+        }
+
+        }
+    </style>
+}

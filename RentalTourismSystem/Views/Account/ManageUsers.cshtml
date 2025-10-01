@@ -1,0 +1,128 @@
+﻿@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "Gerenciar Usuários";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        <i class="fas fa-users"></i>
+        Gerenciar Usuários
+    </h2>
+    <a asp-action="Register" class="btn btn-success">
+        <i class="fas fa-user-plus"></i>
+        Novo Usuário
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover" id="usersTable">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Cargo</th>
+                        <th>Agência</th>
+                        <th>Permissões</th>
+                        <th>Status</th>
+                        <th>Data Cadastro</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user.NomeCompleto</td>
+                            <td>@user.Email</td>
+                            <td>@user.Cargo</td>
+                            <td>@user.Agencia</td>
+                            <td>
+                                <span class="badge bg-info">@user.Roles</span>
+                            </td>
+                            <td>
+                                @if (user.Ativo)
+                                {
+                                    <span class="badge bg-success">Ativo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Inativo</span>
+                                }
+                            </td>
+                            <td>@DateTime.Parse(user.DataCadastro.ToString()).ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <form asp-action="ToggleUserStatus" method="post" style="display: inline;">
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        @if (user.Ativo)
+                                        {
+                                            <button type="submit" class="btn btn-sm btn-warning"
+                                                    onclick="return confirm('Desativar usuário?')">
+                                                <i class="fas fa-user-lock"></i>
+                                                Desativar
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" class="btn btn-sm btn-success"
+                                                    onclick="return confirm('Ativar usuário?')">
+                                                <i class="fas fa-user-check"></i>
+                                                Ativar
+                                            </button>
+                                        }
+                                    </form>
+
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-secondary dropdown-toggle"
+                                                type="button" data-bs-toggle="dropdown">
+                                            Permissão
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <form asp-action="ChangeUserRole" method="post">
+                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                    <input type="hidden" name="role" value="Employee" />
+                                                    <button type="submit" class="dropdown-item">Funcionário</button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form asp-action="ChangeUserRole" method="post">
+                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                    <input type="hidden" name="role" value="Manager" />
+                                                    <button type="submit" class="dropdown-item">Gerente</button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form asp-action="ChangeUserRole" method="post">
+                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                    <input type="hidden" name="role" value="Admin" />
+                                                    <button type="submit" class="dropdown-item">Administrador</button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#usersTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+                },
+                order: [[6, 'desc']], // Ordenar por data de cadastro
+                pageLength: 25
+            });
+        });
+    </script>
+}

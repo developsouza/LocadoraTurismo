@@ -1,0 +1,264 @@
+﻿@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "Veículos Mais Alugados";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>
+            <i class="fas fa-trophy me-2"></i>Ranking: Veículos Mais Alugados
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Relatórios</a></li>
+                <li class="breadcrumb-item active">Veículos Mais Alugados</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    @{
+        int contador = 1;
+    }
+    @foreach (var item in Model.Take(6))
+    {
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 @(contador <= 3 ? "border-warning" : "")">
+                @if (contador <= 3)
+                {
+                    <div class="card-header bg-warning text-dark text-center">
+                        <h5 class="mb-0">
+                            @if (contador == 1)
+                            {
+                                <i class="fas fa-crown me-1"></i>
+                            }
+                            else if (contador == 2)
+                            {
+                                <i class="fas fa-medal me-1"></i>
+                            }
+                            else
+                            {
+                                <i class="fas fa-award me-1"></i>
+                            }
+                            @(contador)º Lugar
+                        </h5>
+                    </div>
+                }
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-primary">@item.Veiculo.Marca @item.Veiculo.Modelo</h5>
+                    <p class="card-text small">
+                        <strong>Placa:</strong> @item.Veiculo.Placa<br>
+                        <strong>Ano:</strong> @item.Veiculo.Ano
+                        @if (!string.IsNullOrEmpty(item.Veiculo.Cor))
+                        {
+                            <br><strong>Cor:</strong> @item.Veiculo.Cor
+                        }
+                    </p>
+                    <div class="mt-auto">
+                        <div class="row text-center mb-3">
+                            <div class="col-4">
+                                <div class="border rounded p-2">
+                                    <h6 class="text-primary mb-0">@item.TotalLocacoes</h6>
+                                    <small class="text-muted">Locações</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="border rounded p-2">
+                                    <h6 class="text-success mb-0">@item.ReceitaTotal.ToString("C")</h6>
+                                    <small class="text-muted">Receita</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="border rounded p-2">
+                                    <h6 class="text-info mb-0">@item.MediaDiasAlugado.ToString("F1")</h6>
+                                    <small class="text-muted">Média Dias</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <small class="text-muted">Status Atual:</small><br>
+                            @{
+                                string badgeClass = item.Veiculo.StatusCarro?.Status switch
+                                {
+                                    "Disponível" => "bg-success",
+                                    "Alugado" => "bg-warning",
+                                    "Manutenção" => "bg-danger",
+                                    "Indisponível" => "bg-secondary",
+                                    _ => "bg-secondary"
+                                };
+                            }
+                            <span class="badge @badgeClass mb-2">@(item.Veiculo.StatusCarro?.Status ?? "Sem Status")</span><br>
+                            
+                            @if (item.UltimaLocacao != null)
+                            {
+                                <small class="text-muted">Última locação: @(((DateTime)item.UltimaLocacao).ToString("dd/MM/yyyy"))</small>
+                            }
+                            else
+                            {
+                                <small class="text-muted">Nunca foi alugado</small>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-controller="Veiculos" asp-action="Details" asp-route-id="@item.Veiculo.Id" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-eye me-1"></i>Ver Detalhes
+                    </a>
+                </div>
+            </div>
+        </div>
+        contador++;
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <div class="text-center text-muted py-5">
+        <i class="fas fa-car fa-4x mb-3"></i>
+        <h4>Nenhum veículo encontrado</h4>
+        <p>Ainda não há dados de locações de veículos.</p>
+        <a asp-controller="Veiculos" asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Cadastrar Primeiro Veículo
+        </a>
+    </div>
+}
+
+<!-- Análise detalhada -->
+@if (Model.Any())
+{
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i>Análise Detalhada da Frota
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Ranking</th>
+                                    <th>Veículo</th>
+                                    <th>Total Locações</th>
+                                    <th>Receita Total</th>
+                                    <th>Receita Média</th>
+                                    <th>Média Dias/Locação</th>
+                                    <th>Status</th>
+                                    <th>Última Locação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int pos = 1;
+                                }
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (pos <= 3)
+                                            {
+                                                <span class="badge @(pos == 1 ? "bg-warning" : pos == 2 ? "bg-secondary" : "bg-dark")">
+                                                    @(pos)º
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="fw-bold">@(pos)º</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <strong>@item.Veiculo.Marca @item.Veiculo.Modelo</strong><br>
+                                            <small class="text-muted">@item.Veiculo.Placa - @item.Veiculo.Ano</small>
+                                            @if (!string.IsNullOrEmpty(item.Veiculo.Cor))
+                                            {
+                                                <br><small class="text-info">@item.Veiculo.Cor</small>
+                                            }
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary">@item.TotalLocacoes</span>
+                                        </td>
+                                        <td class="text-success fw-bold">@item.ReceitaTotal.ToString("C")</td>
+                                        <td>@(item.TotalLocacoes > 0 ? (item.ReceitaTotal / item.TotalLocacoes).ToString("C") : "R$ 0,00")</td>
+                                        <td>
+                                            @if (item.TotalLocacoes > 0)
+                                            {
+                                                @item.MediaDiasAlugado.ToString("F1") <small>dias</small>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @{
+                                                string badgeClass = item.Veiculo.StatusCarro?.Status switch
+                                                {
+                                                    "Disponível" => "bg-success",
+                                                    "Alugado" => "bg-warning",
+                                                    "Manutenção" => "bg-danger",
+                                                    "Indisponível" => "bg-secondary",
+                                                    _ => "bg-secondary"
+                                                };
+                                            }
+                                            <span class="badge @badgeClass">@(item.Veiculo.StatusCarro?.Status ?? "Sem Status")</span>
+                                        </td>
+                                        <td>
+                                            @if (item.UltimaLocacao != null)
+                                            {
+                                                <small>@(((DateTime)item.UltimaLocacao).ToString("dd/MM/yyyy"))</small>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Nunca</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                    pos++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estatísticas resumidas -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h5>@Model.Count()</h5>
+                    <p class="mb-0">Total de Veículos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h5>@Model.Count(v => v.TotalLocacoes > 0)</h5>
+                    <p class="mb-0">Veículos Ativos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h5>@Model.Sum(v => v.TotalLocacoes)</h5>
+                    <p class="mb-0">Total de Locações</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body text-center">
+                    <h5>@Model.Sum(v => (decimal)v.ReceitaTotal).ToString("C0")</h5>
+                    <p class="mb-0">Receita Total</p>
+                </div>
+            </div>
+        </div>
+    </div>
+}

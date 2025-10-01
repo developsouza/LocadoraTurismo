@@ -1,0 +1,227 @@
+﻿@model RentalTourismSystem.Models.ReservaViagem
+@{
+    ViewData["Title"] = "Excluir Reserva";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="text-danger">
+            <i class="fas fa-exclamation-triangle me-2"></i>Excluir Reserva de Viagem
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Reservas</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id">Reserva #@Model.Id</a></li>
+                <li class="breadcrumb-item active">Excluir</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-trash me-2"></i>Confirmar Exclusão da Reserva
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-exclamation-triangle me-1"></i>Atenção!
+                    </h6>
+                    <p class="mb-0">
+                        Esta ação é <strong>irreversível</strong>. A reserva e todos os serviços
+                        adicionais associados serão excluídos permanentemente.
+                    </p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title text-primary">Cliente</h6>
+                                <p class="card-text">
+                                    <strong>@Model.Cliente.Nome</strong><br>
+                                    <small class="text-muted">@Model.Cliente.Email</small><br>
+                                    <small class="text-muted">@Model.Cliente.Telefone</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title text-success">Pacote</h6>
+                                <p class="card-text">
+                                    <strong>@Model.PacoteViagem.Nome</strong><br>
+                                    <small class="text-muted">@Model.PacoteViagem.Destino</small><br>
+                                    <small class="text-muted">@Model.PacoteViagem.Duracao dias</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h6 class="card-title text-warning">Detalhes da Reserva</h6>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <small class="text-muted">Data da Reserva:</small><br>
+                                <strong>@Model.DataReserva.ToString("dd/MM/yyyy")</strong>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Data da Viagem:</small><br>
+                                <strong>@Model.DataViagem.ToString("dd/MM/yyyy")</strong>
+                            </div>
+                            <div class="col-md-2">
+                                <small class="text-muted">Pessoas:</small><br>
+                                <strong>@Model.Quantidade</strong>
+                            </div>
+                            <div class="col-md-2">
+                                <small class="text-muted">Status:</small><br>
+                                @{
+                                    string badgeClass = Model.StatusReservaViagem.Status switch
+                                    {
+                                        "Pendente" => "bg-warning",
+                                        "Confirmada" => "bg-success",
+                                        "Cancelada" => "bg-danger",
+                                        "Realizada" => "bg-info",
+                                        _ => "bg-secondary"
+                                    };
+                                }
+                                <span class="badge @badgeClass">@Model.StatusReservaViagem.Status</span>
+                            </div>
+                            <div class="col-md-2">
+                                <small class="text-muted">Valor:</small><br>
+                                <strong class="text-success">@Model.ValorTotal.ToString("C")</strong>
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.Observacoes))
+                        {
+                            <div class="mt-2">
+                                <small class="text-muted">Observações:</small><br>
+                                <span>@Model.Observacoes</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                @if (Model.ServicosAdicionais.Any())
+                {
+                    <div class="alert alert-info mt-3">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-plus-circle me-1"></i>Serviços Adicionais
+                        </h6>
+                        <p>Esta reserva possui <strong>@Model.ServicosAdicionais.Count</strong> serviço(s) adicional(is):</p>
+                        <ul class="mb-0">
+                            @foreach (var servico in Model.ServicosAdicionais)
+                            {
+                                <li>@servico.Nome - @servico.Preco.ToString("C")</li>
+                            }
+                        </ul>
+                        <p class="mt-2 mb-0">
+                            <small class="text-muted">
+                                Valor total dos serviços: <strong>@Model.ServicosAdicionais.Sum(s => s.Preco).ToString("C")</strong>
+                            </small>
+                        </p>
+                    </div>
+                }
+
+                @if (Model.StatusReservaViagem.Status == "Confirmada" && Model.DataViagem > DateTime.Now)
+                {
+                    <div class="alert alert-warning mt-3">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-calendar-check me-1"></i>Reserva Confirmada
+                        </h6>
+                        <p class="mb-0">
+                            Esta reserva está <strong>confirmada</strong> para uma viagem futura
+                            (@Model.DataViagem.ToString("dd/MM/yyyy")).
+                            <strong>Considere cancelar em vez de excluir</strong> para manter histórico.
+                        </p>
+                    </div>
+                }
+
+                <form asp-action="Delete" method="post" class="mt-4">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="confirmarExclusao" required>
+                        <label class="form-check-label text-danger" for="confirmarExclusao">
+                            Confirmo que entendo que esta ação é irreversível
+                        </label>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>Excluir Reserva
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightbulb me-1"></i>Alternativas
+                </h6>
+            </div>
+            <div class="card-body">
+                <p class="small">Considere outras opções:</p>
+                <ul class="small">
+                    <li>Cancelar reserva em vez de excluir</li>
+                    <li>Transferir para outro cliente</li>
+                    <li>Reagendar para outra data</li>
+                    <li>Manter histórico para relatórios</li>
+                </ul>
+
+                <div class="d-grid gap-2 mt-3">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-sm">
+                        <i class="fas fa-edit me-1"></i>Editar em vez de excluir
+                    </a>
+                    @if (Model.StatusReservaViagem.Status != "Cancelada")
+                    {
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="cancelarReserva(@Model.Id)">
+                            <i class="fas fa-ban me-1"></i>Cancelar Reserva
+                        </button>
+                    }
+                </div>
+
+                <div class="alert alert-info mt-3">
+                    <small>
+                        <i class="fas fa-info-circle me-1"></i>
+                        <strong>Recomendação:</strong> Reservas importantes para o histórico
+                        devem ser canceladas em vez de excluídas.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function cancelarReserva(reservaId) {
+            if (confirm('Cancelar esta reserva em vez de excluir?')) {
+                // Implementar chamada AJAX para cancelar reserva
+                fetch('/ReservasViagens/CancelarReserva/' + reservaId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }).then(() => {
+                    alert('Reserva cancelada com sucesso!');
+                    window.location.href = '/ReservasViagens/Details/' + reservaId;
+                }).catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro ao cancelar reserva');
+                });
+            }
+        }
+    </script>
+}

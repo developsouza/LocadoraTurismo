@@ -1,0 +1,490 @@
+﻿@model IEnumerable<RentalTourismSystem.Models.Cliente>
+@{
+    ViewData["Title"] = "Clientes";
+    var totalClientes = Model.Count();
+    var clientesComCNH = Model.Count(c => !string.IsNullOrEmpty(c.NumeroHabilitacao));
+    var clientesComCNHValida = Model.Count(c => c.CNHValida);
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-gradient">
+            <i class="fas fa-users me-2"></i>Gestão de Clientes
+        </h2>
+        <p class="text-muted">Gerencie todos os clientes do sistema de locação e turismo</p>
+    </div>
+</div>
+
+<!-- Estatísticas Rápidas -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-2x mb-2"></i>
+                <h3 class="stat-number">@totalClientes</h3>
+                <p class="stat-label mb-0">Total de Clientes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3" style="background: linear-gradient(135deg, var(--success) 0%, var(--success-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas fa-id-card fa-2x mb-2"></i>
+                <h3 class="stat-number">@clientesComCNH</h3>
+                <p class="stat-label mb-0">Com CNH Cadastrada</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3" style="background: linear-gradient(135deg, var(--info) 0%, var(--info-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                <h3 class="stat-number">@clientesComCNHValida</h3>
+                <p class="stat-label mb-0">CNH Válida</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3" style="background: linear-gradient(135deg, var(--warning) 0%, var(--warning-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                <h3 class="stat-number">@(clientesComCNH - clientesComCNHValida)</h3>
+                <p class="stat-label mb-0">CNH Vencida/Vencendo</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Barra de Ferramentas -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <form method="get" class="d-flex" id="formBusca">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" name="busca" value="@ViewBag.Busca"
+                               class="form-control" id="searchInput"
+                               placeholder="Buscar por nome, CPF ou email... (Alt+S para focar)"
+                               autocomplete="off">
+                        <button type="submit" class="btn btn-outline-primary">
+                            <i class="fas fa-search me-1"></i>Buscar
+                        </button>
+                        @if (!string.IsNullOrEmpty(ViewBag.Busca as string))
+                        {
+                            <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i>Limpar
+                            </a>
+                        }
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="btn-group">
+                    <a asp-action="Create" class="btn btn-primary hover-lift">
+                        <i class="fas fa-user-plus me-1"></i>Novo Cliente
+                    </a>
+                    <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="#" onclick="exportarClientes()">
+                                <i class="fas fa-download me-2"></i>Exportar Lista
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#" onclick="imprimirLista()">
+                                <i class="fas fa-print me-2"></i>Imprimir
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="#" onclick="atualizarLista()">
+                                <i class="fas fa-refresh me-2"></i>Atualizar
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela de Clientes -->
+<div class="card">
+    <div class="card-header bg-adaptive-light">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 text-adaptive-primary">
+                <i class="fas fa-table me-2"></i>Lista de Clientes
+            </h5>
+            <small class="text-adaptive-muted" id="contadorResultados">
+                @(string.IsNullOrEmpty(ViewBag.Busca as string) ?
+                                $"Total: {totalClientes} clientes" :
+                                $"Encontrados: {totalClientes} resultados")
+            </small>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="tabelaClientes">
+                <thead class="bg-adaptive-surface">
+                    <tr>
+                        <th class="sortable" data-sort="nome">
+                            <i class="fas fa-user me-1"></i>Nome
+                            <i class="fas fa-sort sort-icon text-muted"></i>
+                        </th>
+                        <th class="sortable" data-sort="cpf">
+                            <i class="fas fa-id-card me-1"></i>CPF
+                            <i class="fas fa-sort sort-icon text-muted"></i>
+                        </th>
+                        <th class="sortable" data-sort="email">
+                            <i class="fas fa-envelope me-1"></i>Email
+                            <i class="fas fa-sort sort-icon text-muted"></i>
+                        </th>
+                        <th>
+                            <i class="fas fa-phone me-1"></i>Telefone
+                        </th>
+                        <th>
+                            <i class="fas fa-calendar me-1"></i>Idade
+                        </th>
+                        <th>
+                            <i class="fas fa-check-circle me-1"></i>CNH
+                        </th>
+                        <th class="text-center">
+                            <i class="fas fa-cogs me-1"></i>Ações
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cliente in Model)
+                    {
+                        <tr data-cliente-id="@cliente.Id" class="animate-fade-in">
+                            <td data-sort-value="@cliente.Nome">
+                                <div class="d-flex align-items-center">
+                                    <div class="user-avatar me-2" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                        @cliente.Nome.Substring(0, 1).ToUpper()
+                                    </div>
+                                    <div>
+                                        <strong>@cliente.Nome</strong>
+                                        <br><small class="text-muted">ID: @cliente.Id</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td data-sort-value="@cliente.Cpf">
+                                <code class="bg-adaptive-surface text-adaptive-primary px-2 py-1 rounded">
+                                    @cliente.Cpf
+                                </code>
+                            </td>
+                            <td data-sort-value="@cliente.Email">
+                                <a href="mailto:@cliente.Email" class="text-decoration-none">
+                                    @cliente.Email
+                                </a>
+                            </td>
+                            <td>
+                                <a href="tel:@cliente.Telefone.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("-", "")"
+                                   class="text-decoration-none">
+                                    @cliente.Telefone
+                                </a>
+                            </td>
+                            <td>
+                                @cliente.Idade anos
+                                <br><small class="text-muted">@cliente.DataNascimento.ToString("dd/MM/yyyy")</small>
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(cliente.NumeroHabilitacao))
+                                {
+                                    @if (cliente.CNHValida)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>Válida
+                                        </span>
+                                        @if (cliente.DiasParaVencimentoCNH.HasValue && cliente.DiasParaVencimentoCNH.Value <= 30)
+                                        {
+                                            <br>
+                            
+                                            <small class="text-warning">Vence em @cliente.DiasParaVencimentoCNH dias</small>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>Vencida
+                                        </span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">
+                                        <i class="fas fa-minus me-1"></i>Não informada
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm">
+                                    <a asp-action="Details" asp-route-id="@cliente.Id"
+                                       class="btn btn-outline-primary" title="Ver Detalhes"
+                                       data-bs-toggle="tooltip">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@cliente.Id"
+                                       class="btn btn-outline-warning" title="Editar Cliente"
+                                       data-bs-toggle="tooltip">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-outline-info"
+                                            title="Validar CNH" data-bs-toggle="tooltip"
+                                            onclick="validarCNHCliente(@cliente.Id)">
+                                        <i class="fas fa-id-card"></i>
+                                    </button>
+                                    <a asp-action="Delete" asp-route-id="@cliente.Id"
+                                       class="btn btn-outline-danger" title="Excluir Cliente"
+                                       data-bs-toggle="tooltip">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center text-muted py-5">
+                <i class="fas fa-inbox fa-4x mb-3 text-adaptive-muted"></i>
+                <h5 class="text-adaptive-primary">Nenhum cliente encontrado</h5>
+                @if (!string.IsNullOrEmpty(ViewBag.Busca as string))
+                {
+                    <p>Não encontramos resultados para "<strong>@ViewBag.Busca</strong>".</p>
+                    <a href="@Url.Action("Index")" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-1"></i>Ver todos os clientes
+                    </a>
+                }
+                else
+                {
+                    <p>Comece cadastrando o primeiro cliente do sistema.</p>
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-user-plus me-1"></i>Cadastrar Primeiro Cliente
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal para visualização rápida -->
+<div class="modal fade" id="modalVisualizacaoRapida" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-user me-2"></i>Informações do Cliente
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="conteudoModalCliente">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Configurar busca avançada usando sistema consolidado
+            setupAdvancedSearch('#searchInput', '#tabelaClientes', {
+                delay: 300,
+                minLength: 1,
+                highlightMatches: true
+            });
+
+            // Configurar ordenação de tabela
+            setupAdvancedTableSort('#tabelaClientes');
+
+            // Configurar tooltips
+            initializeTooltips();
+
+            // Auto-focus na busca quando carregar a página
+            @if (string.IsNullOrEmpty(ViewBag.Busca as string))
+            {
+                    <text>
+                    setTimeout(() => {
+                        document.getElementById('searchInput').focus();
+                    }, 500);
+                    </text>
+            }
+
+            // Implementar busca em tempo real
+            let timeoutBusca;
+            $('#searchInput').on('input', function() {
+                clearTimeout(timeoutBusca);
+                const termo = $(this).val();
+
+                timeoutBusca = setTimeout(() => {
+                    if (termo.length >= 2 || termo.length === 0) {
+                        buscarClientes(termo);
+                    }
+                }, 500);
+            });
+
+            // Carregar dados do cliente via AJAX ao clicar em "ver detalhes"
+            $('a[asp-action="Details"]').on('click', function(e) {
+                if (e.ctrlKey || e.shiftKey) return; // Permitir abrir em nova aba
+
+                e.preventDefault();
+                const clienteId = $(this).closest('tr').data('cliente-id');
+                carregarDadosCliente(clienteId);
+            });
+        });
+
+        // Função para buscar clientes via AJAX
+        async function buscarClientes(termo) {
+            try {
+                showLoadingOverlay();
+
+                const response = await fetch(`@Url.Action("Index")?busca=${encodeURIComponent(termo)}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (response.ok) {
+                    const html = await response.text();
+                    // Atualizar apenas o corpo da tabela
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const novoCorpo = doc.querySelector('#tabelaClientes tbody');
+
+                    if (novoCorpo) {
+                        document.querySelector('#tabelaClientes tbody').innerHTML = novoCorpo.innerHTML;
+
+                        // Atualizar contador
+                        const novasLinhas = novoCorpo.querySelectorAll('tr').length;
+                        document.getElementById('contadorResultados').textContent =
+                            `Encontrados: ${novasLinhas} resultados`;
+
+                        // Reinicializar tooltips
+                        initializeTooltips();
+                    }
+                }
+            } catch (error) {
+                console.error('Erro na busca:', error);
+                NotificationSystem.error('Erro ao buscar clientes');
+            } finally {
+                hideLoadingOverlay();
+            }
+        }
+
+        // Função para validar CNH via API
+        async function validarCNHCliente(clienteId) {
+            try {
+                showLoadingOverlay();
+
+                const response = await fetch(`@Url.Action("ValidarCNH")?clienteId=${clienteId}`);
+                const resultado = await response.json();
+
+                if (resultado.valida) {
+                    NotificationSystem.success(`CNH válida: ${resultado.mensagem}`);
+                } else {
+                    NotificationSystem.warning(`CNH: ${resultado.mensagem}`);
+                }
+            } catch (error) {
+                console.error('Erro na validação da CNH:', error);
+                NotificationSystem.error('Erro ao validar CNH');
+            } finally {
+                hideLoadingOverlay();
+            }
+        }
+
+        // Função para carregar dados do cliente via API
+        async function carregarDadosCliente(clienteId) {
+            try {
+                const response = await fetch(`@Url.Action("GetClienteData")?id=${clienteId}`);
+
+                if (response.ok) {
+                    const cliente = await response.json();
+
+                    const conteudo = `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Informações Pessoais</h6>
+                                <p><strong>Nome:</strong> ${cliente.nome}</p>
+                                <p><strong>CPF:</strong> ${cliente.cpf}</p>
+                                <p><strong>Email:</strong> ${cliente.email}</p>
+                                <p><strong>Telefone:</strong> ${cliente.telefone}</p>
+                                <p><strong>Idade:</strong> ${cliente.idade} anos</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Habilitação</h6>
+                                ${cliente.numeroHabilitacao ? `
+                                    <p><strong>CNH:</strong> ${cliente.numeroHabilitacao}</p>
+                                    <p><strong>Validade:</strong> ${cliente.validadeCNH}</p>
+                                    <p><strong>Status:</strong>
+                                        <span class="badge ${cliente.cnhValida ? 'bg-success' : 'bg-danger'}">
+                                            ${cliente.cnhValida ? 'Válida' : 'Vencida'}
+                                        </span>
+                                    </p>
+                                ` : '<p class="text-muted">CNH não informada</p>'}
+                            </div>
+                        </div>
+                        <div class="mt-3 text-end">
+                            <a href="@Url.Action("Details")/${clienteId}" class="btn btn-primary">
+                                Ver Detalhes Completos
+                            </a>
+                        </div>
+                    `;
+
+                    document.getElementById('conteudoModalCliente').innerHTML = conteudo;
+                    new bootstrap.Modal(document.getElementById('modalVisualizacaoRapida')).show();
+                } else {
+                    NotificationSystem.error('Erro ao carregar dados do cliente');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                NotificationSystem.error('Erro ao carregar dados do cliente');
+            }
+        }
+
+        // Funções auxiliares para overlay de loading
+        function showLoadingOverlay() {
+            if (!document.querySelector('.loading-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.className = 'loading-overlay';
+                overlay.innerHTML = '<div class="spinner-modern"></div>';
+                document.body.appendChild(overlay);
+            }
+        }
+
+        function hideLoadingOverlay() {
+            const overlay = document.querySelector('.loading-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+
+        // Funções do menu dropdown
+        function exportarClientes() {
+            NotificationSystem.info('Funcionalidade de exportação em desenvolvimento');
+        }
+
+        function imprimirLista() {
+            window.print();
+        }
+
+        function atualizarLista() {
+            location.reload();
+        }
+    </script>
+}

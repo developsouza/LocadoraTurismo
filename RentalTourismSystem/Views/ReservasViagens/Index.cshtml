@@ -1,0 +1,194 @@
+﻿@model IEnumerable<RentalTourismSystem.Models.ReservaViagem>
+@{
+    ViewData["Title"] = "Reservas de Viagem";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>
+            <i class="fas fa-calendar-check me-2"></i>Reservas de Viagem
+        </h2>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-3">
+        <form method="get">
+            <select name="statusId" class="form-select" onchange="this.form.submit()">
+                <option value="">Todos os status</option>
+                @foreach (var item in ViewBag.StatusId as SelectList)
+                {
+                    <option value="@item.Value" selected="@item.Selected">@item.Text</option>
+                }
+            </select>
+        </form>
+    </div>
+    <div class="col-md-5">
+        <div class="btn-group" role="group">
+            <input type="radio" class="btn-check" name="periodo" id="todas" checked>
+            <label class="btn btn-outline-primary" for="todas">Todas</label>
+
+            <input type="radio" class="btn-check" name="periodo" id="proximas">
+            <label class="btn btn-outline-success" for="proximas">Próximas</label>
+
+            <input type="radio" class="btn-check" name="periodo" id="realizadas">
+            <label class="btn btn-outline-secondary" for="realizadas">Realizadas</label>
+        </div>
+    </div>
+    <div class="col-md-4 text-end">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Nova Reserva
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Pacote</th>
+                        <th>Data da Viagem</th>
+                        <th>Pessoas</th>
+                        <th>Status</th>
+                        <th>Valor Total</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@item.Cliente.Nome</strong><br>
+                                <small class="text-muted">@item.Cliente.Telefone</small>
+                            </td>
+                            <td>
+                                <strong>@item.PacoteViagem.Nome</strong><br>
+                                <small class="text-muted">@item.PacoteViagem.Destino</small>
+                            </td>
+                            <td>
+                                @item.DataViagem.ToString("dd/MM/yyyy")<br>
+                                <small class="text-muted">
+                                    @if (item.DataViagem > DateTime.Now)
+                                    {
+                                        var dias = (item.DataViagem - DateTime.Now).Days;
+                                        <span class="badge bg-info">em @dias dias</span>
+                                    }
+                                    else if (item.DataViagem.Date == DateTime.Now.Date)
+                                    {
+                                        <span class="badge bg-warning">hoje</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">realizada</span>
+                                    }
+                                </small>
+                            </td>
+                            <td>@item.Quantidade</td>
+                            <td>
+                                @{
+                                    string badgeClass = item.StatusReservaViagem.Status switch
+                                    {
+                                        "Pendente" => "bg-warning",
+                                        "Confirmada" => "bg-success",
+                                        "Cancelada" => "bg-danger",
+                                        "Realizada" => "bg-info",
+                                        _ => "bg-secondary"
+                                    };
+                                }
+                                <span class="badge @badgeClass">@item.StatusReservaViagem.Status</span>
+                            </td>
+                            <td>@item.ValorTotal.ToString("C")</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" title="Detalhes">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                @if (item.StatusReservaViagem.Status == "Pendente")
+                                {
+                                    <button type="button" class="btn btn-sm btn-outline-success"
+                                            onclick="confirmarReserva(@item.Id)" title="Confirmar">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                            onclick="cancelarReserva(@item.Id)" title="Cancelar">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (!Model.Any())
+        {
+            <div class="text-center text-muted py-4">
+                <i class="fas fa-calendar-check fa-3x mb-3"></i>
+                <p>Nenhuma reserva encontrada.</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmarReserva(id) {
+            if (confirm('Confirmar esta reserva?')) {
+                fetch('/ReservasViagens/ConfirmarReserva/' + id, {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                    }
+                }).then(() => location.reload());
+            }
+        }
+
+        function cancelarReserva(id) {
+            if (confirm('Cancelar esta reserva?')) {
+                fetch('/ReservasViagens/CancelarReserva/' + id, {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                    }
+                }).then(() => location.reload());
+            }
+        }
+
+        // Filtros por período
+        document.addEventListener('DOMContentLoaded', function() {
+            const filtros = document.querySelectorAll('input[name="periodo"]');
+            const tabela = document.querySelector('tbody');
+
+            filtros.forEach(filtro => {
+                filtro.addEventListener('change', function() {
+                    const rows = tabela.querySelectorAll('tr');
+                    const hoje = new Date();
+
+                    rows.forEach(row => {
+                        const dataCell = row.cells[2];
+                        const badge = dataCell.querySelector('.badge');
+
+                        if (!badge) return;
+
+                        const isProxima = badge.classList.contains('bg-info') || badge.classList.contains('bg-warning');
+                        const isRealizada = badge.classList.contains('bg-secondary');
+
+                        switch(this.id) {
+                            case 'proximas':
+                                row.style.display = isProxima ? '' : 'none';
+                                break;
+                            case 'realizadas':
+                                row.style.display = isRealizada ? '' : 'none';
+                                break;
+                            default:
+                                row.style.display = '';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}

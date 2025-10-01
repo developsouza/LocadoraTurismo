@@ -1,0 +1,195 @@
+﻿@model RentalTourismSystem.Models.Funcionario
+@{
+    ViewData["Title"] = "Excluir Funcionário";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="text-danger">
+            <i class="fas fa-exclamation-triangle me-2"></i>Excluir Funcionário
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Funcionários</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id">@Model.Nome</a></li>
+                <li class="breadcrumb-item active">Excluir</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-trash me-2"></i>Confirmar Exclusão do Funcionário
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-exclamation-triangle me-1"></i>Atenção!
+                    </h6>
+                    <p class="mb-0">
+                        Esta ação é <strong>irreversível</strong>. O funcionário e todo seu histórico
+                        de locações serão excluídos permanentemente.
+                    </p>
+                </div>
+
+                <h6 class="mb-3">Dados do funcionário que será excluído:</h6>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="text-primary">@Model.Nome</h5>
+                                <dl class="row">
+                                    <dt class="col-4">CPF:</dt>
+                                    <dd class="col-8">@Model.Cpf</dd>
+
+                                    <dt class="col-4">Email:</dt>
+                                    <dd class="col-8">@Model.Email</dd>
+
+                                    <dt class="col-4">Telefone:</dt>
+                                    <dd class="col-8">@Model.Telefone</dd>
+
+                                    <dt class="col-4">Cargo:</dt>
+                                    <dd class="col-8"><span class="badge bg-secondary">@Model.Cargo</span></dd>
+                                </dl>
+                            </div>
+                            <div class="col-md-6">
+                                <dl class="row">
+                                    <dt class="col-6">Salário:</dt>
+                                    <dd class="col-6">@Model.Salario.ToString("C")</dd>
+
+                                    <dt class="col-6">Admissão:</dt>
+                                    <dd class="col-6">@Model.DataAdmissao.ToString("dd/MM/yyyy")</dd>
+
+                                    <dt class="col-6">Agência:</dt>
+                                    <dd class="col-6">@Model.Agencia.Nome</dd>
+
+                                    <dt class="col-6">Locações:</dt>
+                                    <dd class="col-6"><strong>@Model.Locacoes.Count</strong></dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.Locacoes.Any())
+                {
+                    <div class="alert alert-warning mt-3">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-briefcase me-1"></i>Histórico Profissional
+                        </h6>
+                        <p>Este funcionário possui <strong>@Model.Locacoes.Count</strong> locação(ões) registrada(s):</p>
+                        <ul class="mb-0">
+                            <li>Receita total gerada: <strong>@Model.Locacoes.Sum(l => l.ValorTotal).ToString("C")</strong></li>
+                            <li>Locações ativas: <strong>@Model.Locacoes.Count(l => l.DataDevolucaoReal == null)</strong></li>
+                            <li>Locações finalizadas: <strong>@Model.Locacoes.Count(l => l.DataDevolucaoReal != null)</strong></li>
+                            <li>Tempo na empresa: <strong>@((DateTime.Now - Model.DataAdmissao).Days / 365) ano(s)</strong></li>
+                        </ul>
+                        <p class="mt-2 mb-0">
+                            <small class="text-danger">
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                Todo este histórico também será excluído!
+                            </small>
+                        </p>
+                    </div>
+                }
+
+                @if (Model.Locacoes.Any(l => l.DataDevolucaoReal == null))
+                {
+                    <div class="alert alert-danger mt-3">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-ban me-1"></i>Locações Ativas
+                        </h6>
+                        <p class="mb-0">
+                            Este funcionário possui <strong>
+                                @Model.Locacoes.Count(l => l.DataDevolucaoReal == null)
+                                locação(ões) ativa(s)
+                            </strong>. É recomendado finalizar todas as locações antes da exclusão.
+                        </p>
+                    </div>
+                }
+
+                <form asp-action="Delete" method="post" class="mt-4">
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="confirmarExclusao1" required>
+                        <label class="form-check-label text-danger" for="confirmarExclusao1">
+                            Confirmo que entendo que todo o histórico de locações será perdido
+                        </label>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="confirmarExclusao2" required>
+                        <label class="form-check-label text-danger" for="confirmarExclusao2">
+                            Confirmo que entendo que esta ação é irreversível
+                        </label>
+                    </div>
+
+                    @if (Model.Locacoes.Any(l => l.DataDevolucaoReal == null))
+                    {
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmarExclusao3" required>
+                            <label class="form-check-label text-danger" for="confirmarExclusao3">
+                                Confirmo que sei que existem locações ativas vinculadas a este funcionário
+                            </label>
+                        </div>
+                    }
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>Excluir Funcionário
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightbulb me-1"></i>Alternativas
+                </h6>
+            </div>
+            <div class="card-body">
+                <p class="small">Considere outras opções:</p>
+                <ul class="small">
+                    <li>Transferir para outra agência</li>
+                    <li>Marcar como inativo temporariamente</li>
+                    <li>Finalizar locações ativas primeiro</li>
+                    <li>Arquivar em vez de excluir</li>
+                    <li>Transferir histórico para outro funcionário</li>
+                </ul>
+
+                <div class="d-grid gap-2 mt-3">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-sm">
+                        <i class="fas fa-edit me-1"></i>Editar em vez de excluir
+                    </a>
+                    @if (Model.Locacoes.Any(l => l.DataDevolucaoReal == null))
+                    {
+                        <a asp-controller="Locacoes" asp-action="Index" class="btn btn-outline-info btn-sm">
+                            <i class="fas fa-list me-1"></i>Ver Locações Ativas
+                        </a>
+                    }
+                </div>
+
+                <div class="alert alert-info mt-3">
+                    <small>
+                        <i class="fas fa-info-circle me-1"></i>
+                        <strong>Dica:</strong> Funcionários com muito histórico são importantes
+                        para relatórios e análises futuras.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

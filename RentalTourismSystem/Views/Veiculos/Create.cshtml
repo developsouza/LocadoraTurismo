@@ -1,0 +1,768 @@
+﻿@model RentalTourismSystem.Models.Veiculo
+@{
+    ViewData["Title"] = "Novo Veículo";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="text-gradient">
+            <i class="fas fa-car me-2"></i>Cadastrar Novo Veículo
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Veículos</a></li>
+                <li class="breadcrumb-item active">Novo Veículo</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card hover-lift">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-car me-2"></i>Informações do Veículo
+                </h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" id="formNovoVeiculo" class="needs-validation form-veiculo" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger animate-shake" role="alert"></div>
+
+                    <!-- Seção: Dados Básicos -->
+                    <div class="mb-4">
+                        <h6 class="text-primary border-bottom pb-2 mb-3">
+                            <i class="fas fa-info-circle me-2"></i>Dados Básicos do Veículo
+                        </h6>
+
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label asp-for="Marca" class="form-label required">
+                                    <i class="fas fa-tag me-1"></i>Marca
+                                </label>
+                                <input asp-for="Marca" class="form-control"
+                                       placeholder="Ex: Toyota, Honda, Volkswagen"
+                                       required minlength="2" maxlength="50"
+                                       data-bs-toggle="tooltip" data-bs-placement="top"
+                                       title="Nome da marca do veículo" />
+                                <span asp-validation-for="Marca" class="invalid-feedback"></span>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>Informe a marca conforme documento
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label asp-for="Modelo" class="form-label required">
+                                    <i class="fas fa-car me-1"></i>Modelo
+                                </label>
+                                <input asp-for="Modelo" class="form-control"
+                                       placeholder="Ex: Corolla, Civic, Golf"
+                                       required minlength="2" maxlength="50"
+                                       data-bs-toggle="tooltip" data-bs-placement="top"
+                                       title="Modelo específico do veículo" />
+                                <span asp-validation-for="Modelo" class="invalid-feedback"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 mb-3">
+                                <label asp-for="Ano" class="form-label required">
+                                    <i class="fas fa-calendar me-1"></i>Ano
+                                </label>
+                                <input asp-for="Ano" class="form-control" type="number"
+                                       min="1990" max="2030" required
+                                       data-bs-toggle="tooltip" data-bs-placement="top"
+                                       title="Ano de fabricação do veículo" />
+                                <span asp-validation-for="Ano" class="invalid-feedback"></span>
+                                <div id="ano-info" class="form-text"></div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label asp-for="Placa" class="form-label required">
+                                    <i class="fas fa-id-badge me-1"></i>Placa
+                                </label>
+                                <input asp-for="Placa" class="form-control placa-mask"
+                                       placeholder="ABC-1234" required maxlength="8"
+                                       style="text-transform: uppercase"
+                                       data-bs-toggle="tooltip" data-bs-placement="top"
+                                       title="Placa será validada automaticamente" />
+                                <span asp-validation-for="Placa" class="invalid-feedback"></span>
+                                <div id="placa-validation-feedback" class="mt-1"></div>
+                                <div class="form-text">
+                                    <i class="fas fa-shield-alt me-1"></i>Validação automática de placa
+                                </div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label asp-for="Cor" class="form-label required">
+                                    <i class="fas fa-palette me-1"></i>Cor
+                                </label>
+                                <select asp-for="Cor" class="form-select" required>
+                                    <option value="">Selecione uma cor</option>
+                                    <option value="Branco">Branco</option>
+                                    <option value="Prata">Prata</option>
+                                    <option value="Preto">Preto</option>
+                                    <option value="Cinza">Cinza</option>
+                                    <option value="Azul">Azul</option>
+                                    <option value="Vermelho">Vermelho</option>
+                                    <option value="Verde">Verde</option>
+                                    <option value="Amarelo">Amarelo</option>
+                                    <option value="Dourado">Dourado</option>
+                                    <option value="Marrom">Marrom</option>
+                                </select>
+                                <span asp-validation-for="Cor" class="invalid-feedback"></span>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label asp-for="Quilometragem" class="form-label required">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Quilometragem
+                                </label>
+                                <div class="input-group">
+                                    <input asp-for="Quilometragem" class="form-control km-mask"
+                                           type="number" min="0" max="999999" required />
+                                    <span class="input-group-text">km</span>
+                                </div>
+                                <span asp-validation-for="Quilometragem" class="invalid-feedback"></span>
+                                <div id="km-validation-feedback" class="mt-1"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seção: Configurações Operacionais -->
+                    <div class="mb-4">
+                        <h6 class="text-success border-bottom pb-2 mb-3">
+                            <i class="fas fa-cogs me-2"></i>Configurações Operacionais
+                        </h6>
+
+                        <div class="row">
+                            <div class="col-lg-4 mb-3">
+                                <label asp-for="ValorDiaria" class="form-label required">
+                                    <i class="fas fa-dollar-sign me-1"></i>Valor da Diária
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    <input asp-for="ValorDiaria" class="form-control money-mask"
+                                           required placeholder="0,00" />
+                                </div>
+                                <span asp-validation-for="ValorDiaria" class="invalid-feedback"></span>
+                                <div id="valor-validation-feedback" class="mt-1"></div>
+                                <div class="form-text">
+                                    <i class="fas fa-calculator me-1"></i>Valor mínimo sugerido: R$ 50,00
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label asp-for="StatusCarroId" class="form-label required">
+                                    <i class="fas fa-traffic-light me-1"></i>Status Inicial
+                                </label>
+                                <select asp-for="StatusCarroId" class="form-select" asp-items="ViewBag.StatusCarroId" required>
+                                    <option value="">Selecione um status</option>
+                                </select>
+                                <span asp-validation-for="StatusCarroId" class="invalid-feedback"></span>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>Geralmente "Disponível" para novos veículos
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label asp-for="AgenciaId" class="form-label required">
+                                    <i class="fas fa-building me-1"></i>Agência Responsável
+                                </label>
+                                <select asp-for="AgenciaId" class="form-select" asp-items="ViewBag.AgenciaId" required>
+                                    <option value="">Selecione uma agência</option>
+                                </select>
+                                <span asp-validation-for="AgenciaId" class="invalid-feedback"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary hover-lift" id="btnSalvar">
+                            <i class="fas fa-save me-1"></i>Salvar Veículo
+                        </button>
+                        <button type="button" class="btn btn-outline-warning" onclick="limparFormulario()">
+                            <i class="fas fa-eraser me-1"></i>Limpar
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar com Informações -->
+    <div class="col-lg-4">
+        <!-- Card de Validações -->
+        <div class="card mb-4 border-info">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-check-circle me-1"></i>Validações em Tempo Real
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="validation-status">
+                    <div class="validation-item mb-2" id="status-placa">
+                        <i class="fas fa-circle text-muted me-2"></i>
+                        <span>Validação de placa</span>
+                    </div>
+                    <div class="validation-item mb-2" id="status-valor">
+                        <i class="fas fa-circle text-muted me-2"></i>
+                        <span>Valor da diária</span>
+                    </div>
+                    <div class="validation-item mb-2" id="status-km">
+                        <i class="fas fa-circle text-muted me-2"></i>
+                        <span>Quilometragem coerente</span>
+                    </div>
+                    <div class="validation-item mb-2" id="status-ano">
+                        <i class="fas fa-circle text-muted me-2"></i>
+                        <span>Ano válido</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Calculadora de Valor -->
+        <div class="card mb-4 border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0">
+                    <i class="fas fa-calculator me-1"></i>Calculadora de Valor
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <label class="form-label small">Categoria do Veículo:</label>
+                    <select class="form-select form-select-sm" id="categoriaVeiculo" onchange="sugerirValor()">
+                        <option value="">Selecione...</option>
+                        <option value="economico">Econômico</option>
+                        <option value="compacto">Compacto</option>
+                        <option value="intermediario">Intermediário</option>
+                        <option value="executivo">Executivo</option>
+                        <option value="suv">SUV</option>
+                        <option value="luxo">Luxo</option>
+                        <option value="pickup">Pick-up</option>
+                    </select>
+                </div>
+                <div class="text-center">
+                    <small class="text-muted">Valor sugerido:</small><br>
+                    <span id="valorSugerido" class="fw-bold text-success">R$ 0,00</span>
+                </div>
+                <button type="button" class="btn btn-outline-warning btn-sm w-100 mt-2" onclick="aplicarValorSugerido()">
+                    <i class="fas fa-arrow-down me-1"></i>Aplicar Valor
+                </button>
+            </div>
+        </div>
+
+        <!-- Card de Preview -->
+        <div class="card mb-4" id="previewVeiculo" style="display: none;">
+            <div class="card-header bg-secondary text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-eye me-1"></i>Preview do Veículo
+                </h6>
+            </div>
+            <div class="card-body">
+                <div id="veiculoPreview"></div>
+            </div>
+        </div>
+
+        <!-- Card de Dicas -->
+        <div class="card border-success">
+            <div class="card-header bg-success text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightbulb me-1"></i>Dicas Importantes
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="small">
+                    <p>
+                        <i class="fas fa-info-circle text-info me-1"></i>
+                        <strong>Formatação automática:</strong> Placa é formatada automaticamente.
+                    </p>
+                    <p>
+                        <i class="fas fa-shield-alt text-success me-1"></i>
+                        <strong>Validação instantânea:</strong> Placa é validada em tempo real.
+                    </p>
+                    <p>
+                        <i class="fas fa-car text-warning me-1"></i>
+                        <strong>Status inicial:</strong> Novos veículos geralmente ficam "Disponível".
+                    </p>
+                    <p>
+                        <i class="fas fa-calculator text-primary me-1"></i>
+                        <strong>Valor sugerido:</strong> Use a calculadora para sugestão de preços.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            console.log('Inicializando formulário de criação de veículo...');
+
+            // Configurar tooltips
+            if (typeof initializeTooltips === 'function') {
+                initializeTooltips();
+            }
+
+            // Configurar sistema de validação se disponível
+            if (typeof setupAdvancedFormValidation === 'function') {
+                setupAdvancedFormValidation();
+            }
+
+            // Configurar sistema de notificações fallback
+            if (typeof NotificationSystem === 'undefined') {
+                window.NotificationSystem = {
+                    success: (msg) => console.log('Sucesso:', msg) || alert('Sucesso: ' + msg),
+                    error: (msg) => console.error('Erro:', msg) || alert('Erro: ' + msg),
+                    warning: (msg) => console.warn('Aviso:', msg) || alert('Aviso: ' + msg),
+                    info: (msg) => console.info('Info:', msg) || alert('Info: ' + msg)
+                };
+            }
+
+            // Inicializar formulário de veículo
+            inicializarFormularioVeiculo();
+        });
+
+        // === INICIALIZAÇÃO ESPECÍFICA DO FORMULÁRIO DE VEÍCULO ===
+        function inicializarFormularioVeiculo() {
+            console.log('Inicializando formulário de criação de veículo...');
+
+            // Definir ano atual como padrão
+            const anoAtual = new Date().getFullYear();
+            if (!$('#Ano').val()) {
+                $('#Ano').val(anoAtual);
+                validarAno(anoAtual);
+            }
+
+            // === EVENT LISTENERS ===
+
+            // Validação de placa em tempo real
+            let placaTimeout;
+            $('input[name="Placa"]').on('input blur', function() {
+                clearTimeout(placaTimeout);
+                const placa = $(this).val();
+                placaTimeout = setTimeout(async () => {
+                    if (placa && placa.length >= 7) {
+                        await validarPlacaCompleta(placa);
+                    }
+                }, 500);
+            });
+
+            // Validação de valor da diária
+            $('input[name="ValorDiaria"]').on('input change', function() {
+                validarValorDiaria($(this).val());
+            });
+
+            // Validação de quilometragem baseada no ano
+            $('input[name="Ano"], input[name="Quilometragem"]').on('input change', function() {
+                validarQuilometragemPorAno();
+            });
+
+            // Validação de ano
+            $('input[name="Ano"]').on('change', function() {
+                validarAno($(this).val());
+            });
+
+            // Preview do veículo conforme preenchimento
+            $('#Marca, #Modelo, #Ano, #Cor, #ValorDiaria, #Placa').on('input change', atualizarPreviewVeiculo);
+
+            // Interceptar envio do formulário
+            $('#formNovoVeiculo').on('submit', function(e) {
+                e.preventDefault();
+                if (this.checkValidity()) {
+                    enviarFormulario();
+                } else {
+                    this.classList.add('was-validated');
+                    focusFirstInvalidField();
+                }
+            });
+        }
+
+        // === VALIDAÇÕES ESPECÍFICAS DE VEÍCULO ===
+
+        // Validar placa única usando API do controller
+        async function validarPlacaCompleta(placa) {
+            try {
+                const placaLimpa = placa.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+
+                if (placaLimpa.length >= 7) {
+                    // Validar formato usando sistema consolidado se disponível
+                    let formatoValido = true;
+                    if (window.RentalTourismSystem && window.RentalTourismSystem.FormattingSystem) {
+                        formatoValido = window.RentalTourismSystem.FormattingSystem.validatePlaca(placaLimpa);
+                    }
+
+                    if (formatoValido) {
+                        // TODO: Implementar validação única quando API estiver disponível
+                        // const response = await fetch(`/Veiculos/ValidarPlacaUnica?placa=${encodeURIComponent(placaLimpa)}`);
+                        // const resultado = await response.json();
+
+                        // Simulação de validação única
+                        const placaExiste = false; // Aqui viria da API
+
+                        if (placaExiste) {
+                            atualizarStatusValidacao('placa', false, 'Placa já cadastrada no sistema');
+                            mostrarFeedback('placa-validation-feedback', 'danger', 'Esta placa já está cadastrada');
+                        } else {
+                            atualizarStatusValidacao('placa', true, 'Placa válida e disponível');
+                            mostrarFeedback('placa-validation-feedback', 'success', 'Placa válida e disponível');
+                        }
+                    } else {
+                        atualizarStatusValidacao('placa', false, 'Formato de placa inválido');
+                        mostrarFeedback('placa-validation-feedback', 'danger', 'Formato inválido. Use ABC-1234 ou ABC1D23');
+                    }
+                }
+            } catch (error) {
+                console.error('Erro na validação da placa:', error);
+                atualizarStatusValidacao('placa', false, 'Erro na validação');
+            }
+        }
+
+        // Validar valor da diária
+        function validarValorDiaria(valor) {
+            if (!valor) {
+                atualizarStatusValidacao('valor', false, 'Valor não informado');
+                return;
+            }
+
+            const valorLimpo = garantirValorCampoCorreto(valor);
+            const valorNumerico = parseFloat(valorLimpo);
+
+            if (isNaN(valorNumerico) || valorNumerico <= 0) {
+                atualizarStatusValidacao('valor', false, 'Valor inválido');
+                mostrarFeedback('valor-validation-feedback', 'danger', 'Digite um valor válido');
+                return;
+            }
+
+            if (valorNumerico < 10) {
+                atualizarStatusValidacao('valor', false, 'Valor muito baixo');
+                mostrarFeedback('valor-validation-feedback', 'warning', 'Valor muito baixo para operação comercial');
+            } else if (valorNumerico < 50) {
+                atualizarStatusValidacao('valor', true, 'Valor baixo mas aceitável');
+                mostrarFeedback('valor-validation-feedback', 'warning', 'Valor baixo - considere ajustar');
+            } else if (valorNumerico <= 500) {
+                atualizarStatusValidacao('valor', true, 'Valor adequado');
+                mostrarFeedback('valor-validation-feedback', 'success', 'Valor adequado para o mercado');
+            } else {
+                atualizarStatusValidacao('valor', true, 'Valor premium');
+                mostrarFeedback('valor-validation-feedback', 'info', 'Valor premium - certifique-se da categoria');
+            }
+        }
+
+        // Validar quilometragem baseada no ano
+        function validarQuilometragemPorAno() {
+            const ano = parseInt($('#Ano').val());
+            const km = parseInt($('#Quilometragem').val());
+
+            if (ano && km) {
+                const anoAtual = new Date().getFullYear();
+                const idadeVeiculo = anoAtual - ano;
+                const kmMedioAnual = 15000; // Média de 15.000 km por ano
+                const kmEsperado = idadeVeiculo * kmMedioAnual;
+
+                let status, mensagem, tipo;
+
+                if (idadeVeiculo === 0) { // Veículo novo
+                    if (km <= 100) {
+                        status = true;
+                        mensagem = 'Quilometragem de veículo novo';
+                        tipo = 'success';
+                    } else {
+                        status = true;
+                        mensagem = 'Quilometragem alta para veículo novo';
+                        tipo = 'warning';
+                    }
+                } else if (km > kmEsperado * 2) {
+                    status = false;
+                    mensagem = 'Quilometragem muito alta';
+                    tipo = 'warning';
+                } else if (km < kmEsperado * 0.3 && idadeVeiculo > 2) {
+                    status = true;
+                    mensagem = 'Quilometragem baixa - ótimo estado';
+                    tipo = 'success';
+                } else {
+                    status = true;
+                    mensagem = 'Quilometragem coerente';
+                    tipo = 'success';
+                }
+
+                atualizarStatusValidacao('km', status, mensagem);
+                mostrarFeedback('km-validation-feedback', tipo,
+                    `${mensagem}${kmEsperado > 0 ? ` (esperado: ~${kmEsperado.toLocaleString()} km)` : ''}`);
+            }
+        }
+
+        // Validar ano
+        function validarAno(ano) {
+            if (!ano) return;
+
+            const anoNumerico = parseInt(ano);
+            const anoAtual = new Date().getFullYear();
+
+            let status, mensagem, tipo;
+
+            if (anoNumerico < 1990) {
+                status = false;
+                mensagem = 'Ano muito antigo';
+                tipo = 'danger';
+            } else if (anoNumerico > anoAtual + 1) {
+                status = false;
+                mensagem = 'Ano futuro inválido';
+                tipo = 'danger';
+            } else if (anoNumerico === anoAtual || anoNumerico === anoAtual + 1) {
+                status = true;
+                mensagem = 'Veículo novo/zero km';
+                tipo = 'success';
+            } else if (anoNumerico >= anoAtual - 5) {
+                status = true;
+                mensagem = 'Veículo seminovo';
+                tipo = 'success';
+            } else {
+                status = true;
+                mensagem = 'Veículo usado';
+                tipo = 'info';
+            }
+
+            atualizarStatusValidacao('ano', status, mensagem);
+
+            // Atualizar informação de idade
+            const infoAno = document.getElementById('ano-info');
+            if (infoAno) {
+                const idade = anoAtual - anoNumerico;
+                infoAno.innerHTML = `<i class="fas fa-calendar me-1"></i>Idade: ${idade === 0 ? 'Novo' : idade + ' anos'}`;
+                infoAno.className = `form-text text-${tipo === 'danger' ? 'danger' : 'info'}`;
+            }
+        }
+
+        // === PREVIEW E CALCULADORA ===
+
+        // Preview do veículo
+        function atualizarPreviewVeiculo() {
+            const marca = $('#Marca').val();
+            const modelo = $('#Modelo').val();
+            const ano = $('#Ano').val();
+            const cor = $('#Cor').val();
+            const placa = $('#Placa').val();
+            const valorCampo = $('#ValorDiaria').val();
+
+            if (marca || modelo) {
+                let preview = '';
+
+                if (marca && modelo) {
+                    preview += `<div class="fw-bold text-primary h5">${marca} ${modelo}</div>`;
+                }
+
+                if (ano) {
+                    preview += `<div class="text-muted"><i class="fas fa-calendar me-1"></i>Ano: ${ano}</div>`;
+                }
+
+                if (cor) {
+                    preview += `<div class="text-muted"><i class="fas fa-palette me-1"></i>Cor: ${cor}</div>`;
+                }
+
+                if (placa) {
+                    preview += `<div class="text-muted"><i class="fas fa-id-badge me-1"></i>Placa: <code>${placa}</code></div>`;
+                }
+
+                if (valorCampo) {
+                    let valorNumerico = null;
+
+                    if (typeof valorCampo === 'string') {
+                        const valorLimpo = valorCampo.replace(/[^\d,\.]/g, '').replace(',', '.');
+                        valorNumerico = parseFloat(valorLimpo);
+                    } else {
+                        valorNumerico = parseFloat(valorCampo);
+                    }
+
+                    if (!isNaN(valorNumerico) && valorNumerico > 0) {
+                        const valorFormatado = valorNumerico.toLocaleString('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
+                        });
+                        preview += `<div class="text-success mt-2"><i class="fas fa-dollar-sign me-1"></i><strong>${valorFormatado}/dia</strong></div>`;
+                    } else {
+                        preview += `<div class="text-warning mt-2"><i class="fas fa-exclamation-triangle me-1"></i><em>Valor inválido</em></div>`;
+                    }
+                }
+
+                $('#veiculoPreview').html(preview);
+                $('#previewVeiculo').show();
+            } else {
+                $('#previewVeiculo').hide();
+            }
+        }
+
+        // Calculadora de valor
+        function sugerirValor() {
+            const categoria = $('#categoriaVeiculo').val();
+            const valores = {
+                'economico': 70,
+                'compacto': 90,
+                'intermediario': 120,
+                'executivo': 180,
+                'suv': 220,
+                'luxo': 350,
+                'pickup': 200
+            };
+
+            const valor = valores[categoria] || 0;
+            const valorFormatado = valor > 0 ? `R$ ${valor.toFixed(2).replace('.', ',')}` : 'R$ 0,00';
+            $('#valorSugerido').text(valorFormatado);
+        }
+
+        function aplicarValorSugerido() {
+            const valorTexto = $('#valorSugerido').text().trim();
+
+            if (valorTexto && valorTexto !== 'R$ 0,00') {
+                let valorLimpo = valorTexto.replace(/[^\d,\.]/g, '').replace(',', '.');
+                const valorNumerico = parseFloat(valorLimpo);
+
+                if (!isNaN(valorNumerico) && valorNumerico > 0) {
+                    const valorParaCampo = valorNumerico.toFixed(2).replace('.', ',');
+
+                    $('#ValorDiaria').val(valorParaCampo);
+                    $('#ValorDiaria').trigger('change');
+
+                    NotificationSystem.success(`Valor R$ ${valorParaCampo} aplicado com sucesso!`);
+                    validarValorDiaria(valorParaCampo);
+                    atualizarPreviewVeiculo();
+                } else {
+                    NotificationSystem.error('Erro ao aplicar valor. Tente novamente.');
+                }
+            } else {
+                NotificationSystem.warning('Selecione uma categoria primeiro.');
+            }
+        }
+
+        // === FUNÇÕES DE FORMULÁRIO ===
+
+        // Enviar formulário com loading
+        async function enviarFormulario() {
+            const form = document.getElementById('formNovoVeiculo');
+            const btnSalvar = document.getElementById('btnSalvar');
+            const textoOriginal = btnSalvar.innerHTML;
+
+            // Mostrar loading
+            btnSalvar.disabled = true;
+            btnSalvar.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Salvando...';
+
+            // Criar overlay de loading
+            const overlay = document.createElement('div');
+            overlay.className = 'loading-overlay';
+            overlay.innerHTML = '<div class="spinner-modern"></div>';
+            overlay.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.5); display: flex; justify-content: center;
+                align-items: center; z-index: 9999;
+            `;
+            document.body.appendChild(overlay);
+
+            try {
+                form.submit();
+            } catch (error) {
+                console.error('Erro ao enviar formulário:', error);
+                NotificationSystem.error('Erro ao salvar veículo');
+
+                btnSalvar.disabled = false;
+                btnSalvar.innerHTML = textoOriginal;
+                overlay.remove();
+            }
+        }
+
+        // Limpar formulário
+        function limparFormulario() {
+            if (confirm('Tem certeza que deseja limpar todos os campos preenchidos?')) {
+                document.getElementById('formNovoVeiculo').reset();
+
+                const anoAtual = new Date().getFullYear();
+                $('#Ano').val(anoAtual);
+
+                // Limpar feedbacks
+                document.querySelectorAll('[id$="-validation-feedback"]').forEach(el => {
+                    el.innerHTML = '';
+                });
+
+                // Resetar status de validação
+                ['placa', 'valor', 'km', 'ano'].forEach(tipo => {
+                    atualizarStatusValidacao(tipo, null, `Validação de ${tipo}`);
+                });
+
+                // Remover classes de validação
+                document.querySelectorAll('.is-valid, .is-invalid').forEach(el => {
+                    el.classList.remove('is-valid', 'is-invalid');
+                });
+
+                $('#previewVeiculo').hide();
+                NotificationSystem.info('Formulário limpo com sucesso');
+                validarAno(anoAtual);
+            }
+        }
+
+        // === FUNÇÕES AUXILIARES ===
+
+        // Função auxiliar para garantir que o valor está correto
+        function garantirValorCampoCorreto(valorString) {
+            if (!valorString) return '';
+
+            const valorLimpo = valorString.toString().replace(/[^\d,\.]/g, '');
+
+            if (valorLimpo.includes(',') && valorLimpo.includes('.')) {
+                return valorLimpo.replace(/\./g, '').replace(',', '.');
+            } else if (valorLimpo.includes(',')) {
+                return valorLimpo.replace(',', '.');
+            } else if (valorLimpo.includes('.')) {
+                return valorLimpo;
+            } else {
+                return valorLimpo;
+            }
+        }
+
+        // Atualizar status de validação
+        function atualizarStatusValidacao(tipo, valido, mensagem) {
+            const elemento = document.getElementById(`status-${tipo}`);
+            if (elemento) {
+                const icone = elemento.querySelector('i');
+                const texto = elemento.querySelector('span');
+
+                if (icone && texto) {
+                    icone.className = `fas fa-circle me-2 ${valido ? 'text-success' : 'text-danger'}`;
+                    texto.textContent = mensagem;
+                }
+            }
+        }
+
+        // Mostrar feedback de validação
+        function mostrarFeedback(elementoId, tipo, mensagem) {
+            const elemento = document.getElementById(elementoId);
+            if (elemento) {
+                const classes = {
+                    'success': 'text-success',
+                    'danger': 'text-danger',
+                    'warning': 'text-warning',
+                    'info': 'text-info'
+                };
+
+                const icones = {
+                    'success': 'fas fa-check-circle',
+                    'danger': 'fas fa-times-circle',
+                    'warning': 'fas fa-exclamation-triangle',
+                    'info': 'fas fa-info-circle'
+                };
+
+                elemento.innerHTML = `
+                    <small class="${classes[tipo]} d-flex align-items-center">
+                        <i class="${icones[tipo]} me-1"></i>
+                        ${mensagem}
+                    </small>
+                `;
+            }
+        }
+
+        // Focar no primeiro campo inválido
+        function focusFirstInvalidField() {
+            const primeiroInvalido = document.querySelector('.form-control:invalid');
+            if (primeiroInvalido) {
+                primeiroInvalido.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                primeiroInvalido.focus();
+            }
+        }
+    </script>
+}

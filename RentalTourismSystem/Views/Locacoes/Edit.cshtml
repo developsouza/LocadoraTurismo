@@ -1,0 +1,680 @@
+﻿@model RentalTourismSystem.Models.Locacao
+@{
+    ViewData["Title"] = "Editar Locação";
+    var isFinalized = Model.DataDevolucaoReal.HasValue;
+    var diasAtraso = 0;
+    if (!isFinalized && DateTime.Now.Date > Model.DataDevolucao.Date)
+    {
+        diasAtraso = (int)(DateTime.Now.Date - Model.DataDevolucao.Date).TotalDays;
+    }
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="text-gradient">
+            <i class="fas fa-edit me-2"></i>Editar Locação #@Model.Id
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Locações</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id" class="text-decoration-none">Locação #@Model.Id</a></li>
+                <li class="breadcrumb-item active">Editar</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card hover-lift">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>Atualizar Dados da Locação
+                </h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" id="formEditarLocacao" class="needs-validation form-locacao" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger animate-shake" role="alert"></div>
+                    <input type="hidden" asp-for="Id" />
+
+                    @if (isFinalized)
+                    {
+                        <div class="alert alert-success mb-4">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-check-circle fa-2x me-3"></i>
+                                <div>
+                                    <h6 class="mb-1">Locação Finalizada</h6>
+                                    <p class="mb-0">Esta locação foi finalizada em @Model.DataDevolucaoReal.Value.ToString("dd/MM/yyyy HH:mm"). Algumas informações podem ter restrições de edição.</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else if (diasAtraso > 0)
+                    {
+                        <div class="alert alert-danger mb-4">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                                <div>
+                                    <h6 class="mb-1">Locação Atrasada</h6>
+                                    <p class="mb-0">Esta locação está atrasada há <strong>@diasAtraso dia(s)</strong>. Considere finalizá-la ou entrar em contato com o cliente.</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Seção: Cliente e Veículo -->
+                    <div class="mb-4">
+                        <h6 class="text-warning border-bottom pb-2 mb-3">
+                            <i class="fas fa-users me-2"></i>Cliente e Veículo
+                        </h6>
+
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label asp-for="ClienteId" class="form-label required">
+                                    <i class="fas fa-user me-1"></i>Cliente
+                                </label>
+                                <select asp-for="ClienteId" class="form-select" asp-items="ViewBag.ClienteId" required>
+                                    <option value="">Selecione um cliente</option>
+                                </select>
+                                <span asp-validation-for="ClienteId" class="invalid-feedback"></span>
+                                <div class="form-text">
+                                    <i class="fas fa-user me-1"></i>@Model.Cliente.Nome foi selecionado originalmente
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label asp-for="VeiculoId" class="form-label required">
+                                    <i class="fas fa-car me-1"></i>Veículo
+                                </label>
+                                @if (isFinalized)
+                                {
+                                    <select asp-for="VeiculoId" class="form-select" asp-items="ViewBag.VeiculoId" disabled>
+                                    </select>
+                                    <input type="hidden" asp-for="VeiculoId" />
+                                    <div class="form-text text-info">
+                                        <i class="fas fa-lock me-1"></i>Veículo não pode ser alterado em locação finalizada
+                                    </div>
+                                }
+                                else
+                                {
+                                    <select asp-for="VeiculoId" class="form-select" asp-items="ViewBag.VeiculoId" required>
+                                    </select>
+                                    <span asp-validation-for="VeiculoId" class="invalid-feedback"></span>
+                                }
+                                <div class="form-text">
+                                    <i class="fas fa-car me-1"></i>@Model.Veiculo.Marca @Model.Veiculo.Modelo (@Model.Veiculo.Placa) selecionado
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seção: Período -->
+                    <div class="mb-4">
+                        <h6 class="text-success border-bottom pb-2 mb-3">
+                            <i class="fas fa-calendar-alt me-2"></i>Período da Locação
+                        </h6>
+
+                        <div class="row">
+                            <div class="col-lg-4 mb-3">
+                                <label asp-for="DataRetirada" class="form-label required">
+                                    <i class="fas fa-calendar-plus me-1"></i>Data de Retirada
+                                </label>
+                                @if (isFinalized)
+                                {
+                                    <input asp-for="DataRetirada" class="form-control" type="datetime-local" readonly />
+                                    <div class="form-text text-info">
+                                        <i class="fas fa-lock me-1"></i>Não editável em locação finalizada
+                                    </div>
+                                }
+                                else
+                                {
+                                    <input asp-for="DataRetirada" class="form-control" type="datetime-local"
+                                           onchange="calcularValorTotal()" required />
+                                    <span asp-validation-for="DataRetirada" class="invalid-feedback"></span>
+                                }
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label asp-for="DataDevolucao" class="form-label required">
+                                    <i class="fas fa-calendar-minus me-1"></i>Data de Devolução Prevista
+                                </label>
+                                <input asp-for="DataDevolucao" class="form-control" type="datetime-local"
+                                       onchange="calcularValorTotal()" required />
+                                <span asp-validation-for="DataDevolucao" class="invalid-feedback"></span>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>Pode ser alterada mesmo após finalização
+                                </div>
+                            </div>
+                            @if (isFinalized)
+                            {
+                                <div class="col-lg-4 mb-3">
+                                    <label asp-for="DataDevolucaoReal" class="form-label">
+                                        <i class="fas fa-calendar-check me-1"></i>Data de Devolução Real
+                                    </label>
+                                    <input asp-for="DataDevolucaoReal" class="form-control" type="datetime-local" readonly />
+                                    <div class="form-text">
+                                        <i class="fas fa-info-circle me-1"></i>Para alterar, use "Reabrir Locação"
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        @if (isFinalized)
+                        {
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="alert alert-info d-flex align-items-center">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <div class="flex-grow-1">
+                                            <strong>Locação Finalizada:</strong> Para reabrir esta locação e permitir mais edições, use a opção "Reabrir Locação".
+                                        </div>
+                                        <button type="button" class="btn btn-outline-warning btn-sm" onclick="reabrirLocacao()">
+                                            <i class="fas fa-undo me-1"></i>Reabrir Locação
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Seção: Valores e Responsáveis -->
+                    <div class="mb-4">
+                        <h6 class="text-primary border-bottom pb-2 mb-3">
+                            <i class="fas fa-dollar-sign me-2"></i>Valores e Responsáveis
+                        </h6>
+
+                        <div class="row">
+                            <div class="col-lg-4 mb-3">
+                                <label asp-for="ValorTotal" class="form-label required">
+                                    <i class="fas fa-calculator me-1"></i>Valor Total
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    <input asp-for="ValorTotal" class="form-control" type="number" step="0.01" min="1" required data-no-mask="true" />
+                                </div>
+                                <span asp-validation-for="ValorTotal" class="invalid-feedback"></span>
+                                <div id="valor-info" class="form-text"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label asp-for="FuncionarioId" class="form-label required">
+                                    <i class="fas fa-user-tie me-1"></i>Funcionário Responsável
+                                </label>
+                                <select asp-for="FuncionarioId" class="form-select" asp-items="ViewBag.FuncionarioId" required>
+                                    <option value="">Selecione um funcionário</option>
+                                </select>
+                                <span asp-validation-for="FuncionarioId" class="invalid-feedback"></span>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label asp-for="AgenciaId" class="form-label required">
+                                    <i class="fas fa-building me-1"></i>Agência
+                                </label>
+                                <select asp-for="AgenciaId" class="form-select" asp-items="ViewBag.AgenciaId" required>
+                                    <option value="">Selecione uma agência</option>
+                                </select>
+                                <span asp-validation-for="AgenciaId" class="invalid-feedback"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seção: Observações -->
+                    <div class="mb-4">
+                        <label asp-for="Observacoes" class="form-label">
+                            <i class="fas fa-sticky-note me-1"></i>Observações
+                        </label>
+                        <textarea asp-for="Observacoes" class="form-control" rows="4"
+                                  placeholder="Observações sobre a locação, condições do veículo, etc..."
+                                  maxlength="500"></textarea>
+                        <span asp-validation-for="Observacoes" class="invalid-feedback"></span>
+                        <div id="observacoes-counter" class="form-text">Máximo 500 caracteres</div>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-warning hover-lift" id="btnSalvar">
+                            <i class="fas fa-save me-1"></i>Salvar Alterações
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="restaurarDados()">
+                            <i class="fas fa-undo me-1"></i>Restaurar
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Voltar aos Detalhes
+                        </a>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-list me-1"></i>Lista de Locações
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar com Informações -->
+    <div class="col-lg-4">
+        <!-- Card de Status -->
+        <div class="card mb-4 border-info">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-info-circle me-1"></i>Status da Locação
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="status-info">
+                    <div class="status-item mb-3">
+                        <label class="text-muted small">Status Atual:</label>
+                        <br>
+                        @if (isFinalized)
+                        {
+                            <span class="badge bg-success fs-6">
+                                <i class="fas fa-check-circle me-1"></i>Finalizada
+                            </span>
+                        }
+                        else if (diasAtraso > 0)
+                        {
+                            <span class="badge bg-danger fs-6">
+                                <i class="fas fa-exclamation-triangle me-1"></i>Atrasada
+                            </span>
+                            <br>
+
+                            <small class="text-danger">@diasAtraso dia(s) de atraso</small>
+                        }
+                        else
+                        {
+                            <span class="badge bg-primary fs-6">
+                                <i class="fas fa-clock me-1"></i>Ativa
+                            </span>
+                            {
+                                var diasRestantes = (Model.DataDevolucao.Date - DateTime.Now.Date).Days;
+                                if (diasRestantes >= 0)
+                                {
+                                    <br>
+                        
+                                    <small class="text-success">@diasRestantes dia(s) restantes</small>
+                                }
+                            }
+                        }
+                    </div>
+
+                    <div class="status-item mb-3">
+                        <label class="text-muted small">Período:</label>
+                        <br>
+                        @{
+                            var diasOriginais = Math.Max(1, (Model.DataDevolucao - Model.DataRetirada).Days);
+                        }
+                        <strong>@diasOriginais @(diasOriginais == 1 ? "dia" : "dias")</strong>
+                        <br><small class="text-muted">De @Model.DataRetirada.ToString("dd/MM") a @Model.DataDevolucao.ToString("dd/MM")</small>
+                    </div>
+
+                    <div class="status-item mb-3">
+                        <label class="text-muted small">Valor Original:</label>
+                        <br>
+                        <h5 class="text-success mb-0">@Model.ValorTotal.ToString("C")</h5>
+                        <small class="text-muted">@((Model.ValorTotal / diasOriginais).ToString("C"))/dia</small>
+                    </div>
+                </div>
+
+                @if (!isFinalized)
+                {
+                    <div class="alert alert-warning small">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        <strong>Atenção:</strong> Alterações em locações ativas podem afetar a disponibilidade do veículo e relatórios.
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Card de Ações Rápidas -->
+        <div class="card mb-4 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightning-bolt me-1"></i>Ações Rápidas
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    @if (!isFinalized)
+                    {
+                        <button type="button" class="btn btn-success" onclick="abrirModalFinalizar()">
+                            <i class="fas fa-check me-1"></i>Finalizar Locação
+                        </button>
+                    }
+
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-info">
+                        <i class="fas fa-eye me-1"></i>Ver Detalhes Completos
+                    </a>
+
+                    <a asp-controller="Clientes" asp-action="Details" asp-route-id="@Model.ClienteId" class="btn btn-outline-success">
+                        <i class="fas fa-user me-1"></i>Ver Cliente
+                    </a>
+
+                    <a asp-controller="Veiculos" asp-action="Details" asp-route-id="@Model.VeiculoId" class="btn btn-outline-info">
+                        <i class="fas fa-car me-1"></i>Ver Veículo
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Alterações -->
+        <div class="card border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-1"></i>Sobre as Alterações
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="small">
+                    <p class="mb-2">
+                        <i class="fas fa-info-circle text-info me-1"></i>
+                        <strong>Campos Editáveis:</strong>
+                    </p>
+                    <ul class="mb-3 small">
+                        <li>Cliente (sempre)</li>
+                        <li>Veículo (apenas se não finalizada)</li>
+                        <li>Datas (retirada apenas se não finalizada)</li>
+                        <li>Valor total</li>
+                        <li>Funcionário responsável</li>
+                        <li>Agência</li>
+                        <li>Observações</li>
+                    </ul>
+
+                    <div class="alert alert-info mb-0">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        <strong>Segurança:</strong> Todas as alterações são registradas para auditoria.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Finalizar (se não estiver finalizada) -->
+@if (!isFinalized)
+{
+    <div class="modal fade" id="modalFinalizarLocacao" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-check-circle me-2"></i>Finalizar Locação #@Model.Id
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="@Url.Action("FinalizarLocacao", new { id = Model.Id })" method="post">
+                    <div class="modal-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Finalizando locação para: <strong>@Model.Cliente.Nome</strong> -
+                            @Model.Veiculo.Marca @Model.Veiculo.Modelo (@Model.Veiculo.Placa)
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="dataDevolucaoReal" class="form-label required">Data e Hora de Devolução Real</label>
+                                <input type="datetime-local" class="form-control" id="dataDevolucaoReal" name="dataDevolucaoReal" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="quilometragemFinal" class="form-label">Quilometragem Final</label>
+                                <input type="number" class="form-control" id="quilometragemFinal" name="quilometragemDevolucao"
+                                       min="@Model.Veiculo.Quilometragem" placeholder="@Model.Veiculo.Quilometragem">
+                                <small class="text-muted">Atual: @Model.Veiculo.Quilometragem.ToString("N0") km</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="observacoesDevolucao" class="form-label">Observações da Devolução</label>
+                            <textarea class="form-control" id="observacoesDevolucao" name="observacoesDevolucao" rows="3" maxlength="500"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Finalizar Locação</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        // Dados originais para restauração
+        const dadosOriginais = {
+            clienteId: '@Model.ClienteId',
+            veiculoId: '@Model.VeiculoId',
+            dataRetirada: '@Model.DataRetirada.ToString("yyyy-MM-ddTHH:mm")',
+            dataDevolucao: '@Model.DataDevolucao.ToString("yyyy-MM-ddTHH:mm")',
+            valorTotal: '@Model.ValorTotal.ToString("F2").Replace(",", ".")', // Garantir formato correto
+            funcionarioId: '@Model.FuncionarioId',
+            agenciaId: '@Model.AgenciaId',
+            observacoes: '@Html.Raw(Model.Observacoes ?? "")'
+        };
+
+        $(document).ready(function() {
+            // Configurar tooltips
+            initializeTooltips();
+
+            // Aplicar sistema de validação consolidado
+            setupAdvancedFormValidation();
+
+            // Configurar validações específicas
+            configurarValidacoesEdicao();
+
+            // Configurar contador de observações
+            configurarContadorObservacoes();
+
+            // Calcular valor inicial
+            atualizarInfoValor();
+
+            // Garantir que o veículo atual esteja selecionado
+            const veiculoSelect = document.querySelector('select[name="VeiculoId"]');
+            if (veiculoSelect && '@Model.VeiculoId') {
+                veiculoSelect.value = '@Model.VeiculoId';
+
+                // Se não encontrou o veículo nas opções, adicionar como opção temporária
+                if (veiculoSelect.value !== '@Model.VeiculoId') {
+                    const option = document.createElement('option');
+                    option.value = '@Model.VeiculoId';
+                    option.text = '@Model.Veiculo.Marca @Model.Veiculo.Modelo (@Model.Veiculo.Placa) - Veículo Atual';
+                    option.selected = true;
+                    veiculoSelect.insertBefore(option, veiculoSelect.firstChild);
+                }
+            }
+
+            console.log('Formulário de edição de locação inicializado');
+        });
+
+        function configurarValidacoesEdicao() {
+            $('#formEditarLocacao').on('submit', function(e) {
+                e.preventDefault();
+
+                // Validar valor antes de enviar
+                const valorTotal = parseFloat(document.querySelector('input[name="ValorTotal"]').value);
+                if (isNaN(valorTotal) || valorTotal <= 0) {
+                    mostrarErro('O valor total deve ser maior que zero.');
+                    document.querySelector('input[name="ValorTotal"]').focus();
+                    return false;
+                }
+
+                if (this.checkValidity()) {
+                    enviarFormularioEdicao();
+                } else {
+                    this.classList.add('was-validated');
+                    focusFirstInvalidField();
+                }
+            });
+
+            // Validação de data de devolução
+            $('input[name="DataDevolucao"]').on('change', function() {
+                const dataRetirada = new Date($('input[name="DataRetirada"]').val());
+                const dataDevolucao = new Date(this.value);
+
+                if (dataDevolucao <= dataRetirada) {
+                    this.setCustomValidity('A data de devolução deve ser posterior à data de retirada.');
+                    this.classList.add('is-invalid');
+                } else {
+                    this.setCustomValidity('');
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                }
+            });
+
+            // Validação de valor em tempo real
+            $('input[name="ValorTotal"]').on('input', function() {
+                const valor = parseFloat(this.value);
+                if (isNaN(valor) || valor <= 0) {
+                    this.setCustomValidity('O valor deve ser maior que zero.');
+                    this.classList.add('is-invalid');
+                } else {
+                    this.setCustomValidity('');
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                    atualizarInfoValor();
+                }
+            });
+        }
+
+        function configurarContadorObservacoes() {
+            const observacoes = document.getElementById('Observacoes');
+            const counter = document.getElementById('observacoes-counter');
+
+            if (observacoes && counter) {
+                // Função para atualizar contador
+                function atualizarContador() {
+                    const atual = observacoes.value.length;
+                    const max = 500;
+                    const restante = max - atual;
+                    const porcentagem = (atual / max) * 100;
+
+                    let classe = 'text-muted';
+                    if (porcentagem > 80) classe = 'text-warning';
+                    if (porcentagem > 95) classe = 'text-danger';
+
+                    counter.className = `form-text ${classe}`;
+                    counter.innerHTML = `<i class="fas fa-pen me-1"></i>${atual}/${max} caracteres (${restante} restantes)`;
+                }
+
+                observacoes.addEventListener('input', atualizarContador);
+                atualizarContador(); // Executar uma vez para contar o texto inicial
+            }
+        }
+
+        function calcularValorTotal() {
+            const dataRetirada = $('input[name="DataRetirada"]').val();
+            const dataDevolucao = $('input[name="DataDevolucao"]').val();
+
+            if (dataRetirada && dataDevolucao) {
+                const inicio = new Date(dataRetirada);
+                const fim = new Date(dataDevolucao);
+                const diffTime = fim.getTime() - inicio.getTime();
+                const dias = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+
+                atualizarInfoValor(dias);
+            }
+        }
+
+        function atualizarInfoValor(dias = null) {
+            const valorTotalInput = document.querySelector('input[name="ValorTotal"]');
+            const valorTotal = parseFloat(valorTotalInput.value) || 0;
+            const infoDiv = document.getElementById('valor-info');
+
+            if (dias && valorTotal > 0) {
+                const valorPorDia = valorTotal / dias;
+                infoDiv.innerHTML = `<i class="fas fa-calculator me-1"></i>${dias} ${dias === 1 ? 'dia' : 'dias'} × ${valorPorDia.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+                infoDiv.className = 'form-text text-success';
+            } else if (valorTotal > 0) {
+                infoDiv.innerHTML = `<i class="fas fa-dollar-sign me-1"></i>Valor: ${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+                infoDiv.className = 'form-text text-success';
+            } else {
+                infoDiv.innerHTML = '<i class="fas fa-info-circle me-1"></i>Valor total da locação';
+                infoDiv.className = 'form-text text-muted';
+            }
+        }
+
+        function restaurarDados() {
+            if (confirm('Tem certeza que deseja restaurar todos os dados para os valores originais?')) {
+                $('select[name="ClienteId"]').val(dadosOriginais.clienteId);
+                $('select[name="VeiculoId"]').val(dadosOriginais.veiculoId);
+                $('input[name="DataRetirada"]').val(dadosOriginais.dataRetirada);
+                $('input[name="DataDevolucao"]').val(dadosOriginais.dataDevolucao);
+                $('input[name="ValorTotal"]').val(dadosOriginais.valorTotal);
+                $('select[name="FuncionarioId"]').val(dadosOriginais.funcionarioId);
+                $('select[name="AgenciaId"]').val(dadosOriginais.agenciaId);
+                $('textarea[name="Observacoes"]').val(dadosOriginais.observacoes);
+
+                // Limpar validações
+                $('.is-valid, .is-invalid').removeClass('is-valid is-invalid');
+
+                atualizarInfoValor();
+
+                mostrarInfo('Dados restaurados para os valores originais');
+            }
+        }
+
+        function abrirModalFinalizar() {
+            const agora = new Date();
+            document.getElementById('dataDevolucaoReal').value = agora.toISOString().slice(0, 16);
+
+            const modal = new bootstrap.Modal(document.getElementById('modalFinalizarLocacao'));
+            modal.show();
+        }
+
+        function reabrirLocacao() {
+            if (confirm('Deseja realmente reabrir esta locação?\n\nIsto irá:\n- Remover a data de devolução real\n- Alterar o status do veículo para "Alugado"\n- Permitir novas edições\n\nEsta ação deve ser usada apenas em casos excepcionais.')) {
+                mostrarInfo('Funcionalidade de reabertura em desenvolvimento. Entre em contato com o administrador do sistema.');
+            }
+        }
+
+        async function enviarFormularioEdicao() {
+            const form = document.getElementById('formEditarLocacao');
+            const btnSalvar = document.getElementById('btnSalvar');
+            const textoOriginal = btnSalvar.innerHTML;
+
+            // Mostrar loading
+            btnSalvar.disabled = true;
+            btnSalvar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Salvando Alterações...';
+
+            // Overlay de loading
+            const overlay = document.createElement('div');
+            overlay.className = 'loading-overlay';
+            overlay.innerHTML = '<div class="spinner-modern"></div>';
+            document.body.appendChild(overlay);
+
+            try {
+                form.submit();
+            } catch (error) {
+                console.error('Erro ao enviar formulário:', error);
+                mostrarErro('Erro ao salvar alterações');
+
+                btnSalvar.disabled = false;
+                btnSalvar.innerHTML = textoOriginal;
+                overlay.remove();
+            }
+        }
+
+        function focusFirstInvalidField() {
+            const primeiroInvalido = document.querySelector('.form-control:invalid');
+            if (primeiroInvalido) {
+                primeiroInvalido.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                primeiroInvalido.focus();
+            }
+        }
+
+        // Funções de notificação
+        function mostrarSucesso(mensagem) {
+            if (window.RentalTourismSystem?.NotificationSystem) {
+                window.RentalTourismSystem.NotificationSystem.success(mensagem);
+            }
+        }
+
+        function mostrarErro(mensagem) {
+            if (window.RentalTourismSystem?.NotificationSystem) {
+                window.RentalTourismSystem.NotificationSystem.error(mensagem);
+            } else {
+                alert(mensagem);
+            }
+        }
+
+        function mostrarInfo(mensagem) {
+            if (window.RentalTourismSystem?.NotificationSystem) {
+                window.RentalTourismSystem.NotificationSystem.info(mensagem);
+            }
+        }
+    </script>
+}

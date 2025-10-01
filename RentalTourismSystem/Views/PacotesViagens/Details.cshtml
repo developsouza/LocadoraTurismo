@@ -1,0 +1,214 @@
+﻿@model RentalTourismSystem.Models.PacoteViagem
+@{
+    ViewData["Title"] = "Detalhes do Pacote";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>
+            <i class="fas fa-suitcase me-2"></i>@Model.Nome
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Pacotes</a></li>
+                <li class="breadcrumb-item active">@Model.Nome</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Informações do Pacote
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <small class="text-muted">Nome do Pacote:</small><br>
+                    <h5 class="text-primary">@Model.Nome</h5>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">Destino:</small><br>
+                    <strong>@Model.Destino</strong>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">Duração:</small><br>
+                    <strong>@Model.Duracao dias</strong>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">Preço por Pessoa:</small><br>
+                    <h4 class="text-success mb-0">@Model.Preco.ToString("C")</h4>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">Descrição:</small><br>
+                    <p class="text-muted">@Model.Descricao</p>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm">
+                    <i class="fas fa-edit me-1"></i>Editar
+                </a>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i>Voltar
+                </a>
+                <a asp-controller="ReservasViagens" asp-action="Create" asp-route-pacoteId="@Model.Id" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus me-1"></i>Nova Reserva
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <!-- Estatísticas do pacote -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body text-center">
+                        <h4>@Model.ReservasViagens.Count</h4>
+                        <small>Total de Reservas</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body text-center">
+                        <h4>@Model.ReservasViagens.Sum(r => r.Quantidade)</h4>
+                        <small>Total de Pessoas</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body text-center">
+                        <h4>@Model.ReservasViagens.Where(r => r.StatusReservaViagem.Status == "Confirmada").Sum(r => r.ValorTotal).ToString("C")</h4>
+                        <small>Receita Confirmada</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body text-center">
+                        <h4>@Model.ReservasViagens.Count(r => r.StatusReservaViagem.Status == "Pendente")</h4>
+                        <small>Reservas Pendentes</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Breakdown por status -->
+        @if (Model.ReservasViagens.Any())
+        {
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-pie me-1"></i>Resumo por Status
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        @foreach (var statusGroup in Model.ReservasViagens.GroupBy(r => r.StatusReservaViagem.Status))
+                        {
+                            <div class="col-md-3 mb-2">
+                                <div class="text-center">
+                                    @{
+                                        string badgeClass = statusGroup.Key switch
+                                        {
+                                            "Pendente" => "bg-warning",
+                                            "Confirmada" => "bg-success",
+                                            "Cancelada" => "bg-danger",
+                                            "Realizada" => "bg-info",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @badgeClass fs-6">@statusGroup.Key</span><br>
+                                    <strong>@statusGroup.Count()</strong> reserva(s)<br>
+                                    <small class="text-muted">@statusGroup.Sum(g => g.Quantidade) pessoa(s)</small>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Histórico de Reservas -->
+        @if (Model.ReservasViagens.Any())
+        {
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-calendar-check me-2"></i>Histórico de Reservas
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Data da Viagem</th>
+                                    <th>Pessoas</th>
+                                    <th>Status</th>
+                                    <th>Valor</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var reserva in Model.ReservasViagens.OrderByDescending(r => r.DataReserva))
+                                {
+                                    <tr>
+                                        <td>
+                                            <strong>@reserva.Cliente.Nome</strong><br>
+                                            <small class="text-muted">@reserva.Cliente.Email</small>
+                                        </td>
+                                        <td>
+                                            @reserva.DataViagem.ToString("dd/MM/yyyy")<br>
+                                            <small class="text-muted">
+                                                Reservado em @reserva.DataReserva.ToString("dd/MM/yyyy")
+                                            </small>
+                                        </td>
+                                        <td>@reserva.Quantidade</td>
+                                        <td>
+                                            @{
+                                                string badgeClass = reserva.StatusReservaViagem.Status switch
+                                                {
+                                                    "Pendente" => "bg-warning",
+                                                    "Confirmada" => "bg-success",
+                                                    "Cancelada" => "bg-danger",
+                                                    "Realizada" => "bg-info",
+                                                    _ => "bg-secondary"
+                                                };
+                                            }
+                                            <span class="badge @badgeClass">@reserva.StatusReservaViagem.Status</span>
+                                        </td>
+                                        <td class="text-success fw-bold">@reserva.ValorTotal.ToString("C")</td>
+                                        <td>
+                                            <a asp-controller="ReservasViagens" asp-action="Details" asp-route-id="@reserva.Id" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card">
+                <div class="card-body text-center text-muted py-5">
+                    <i class="fas fa-calendar-times fa-4x mb-3"></i>
+                    <h5>Nenhuma reserva encontrada</h5>
+                    <p>Este pacote ainda não possui reservas.</p>
+                    <a asp-controller="ReservasViagens" asp-action="Create" asp-route-pacoteId="@Model.Id" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Criar Primeira Reserva
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>

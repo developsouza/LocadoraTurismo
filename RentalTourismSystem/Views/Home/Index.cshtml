@@ -1,0 +1,1104 @@
+﻿@{
+    ViewData["Title"] = "Dashboard Executivo";
+}
+
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="h3 mb-1 fw-bold text-gradient">Dashboard Executivo</h2>
+                <div class="d-flex align-items-center text-adaptive-muted">
+                    <div class="status-indicator bg-success me-2"></div>
+                    <small>Sistema online</small>
+                    <span class="mx-2">•</span>
+                    <small id="lastUpdate">Atualizado às @DateTime.Now.ToString("HH:mm")</small>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#quickStatsModal" title="Estatísticas Rápidas">
+                    <i class="fas fa-chart-pie me-2"></i>Estatísticas
+                </button>
+                <button class="btn btn-primary" type="button" onclick="window.location.reload()" title="Atualizar Dashboard">
+                    <i class="fas fa-sync-alt me-2"></i>Atualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="row g-4 mb-5">
+    <!-- Total de Clientes -->
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);" role="button" onclick="window.location.href='@Url.Action("Index", "Clientes")'">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="stat-label">Total de Clientes</div>
+                        <div class="stat-number" data-total-clientes>@ViewBag.TotalClientes</div>
+                        <div class="d-flex align-items-center mt-2">
+                            @if ((ViewBag.CrescimentoClientes ?? 0) > 0)
+                            {
+                                <i class="fas fa-arrow-up me-1"></i>
+                                <small>+@ViewBag.CrescimentoClientes% este mês</small>
+                            }
+                            else if ((ViewBag.CrescimentoClientes ?? 0) < 0)
+                            {
+                                <i class="fas fa-arrow-down me-1"></i>
+                                <small>@ViewBag.CrescimentoClientes% este mês</small>
+                            }
+                            else
+                            {
+                                <i class="fas fa-users me-1"></i>
+                                <small>Base de clientes ativa</small>
+                            }
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-users fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Frota Total -->
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, var(--success) 0%, var(--success-hover) 100%);" role="button" onclick="window.location.href='@Url.Action("Index", "Veiculos")'">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="stat-label">Frota Total</div>
+                        <div class="stat-number" data-total-veiculos>@ViewBag.TotalVeiculos</div>
+                        <div class="d-flex align-items-center mt-2">
+                            @if ((ViewBag.VeiculosManutencao ?? 0) > 0)
+                            {
+                                <i class="fas fa-wrench me-1"></i>
+                                <small>@ViewBag.VeiculosManutencao em manutenção</small>
+                            }
+                            else if ((ViewBag.TotalVeiculos ?? 0) > 0)
+                            {
+                                <i class="fas fa-check-circle me-1"></i>
+                                <small>Frota operacional</small>
+                            }
+                            else
+                            {
+                                <i class="fas fa-plus me-1"></i>
+                                <small>Cadastre veículos</small>
+                            }
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-car fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Veículos Disponíveis -->
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, var(--warning) 0%, var(--warning-hover) 100%);" role="button" onclick="window.location.href='@Url.Action("Create", "Locacoes")'">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="stat-label">Disponíveis</div>
+                        <div class="stat-number" data-veiculos-disponiveis>@ViewBag.VeiculosDisponiveis</div>
+                        <div class="d-flex align-items-center mt-2">
+                            @if ((ViewBag.TotalVeiculos ?? 0) > 0)
+                            {
+                                <div class="status-indicator bg-success me-2"></div>
+                                <small>@ViewBag.TaxaDisponibilidade% da frota</small>
+                            }
+                            else
+                            {
+                                <i class="fas fa-info-circle me-1"></i>
+                                <small>Nenhum veículo cadastrado</small>
+                            }
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-check-circle fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Locações Ativas -->
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, var(--info) 0%, var(--info-hover) 100%);" role="button" onclick="window.location.href='@Url.Action("Index", "Locacoes")'">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="stat-label">Locações Ativas</div>
+                        <div class="stat-number" data-locacoes-ativas>@ViewBag.LocacoesAtivas</div>
+                        <div class="d-flex align-items-center mt-2">
+                            @if ((ViewBag.LocacoesAtrasadas ?? 0) > 0)
+                            {
+                                <i class="fas fa-exclamation-triangle me-1 text-warning"></i>
+                                <small>@ViewBag.LocacoesAtrasadas em atraso</small>
+                            }
+                            else if ((ViewBag.LocacoesAtivas ?? 0) > 0)
+                            {
+                                <div class="status-indicator bg-warning me-2"></div>
+                                <small>@ViewBag.VeiculosAlugados veículos alugados</small>
+                            }
+                            else
+                            {
+                                <i class="fas fa-info-circle me-1"></i>
+                                <small>Nenhuma locação ativa</small>
+                            }
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-file-contract fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Métricas Adicionais -->
+<div class="row g-4 mb-5">
+    <!-- Receita do Mês -->
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" role="button" onclick="window.location.href='@Url.Action("Index", "Relatorios")'">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="stat-label">Receita do Mês</div>
+                        <div class="stat-number">@((ViewBag.ReceitaTotalMes ?? 0).ToString("C0"))</div>
+                        <div class="d-flex align-items-center mt-2">
+                            @if ((ViewBag.ReceitaTotalMes ?? 0) > 0)
+                            {
+                                <i class="fas fa-chart-line me-1"></i>
+                                <small>Faturamento atual</small>
+                            }
+                            else
+                            {
+                                <i class="fas fa-info-circle me-1"></i>
+                                <small>Sem faturamento</small>
+                            }
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-dollar-sign fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Taxa de Ocupação -->
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" role="button">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="stat-label">Taxa de Ocupação</div>
+                        <div class="stat-number">@(ViewBag.TaxaOcupacao ?? 0)%</div>
+                        <div class="d-flex align-items-center mt-2">
+                            @if ((ViewBag.TaxaOcupacao ?? 0) >= 70)
+                            {
+                                <i class="fas fa-thumbs-up me-1"></i>
+                                <small>Boa ocupação</small>
+                            }
+                            else if ((ViewBag.TaxaOcupacao ?? 0) >= 40)
+                            {
+                                <i class="fas fa-chart-bar me-1"></i>
+                                <small>Ocupação moderada</small>
+                            }
+                            else
+                            {
+                                <i class="fas fa-chart-line me-1"></i>
+                                <small>Baixa ocupação</small>
+                            }
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-percentage fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Locações/Mês -->
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" role="button" onclick="window.location.href='@Url.Action("Create", "Locacoes")'">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="stat-label">Locações/Mês</div>
+                        <div class="stat-number">@ViewBag.LocacoesMes</div>
+                        <div class="d-flex align-items-center mt-2">
+                            @if ((ViewBag.CrescimentoLocacoes ?? 0) > 0)
+                            {
+                                <i class="fas fa-arrow-up me-1"></i>
+                                <small>+@ViewBag.CrescimentoLocacoes% vs mês anterior</small>
+                            }
+                            else if ((ViewBag.CrescimentoLocacoes ?? 0) < 0)
+                            {
+                                <i class="fas fa-arrow-down me-1"></i>
+                                <small>@ViewBag.CrescimentoLocacoes% vs mês anterior</small>
+                            }
+                            else
+                            {
+                                <i class="fas fa-calendar me-1"></i>
+                                <small>Contratos no mês</small>
+                            }
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-handshake fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reservas Turismo -->
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" role="button" onclick="window.location.href='@Url.Action("Index", "ReservasViagens")'">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="stat-label">Reservas Turismo</div>
+                        <div class="stat-number">@ViewBag.TotalReservas</div>
+                        <div class="d-flex align-items-center mt-2">
+                            @if ((ViewBag.ReservasMes ?? 0) > 0)
+                            {
+                                <i class="fas fa-plane me-1"></i>
+                                <small>@ViewBag.ReservasMes este mês</small>
+                            }
+                            else
+                            {
+                                <i class="fas fa-suitcase me-1"></i>
+                                <small>Oportunidade de venda</small>
+                            }
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-globe-americas fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Grid -->
+<div class="row g-4">
+    <!-- Performance Chart Area -->
+    <div class="col-xl-8 col-lg-7">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-0 d-flex align-items-center">
+                        <i class="fas fa-chart-area icon-adaptive-primary me-2"></i>Performance do Negócio
+                    </h5>
+                    <small class="text-adaptive-muted">Visão geral das operações mensais</small>
+                </div>
+                <div class="btn-group btn-group-sm" role="group" aria-label="Período">
+                    <input type="radio" class="btn-check" name="periodOptions" id="period7" checked>
+                    <label class="btn btn-outline-primary" for="period7">7 dias</label>
+                    <input type="radio" class="btn-check" name="periodOptions" id="period30">
+                    <label class="btn btn-outline-primary" for="period30">30 dias</label>
+                    <input type="radio" class="btn-check" name="periodOptions" id="period90">
+                    <label class="btn btn-outline-primary" for="period90">90 dias</label>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Performance Metrics -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-3 rounded-3 performance-metric-card">
+                            <div class="flex-shrink-0">
+                                <div class="bg-opacity-adaptive-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <i class="fas fa-car icon-adaptive-primary"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1 fw-bold">Total de Locações</h6>
+                                <h4 class="mb-0 icon-adaptive-primary">@ViewBag.TotalLocacoes</h4>
+                                <small class="text-adaptive-muted">Contratos realizados</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-3 rounded-3 performance-metric-card">
+                            <div class="flex-shrink-0">
+                                <div class="bg-opacity-adaptive-success rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <i class="fas fa-plane icon-adaptive-success"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1 fw-bold">Reservas de Viagem</h6>
+                                <h4 class="mb-0 icon-adaptive-success">@ViewBag.TotalReservas</h4>
+                                <small class="text-adaptive-muted">Bookings confirmados</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Placeholder -->
+                <div class="mt-4 p-5 chart-placeholder-adaptive rounded-3 text-center">
+                    <i class="fas fa-chart-line fa-4x text-adaptive-muted mb-3"></i>
+                    <h5 class="text-adaptive-muted mb-2">Gráfico de Performance</h5>
+                    <p class="text-adaptive-muted mb-0">Visualização de dados será implementada em breve</p>
+                    <button class="btn btn-outline-primary mt-3" type="button">
+                        <i class="fas fa-cog me-2"></i>Configurar Gráficos
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerts and Notifications Panel -->
+    <div class="col-xl-4 col-lg-5">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-0 d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle icon-adaptive-warning me-2"></i>Alertas e Notificações
+                    </h5>
+                    @{
+                        var totalAlertas = (ViewBag.CNHsVencendo ?? 0) + (ViewBag.LocacoesAtrasadas ?? 0) + (ViewBag.VeiculosManutencao ?? 0) + (ViewBag.CNHsVencidas ?? 0);
+                    }
+                    <small class="text-adaptive-muted">@totalAlertas item(ns) requer(em) atenção</small>
+                </div>
+                @if (totalAlertas > 0)
+                {
+                    <span class="badge-adaptive-danger rounded-pill px-2 py-1">@totalAlertas</span>
+                }
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush list-group-adaptive">
+
+                    @* CNHs Vencidas (Crítico) *@
+                    @if (ViewBag.CNHsVencidas > 0)
+                    {
+                        <div class="list-group-item border-0 px-4 py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="bg-opacity-adaptive-danger rounded-circle p-2">
+                                        <i class="fas fa-id-card icon-adaptive-danger"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 icon-adaptive-danger fw-semibold">CNH Vencida</h6>
+                                    <p class="mb-1 text-adaptive-muted small">@ViewBag.CNHsVencidas cliente(s) com habilitação vencida</p>
+                                    <small class="icon-adaptive-danger">
+                                        <i class="fas fa-exclamation-circle me-1"></i>Ação urgente necessária
+                                    </small>
+                                </div>
+                                <a href="@Url.Action("Index", "Clientes")" class="badge-adaptive-danger text-decoration-none rounded px-2 py-1" title="Ver clientes">
+                                    @ViewBag.CNHsVencidas
+                                </a>
+                            </div>
+                        </div>
+                    }
+
+                    @* Locações Atrasadas (Crítico) *@
+                    @if (ViewBag.LocacoesAtrasadas > 0)
+                    {
+                        <div class="list-group-item border-0 px-4 py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="bg-opacity-adaptive-danger rounded-circle p-2">
+                                        <i class="fas fa-clock icon-adaptive-danger"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 icon-adaptive-danger fw-semibold">Locações Atrasadas</h6>
+                                    <p class="mb-1 text-adaptive-muted small">@ViewBag.LocacoesAtrasadas locação(ões) com devolução em atraso</p>
+                                    <small class="icon-adaptive-danger">
+                                        <i class="fas fa-phone me-1"></i>Entrar em contato com cliente
+                                    </small>
+                                </div>
+                                <a href="@Url.Action("Index", "Locacoes")" class="badge-adaptive-danger text-decoration-none rounded px-2 py-1" title="Ver locações">
+                                    @ViewBag.LocacoesAtrasadas
+                                </a>
+                            </div>
+                        </div>
+                    }
+
+                    @* CNHs Vencendo (Aviso) *@
+                    @if (ViewBag.CNHsVencendo > 0)
+                    {
+                        <div class="list-group-item border-0 px-4 py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="bg-opacity-adaptive-warning rounded-circle p-2">
+                                        <i class="fas fa-id-card icon-adaptive-warning"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-semibold">CNH Vencendo</h6>
+                                    <p class="mb-1 text-adaptive-muted small">@ViewBag.CNHsVencendo cliente(s) com habilitação vencendo em 30 dias</p>
+                                    <small class="icon-adaptive-warning">
+                                        <i class="fas fa-calendar-alt me-1"></i>Notificar cliente sobre renovação
+                                    </small>
+                                </div>
+                                <a href="@Url.Action("Index", "Clientes")" class="badge-adaptive-warning text-decoration-none rounded px-2 py-1" title="Ver clientes">
+                                    @ViewBag.CNHsVencendo
+                                </a>
+                            </div>
+                        </div>
+                    }
+
+                    @* Veículos em Manutenção (Informativo) *@
+                    @if (ViewBag.VeiculosManutencao > 0)
+                    {
+                        <div class="list-group-item border-0 px-4 py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="bg-opacity-adaptive-info rounded-circle p-2">
+                                        <i class="fas fa-wrench icon-adaptive-info"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-semibold">Veículos em Manutenção</h6>
+                                    <p class="mb-1 text-adaptive-muted small">@ViewBag.VeiculosManutencao veículo(s) indisponível(is) para locação</p>
+                                    <small class="icon-adaptive-info">
+                                        <i class="fas fa-tools me-1"></i>Aguardando conclusão dos reparos
+                                    </small>
+                                </div>
+                                <a href="@Url.Action("Index", "Veiculos", new { statusId = 3 })" class="badge-adaptive-info text-decoration-none rounded px-2 py-1" title="Ver veículos">
+                                    @ViewBag.VeiculosManutencao
+                                </a>
+                            </div>
+                        </div>
+                    }
+
+                    @* Estado: Tudo em Ordem *@
+                    @if (totalAlertas == 0)
+                    {
+                        <div class="list-group-item border-0 px-4 py-5">
+                            <div class="text-center">
+                                <div class="bg-opacity-adaptive-success rounded-circle p-3 mx-auto mb-3 d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <i class="fas fa-check icon-adaptive-success fa-2x"></i>
+                                </div>
+                                <h5 class="icon-adaptive-success mb-2">Tudo em Ordem!</h5>
+                                <p class="text-adaptive-muted mb-3">Não há alertas ou problemas no momento.</p>
+                                <small class="icon-adaptive-success">
+                                    <i class="fas fa-shield-alt me-1"></i>Sistema funcionando perfeitamente
+                                </small>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                @* Ações Rápidas *@
+                @if (totalAlertas > 0)
+                {
+                    <div class="card-footer bg-adaptive-light">
+                        <div class="row g-2">
+                            @if (ViewBag.CNHsVencendo > 0 || ViewBag.CNHsVencidas > 0)
+                            {
+                                <div class="col-12 col-sm-6">
+                                    <a href="@Url.Action("Index", "Clientes")" class="btn btn-outline-warning btn-sm w-100">
+                                        <i class="fas fa-users me-1"></i>Ver Clientes
+                                    </a>
+                                </div>
+                            }
+                            @if (ViewBag.LocacoesAtrasadas > 0)
+                            {
+                                <div class="col-12 col-sm-6">
+                                    <a href="@Url.Action("Index", "Locacoes")" class="btn btn-outline-danger btn-sm w-100">
+                                        <i class="fas fa-file-contract me-1"></i>Ver Locações
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions Section -->
+<div class="row g-4 mt-4">
+    <!-- Centro de Locação -->
+    <div class="col-xl-6 col-lg-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0 d-flex align-items-center">
+                    <i class="fas fa-car me-2"></i>Centro de Locação
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text mb-4">Gerencie todo o processo de locação de veículos de forma integrada.</p>
+
+                <!-- Main Action -->
+                <div class="mb-4">
+                    <a asp-controller="Locacoes" asp-action="Create" class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center py-3">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        <div class="text-start">
+                            <div class="fw-bold">Nova Locação</div>
+                            <small class="opacity-75">Criar contrato de aluguel</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Secondary Actions -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <a asp-controller="Clientes" asp-action="Create" class="btn btn-outline-primary w-100 py-3 d-flex flex-column align-items-center">
+                            <i class="fas fa-user-plus mb-2"></i>
+                            <small>Novo Cliente</small>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a asp-controller="Veiculos" asp-action="Create" class="btn btn-outline-primary w-100 py-3 d-flex flex-column align-items-center">
+                            <i class="fas fa-car-side mb-2"></i>
+                            <small>Novo Veículo</small>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Status Summary -->
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="border-end-adaptive">
+                            <div class="fs-4 fw-bold icon-adaptive-primary">@ViewBag.VeiculosDisponiveis</div>
+                            <small class="text-adaptive-muted">Disponíveis</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="border-end-adaptive">
+                            <div class="fs-4 fw-bold icon-adaptive-warning">@(ViewBag.VeiculosAlugados ?? 0)</div>
+                            <small class="text-adaptive-muted">Alugados</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="fs-4 fw-bold text-adaptive-secondary">@(ViewBag.VeiculosManutencao ?? 0)</div>
+                        <small class="text-adaptive-muted">Manutenção</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Central de Turismo -->
+    <div class="col-xl-6 col-lg-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0 d-flex align-items-center">
+                    <i class="fas fa-globe-americas me-2"></i>Central de Turismo
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text mb-4">Administre pacotes de viagem e reservas para seus clientes.</p>
+
+                <!-- Main Action -->
+                <div class="mb-4">
+                    <a asp-controller="ReservasViagens" asp-action="Create" class="btn btn-success btn-lg w-100 d-flex align-items-center justify-content-center py-3">
+                        <i class="fas fa-calendar-plus me-2"></i>
+                        <div class="text-start">
+                            <div class="fw-bold">Nova Reserva</div>
+                            <small class="opacity-75">Booking de viagem</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Secondary Actions -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <a asp-controller="PacotesViagens" asp-action="Index" class="btn btn-outline-success w-100 py-3 d-flex flex-column align-items-center">
+                            <i class="fas fa-suitcase-rolling mb-2"></i>
+                            <small>Ver Pacotes</small>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a asp-controller="PacotesViagens" asp-action="Create" class="btn btn-outline-success w-100 py-3 d-flex flex-column align-items-center">
+                            <i class="fas fa-plus mb-2"></i>
+                            <small>Novo Pacote</small>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tourism Metrics -->
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="border-end-adaptive">
+                            <div class="fs-4 fw-bold icon-adaptive-success">@(ViewBag.TotalReservas ?? 0)</div>
+                            <small class="text-adaptive-muted">Reservas</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="border-end-adaptive">
+                            <div class="fs-4 fw-bold icon-adaptive-info">@(ViewBag.PacotesAtivos ?? 0)</div>
+                            <small class="text-adaptive-muted">Pacotes</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="fs-4 fw-bold icon-adaptive-warning">@(ViewBag.MediaPessoasPorReserva ?? 0)</div>
+                        <small class="text-adaptive-muted">Média p/ Reserva</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats Modal -->
+<div class="modal fade modal-adaptive" id="quickStatsModal" tabindex="-1" aria-labelledby="quickStatsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quickStatsModalLabel">
+                    <i class="fas fa-chart-pie icon-adaptive-primary me-2"></i>Estatísticas Rápidas
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold">Operações</h6>
+                        <ul class="list-unstyled">
+                            <li class="d-flex justify-content-between">
+                                <span>Total de Locações:</span>
+                                <strong>@(ViewBag.TotalLocacoes ?? 0)</strong>
+                            </li>
+                            <li class="d-flex justify-content-between">
+                                <span>Reservas de Viagem:</span>
+                                <strong>@(ViewBag.TotalReservas ?? 0)</strong>
+                            </li>
+                            <li class="d-flex justify-content-between">
+                                <span>Taxa de Ocupação:</span>
+                                <strong>@(ViewBag.TaxaOcupacao ?? 0)%</strong>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold">Financeiro</h6>
+                        <ul class="list-unstyled">
+                            <li class="d-flex justify-content-between">
+                                <span>Receita do Mês:</span>
+                                <strong>@((ViewBag.ReceitaTotalMes ?? 0).ToString("C0"))</strong>
+                            </li>
+                            <li class="d-flex justify-content-between">
+                                <span>Ticket Médio:</span>
+                                <strong>@((ViewBag.TicketMedio ?? 0).ToString("C0"))</strong>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                <a href="@Url.Action("Index", "Relatorios")" class="btn btn-primary">
+                    <i class="fas fa-chart-bar me-2"></i>Ver Relatórios Completos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Enhanced Dashboard Manager
+        class DashboardManager {
+            constructor() {
+                this.intervalId = null;
+                this.isUpdating = false;
+                this.updateFrequency = 300000; // 5 minutes
+                this.initialize();
+            }
+
+            initialize() {
+                if (!this.isDashboardPage()) return;
+
+                this.setupEventListeners();
+                this.animateInitialLoad();
+                this.startAutoRefresh();
+                this.setupAccessibilityFeatures();
+
+                console.log('Dashboard Manager inicializado');
+            }
+
+            isDashboardPage() {
+                return window.location.pathname === '/' ||
+                       window.location.pathname === '/Home' ||
+                       window.location.pathname === '/Home/Index';
+            }
+
+            setupEventListeners() {
+                // Period filter changes
+                document.querySelectorAll('input[name="periodOptions"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        const period = e.target.id.replace('period', '');
+                        this.handlePeriodChange(period);
+                    });
+                });
+
+                // Card hover effects
+                document.querySelectorAll('.dashboard-card').forEach(card => {
+                    this.setupCardHoverEffects(card);
+                });
+
+                // Visibility change handling
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        this.pauseAutoRefresh();
+                    } else if (this.isDashboardPage()) {
+                        this.resumeAutoRefresh();
+                    }
+                });
+
+                // Window beforeunload cleanup
+                window.addEventListener('beforeunload', () => this.cleanup());
+            }
+
+            setupCardHoverEffects(card) {
+                let hoverTimeout;
+
+                card.addEventListener('mouseenter', () => {
+                    clearTimeout(hoverTimeout);
+                    card.style.transform = 'translateY(-8px) scale(1.02)';
+                    card.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+
+                    // Add subtle glow effect
+                    card.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.25)';
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    hoverTimeout = setTimeout(() => {
+                        card.style.transform = 'translateY(0) scale(1)';
+                        card.style.boxShadow = '';
+                    }, 100);
+                });
+
+                // Keyboard navigation support
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.click();
+                    }
+                });
+            }
+
+            setupAccessibilityFeatures() {
+                // Add ARIA labels to dashboard cards
+                document.querySelectorAll('.dashboard-card').forEach(card => {
+                    const statLabel = card.querySelector('.stat-label');
+                    const statNumber = card.querySelector('.stat-number');
+
+                    if (statLabel && statNumber) {
+                        const ariaLabel = `${statLabel.textContent}: ${statNumber.textContent}`;
+                        card.setAttribute('aria-label', ariaLabel);
+                        card.setAttribute('tabindex', '0');
+                    }
+                });
+
+                // Improve focus indicators
+                const style = document.createElement('style');
+                style.textContent = `
+                    .dashboard-card:focus {
+                        outline: 2px solid var(--primary);
+                        outline-offset: 2px;
+                    }
+                    .btn:focus {
+                        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            animateInitialLoad() {
+                this.animateCounters();
+                this.staggerCardAnimations();
+            }
+
+            animateCounters() {
+                const counters = document.querySelectorAll('.stat-number');
+
+                counters.forEach((counter, index) => {
+                    if (counter.dataset.animated === 'true') return;
+
+                    const target = this.extractNumber(counter.textContent);
+                    if (target === 0) return;
+
+                    const isPercentage = counter.textContent.includes('%');
+                    const isCurrency = counter.textContent.includes('R$');
+
+                    let current = 0;
+                    const duration = 2000;
+                    const steps = 60;
+                    const increment = target / steps;
+                    const stepTime = duration / steps;
+
+                    // Add slight delay between counters
+                    setTimeout(() => {
+                        const timer = setInterval(() => {
+                            current += increment;
+
+                            if (current >= target) {
+                                current = target;
+                                clearInterval(timer);
+                                counter.dataset.animated = 'true';
+                            }
+
+                            // Format based on type
+                            if (isPercentage) {
+                                counter.textContent = Math.floor(current) + '%';
+                            } else if (isCurrency) {
+                                const formatted = Math.floor(current).toLocaleString('pt-BR');
+                                counter.textContent = 'R$ ' + formatted;
+                            } else {
+                                counter.textContent = Math.floor(current).toLocaleString('pt-BR');
+                            }
+                        }, stepTime);
+                    }, index * 200);
+                });
+            }
+
+            staggerCardAnimations() {
+                const cards = document.querySelectorAll('.card');
+                cards.forEach((card, index) => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+
+                    setTimeout(() => {
+                        card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }
+
+            extractNumber(text) {
+                const cleaned = text.replace(/[^\d]/g, '');
+                return parseInt(cleaned) || 0;
+            }
+
+            handlePeriodChange(period) {
+                console.log(`Período alterado para: ${period} dias`);
+
+                // Show loading state
+                const chartArea = document.querySelector('.chart-placeholder-adaptive');
+                if (chartArea) {
+                    chartArea.innerHTML = `
+                        <div class="d-flex align-items-center justify-content-center py-5">
+                            <div class="spinner-border spinner-adaptive me-3" role="status">
+                                <span class="visually-hidden">Carregando...</span>
+                            </div>
+                            <span class="text-adaptive-primary">Carregando dados dos últimos ${period} dias...</span>
+                        </div>
+                    `;
+
+                    // Simulate loading and restore placeholder after delay
+                    setTimeout(() => {
+                        chartArea.innerHTML = `
+                            <i class="fas fa-chart-line fa-4x text-adaptive-muted mb-3"></i>
+                            <h5 class="text-adaptive-muted mb-2">Gráfico de Performance - ${period} dias</h5>
+                            <p class="text-adaptive-muted mb-0">Visualização de dados será implementada em breve</p>
+                            <button class="btn btn-outline-primary mt-3" type="button">
+                                <i class="fas fa-cog me-2"></i>Configurar Gráficos
+                            </button>
+                        `;
+                    }, 2000);
+                }
+
+                if (window.NotificationSystem) {
+                    window.NotificationSystem.info(`Dados dos últimos ${period} dias carregados`);
+                }
+            }
+
+            startAutoRefresh() {
+                this.cleanup();
+                this.intervalId = setInterval(() => this.refreshDashboard(), this.updateFrequency);
+                console.log('Auto-refresh iniciado (5 minutos)');
+            }
+
+            pauseAutoRefresh() {
+                if (this.intervalId) {
+                    clearInterval(this.intervalId);
+                    this.intervalId = null;
+                    console.log('Auto-refresh pausado');
+                }
+            }
+
+            resumeAutoRefresh() {
+                if (!this.intervalId && this.isDashboardPage()) {
+                    this.startAutoRefresh();
+                    console.log('Auto-refresh retomado');
+                }
+            }
+
+            async refreshDashboard() {
+                if (this.isUpdating) {
+                    console.log('Atualização já em andamento');
+                    return;
+                }
+
+                this.isUpdating = true;
+                console.log('Iniciando atualização do dashboard...');
+
+                try {
+                    const response = await fetch('/api/Api/dashboard/dados');
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const dados = await response.json();
+                    this.updateDashboardData(dados);
+                    this.updateTimestamp();
+
+                    if (window.NotificationSystem) {
+                        window.NotificationSystem.success('Dashboard atualizado', 2000);
+                    }
+
+                    console.log('Dashboard atualizado com sucesso');
+
+                } catch (error) {
+                    console.error('Erro ao atualizar dashboard:', error);
+
+                    if (window.NotificationSystem) {
+                        window.NotificationSystem.error('Erro ao atualizar dashboard', 3000);
+                    }
+                } finally {
+                    this.isUpdating = false;
+                }
+            }
+
+            updateDashboardData(dados) {
+                const updates = [
+                    { selector: '[data-total-clientes]', key: 'totalClientes' },
+                    { selector: '[data-total-veiculos]', key: 'totalVeiculos' },
+                    { selector: '[data-veiculos-disponiveis]', key: 'veiculosDisponiveis' },
+                    { selector: '[data-locacoes-ativas]', key: 'locacoesAtivas' }
+                ];
+
+                updates.forEach(({ selector, key }) => {
+                    const element = document.querySelector(selector);
+                    if (element && dados[key] !== undefined) {
+                        const currentValue = this.extractNumber(element.textContent);
+                        const newValue = dados[key];
+
+                        if (currentValue !== newValue) {
+                            this.animateValueChange(element, currentValue, newValue);
+                        }
+                    }
+                });
+            }
+
+            animateValueChange(element, from, to) {
+                const isPercentage = element.textContent.includes('%');
+                const isCurrency = element.textContent.includes('R$');
+
+                const duration = 1000;
+                const steps = 30;
+                const stepValue = (to - from) / steps;
+                const stepTime = duration / steps;
+
+                let current = from;
+                let step = 0;
+
+                // Add visual feedback
+                element.style.transform = 'scale(1.1)';
+                element.style.transition = 'transform 0.2s ease';
+
+                const timer = setInterval(() => {
+                    current += stepValue;
+                    step++;
+
+                    if (step >= steps) {
+                        current = to;
+                        clearInterval(timer);
+
+                        // Reset transform
+                        setTimeout(() => {
+                            element.style.transform = 'scale(1)';
+                        }, 100);
+                    }
+
+                    // Format value
+                    if (isPercentage) {
+                        element.textContent = Math.floor(current) + '%';
+                    } else if (isCurrency) {
+                        element.textContent = 'R$ ' + Math.floor(current).toLocaleString('pt-BR');
+                    } else {
+                        element.textContent = Math.floor(current).toLocaleString('pt-BR');
+                    }
+                }, stepTime);
+            }
+
+            updateTimestamp() {
+                const timestampElement = document.getElementById('lastUpdate');
+                if (timestampElement) {
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString('pt-BR', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    timestampElement.textContent = `Atualizado às ${timeString}`;
+                }
+            }
+
+            cleanup() {
+                if (this.intervalId) {
+                    clearInterval(this.intervalId);
+                    this.intervalId = null;
+                    console.log('Dashboard Manager - cleanup executado');
+                }
+            }
+        }
+
+        // Initialize Dashboard Manager
+        document.addEventListener('DOMContentLoaded', () => {
+            window.dashboardManager = new DashboardManager();
+
+            // Add click tracking for analytics (optional)
+            document.querySelectorAll('.dashboard-card[onclick]').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const statLabel = card.querySelector('.stat-label')?.textContent;
+                    console.log(`Dashboard card clicked: ${statLabel}`);
+                });
+            });
+
+            // Enhanced keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                // Alt + R to refresh dashboard
+                if (e.altKey && e.key === 'r') {
+                    e.preventDefault();
+                    window.location.reload();
+                }
+
+                // Alt + 1-4 to navigate to main cards
+                if (e.altKey && ['1', '2', '3', '4'].includes(e.key)) {
+                    e.preventDefault();
+                    const cardIndex = parseInt(e.key) - 1;
+                    const cards = document.querySelectorAll('.dashboard-card');
+                    if (cards[cardIndex]) {
+                        cards[cardIndex].focus();
+                    }
+                }
+            });
+
+            // Add keyboard shortcuts help
+            const helpText = document.createElement('div');
+            helpText.innerHTML = `
+                <small class="text-adaptive-muted d-none d-lg-block">
+                    <i class="fas fa-keyboard me-1"></i>
+                    Atalhos: <kbd>Alt</kbd>+<kbd>R</kbd> atualizar,
+                    <kbd>Alt</kbd>+<kbd>1-4</kbd> navegar cards
+                </small>
+            `;
+
+            const headerRow = document.querySelector('.row.mb-4 .col-12 > div');
+            if (headerRow) {
+                headerRow.appendChild(helpText);
+            }
+        });
+
+        // Export for global access
+        window.DashboardManager = DashboardManager;
+    </script>
+}

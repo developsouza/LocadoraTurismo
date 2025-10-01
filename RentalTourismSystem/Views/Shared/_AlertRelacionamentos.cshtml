@@ -1,0 +1,204 @@
+﻿@model RentalTourismSystem.Models.Cliente
+
+@{
+    // Calculando valores diretamente sem usar extensions
+    var temLocacoes = Model.Locacoes != null && Model.Locacoes.Any();
+    var temReservas = Model.ReservasViagens != null && Model.ReservasViagens.Any();
+    var temRelacionamentos = temLocacoes || temReservas;
+
+    var locacoesAtivas = 0;
+    var locacoesFinalizadas = 0;
+    var valorTotalLocacoes = 0m;
+
+    if (Model.Locacoes != null)
+    {
+        locacoesAtivas = Model.Locacoes.Where(l => l.DataDevolucaoReal == null).Count();
+        locacoesFinalizadas = Model.Locacoes.Where(l => l.DataDevolucaoReal != null).Count();
+        valorTotalLocacoes = Model.Locacoes.Sum(l => l.ValorTotal);
+    }
+
+    var reservasAtivas = 0;
+    var reservasFinalizadas = 0;
+    var valorTotalReservas = 0m;
+
+    if (Model.ReservasViagens != null)
+    {
+        reservasAtivas = Model.ReservasViagens.Where(r =>
+            r.StatusReservaViagemId == 1 || // Pendente
+            r.StatusReservaViagemId == 2    // Confirmada
+        ).Count();
+
+        reservasFinalizadas = Model.ReservasViagens.Where(r =>
+            r.StatusReservaViagemId == 3 || // Concluída
+            r.StatusReservaViagemId == 4    // Cancelada
+        ).Count();
+
+        valorTotalReservas = Model.ReservasViagens.Sum(r => r.ValorTotal);
+    }
+
+    var podeExcluir = !temRelacionamentos;
+
+    // Verificações de CNH
+    var cnhVencida = false;
+    var cnhProximaVencimento = false;
+
+    if (Model.ValidadeCNH.HasValue)
+    {
+        cnhVencida = Model.ValidadeCNH.Value < DateTime.Now.Date;
+        cnhProximaVencimento = Model.ValidadeCNH.Value <= DateTime.Now.AddDays(30);
+    }
+}
+
+@if (temRelacionamentos)
+{
+    <div class="alert @(podeExcluir ? "alert-warning" : "alert-danger") alert-dismissible fade show" role="alert">
+        <h6 class="alert-heading">
+            <i class="fas @(podeExcluir ? "fa-info-circle" : "fa-ban") me-1"></i>
+            @(podeExcluir ? "Dados Relacionados" : "Exclusão Não Permitida")
+        </h6>
+
+        @if (!podeExcluir)
+        {
+            <p class="mb-2">
+                <strong>Este cliente não pode ser excluído</strong> pois possui dados relacionados no sistema.
+            </p>
+        }
+
+        <div class="row">
+            @if (temLocacoes)
+            {
+                <div class="col-md-6 mb-2">
+                    <div class="border p-2 rounded bg-light">
+                        <strong class="text-primary d-block">
+                            <i class="fas fa-car me-1"></i>Locações de Veículos
+                        </strong>
+                        <ul class="mb-0 small">
+                            @if (locacoesAtivas > 0)
+                            {
+                                <li class="text-danger">
+                                    <strong>@locacoesAtivas ativa(s)</strong> - Veículos não devolvidos
+                                </li>
+                            }
+                            @if (locacoesFinalizadas > 0)
+                            {
+                                <li class="text-secondary">
+                                    @locacoesFinalizadas finalizadas - Histórico importante
+                                </li>
+                            }
+                        </ul>
+                        @if (valorTotalLocacoes > 0)
+                        {
+                            <div class="mt-1">
+                                <small class="text-success">
+                                    <strong>Total investido: @valorTotalLocacoes.ToString("C")</strong>
+                                </small>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (temReservas)
+            {
+                <div class="col-md-6 mb-2">
+                    <div class="border p-2 rounded bg-light">
+                        <strong class="text-success d-block">
+                            <i class="fas fa-plane me-1"></i>Reservas de Viagem
+                        </strong>
+                        <ul class="mb-0 small">
+                            @if (reservasAtivas > 0)
+                            {
+                                <li class="text-danger">
+                                    <strong>@reservasAtivas ativa(s)</strong> - Pendentes/Confirmadas
+                                </li>
+                            }
+                            @if (reservasFinalizadas > 0)
+                            {
+                                <li class="text-secondary">
+                                    @reservasFinalizadas concluídas - Histórico importante
+                                </li>
+                            }
+                        </ul>
+                        @if (valorTotalReservas > 0)
+                        {
+                            <div class="mt-1">
+                                <small class="text-success">
+                                    <strong>Total investido: @valorTotalReservas.ToString("C")</strong>
+                                </small>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (!podeExcluir)
+        {
+            <hr>
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                <span class="small"><strong>Ações recomendadas:</strong></span>
+
+                @if (locacoesAtivas > 0)
+                {
+                    <a href="@Url.Action("Index", "Locacoes", new { clienteId = Model.Id })"
+                       class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-car me-1"></i>Ver Locações Ativas
+                    </a>
+                }
+
+                @if (reservasAtivas > 0)
+                {
+                    <a href="@Url.Action("Index", "ReservasViagens", new { clienteId = Model.Id })"
+                       class="btn btn-sm btn-outline-success">
+                        <i class="fas fa-plane me-1"></i>Ver Reservas Ativas
+                    </a>
+                }
+
+                <a href="@Url.Action("Edit", "Clientes", new { id = Model.Id })"
+                   class="btn btn-sm btn-outline-warning">
+                    <i class="fas fa-edit me-1"></i>Editar Cliente
+                </a>
+            </div>
+        }
+        else
+        {
+            <hr>
+            <p class="mb-0 small">
+                <i class="fas fa-exclamation-triangle text-warning me-1"></i>
+                <strong>Atenção:</strong> Se excluir este cliente, todos os dados relacionados acima serão perdidos permanentemente.
+            </p>
+        }
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+else
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <h6 class="alert-heading">
+            <i class="fas fa-check-circle me-1"></i>Cliente Pode Ser Excluído
+        </h6>
+        <p class="mb-0">
+            Este cliente não possui locações ou reservas relacionadas e pode ser excluído com segurança.
+        </p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Alertas adicionais para CNH -->
+@if (cnhVencida)
+{
+    <div class="alert alert-danger">
+        <i class="fas fa-id-card me-1"></i>
+        <strong>CNH Vencida!</strong> A habilitação deste cliente venceu em @Model.ValidadeCNH.Value.ToString("dd/MM/yyyy").
+        Não permita locações até a regularização.
+    </div>
+}
+else if (cnhProximaVencimento && !cnhVencida)
+{
+    <div class="alert alert-warning">
+        <i class="fas fa-clock me-1"></i>
+        <strong>CNH próxima do vencimento!</strong> A habilitação vence em @Model.ValidadeCNH.Value.ToString("dd/MM/yyyy").
+        Oriente o cliente a renovar.
+    </div>
+}

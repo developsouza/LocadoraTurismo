@@ -1,0 +1,863 @@
+﻿@model RentalTourismSystem.Models.Cliente
+@{
+    ViewData["Title"] = $"Cliente: {Model.Nome}";
+    
+    // Verificações seguras para evitar null reference
+    var locacoes = Model.Locacoes ?? new List<RentalTourismSystem.Models.Locacao>();
+    var reservas = Model.ReservasViagens ?? new List<RentalTourismSystem.Models.ReservaViagem>();
+    
+    // Cálculos seguros
+    var totalLocacoes = locacoes.Count();
+    var totalReservas = reservas.Count();
+    var temAtividades = totalLocacoes > 0 || totalReservas > 0;
+    
+    // Verificações de atividades (usando verificação segura)
+    var locacoesAtivas = locacoes.Where(l => l.DataDevolucaoReal == null).Count();
+    var reservasAtivas = 0;
+    
+    // Verificação segura para StatusReservaViagem
+    try 
+    {
+        reservasAtivas = reservas.Where(r => 
+            r.StatusReservaViagem != null && 
+            (r.StatusReservaViagem.Status == "Confirmada" || r.StatusReservaViagem.Status == "Pendente")
+        ).Count();
+    }
+    catch 
+    {
+        reservasAtivas = 0;
+    }
+    
+    // Cálculos financeiros seguros
+    var valorTotalLocacoes = locacoes.Sum(l => l.ValorTotal);
+    var valorTotalReservas = reservas.Sum(r => r.ValorTotal);
+    var valorTotalGasto = valorTotalLocacoes + valorTotalReservas;
+    
+    // Verificação de CNH
+    var diasParaVencimentoCNH = Model.ValidadeCNH.HasValue ? 
+        (int)(Model.ValidadeCNH.Value - DateTime.Now).TotalDays : (int?)null;
+    var cnhValida = !string.IsNullOrEmpty(Model.NumeroHabilitacao) && 
+                    Model.ValidadeCNH.HasValue && 
+                    Model.ValidadeCNH.Value.Date >= DateTime.Now.Date;
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h2 class="text-gradient mb-1">
+                    <i class="fas fa-user me-2"></i>@Model.Nome
+                    @if (locacoesAtivas > 0 || reservasAtivas > 0)
+                    {
+                        <span class="badge bg-warning ms-2">Cliente Ativo</span>
+                    }
+                </h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Clientes</a></li>
+                        <li class="breadcrumb-item active">@Model.Nome</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-info btn-sm" onclick="validarDadosCompletos()">
+                    <i class="fas fa-check-circle me-1"></i>Validar Dados
+                </button>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning hover-lift">
+                    <i class="fas fa-edit me-1"></i>Editar
+                </a>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="gerarRelatorioCliente()">
+                            <i class="fas fa-file-pdf me-2"></i>Gerar Relatório
+                        </a></li>
+                        <li><a class="dropdown-item" href="#" onclick="exportarDados()">
+                            <i class="fas fa-download me-2"></i>Exportar Dados
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" asp-action="Delete" asp-route-id="@Model.Id">
+                            <i class="fas fa-trash me-2 text-danger"></i>Excluir Cliente
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cards de Estatísticas Principais -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3 hover-lift" 
+             style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas fa-car fa-2x mb-2"></i>
+                <h3 class="stat-number">@totalLocacoes</h3>
+                <p class="stat-label mb-0">Locações Realizadas</p>
+                @if (locacoesAtivas > 0)
+                {
+                    <small class="badge bg-warning mt-1">@locacoesAtivas ativa(s)</small>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3 hover-lift" 
+             style="background: linear-gradient(135deg, var(--success) 0%, var(--success-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas fa-plane fa-2x mb-2"></i>
+                <h3 class="stat-number">@totalReservas</h3>
+                <p class="stat-label mb-0">Reservas de Viagem</p>
+                @if (reservasAtivas > 0)
+                {
+                    <small class="badge bg-warning mt-1">@reservasAtivas ativa(s)</small>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3 hover-lift" 
+             style="background: linear-gradient(135deg, var(--info) 0%, var(--info-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas fa-dollar-sign fa-2x mb-2"></i>
+                <h3 class="stat-number">@valorTotalGasto.ToString("C0")</h3>
+                <p class="stat-label mb-0">Total Gasto</p>
+                <small class="opacity-75">Lifetime Value</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card card text-white mb-3 hover-lift" 
+             style="background: linear-gradient(135deg, var(--warning) 0%, var(--warning-hover) 100%);">
+            <div class="card-body text-center">
+                <i class="fas fa-birthday-cake fa-2x mb-2"></i>
+                <h3 class="stat-number">@((DateTime.Now.Year - Model.DataNascimento.Year))</h3>
+                <p class="stat-label mb-0">Anos de Idade</p>
+                <small class="opacity-75">@Model.DataNascimento.ToString("dd/MM/yyyy")</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Coluna Principal - Informações e Atividades -->
+    <div class="col-lg-8">
+        <!-- Card de Informações Pessoais -->
+        <div class="card mb-4 hover-lift">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-user me-2"></i>Informações Pessoais
+                    <button type="button" class="btn btn-sm btn-outline-light float-end" 
+                            onclick="copiarDadosContato()">
+                        <i class="fas fa-copy me-1"></i>Copiar Contato
+                    </button>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="info-group mb-3">
+                            <label class="text-muted small">Nome Completo:</label>
+                            <p class="h6 mb-0">@Model.Nome</p>
+                        </div>
+                        <div class="info-group mb-3">
+                            <label class="text-muted small">CPF:</label>
+                            <p class="mb-0">
+                                <code class="bg-adaptive-surface text-adaptive-primary px-2 py-1 rounded">
+                                    @Model.Cpf
+                                </code>
+                                <button type="button" class="btn btn-sm btn-outline-secondary ms-2" 
+                                        onclick="copiarTexto('@Model.Cpf')">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </p>
+                        </div>
+                        <div class="info-group mb-3">
+                            <label class="text-muted small">Telefone:</label>
+                            <p class="mb-0">
+                                <a href="tel:@Model.Telefone.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("-", "")" 
+                                   class="text-decoration-none">
+                                    <i class="fas fa-phone text-success me-1"></i>@Model.Telefone
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-secondary ms-2" 
+                                        onclick="copiarTexto('@Model.Telefone')">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-group mb-3">
+                            <label class="text-muted small">Email:</label>
+                            <p class="mb-0">
+                                <a href="mailto:@Model.Email" class="text-decoration-none">
+                                    <i class="fas fa-envelope text-info me-1"></i>@Model.Email
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-secondary ms-2" 
+                                        onclick="copiarTexto('@Model.Email')">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </p>
+                        </div>
+                        <div class="info-group mb-3">
+                            <label class="text-muted small">Data de Nascimento:</label>
+                            <p class="mb-0">
+                                @Model.DataNascimento.ToString("dd/MM/yyyy")
+                                <small class="text-muted">(@((DateTime.Now.Year - Model.DataNascimento.Year)) anos)</small>
+                            </p>
+                        </div>
+                        <div class="info-group mb-3">
+                            <label class="text-muted small">Cliente desde:</label>
+                            <p class="mb-0">
+                                @Model.DataCadastro.ToString("dd/MM/yyyy")
+                                <small class="text-muted">(@((DateTime.Now - Model.DataCadastro).Days) dias)</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-group">
+                    <label class="text-muted small">Endereço Completo:</label>
+                    <p class="mb-0">
+                        <i class="fas fa-map-marker-alt text-warning me-1"></i>@Model.Endereco
+                        <button type="button" class="btn btn-sm btn-outline-secondary ms-2" 
+                                onclick="abrirMapa('@Html.Raw(Html.Encode(Model.Endereco))')">
+                            <i class="fas fa-map me-1"></i>Ver no Mapa
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de CNH -->
+        @if (!string.IsNullOrEmpty(Model.NumeroHabilitacao))
+        {
+            <div class="card mb-4 hover-lift border-@(cnhValida ? "success" : "danger")">
+                <div class="card-header bg-@(cnhValida ? "success" : "danger") text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-id-card me-2"></i>Carteira de Habilitação
+                        <span class="badge @(cnhValida ? "bg-light text-success" : "bg-light text-danger") ms-2">
+                            @(cnhValida ? "VÁLIDA" : "VENCIDA")
+                        </span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label class="text-muted small">Número da CNH:</label>
+                                    <p class="h6 mb-2">@Model.NumeroHabilitacao</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="text-muted small">Validade:</label>
+                                    <p class="h6 mb-2">@Model.ValidadeCNH?.ToString("dd/MM/yyyy")</p>
+                                </div>
+                            </div>
+                            
+                            @if (cnhValida)
+                            {
+                                @if (diasParaVencimentoCNH.HasValue && diasParaVencimentoCNH.Value <= 30)
+                                {
+                                    <div class="alert alert-warning small mb-0">
+                                        <i class="fas fa-exclamation-triangle me-1"></i>
+                                        <strong>Atenção:</strong> CNH vence em @diasParaVencimentoCNH dias!
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-success small mb-0">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        CNH válida por mais @diasParaVencimentoCNH dias
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="alert alert-danger small mb-0">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    <strong>CNH vencida!</strong> Cliente não pode alugar veículos.
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <button type="button" class="btn btn-outline-info" onclick="validarCNHSistema()">
+                                <i class="fas fa-search me-1"></i>Validar no Sistema
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card mb-4 border-secondary">
+                <div class="card-body text-center py-4">
+                    <i class="fas fa-id-card fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">CNH não informada</h5>
+                    <p class="text-muted">Cliente não pode alugar veículos sem CNH válida.</p>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                        <i class="fas fa-plus me-1"></i>Adicionar CNH
+                    </a>
+                </div>
+            </div>
+        }
+
+        <!-- Histórico de Atividades -->
+        @if (temAtividades)
+        {
+            <!-- Tabs para Locações e Viagens -->
+            <div class="card">
+                <div class="card-header bg-adaptive-light">
+                    <ul class="nav nav-tabs card-header-tabs" id="atividadesTabs" role="tablist">
+                        @if (totalLocacoes > 0)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link active" id="locacoes-tab" data-bs-toggle="tab" href="#locacoes" role="tab">
+                                    <i class="fas fa-car me-1"></i>Locações (@totalLocacoes)
+                                </a>
+                            </li>
+                        }
+                        @if (totalReservas > 0)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(totalLocacoes == 0 ? "active" : "")" 
+                                   id="viagens-tab" data-bs-toggle="tab" href="#viagens" role="tab">
+                                    <i class="fas fa-plane me-1"></i>Viagens (@totalReservas)
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="atividadesTabContent">
+                        @if (totalLocacoes > 0)
+                        {
+                            <div class="tab-pane fade show active" id="locacoes" role="tabpanel">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Veículo</th>
+                                                <th>Período</th>
+                                                <th>Status</th>
+                                                <th>Valor</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var locacao in locacoes.OrderByDescending(l => l.DataRetirada).Take(10))
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div>
+                                                            <strong>
+                                                                @(locacao.Veiculo?.Marca ?? "N/A") 
+                                                                @(locacao.Veiculo?.Modelo ?? "N/A")
+                                                            </strong>
+                                                            @if (locacao.Veiculo != null && !string.IsNullOrEmpty(locacao.Veiculo.Placa))
+                                                            {
+                                                                <br><small class="text-muted">@locacao.Veiculo.Placa</small>
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <small>
+                                                            <strong>Retirada:</strong> @locacao.DataRetirada.ToString("dd/MM/yyyy")<br>
+                                                            <strong>Devolução:</strong> @locacao.DataDevolucao.ToString("dd/MM/yyyy")
+                                                            @if (locacao.DataDevolucaoReal.HasValue)
+                                                            {
+                                                                <br><span class="text-muted">Real: @locacao.DataDevolucaoReal.Value.ToString("dd/MM/yyyy")</span>
+                                                            }
+                                                        </small>
+                                                    </td>
+                                                    <td>
+                                                        @if (locacao.DataDevolucaoReal.HasValue)
+                                                        {
+                                                            @if (locacao.DataDevolucaoReal.Value.Date > locacao.DataDevolucao.Date)
+                                                            {
+                                                                <span class="badge bg-warning">
+                                                                    <i class="fas fa-exclamation-triangle me-1"></i>Finalizada com Atraso
+                                                                </span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="badge bg-success">
+                                                                    <i class="fas fa-check me-1"></i>Finalizada
+                                                                </span>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            @if (DateTime.Now.Date > locacao.DataDevolucao.Date)
+                                                            {
+                                                                <span class="badge bg-danger">
+                                                                    <i class="fas fa-clock me-1"></i>Atrasada
+                                                                </span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="badge bg-primary">
+                                                                    <i class="fas fa-car me-1"></i>Ativa
+                                                                </span>
+                                                            }
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        <strong class="text-success">@locacao.ValorTotal.ToString("C")</strong>
+                                                    </td>
+                                                    <td>
+                                                        <a href="#" onclick="verDetalhesLocacao(@locacao.Id)"
+                                                           class="btn btn-sm btn-outline-primary" title="Ver Detalhes">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                @if (totalLocacoes > 10)
+                                {
+                                    <div class="text-center mt-3">
+                                        <button type="button" class="btn btn-outline-primary" onclick="verTodasLocacoes()">
+                                            <i class="fas fa-list me-1"></i>Ver Todas as Locações (@totalLocacoes)
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        @if (totalReservas > 0)
+                        {
+                            <div class="tab-pane fade @(totalLocacoes == 0 ? "show active" : "")" id="viagens" role="tabpanel">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Pacote</th>
+                                                <th>Data da Viagem</th>
+                                                <th>Pessoas</th>
+                                                <th>Status</th>
+                                                <th>Valor</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var reserva in reservas.OrderByDescending(r => r.DataReserva).Take(10))
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <strong>@(reserva.PacoteViagem?.Nome ?? "N/A")</strong>
+                                                        @if (reserva.PacoteViagem != null && !string.IsNullOrEmpty(reserva.PacoteViagem.Destino))
+                                                        {
+                                                            <br><small class="text-muted">@reserva.PacoteViagem.Destino</small>
+                                                        }
+                                                    </td>
+                                                    <td>@reserva.DataViagem.ToString("dd/MM/yyyy")</td>
+                                                    <td>
+                                                        <span class="badge bg-info">@reserva.Quantidade pessoa(s)</span>
+                                                    </td>
+                                                    <td>
+                                                        @if (reserva.StatusReservaViagem != null)
+                                                        {
+                                                            string badgeClass = reserva.StatusReservaViagem.Status switch
+                                                            {
+                                                                "Pendente" => "bg-warning",
+                                                                "Confirmada" => "bg-success",
+                                                                "Cancelada" => "bg-danger",
+                                                                "Realizada" => "bg-info",
+                                                                _ => "bg-secondary"
+                                                            };
+                                                            <span class="badge @badgeClass">@reserva.StatusReservaViagem.Status</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge bg-secondary">N/A</span>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        <strong class="text-success">@reserva.ValorTotal.ToString("C")</strong>
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                                onclick="verDetalhesReserva(@reserva.Id)" title="Ver Detalhes">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                @if (totalReservas > 10)
+                                {
+                                    <div class="text-center mt-3">
+                                        <button type="button" class="btn btn-outline-success" onclick="verTodasReservas()">
+                                            <i class="fas fa-list me-1"></i>Ver Todas as Reservas (@totalReservas)
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Estado Vazio -->
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+                    <h5 class="text-muted">Nenhuma atividade encontrada</h5>
+                    <p class="text-muted">Este cliente ainda não realizou locações ou reservas de viagem.</p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button type="button" class="btn btn-success" onclick="novaLocacao()">
+                            <i class="fas fa-car me-1"></i>Nova Locação
+                        </button>
+                        <button type="button" class="btn btn-info" onclick="novaReserva()">
+                            <i class="fas fa-plane me-1"></i>Nova Reserva
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Sidebar Direita -->
+    <div class="col-lg-4">
+        <!-- Card de Ações Rápidas -->
+        <div class="card mb-4 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightning-bolt me-1"></i>Ações Rápidas
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    @if (cnhValida)
+                    {
+                        <button type="button" class="btn btn-success" onclick="novaLocacao()">
+                            <i class="fas fa-car me-1"></i>Nova Locação
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-outline-secondary" disabled title="CNH inválida ou não informada">
+                            <i class="fas fa-car me-1"></i>Nova Locação (CNH necessária)
+                        </button>
+                    }
+                    
+                    <button type="button" class="btn btn-info" onclick="novaReserva()">
+                        <i class="fas fa-plane me-1"></i>Nova Reserva de Viagem
+                    </button>
+                    
+                    <button type="button" class="btn btn-outline-warning" onclick="enviarEmail()">
+                        <i class="fas fa-envelope me-1"></i>Enviar Email
+                    </button>
+                    
+                    <button type="button" class="btn btn-outline-info" onclick="ligarCliente()">
+                        <i class="fas fa-phone me-1"></i>Ligar para Cliente
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Status do Cliente -->
+        <div class="card mb-4 border-info">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-user-check me-1"></i>Status do Cliente
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="status-checks">
+                    <div class="status-item d-flex align-items-center mb-2">
+                        <i class="fas fa-circle text-success me-2"></i>
+                        <span>Dados pessoais completos</span>
+                    </div>
+                    <div class="status-item d-flex align-items-center mb-2">
+                        <i class="fas fa-circle @(cnhValida ? "text-success" : "text-warning") me-2"></i>
+                        <span>CNH @(cnhValida ? "válida" : "não informada/vencida")</span>
+                    </div>
+                    <div class="status-item d-flex align-items-center mb-2">
+                        <i class="fas fa-circle @(temAtividades ? "text-success" : "text-muted") me-2"></i>
+                        <span>@(temAtividades ? "Cliente ativo" : "Sem atividades")</span>
+                    </div>
+                    <div class="status-item d-flex align-items-center mb-2">
+                        <i class="fas fa-circle @(locacoesAtivas > 0 || reservasAtivas > 0 ? "text-warning" : "text-success") me-2"></i>
+                        <span>@(locacoesAtivas > 0 || reservasAtivas > 0 ? "Possui pendências" : "Sem pendências")</span>
+                    </div>
+                </div>
+
+                @if (locacoesAtivas > 0 || reservasAtivas > 0)
+                {
+                    <hr>
+                    <div class="alert alert-warning small mb-0">
+                        <strong>Atenção:</strong>
+                        @if (locacoesAtivas > 0)
+                        {
+                            <br><span>&bull; @locacoesAtivas locação@(locacoesAtivas > 1 ? "ões" : "ão") ativa@(locacoesAtivas > 1 ? "s" : "")</span>
+                        }
+                        @if (reservasAtivas > 0)
+                        {
+                            <br><span>&bull; @reservasAtivas reserva@(reservasAtivas > 1 ? "s" : "") ativa@(reservasAtivas > 1 ? "s" : "")</span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Card de Análise de Perfil -->
+        @if (temAtividades)
+        {
+                var valorMedioLocacao = totalLocacoes > 0 ? valorTotalLocacoes / totalLocacoes : 0;
+                var valorMedioReserva = totalReservas > 0 ? valorTotalReservas / totalReservas : 0;
+                var ticketMedio = (valorMedioLocacao + valorMedioReserva) / 2;
+                
+                var diasNoSistema = Math.Max((DateTime.Now - Model.DataCadastro).Days, 1);
+                var frequencia = temAtividades ? (double)(totalLocacoes + totalReservas) / Math.Max((diasNoSistema / 30.0), 1) : 0;
+                
+                string perfilCliente = ticketMedio switch
+                {
+                    > 5000 => "Premium",
+                    > 2000 => "Gold",
+                    > 500 => "Silver",
+                    _ => "Bronze"
+                };
+            
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-pie me-1"></i>Análise do Perfil
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="small">
+                        <p class="mb-2">
+                            <strong>Perfil:</strong> 
+                            <span class="badge @(perfilCliente switch { "Premium" => "bg-warning", "Gold" => "bg-success", "Silver" => "bg-info", _ => "bg-secondary" })">
+                                @perfilCliente
+                            </span>
+                        </p>
+                        
+                        @if (valorMedioLocacao > 0)
+                        {
+                            <p class="mb-1">
+                                <i class="fas fa-car text-primary me-1"></i>
+                                <strong>Ticket médio locação:</strong> @valorMedioLocacao.ToString("C")
+                            </p>
+                        }
+                        
+                        @if (valorMedioReserva > 0)
+                        {
+                            <p class="mb-1">
+                                <i class="fas fa-plane text-success me-1"></i>
+                                <strong>Ticket médio viagem:</strong> @valorMedioReserva.ToString("C")
+                            </p>
+                        }
+                        
+                        <p class="mb-1">
+                            <i class="fas fa-calendar text-info me-1"></i>
+                            <strong>Frequência:</strong> @frequencia.ToString("F1") atividades/mês
+                        </p>
+                        
+                        <p class="mb-0">
+                            <i class="fas fa-star text-warning me-1"></i>
+                            <strong>Tempo de relacionamento:</strong> @((DateTime.Now - Model.DataCadastro).Days) dias
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Variáveis do cliente para JavaScript
+        var clienteId = @Model.Id;
+        var clienteNome = '@Html.Raw(Html.Encode(Model.Nome))';
+        var clienteEmail = '@Html.Raw(Html.Encode(Model.Email))';
+        var clienteTelefone = '@Html.Raw(Html.Encode(Model.Telefone))';
+        var clienteEndereco = '@Html.Raw(Html.Encode(Model.Endereco))';
+        var clienteCpf = '@Html.Raw(Html.Encode(Model.Cpf))';
+
+        $(document).ready(function() {
+            // Configurar tooltips
+            initializeTooltips();
+            
+            // Configurar sistema de abas se existir
+            if (document.getElementById('atividadesTabs')) {
+                var triggerTabList = [].slice.call(document.querySelectorAll('#atividadesTabs a'));
+                triggerTabList.forEach(function (triggerEl) {
+                    var tabTrigger = new bootstrap.Tab(triggerEl);
+                    
+                    triggerEl.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        tabTrigger.show();
+                    });
+                });
+            }
+        });
+
+        // Validar dados completos via API
+        async function validarDadosCompletos() {
+            try {
+                showLoadingOverlay();
+                const response = await fetch('/Clientes/GetClienteData?id=' + clienteId);
+                
+                if (response.ok) {
+                    const cliente = await response.json();
+                    
+                    // Verificar completude dos dados
+                    const checks = {
+                        'Dados básicos': cliente.nome && cliente.cpf && cliente.email && cliente.telefone,
+                        'CNH informada': cliente.numeroHabilitacao,
+                        'CNH válida': cliente.cnhValida,
+                        'Endereço': true // Assumindo que sempre tem endereço pois é obrigatório
+                    };
+                    
+                    let html = '<div class="validation-results"><h6>Resultado da Validação:</h6>';
+                    
+                    for (const [check, valido] of Object.entries(checks)) {
+                        const icon = valido ? 'fas fa-check-circle text-success' : 'fas fa-times-circle text-danger';
+                        html += '<p><i class="' + icon + ' me-2"></i>' + check + '</p>';
+                    }
+                    
+                    html += '</div>';
+                    
+                    NotificationSystem.info(html);
+                } else {
+                    NotificationSystem.error('Erro ao carregar dados do cliente');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                NotificationSystem.error('Erro ao validar dados do cliente');
+            } finally {
+                hideLoadingOverlay();
+            }
+        }
+
+        // Validar CNH via sistema
+        async function validarCNHSistema() {
+            try {
+                const response = await fetch('/Clientes/ValidarCNH?clienteId=' + clienteId);
+                
+                if (response.ok) {
+                    const resultado = await response.json();
+                    
+                    if (resultado.valida) {
+                        NotificationSystem.success('CNH válida: ' + resultado.mensagem);
+                    } else {
+                        NotificationSystem.warning('CNH: ' + resultado.mensagem);
+                    }
+                } else {
+                    NotificationSystem.error('Erro ao validar CNH');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                NotificationSystem.error('Erro ao validar CNH');
+            }
+        }
+
+        // Copiar dados de contato
+        function copiarDadosContato() {
+            const dados = 'Nome: ' + clienteNome + '\n' +
+                         'CPF: ' + clienteCpf + '\n' +
+                         'Email: ' + clienteEmail + '\n' +
+                         'Telefone: ' + clienteTelefone + '\n' +
+                         'Endereço: ' + clienteEndereco;
+            
+            copiarTexto(dados);
+            NotificationSystem.success('Dados de contato copiados para a área de transferência');
+        }
+
+        // Copiar texto para área de transferência
+        function copiarTexto(texto) {
+            navigator.clipboard.writeText(texto).then(function() {
+                NotificationSystem.success('Texto copiado!');
+            }).catch(function() {
+                NotificationSystem.error('Erro ao copiar texto');
+            });
+        }
+
+        // Abrir endereço no mapa
+        function abrirMapa(endereco) {
+            const url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(endereco);
+            window.open(url, '_blank');
+        }
+
+        // Enviar email para cliente
+        function enviarEmail() {
+            const assunto = 'Contato - Sistema de Locação e Turismo';
+            const url = 'mailto:' + clienteEmail + '?subject=' + encodeURIComponent(assunto);
+            window.location.href = url;
+        }
+
+        // Ligar para cliente
+        function ligarCliente() {
+            const telefone = clienteTelefone.replace(/\D/g, '');
+            const url = 'tel:' + telefone;
+            window.location.href = url;
+        }
+
+        // Placeholder functions para ações que podem não ter controllers implementados
+        function novaLocacao() {
+            NotificationSystem.info('Função de nova locação será implementada quando o controller estiver disponível');
+        }
+
+        function novaReserva() {
+            NotificationSystem.info('Função de nova reserva será implementada quando o controller estiver disponível');
+        }
+
+        function verDetalhesLocacao(id) {
+            NotificationSystem.info('Função para ver detalhes da locação será implementada quando o controller estiver disponível');
+        }
+
+        function verDetalhesReserva(id) {
+            NotificationSystem.info('Função para ver detalhes da reserva será implementada quando o controller estiver disponível');
+        }
+
+        function verTodasLocacoes() {
+            NotificationSystem.info('Função para ver todas as locações será implementada quando o controller estiver disponível');
+        }
+
+        function verTodasReservas() {
+            NotificationSystem.info('Função para ver todas as reservas será implementada quando o controller estiver disponível');
+        }
+
+        // Gerar relatório do cliente
+        function gerarRelatorioCliente() {
+            NotificationSystem.info('Funcionalidade de relatório em desenvolvimento');
+        }
+
+        // Exportar dados do cliente
+        function exportarDados() {
+            NotificationSystem.info('Funcionalidade de exportação em desenvolvimento');
+        }
+
+        // Funções auxiliares para loading
+        function showLoadingOverlay() {
+            if (!document.querySelector('.loading-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.className = 'loading-overlay';
+                overlay.innerHTML = '<div class="spinner-modern"></div>';
+                document.body.appendChild(overlay);
+            }
+        }
+
+        function hideLoadingOverlay() {
+            const overlay = document.querySelector('.loading-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+    </script>
+}

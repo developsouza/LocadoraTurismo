@@ -1,0 +1,239 @@
+﻿@*
+    ValidationScriptsPartial - Otimizado para Sistema Consolidado
+    Este arquivo foi otimizado para trabalhar com o sistema JavaScript consolidado.
+    Evita duplicidades e conflitos com os scripts já carregados no _Layout.cshtml
+*@
+
+<script>
+    // Verificar se sistema de validação já está carregado
+    document.addEventListener('DOMContentLoaded', function() {
+        // Aguardar um pouco para garantir que todos os scripts foram carregados
+        setTimeout(function() {
+            initializePageValidation();
+        }, 100);
+    });
+
+    function initializePageValidation() {
+        console.log('Inicializando validação da página...');
+
+        // Verificar se jQuery Validation está disponível
+        if (typeof $ !== 'undefined' && typeof $.fn.validate !== 'undefined') {
+
+            // Se o sistema consolidado de validação está disponível, usar ele
+            if (window.ValidationSystem) {
+                console.log('Sistema de validação consolidado encontrado - aplicando configurações');
+
+                // Aplicar validações automáticas baseadas nas classes dos formulários
+                $('.form-cliente').each(function() {
+                    window.ValidationSystem.applyClientForm(this);
+                });
+
+                $('.form-veiculo').each(function() {
+                    window.ValidationSystem.applyVehicleForm(this);
+                });
+
+                $('.form-locacao').each(function() {
+                    window.ValidationSystem.applyRentalForm(this);
+                });
+
+                $('.form-reserva').each(function() {
+                    window.ValidationSystem.applyReservationForm(this);
+                });
+
+                // Aplicar validação genérica para outros formulários
+                $('.needs-validation:not(.form-cliente):not(.form-veiculo):not(.form-locacao):not(.form-reserva)').each(function() {
+                    if (!$(this).data('validator')) {
+                        $(this).validate();
+                    }
+                });
+
+            } else {
+                console.log('Sistema consolidado não encontrado - aplicando validação básica');
+
+                // Fallback: aplicar validação básica se sistema consolidado não estiver disponível
+                $('form.needs-validation').each(function() {
+                    if (!$(this).data('validator')) {
+                        $(this).validate({
+                            errorClass: 'is-invalid',
+                            validClass: 'is-valid',
+                            errorElement: 'div',
+                            errorPlacement: function(error, element) {
+                                error.addClass('invalid-feedback');
+                                error.insertAfter(element);
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Se jQuery Mask está disponível e o sistema consolidado não aplicou máscaras
+            if (typeof $.fn.mask !== 'undefined' && !window._nativeMasksActive) {
+                console.log('Aplicando máscaras jQuery como fallback');
+
+                // Aplicar máscaras básicas apenas se não há máscaras nativas
+                $('input[data-mask]:not([data-native-mask])').each(function() {
+                    const maskType = $(this).data('mask');
+
+                    switch(maskType) {
+                        case 'cpf':
+                            $(this).mask('000.000.000-00');
+                            break;
+                        case 'phone':
+                            $(this).mask('(00) 00000-0000');
+                            break;
+                        case 'cep':
+                            $(this).mask('00000-000');
+                            break;
+                        case 'placa':
+                            $(this).mask('AAA-0000', {
+                                translation: {
+                                    'A': {pattern: /[A-Za-z]/}
+                                }
+                            });
+                            break;
+                    }
+                });
+            }
+
+        } else {
+            console.log('jQuery Validation não encontrado - usando apenas validação HTML5');
+
+            // Fallback para validação HTML5 nativa
+            const forms = document.querySelectorAll('.needs-validation');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                });
+            });
+        }
+
+        // Aplicar máscaras nativas se sistema consolidado não estiver ativo
+        if (!window.RentalTourismSystem || !window.RentalTourismSystem.MaskSystem) {
+            console.log('Sistema de máscaras consolidado não encontrado - aplicando máscaras básicas');
+            applyBasicMasks();
+        }
+
+        console.log('Validação da página inicializada com sucesso');
+    }
+
+    // Função para aplicar máscaras básicas sem o sistema consolidado
+    function applyBasicMasks() {
+        // CPF
+        document.querySelectorAll('input[name="Cpf"], input[data-mask="cpf"]').forEach(input => {
+            input.addEventListener('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                this.value = value;
+            });
+        });
+
+        // Telefone
+        document.querySelectorAll('input[name="Telefone"], input[data-mask="phone"]').forEach(input => {
+            input.addEventListener('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                if (value.length >= 11) {
+                    value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                } else if (value.length >= 10) {
+                    value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+                }
+                this.value = value;
+            });
+        });
+
+        // Placa
+        document.querySelectorAll('input[name="Placa"], input[data-mask="placa"]').forEach(input => {
+            input.addEventListener('input', function() {
+                let value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                if (value.length > 3) {
+                    value = value.replace(/^([A-Z]{3})([0-9A-Z].*)/, '$1-$2');
+                }
+                this.value = value;
+            });
+        });
+    }
+
+    // Função utilitária para verificar se um script foi carregado
+    function isScriptLoaded(scriptName) {
+        const scripts = document.getElementsByTagName('script');
+        for (let i = 0; i < scripts.length; i++) {
+            if (scripts[i].src.includes(scriptName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Função para carregar script dinamicamente se necessário
+    function loadScript(src, callback) {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = callback;
+        script.onerror = function() {
+            console.error('Erro ao carregar script:', src);
+        };
+        document.head.appendChild(script);
+    }
+
+    // Verificação de dependências (apenas para debug)
+    function checkDependencies() {
+        const checks = {
+            jQuery: typeof $ !== 'undefined',
+            jQueryValidate: typeof $.fn?.validate !== 'undefined',
+            jQueryMask: typeof $.fn?.mask !== 'undefined',
+            ConsolidatedSystem: typeof window.RentalTourismSystem !== 'undefined',
+            ValidationSystem: typeof window.ValidationSystem !== 'undefined'
+        };
+
+        console.log('Verificação de dependências:', checks);
+
+        // Avisar se dependências críticas não estão disponíveis
+        if (!checks.jQuery) {
+            console.warn('jQuery não está carregado - algumas funcionalidades podem não funcionar');
+        }
+
+        if (!checks.ConsolidatedSystem && !checks.jQueryValidate) {
+            console.warn('Nem sistema consolidado nem jQuery Validate estão disponíveis - apenas validação HTML5 será usada');
+        }
+    }
+
+    // Executar verificação de dependências em modo debug
+    if (window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1')) {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkDependencies, 200);
+        });
+    }
+</script>
+
+@*
+    Comentários para desenvolvedores:
+    
+    1. Este arquivo agora trabalha em conjunto com o sistema consolidado do _Layout.cshtml
+    2. Ele verifica se o sistema consolidado está disponível antes de aplicar validações
+    3. Fornece fallbacks para quando o sistema consolidado não está disponível
+    4. Evita duplicação de scripts que já estão no layout
+    5. Aplica validações automáticas baseadas nas classes dos formulários
+    
+    Como usar:
+    - Continue usando @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); } nas suas views
+    - O sistema automaticamente detecta qual sistema de validação usar
+    - Para formulários específicos, adicione classes como 'form-cliente', 'form-veiculo', etc.
+    - Para validação genérica, use a classe 'needs-validation'
+    
+    Exemplo de uso nas views:
+    
+    <form class="needs-validation form-cliente" novalidate>
+        <input name="Cpf" data-mask="cpf" required />
+        <input name="Telefone" data-mask="phone" required />
+        <button type="submit">Salvar</button>
+    </form>
+    
+    @section Scripts {
+        @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    }
+*@

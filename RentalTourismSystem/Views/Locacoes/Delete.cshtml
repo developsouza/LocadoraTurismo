@@ -1,0 +1,528 @@
+﻿@model RentalTourismSystem.Models.Locacao
+@{
+    ViewData["Title"] = "Excluir Locação";
+
+    // Verificar impedimentos baseado no controller
+    var podeExcluir = Model.DataDevolucaoReal.HasValue; // Só pode excluir se finalizada
+    var isActive = !Model.DataDevolucaoReal.HasValue;
+    var diasAtraso = isActive && DateTime.Now.Date > Model.DataDevolucao.Date ?
+        (int)(DateTime.Now.Date - Model.DataDevolucao.Date).TotalDays : 0;
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="@(podeExcluir ? "text-danger" : "text-warning")">
+            <i class="fas @(podeExcluir ? "fa-exclamation-triangle" : "fa-ban") me-2"></i>
+            @(podeExcluir ? "Confirmar Exclusão" : "Exclusão Não Permitida")
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Locações</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id" class="text-decoration-none">Locação #@Model.Id</a></li>
+                <li class="breadcrumb-item active">Excluir</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Alert Principal -->
+<div class="row mb-4">
+    <div class="col-12">
+        @if (podeExcluir)
+        {
+            <div class="alert alert-danger border-danger animate-fade-in">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle fa-3x me-3"></i>
+                    <div>
+                        <h5 class="alert-heading mb-2">
+                            <i class="fas fa-warning me-1"></i>ATENÇÃO: Ação Irreversível!
+                        </h5>
+                        <p class="mb-1">
+                            Você está prestes a <strong>excluir permanentemente</strong> a locação #@Model.Id.
+                        </p>
+                        <p class="mb-0 small">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Esta ação <strong>NÃO PODE ser desfeita</strong> e removerá todos os dados da locação do sistema.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning border-warning animate-fade-in">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-ban fa-3x me-3"></i>
+                    <div>
+                        <h5 class="alert-heading mb-2">
+                            <i class="fas fa-shield-alt me-1"></i>Exclusão Bloqueada por Segurança
+                        </h5>
+                        <p class="mb-1">
+                            A locação #@Model.Id <strong>NÃO PODE ser excluída</strong> no momento.
+                        </p>
+                        <p class="mb-0 small">
+                            <i class="fas fa-info-circle me-1"></i>
+                            A locação está ativa e deve ser finalizada antes da exclusão.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <!-- Coluna Principal -->
+    <div class="col-lg-8">
+        <!-- Card Principal com Dados da Locação -->
+        <div class="card @(podeExcluir ? "border-danger" : "border-warning") hover-lift mb-4">
+            <div class="card-header @(podeExcluir ? "bg-danger" : "bg-warning") text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-clipboard-list me-2"></i>Dados da Locação #@Model.Id
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Informações da Locação -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="locacao-info">
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Cliente:</label>
+                                <p class="h6 mb-0">@Model.Cliente.Nome</p>
+                                <small class="text-muted">@Model.Cliente.Email | @Model.Cliente.Telefone</small>
+                            </div>
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Veículo:</label>
+                                <p class="mb-0">
+                                    <strong>@Model.Veiculo.Marca @Model.Veiculo.Modelo</strong>
+                                    <br>
+                                    <code class="bg-adaptive-surface text-adaptive-primary px-2 py-1 rounded">
+                                        @Model.Veiculo.Placa
+                                    </code>
+                                </p>
+                            </div>
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Funcionário Responsável:</label>
+                                <p class="mb-0">@Model.Funcionario.Nome</p>
+                                <small class="text-muted">@Model.Agencia.Nome</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="locacao-info">
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Data de Retirada:</label>
+                                <p class="mb-0">
+                                    @Model.DataRetirada.ToString("dd/MM/yyyy HH:mm")
+                                </p>
+                            </div>
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Data de Devolução Prevista:</label>
+                                <p class="mb-0">
+                                    @Model.DataDevolucao.ToString("dd/MM/yyyy HH:mm")
+                                </p>
+                            </div>
+                            @if (Model.DataDevolucaoReal.HasValue)
+                            {
+                                <div class="info-item mb-3">
+                                    <label class="text-muted small">Data de Devolução Real:</label>
+                                    <p class="mb-0">
+                                        @Model.DataDevolucaoReal.Value.ToString("dd/MM/yyyy HH:mm")
+                                    </p>
+                                </div>
+                            }
+                            <div class="info-item mb-3">
+                                <label class="text-muted small">Valor Total:</label>
+                                <p class="mb-0">
+                                    <strong class="text-success h5">@Model.ValorTotal.ToString("C")</strong>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status da Locação -->
+                <div class="alert @(isActive ? (diasAtraso > 0 ? "alert-danger" : "alert-primary") : "alert-success") mb-4">
+                    <h6 class="alert-heading">
+                        <i class="fas @(isActive ? (diasAtraso > 0 ? "fa-exclamation-triangle" : "fa-clock") : "fa-check-circle") me-1"></i>
+                        Status da Locação
+                    </h6>
+                    @if (isActive)
+                    {
+                        @if (diasAtraso > 0)
+                        {
+                            <p class="mb-0">
+                                <strong>Locação Atrasada!</strong><br>
+                                <small>@diasAtraso dia(s) de atraso na devolução</small>
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="mb-0">
+                                <strong>Locação Ativa</strong><br>
+                                <small>Veículo ainda não foi devolvido</small>
+                            </p>
+                        }
+                    }
+                    else
+                    {
+                        <p class="mb-0">
+                            <strong>Locação Finalizada</strong><br>
+                            <small>Devolvido em @Model.DataDevolucaoReal.Value.ToString("dd/MM/yyyy HH:mm")</small>
+                        </p>
+                    }
+                </div>
+
+                <!-- Observações -->
+                @if (!string.IsNullOrEmpty(Model.Observacoes))
+                {
+                    <div class="mb-3">
+                        <label class="text-muted small">Observações:</label>
+                        <div class="bg-light p-3 rounded">
+                            @foreach (var linha in Model.Observacoes.Split('\n'))
+                            {
+                                <p class="mb-1">@linha</p>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Impacto da Exclusão -->
+                @if (!podeExcluir)
+                {
+                    <div class="alert alert-warning">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-ban me-1"></i>Por que não posso excluir?
+                        </h6>
+                        <ul class="mb-0">
+                            <li>A locação está <strong>ativa</strong> (veículo não foi devolvido)</li>
+                            <li>Exclusão de locações ativas pode causar inconsistências no sistema</li>
+                            <li>O veículo permaneceria com status incorreto</li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-danger">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-exclamation-triangle me-1"></i>Impactos da Exclusão
+                        </h6>
+                        <ul class="mb-0">
+                            <li>Todos os dados da locação serão <strong>perdidos permanentemente</strong></li>
+                            <li>O histórico financeiro será afetado</li>
+                            <li>Relatórios podem apresentar inconsistências</li>
+                            <li>Esta ação não pode ser revertida</li>
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex gap-2 justify-content-between align-items-center">
+                    <div class="action-buttons">
+                        @if (podeExcluir)
+                        {
+                            <form asp-action="Delete" method="post" id="formExclusao" class="d-inline">
+                                <input type="hidden" asp-for="Id" />
+                                <button type="submit" class="btn btn-danger hover-lift" id="btnConfirmarExclusao">
+                                    <i class="fas fa-trash-alt me-1"></i>Sim, Excluir Permanentemente
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-danger" disabled>
+                                <i class="fas fa-ban me-1"></i>Exclusão Não Permitida
+                            </button>
+                        }
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Voltar aos Detalhes
+                        </a>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-list me-1"></i>Lista de Locações
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Direita -->
+    <div class="col-lg-4">
+        <!-- Card de Alternativas -->
+        <div class="card border-info mb-4">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightbulb me-1"></i>Alternativas Recomendadas
+                </h6>
+            </div>
+            <div class="card-body">
+                @if (!podeExcluir)
+                {
+                    <div class="alert alert-warning small">
+                        <i class="fas fa-ban me-1"></i>
+                        <strong>Exclusão bloqueada</strong> por locação ativa.
+                    </div>
+
+                    <p class="small mb-3">Para excluir esta locação:</p>
+                    <div class="d-grid gap-2">
+                        @if (!Model.DataDevolucaoReal.HasValue)
+                        {
+                            <button type="button" class="btn btn-success btn-sm" onclick="abrirModalFinalizar()">
+                                <i class="fas fa-check me-1"></i>Finalizar Locação Primeiro
+                            </button>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="small mb-3">Em vez de excluir, considere:</p>
+                }
+
+                <div class="d-grid gap-2 mt-3">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-sm">
+                        <i class="fas fa-edit me-1"></i>Editar Locação
+                    </a>
+
+                    <button type="button" class="btn btn-outline-info btn-sm" onclick="gerarBackup()">
+                        <i class="fas fa-download me-1"></i>Fazer Backup dos Dados
+                    </button>
+
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="imprimirLocacao()">
+                        <i class="fas fa-print me-1"></i>Imprimir Dados
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Informações de Segurança -->
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-shield-alt me-1"></i>Informações de Segurança
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="small">
+                    <p class="mb-2">
+                        <i class="fas fa-info-circle text-info me-1"></i>
+                        <strong>Política de Exclusão:</strong>
+                    </p>
+                    <ul class="mb-3 small">
+                        <li>Apenas locações <strong>finalizadas</strong> podem ser excluídas</li>
+                        <li>Locações ativas devem ser finalizadas primeiro</li>
+                        <li>Exclusões são registradas para auditoria</li>
+                        <li>Apenas administradores podem excluir</li>
+                    </ul>
+
+                    <div class="alert alert-warning small mb-0">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        <strong>Lembrete:</strong> Esta é uma operação administrativa crítica. Use com cuidado.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação Final -->
+@if (podeExcluir)
+{
+    <div class="modal fade" id="modalConfirmacaoFinal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-danger">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle me-2"></i>CONFIRMAÇÃO FINAL DE EXCLUSÃO
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-exclamation-triangle fa-4x text-danger mb-3"></i>
+                        <h4 class="text-danger">ÚLTIMA CHANCE!</h4>
+                        <p class="lead">Você está prestes a excluir permanentemente:</p>
+                    </div>
+
+                    <div class="alert alert-danger">
+                        <h5 class="text-center mb-3">
+                            <strong>Locação #@Model.Id</strong><br>
+                            <span class="h6">@Model.Cliente.Nome - @Model.Veiculo.Marca @Model.Veiculo.Modelo</span>
+                        </h5>
+
+                        <div class="text-center border-top pt-3">
+                            <p class="mb-1">
+                                <strong>Valor: @Model.ValorTotal.ToString("C")</strong>
+                            </p>
+                            <p class="mb-0 small text-muted">
+                                Período: @Model.DataRetirada.ToString("dd/MM/yyyy") a @Model.DataDevolucao.ToString("dd/MM/yyyy")
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="checklist-confirmacao">
+                        <h6 class="mb-3">Para prosseguir, confirme que você:</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="confirmData">
+                            <label class="form-check-label" for="confirmData">
+                                Verificou que todos os dados estão corretos
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="confirmFinalized">
+                            <label class="form-check-label" for="confirmFinalized">
+                                Confirmou que a locação foi finalizada corretamente
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="confirmUndo">
+                            <label class="form-check-label" for="confirmUndo">
+                                Entendo que esta ação <strong>NÃO PODE ser desfeita</strong>
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmResponsibility">
+                            <label class="form-check-label" for="confirmResponsibility">
+                                Assumo total responsabilidade por esta exclusão
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="final-confirmation bg-dark text-white p-3 rounded">
+                        <h6 class="text-center mb-3">CONFIRMAÇÃO TEXTUAL OBRIGATÓRIA</h6>
+                        <p class="text-center mb-2 small">
+                            Digite <strong>"EXCLUIR LOCACAO @Model.Id"</strong> para confirmar:
+                        </p>
+                        <input type="text" id="confirmationText" class="form-control text-center"
+                               placeholder="Digite aqui a confirmação exata..." autocomplete="off">
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancelar - Manter Locação
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarFinal" disabled>
+                        <i class="fas fa-trash-alt me-1"></i>EXCLUIR PERMANENTEMENTE
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Configurar tooltips
+            initializeTooltips();
+
+            @if (podeExcluir)
+            {
+                    <text>
+                    // Configurar modal de confirmação final
+                    setupConfirmationModal();
+
+                    // Interceptar envio do formulário principal
+                    $('#formExclusao').on('submit', function(e) {
+                        e.preventDefault();
+                        showFinalConfirmationModal();
+                    });
+                    </text>
+            }
+
+            console.log('Página de exclusão de locação carregada');
+        });
+
+        @if (podeExcluir)
+        {
+                <text>
+                // Configurar modal de confirmação
+                function setupConfirmationModal() {
+                    const checkboxes = ['#confirmData', '#confirmFinalized', '#confirmUndo', '#confirmResponsibility'];
+                    const confirmationText = '#confirmationText';
+                    const btnConfirmar = '#btnConfirmarFinal';
+                    const textoEsperado = 'EXCLUIR LOCACAO @Model.Id';
+
+                    // Monitorar mudanças nos checkboxes e campo de texto
+                    function verificarConfirmacoes() {
+                        const todosChecked = checkboxes.every(cb => $(cb).is(':checked'));
+                        const textoCorreto = $(confirmationText).val().trim() === textoEsperado;
+
+                        $(btnConfirmar).prop('disabled', !(todosChecked && textoCorreto));
+                    }
+
+                    // Eventos de mudança
+                    checkboxes.forEach(cb => $(cb).on('change', verificarConfirmacoes));
+                    $(confirmationText).on('input', verificarConfirmacoes);
+
+                    // Ação final de exclusão
+                    $(btnConfirmar).on('click', function() {
+                        if (!$(this).prop('disabled')) {
+                            executarExclusao();
+                        }
+                    });
+                }
+
+                // Mostrar modal de confirmação final
+                function showFinalConfirmationModal() {
+                    const modal = new bootstrap.Modal(document.getElementById('modalConfirmacaoFinal'));
+                    modal.show();
+                }
+
+                // Executar exclusão com loading
+                function executarExclusao() {
+                    const btn = $('#btnConfirmarFinal');
+                    const textoOriginal = btn.html();
+
+                    // Mostrar loading
+                    btn.prop('disabled', true);
+                    btn.html('<i class="fas fa-spinner fa-spin me-1"></i>Excluindo...');
+
+                    // Overlay de loading
+                    showLoadingOverlay();
+
+                    // Delay para enfatizar a gravidade da ação
+                    setTimeout(() => {
+                        document.getElementById('formExclusao').submit();
+                    }, 2000);
+                }
+                </text>
+        }
+
+        function abrirModalFinalizar() {
+            if (confirm('Deseja ser redirecionado para os detalhes da locação para finalizá-la?')) {
+                window.location.href = '@Url.Action("Details", new { id = Model.Id })';
+            }
+        }
+
+        function gerarBackup() {
+            mostrarInfo('Funcionalidade de backup em desenvolvimento');
+        }
+
+        function imprimirLocacao() {
+            window.print();
+        }
+
+        function showLoadingOverlay() {
+            if (!document.querySelector('.loading-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.className = 'loading-overlay';
+                overlay.innerHTML = '<div class="spinner-modern"></div>';
+                document.body.appendChild(overlay);
+            }
+        }
+
+        function mostrarInfo(mensagem) {
+            if (window.RentalTourismSystem?.NotificationSystem) {
+                window.RentalTourismSystem.NotificationSystem.info(mensagem);
+            } else {
+                console.info('Info:', mensagem);
+            }
+        }
+    </script>
+}
