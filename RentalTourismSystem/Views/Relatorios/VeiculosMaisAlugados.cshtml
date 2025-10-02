@@ -1,12 +1,17 @@
 ﻿@model IEnumerable<dynamic>
 @{
     ViewData["Title"] = "Veículos Mais Alugados";
+
+    // PROTEÇÕES CONTRA NULL
+    var listaVeiculos = Model ?? Enumerable.Empty<dynamic>();
+    var dataInicio = ViewBag.DataInicio != null ? ((DateTime)ViewBag.DataInicio).ToString("yyyy-MM-dd") : "";
+    var dataFim = ViewBag.DataFim != null ? ((DateTime)ViewBag.DataFim).ToString("yyyy-MM-dd") : "";
 }
 
 <div class="row mb-4">
     <div class="col-12">
         <h2>
-            <i class="fas fa-trophy me-2"></i>Ranking: Veículos Mais Alugados
+            <i class="fas fa-trophy me-2"></i>Veículos Mais Alugados
         </h2>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -17,123 +22,175 @@
     </div>
 </div>
 
-<div class="row">
-    @{
-        int contador = 1;
-    }
-    @foreach (var item in Model.Take(6))
-    {
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 @(contador <= 3 ? "border-warning" : "")">
-                @if (contador <= 3)
+<!-- Filtros -->
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-filter me-2"></i>Filtros de Período
+        </h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label for="dataInicio" class="form-label">Data Início</label>
+                <input type="date" class="form-control" id="dataInicio" name="dataInicio" value="@dataInicio">
+            </div>
+            <div class="col-md-4">
+                <label for="dataFim" class="form-label">Data Fim</label>
+                <input type="date" class="form-control" id="dataFim" name="dataFim" value="@dataFim">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary me-2">
+                    <i class="fas fa-search me-1"></i>Filtrar
+                </button>
+                <button type="button" class="btn btn-outline-secondary" onclick="window.print()">
+                    <i class="fas fa-print me-1"></i>Imprimir
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Cards dos Top 5 -->
+@if (listaVeiculos.Any())
+{
+    <div class="row mb-4">
+        @{
+            int contador = 1;
+            foreach (var item in listaVeiculos.Take(5))
+            {
+                string corCard = contador switch
                 {
-                    <div class="card-header bg-warning text-dark text-center">
-                        <h5 class="mb-0">
-                            @if (contador == 1)
-                            {
-                                <i class="fas fa-crown me-1"></i>
-                            }
-                            else if (contador == 2)
-                            {
-                                <i class="fas fa-medal me-1"></i>
-                            }
-                            else
-                            {
-                                <i class="fas fa-award me-1"></i>
-                            }
-                            @(contador)º Lugar
-                        </h5>
-                    </div>
-                }
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title text-primary">@item.Veiculo.Marca @item.Veiculo.Modelo</h5>
-                    <p class="card-text small">
-                        <strong>Placa:</strong> @item.Veiculo.Placa<br>
-                        <strong>Ano:</strong> @item.Veiculo.Ano
-                        @if (!string.IsNullOrEmpty(item.Veiculo.Cor))
-                        {
-                            <br><strong>Cor:</strong> @item.Veiculo.Cor
-                        }
-                    </p>
-                    <div class="mt-auto">
-                        <div class="row text-center mb-3">
-                            <div class="col-4">
-                                <div class="border rounded p-2">
-                                    <h6 class="text-primary mb-0">@item.TotalLocacoes</h6>
-                                    <small class="text-muted">Locações</small>
+                    1 => "warning",
+                    2 => "info",
+                    3 => "success",
+                    _ => "secondary"
+                };
+                string icone = contador switch
+                {
+                    1 => "fa-trophy",
+                    2 => "fa-medal",
+                    3 => "fa-award",
+                    _ => "fa-star"
+                };
+
+                <div class="col-md-4 mb-3">
+                    <div class="card border-@corCard">
+                        <div class="card-header bg-@corCard text-white d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">
+                                <i class="fas @icone me-2"></i>#@contador
+                            </h6>
+                            <span class="badge bg-dark">@item.TotalLocacoes locações</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@(item.Veiculo?.Marca ?? "N/A") @(item.Veiculo?.Modelo ?? "")</h5>
+                            <p class="text-muted mb-3">
+                                <i class="fas fa-id-card me-1"></i>Placa: <strong>@(item.Veiculo?.Placa ?? "N/A")</strong><br>
+                                <i class="fas fa-building me-1"></i>@(item.Agencia ?? "N/A")
+                            </p>
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <div class="border rounded p-2">
+                                        <h6 class="text-primary mb-0">@item.TotalLocacoes</h6>
+                                        <small class="text-muted">Locações</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="border rounded p-2">
+                                        <h6 class="text-success mb-0">@(((decimal)item.ReceitaTotal).ToString("C0"))</h6>
+                                        <small class="text-muted">Receita</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="border rounded p-2">
+                                        <h6 class="text-info mb-0">@(((double)item.MediaDiasAlugado).ToString("F1"))</h6>
+                                        <small class="text-muted">Média Dias</small>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <div class="border rounded p-2">
-                                    <h6 class="text-success mb-0">@item.ReceitaTotal.ToString("C")</h6>
-                                    <small class="text-muted">Receita</small>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="border rounded p-2">
-                                    <h6 class="text-info mb-0">@item.MediaDiasAlugado.ToString("F1")</h6>
-                                    <small class="text-muted">Média Dias</small>
-                                </div>
+                            <div class="text-center mt-3">
+                                <small class="text-muted">Status Atual:</small><br>
+                                @{
+                                    string badgeClass = (item.StatusAtual ?? "") switch
+                                    {
+                                        "Disponível" => "bg-success",
+                                        "Alugado" => "bg-warning",
+                                        "Manutenção" => "bg-danger",
+                                        "Indisponível" => "bg-secondary",
+                                        _ => "bg-secondary"
+                                    };
+                                }
+                                <span class="badge @badgeClass mb-2">@(item.StatusAtual ?? "Sem Status")</span><br>
+
+                                @if (item.UltimaLocacao != null)
+                                {
+                                    <small class="text-muted">Última locação: @(((DateTime)item.UltimaLocacao).ToString("dd/MM/yyyy"))</small>
+                                }
+                                else
+                                {
+                                    <small class="text-muted">Nunca foi alugado</small>
+                                }
                             </div>
                         </div>
-                        <div class="text-center">
-                            <small class="text-muted">Status Atual:</small><br>
-                            @{
-                                string badgeClass = item.Veiculo.StatusCarro?.Status switch
-                                {
-                                    "Disponível" => "bg-success",
-                                    "Alugado" => "bg-warning",
-                                    "Manutenção" => "bg-danger",
-                                    "Indisponível" => "bg-secondary",
-                                    _ => "bg-secondary"
-                                };
-                            }
-                            <span class="badge @badgeClass mb-2">@(item.Veiculo.StatusCarro?.Status ?? "Sem Status")</span><br>
-                            
-                            @if (item.UltimaLocacao != null)
-                            {
-                                <small class="text-muted">Última locação: @(((DateTime)item.UltimaLocacao).ToString("dd/MM/yyyy"))</small>
-                            }
-                            else
-                            {
-                                <small class="text-muted">Nunca foi alugado</small>
-                            }
+                        <div class="card-footer text-center">
+                            <a asp-controller="Veiculos" asp-action="Details" asp-route-id="@item.Veiculo.Id" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>Ver Detalhes
+                            </a>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer text-center">
-                    <a asp-controller="Veiculos" asp-action="Details" asp-route-id="@item.Veiculo.Id" class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-eye me-1"></i>Ver Detalhes
-                    </a>
+                contador++;
+            }
+        }
+    </div>
+
+    <!-- Estatísticas resumidas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h5>@listaVeiculos.Count()</h5>
+                    <p class="mb-0">Total de Veículos</p>
                 </div>
             </div>
         </div>
-        contador++;
-    }
-</div>
-
-@if (!Model.Any())
-{
-    <div class="text-center text-muted py-5">
-        <i class="fas fa-car fa-4x mb-3"></i>
-        <h4>Nenhum veículo encontrado</h4>
-        <p>Ainda não há dados de locações de veículos.</p>
-        <a asp-controller="Veiculos" asp-action="Create" class="btn btn-primary">
-            <i class="fas fa-plus me-1"></i>Cadastrar Primeiro Veículo
-        </a>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h5>@listaVeiculos.Count(v => v.TotalLocacoes > 0)</h5>
+                    <p class="mb-0">Veículos Ativos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h5>@listaVeiculos.Sum(v => (int)v.TotalLocacoes)</h5>
+                    <p class="mb-0">Total de Locações</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body text-center">
+                    <h5>@listaVeiculos.Sum(v => (decimal)v.ReceitaTotal).ToString("C0")</h5>
+                    <p class="mb-0">Receita Total</p>
+                </div>
+            </div>
+        </div>
     </div>
-}
 
-<!-- Análise detalhada -->
-@if (Model.Any())
-{
+    <!-- Análise detalhada -->
     <div class="row mt-4">
         <div class="col-12">
             <div class="card">
-                <div class="card-header bg-info text-white">
+                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
                         <i class="fas fa-chart-line me-2"></i>Análise Detalhada da Frota
                     </h5>
+                    <a asp-action="ExportarCSV" asp-route-relatorio="veiculos" asp-route-dataInicio="@dataInicio" asp-route-dataFim="@dataFim" class="btn btn-sm btn-light">
+                        <i class="fas fa-download me-1"></i>Exportar CSV
+                    </a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -142,59 +199,44 @@
                                 <tr>
                                     <th>Ranking</th>
                                     <th>Veículo</th>
-                                    <th>Total Locações</th>
-                                    <th>Receita Total</th>
-                                    <th>Receita Média</th>
-                                    <th>Média Dias/Locação</th>
-                                    <th>Status</th>
-                                    <th>Última Locação</th>
+                                    <th class="text-center">Total Locações</th>
+                                    <th class="text-end">Receita Total</th>
+                                    <th class="text-end">Receita Média</th>
+                                    <th class="text-center">Média Dias</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Última Locação</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @{
                                     int pos = 1;
                                 }
-                                @foreach (var item in Model)
+                                @foreach (var item in listaVeiculos)
                                 {
                                     <tr>
                                         <td>
                                             @if (pos <= 3)
                                             {
-                                                <span class="badge @(pos == 1 ? "bg-warning" : pos == 2 ? "bg-secondary" : "bg-dark")">
-                                                    @(pos)º
-                                                </span>
+                                                <span class="badge @(pos == 1 ? "bg-warning" : pos == 2 ? "bg-info" : "bg-success")">@(pos)º</span>
                                             }
                                             else
                                             {
-                                                <span class="fw-bold">@(pos)º</span>
+                                                <span class="text-muted">@(pos)º</span>
                                             }
                                         </td>
                                         <td>
-                                            <strong>@item.Veiculo.Marca @item.Veiculo.Modelo</strong><br>
-                                            <small class="text-muted">@item.Veiculo.Placa - @item.Veiculo.Ano</small>
-                                            @if (!string.IsNullOrEmpty(item.Veiculo.Cor))
-                                            {
-                                                <br><small class="text-info">@item.Veiculo.Cor</small>
-                                            }
+                                            <strong>@(item.Veiculo?.Marca ?? "N/A") @(item.Veiculo?.Modelo ?? "")</strong><br>
+                                            <small class="text-muted">Placa: @(item.Veiculo?.Placa ?? "N/A") | @(item.Agencia ?? "N/A")</small>
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             <span class="badge bg-primary">@item.TotalLocacoes</span>
                                         </td>
-                                        <td class="text-success fw-bold">@item.ReceitaTotal.ToString("C")</td>
-                                        <td>@(item.TotalLocacoes > 0 ? (item.ReceitaTotal / item.TotalLocacoes).ToString("C") : "R$ 0,00")</td>
-                                        <td>
-                                            @if (item.TotalLocacoes > 0)
-                                            {
-                                                @item.MediaDiasAlugado.ToString("F1") <small>dias</small>
-                                            }
-                                            else
-                                            {
-                                                <span class="text-muted">-</span>
-                                            }
-                                        </td>
-                                        <td>
+                                        <td class="text-end text-success fw-bold">@(((decimal)item.ReceitaTotal).ToString("C"))</td>
+                                        <td class="text-end">@(item.TotalLocacoes > 0 ? ((decimal)item.ReceitaTotal / item.TotalLocacoes).ToString("C") : "R$ 0,00")</td>
+                                        <td class="text-center">@(((double)item.MediaDiasAlugado).ToString("F1")) dias</td>
+                                        <td class="text-center">
                                             @{
-                                                string badgeClass = item.Veiculo.StatusCarro?.Status switch
+                                                string statusBadge = (item.StatusAtual ?? "") switch
                                                 {
                                                     "Disponível" => "bg-success",
                                                     "Alugado" => "bg-warning",
@@ -203,9 +245,9 @@
                                                     _ => "bg-secondary"
                                                 };
                                             }
-                                            <span class="badge @badgeClass">@(item.Veiculo.StatusCarro?.Status ?? "Sem Status")</span>
+                                            <span class="badge @statusBadge">@(item.StatusAtual ?? "Sem Status")</span>
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             @if (item.UltimaLocacao != null)
                                             {
                                                 <small>@(((DateTime)item.UltimaLocacao).ToString("dd/MM/yyyy"))</small>
@@ -225,40 +267,15 @@
             </div>
         </div>
     </div>
-
-    <!-- Estatísticas resumidas -->
-    <div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card bg-primary text-white">
-                <div class="card-body text-center">
-                    <h5>@Model.Count()</h5>
-                    <p class="mb-0">Total de Veículos</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-success text-white">
-                <div class="card-body text-center">
-                    <h5>@Model.Count(v => v.TotalLocacoes > 0)</h5>
-                    <p class="mb-0">Veículos Ativos</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body text-center">
-                    <h5>@Model.Sum(v => v.TotalLocacoes)</h5>
-                    <p class="mb-0">Total de Locações</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-warning text-dark">
-                <div class="card-body text-center">
-                    <h5>@Model.Sum(v => (decimal)v.ReceitaTotal).ToString("C0")</h5>
-                    <p class="mb-0">Receita Total</p>
-                </div>
-            </div>
-        </div>
+}
+else
+{
+    <div class="text-center text-muted py-5">
+        <i class="fas fa-car fa-4x mb-3"></i>
+        <h4>Nenhum veículo encontrado</h4>
+        <p>Ainda não há dados de locações de veículos.</p>
+        <a asp-controller="Veiculos" asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Cadastrar Primeiro Veículo
+        </a>
     </div>
 }

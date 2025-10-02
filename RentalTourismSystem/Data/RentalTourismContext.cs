@@ -25,7 +25,7 @@ namespace RentalTourismSystem.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configurações de relacionamento
+            // ========== CONFIGURAÇÕES DE RELACIONAMENTO ==========
             modelBuilder.Entity<Funcionario>()
                 .HasOne(f => f.Agencia)
                 .WithMany(a => a.Funcionarios)
@@ -92,7 +92,7 @@ namespace RentalTourismSystem.Data
                 .HasForeignKey(s => s.ReservaViagemId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Configurações de índices únicos
+            // ========== CONFIGURAÇÕES DE ÍNDICES ÚNICOS ==========
             modelBuilder.Entity<Cliente>()
                 .HasIndex(c => c.Cpf)
                 .IsUnique();
@@ -113,7 +113,58 @@ namespace RentalTourismSystem.Data
                 .HasIndex(v => v.Placa)
                 .IsUnique();
 
-            // Dados iniciais (Seed Data)
+            // ========== CONFIGURAÇÕES PARA APPLICATION USER ==========
+            modelBuilder.Entity<ApplicationUser>(entity =>
+            {
+                entity.HasOne(u => u.Agencia)
+                      .WithMany()
+                      .HasForeignKey(u => u.AgenciaId)
+                      .OnDelete(DeleteBehavior.SetNull);
+
+                entity.HasOne(u => u.Funcionario)
+                      .WithOne()
+                      .HasForeignKey<ApplicationUser>(u => u.FuncionarioId)
+                      .OnDelete(DeleteBehavior.SetNull);
+
+                entity.HasIndex(u => u.Cpf)
+                      .IsUnique()
+                      .HasFilter("[Cpf] IS NOT NULL");
+            });
+
+            // ========== CONFIGURAÇÕES DE PRECISÃO DECIMAL ==========
+            modelBuilder.Entity<Locacao>()
+                .Property(l => l.ValorTotal)
+                .HasColumnType("decimal(10,2)")
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<ReservaViagem>()
+                .Property(r => r.ValorTotal)
+                .HasColumnType("decimal(10,2)")
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<PacoteViagem>()
+                .Property(p => p.Preco)
+                .HasColumnType("decimal(10,2)")
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<ServicoAdicional>()
+                .Property(s => s.Preco)
+                .HasColumnType("decimal(10,2)")
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<Veiculo>()
+                .Property(v => v.ValorDiaria)
+                .HasColumnType("decimal(10,2)")
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<Funcionario>()
+                .Property(f => f.Salario)
+                .HasColumnType("decimal(10,2)")
+                .HasPrecision(10, 2);
+
+            // ========== DADOS INICIAIS (SEED DATA) ==========
+
+            // Status de Carros
             modelBuilder.Entity<StatusCarro>().HasData(
                 new StatusCarro { Id = 1, Status = "Disponível" },
                 new StatusCarro { Id = 2, Status = "Alugado" },
@@ -121,6 +172,7 @@ namespace RentalTourismSystem.Data
                 new StatusCarro { Id = 4, Status = "Indisponível" }
             );
 
+            // Status de Reservas de Viagem
             modelBuilder.Entity<StatusReservaViagem>().HasData(
                 new StatusReservaViagem { Id = 1, Status = "Pendente" },
                 new StatusReservaViagem { Id = 2, Status = "Confirmada" },
@@ -128,6 +180,7 @@ namespace RentalTourismSystem.Data
                 new StatusReservaViagem { Id = 4, Status = "Realizada" }
             );
 
+            // Agência Central (exemplo)
             modelBuilder.Entity<Agencia>().HasData(
                 new Agencia
                 {
@@ -139,7 +192,7 @@ namespace RentalTourismSystem.Data
                 }
             );
 
-            // Dados iniciais dos PacoteViagem com os novos campos obrigatórios
+            // Pacotes de Viagem (exemplos)
             modelBuilder.Entity<PacoteViagem>().HasData(
                 new PacoteViagem
                 {
@@ -190,24 +243,6 @@ namespace RentalTourismSystem.Data
                     DataCriacao = new DateTime(2024, 2, 10, 11, 45, 0)
                 }
             );
-
-            // Adicionar nova configuração para ApplicationUser
-            modelBuilder.Entity<ApplicationUser>(entity =>
-            {
-                entity.HasOne(u => u.Agencia)
-                      .WithMany()
-                      .HasForeignKey(u => u.AgenciaId)
-                      .OnDelete(DeleteBehavior.SetNull);
-
-                entity.HasOne(u => u.Funcionario)
-                      .WithOne()
-                      .HasForeignKey<ApplicationUser>(u => u.FuncionarioId)
-                      .OnDelete(DeleteBehavior.SetNull);
-
-                entity.HasIndex(u => u.Cpf)
-                      .IsUnique()
-                      .HasFilter("[Cpf] IS NOT NULL");
-            });
         }
     }
 }

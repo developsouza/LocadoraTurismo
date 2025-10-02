@@ -832,7 +832,8 @@ namespace RentalTourismSystem.Controllers
                         id = veiculo.Agencia.Id,
                         nome = veiculo.Agencia.Nome
                     },
-                    locacoesAtivas = locacoesAtivas.Select(l => new {
+                    locacoesAtivas = locacoesAtivas.Select(l => new
+                    {
                         id = l.Id,
                         cliente = l.Cliente.Nome,
                         dataRetirada = l.DataRetirada,
@@ -965,7 +966,8 @@ namespace RentalTourismSystem.Controllers
                         disponivel = false,
                         motivo = "Veículo já está alugado no período solicitado",
                         codigo = "PERIODO_OCUPADO",
-                        conflitos = locacoesConflitantes.Select(l => new {
+                        conflitos = locacoesConflitantes.Select(l => new
+                        {
                             id = l.Id,
                             cliente = l.Cliente.Nome,
                             dataRetirada = l.DataRetirada.ToString("dd/MM/yyyy HH:mm"),

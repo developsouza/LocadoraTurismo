@@ -103,12 +103,26 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
-                // AJUSTE: Limpar dados antes da validação
+                // Limpar dados antes da validação
                 if (!string.IsNullOrEmpty(cliente.Cpf))
                     cliente.Cpf = cliente.Cpf.Replace(".", "").Replace("-", "");
 
                 if (!string.IsNullOrEmpty(cliente.Telefone))
                     cliente.Telefone = cliente.Telefone.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("-", "");
+
+                // ===== VALIDAÇÃO DE EMAIL ÚNICO =====
+                if (!string.IsNullOrWhiteSpace(cliente.Email))
+                {
+                    var emailExiste = await _context.Clientes
+                        .AnyAsync(c => c.Email.ToLower() == cliente.Email.ToLower());
+
+                    if (emailExiste)
+                    {
+                        ModelState.AddModelError("Email", "Já existe um cliente cadastrado com este email.");
+                        _logger.LogWarning("Tentativa de cadastro com email duplicado: {Email} por {User}",
+                            cliente.Email, User.Identity?.Name);
+                    }
+                }
 
                 // Validações customizadas antes de verificar ModelState
                 await ValidarClienteUnico(cliente);
@@ -130,12 +144,13 @@ namespace RentalTourismSystem.Controllers
                 }
                 else
                 {
-                    // AJUSTE: Log dos erros de validação para debug
+                    // Log dos erros de validação para debug
                     var errors = ModelState
                         .Where(x => x.Value.Errors.Count > 0)
                         .Select(x => new { Field = x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) });
 
-                    _logger.LogWarning("Validação falhou para cliente. Erros: {@Errors}", errors);
+                    _logger.LogWarning("Validação falhou para cliente. Erros: {Errors}",
+                        System.Text.Json.JsonSerializer.Serialize(errors));
                 }
             }
             catch (DbUpdateException ex)
@@ -151,6 +166,7 @@ namespace RentalTourismSystem.Controllers
 
             return View(cliente);
         }
+
 
         // GET: Clientes/Edit/5 - Apenas Admin e Manager podem editar
         [Authorize(Roles = "Admin,Manager")]
@@ -392,17 +408,19 @@ namespace RentalTourismSystem.Controllers
             if (cpfExistente)
             {
                 ModelState.AddModelError("Cpf", "Já existe um cliente cadastrado com este CPF.");
+                _logger.LogWarning("Tentativa de cadastro com CPF duplicado: {Cpf}", cliente.Cpf);
             }
 
-            // Validar email único (se informado)
+            // ===== CORREÇÃO: Validar email único com comparação case-insensitive =====
             if (!string.IsNullOrWhiteSpace(cliente.Email))
             {
                 var emailExistente = await _context.Clientes
-                    .AnyAsync(c => c.Email == cliente.Email && c.Id != idExcluir);
+                    .AnyAsync(c => c.Email.ToLower() == cliente.Email.ToLower() && c.Id != idExcluir);
 
                 if (emailExistente)
                 {
                     ModelState.AddModelError("Email", "Já existe um cliente cadastrado com este email.");
+                    _logger.LogWarning("Tentativa de cadastro com email duplicado: {Email}", cliente.Email);
                 }
             }
         }
@@ -481,6 +499,33 @@ namespace RentalTourismSystem.Controllers
             catch
             {
                 return false;
+            }
+        }
+
+        // API: Validar email único
+        [HttpGet]
+        public async Task<IActionResult> ValidarEmailUnico(string email, int? id)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    return Json(new { valido = true });
+                }
+
+                var emailExiste = await _context.Clientes
+                    .AnyAsync(c => c.Email.ToLower() == email.ToLower() && c.Id != id);
+
+                return Json(new
+                {
+                    valido = !emailExiste,
+                    mensagem = emailExiste ? "Este email já está cadastrado." : null
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao validar email único");
+                return Json(new { valido = true }); // Em caso de erro, permite continuar
             }
         }
 

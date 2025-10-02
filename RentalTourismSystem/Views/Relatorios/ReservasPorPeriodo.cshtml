@@ -1,6 +1,11 @@
 ﻿@model IEnumerable<RentalTourismSystem.Models.ReservaViagem>
 @{
     ViewData["Title"] = "Relatório de Reservas por Período";
+
+    // PROTEÇÕES CONTRA NULL
+    var listaReservas = Model ?? Enumerable.Empty<RentalTourismSystem.Models.ReservaViagem>();
+    var dataInicio = ViewBag.DataInicio != null ? ((DateTime)ViewBag.DataInicio).ToString("yyyy-MM-dd") : "";
+    var dataFim = ViewBag.DataFim != null ? ((DateTime)ViewBag.DataFim).ToString("yyyy-MM-dd") : "";
 }
 
 <div class="row mb-4">
@@ -28,21 +33,15 @@
         <form method="get" class="row g-3">
             <div class="col-md-3">
                 <label for="dataInicio" class="form-label">Data Início</label>
-                <input type="date" class="form-control" id="dataInicio" name="dataInicio" value="@ViewBag.DataInicio">
+                <input type="date" class="form-control" id="dataInicio" name="dataInicio" value="@dataInicio">
             </div>
             <div class="col-md-3">
                 <label for="dataFim" class="form-label">Data Fim</label>
-                <input type="date" class="form-control" id="dataFim" name="dataFim" value="@ViewBag.DataFim">
+                <input type="date" class="form-control" id="dataFim" name="dataFim" value="@dataFim">
             </div>
             <div class="col-md-3">
-                <label for="statusReserva" class="form-label">Status</label>
-                <select class="form-select" id="statusReserva" name="statusReserva">
-                    <option value="">Todos os status</option>
-                    <option value="Pendente">Pendente</option>
-                    <option value="Confirmada">Confirmada</option>
-                    <option value="Cancelada">Cancelada</option>
-                    <option value="Realizada">Realizada</option>
-                </select>
+                <label for="statusId" class="form-label">Status</label>
+                @Html.DropDownList("statusId", ViewBag.StatusReservas as SelectList, "Todos os status", new { @class = "form-select" })
             </div>
             <div class="col-md-3 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary me-2">
@@ -61,7 +60,7 @@
     <div class="col-md-2">
         <div class="card bg-primary text-white">
             <div class="card-body text-center">
-                <h4>@Model.Count()</h4>
+                <h4>@ViewBag.TotalReservas</h4>
                 <small>Total de Reservas</small>
             </div>
         </div>
@@ -69,7 +68,7 @@
     <div class="col-md-2">
         <div class="card bg-success text-white">
             <div class="card-body text-center">
-                <h4>@ViewBag.TotalReceita.ToString("C")</h4>
+                <h4>@(((decimal?)ViewBag.ReceitaTotal ?? 0).ToString("C"))</h4>
                 <small>Receita Total</small>
             </div>
         </div>
@@ -77,15 +76,15 @@
     <div class="col-md-2">
         <div class="card bg-info text-white">
             <div class="card-body text-center">
-                <h4>@Model.Sum(r => r.Quantidade)</h4>
+                <h4>@ViewBag.TotalPessoas</h4>
                 <small>Total de Pessoas</small>
             </div>
         </div>
     </div>
     <div class="col-md-2">
-        <div class="card bg-warning text-white">
+        <div class="card bg-warning text-dark">
             <div class="card-body text-center">
-                <h4>@Model.Count(r => r.StatusReservaViagem.Status == "Confirmada")</h4>
+                <h4>@ViewBag.ReservasConfirmadas</h4>
                 <small>Confirmadas</small>
             </div>
         </div>
@@ -93,7 +92,7 @@
     <div class="col-md-2">
         <div class="card bg-secondary text-white">
             <div class="card-body text-center">
-                <h4>@Model.Count(r => r.StatusReservaViagem.Status == "Pendente")</h4>
+                <h4>@ViewBag.ReservasPendentes</h4>
                 <small>Pendentes</small>
             </div>
         </div>
@@ -101,105 +100,28 @@
     <div class="col-md-2">
         <div class="card bg-danger text-white">
             <div class="card-body text-center">
-                <h4>@Model.Count(r => r.StatusReservaViagem.Status == "Cancelada")</h4>
+                <h4>@ViewBag.ReservasCanceladas</h4>
                 <small>Canceladas</small>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Análise por pacotes -->
-@if (Model.Any())
-{
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h6 class="mb-0">
-                        <i class="fas fa-chart-pie me-1"></i>Top 5 Pacotes Mais Reservados
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Pacote</th>
-                                    <th>Reservas</th>
-                                    <th>Pessoas</th>
-                                    <th>Receita</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var pacoteGroup in Model.GroupBy(r => r.PacoteViagem).OrderByDescending(g => g.Count()).Take(5))
-                                {
-                                    <tr>
-                                        <td>
-                                            <strong>@pacoteGroup.Key.Nome</strong><br>
-                                            <small class="text-muted">@pacoteGroup.Key.Destino</small>
-                                        </td>
-                                        <td><span class="badge bg-primary">@pacoteGroup.Count()</span></td>
-                                        <td><span class="badge bg-info">@pacoteGroup.Sum(g => g.Quantidade)</span></td>
-                                        <td class="text-success">@pacoteGroup.Where(g => g.StatusReservaViagem.Status == "Confirmada").Sum(g => g.ValorTotal).ToString("C")</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h6 class="mb-0">
-                        <i class="fas fa-chart-bar me-1"></i>Performance por Status
-                    </h6>
-                </div>
-                <div class="card-body">
-                    @foreach (var statusGroup in Model.GroupBy(r => r.StatusReservaViagem.Status))
-                    {
-                        var percentual = (double)statusGroup.Count() / Model.Count() * 100;
-                        var badgeClass = statusGroup.Key switch
-                        {
-                            "Pendente" => "bg-warning",
-                            "Confirmada" => "bg-success",
-                            "Cancelada" => "bg-danger",
-                            "Realizada" => "bg-info",
-                            _ => "bg-secondary"
-                        };
-
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between">
-                                <span class="badge @badgeClass">@statusGroup.Key</span>
-                                <span><strong>@statusGroup.Count()</strong> (@percentual.ToString("F1")%)</span>
-                            </div>
-                            <div class="progress mt-1">
-                                <div class="progress-bar @badgeClass.Replace("bg-", "")" style="width: @percentual%"></div>
-                            </div>
-                            <small class="text-muted">
-                                Receita: @statusGroup.Where(g => g.StatusReservaViagem.Status == "Confirmada").Sum(g => g.ValorTotal).ToString("C")
-                            </small>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
 <!-- Tabela de Reservas -->
 <div class="card">
-    <div class="card-header bg-secondary text-white">
+    <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
         <h5 class="mb-0">
-            <i class="fas fa-list me-2"></i>Detalhes das Reservas
+            <i class="fas fa-list me-2"></i>Lista de Reservas
         </h5>
+        <a asp-action="ExportarCSV" asp-route-relatorio="reservas" asp-route-dataInicio="@dataInicio" asp-route-dataFim="@dataFim" class="btn btn-sm btn-light">
+            <i class="fas fa-download me-1"></i>Exportar CSV
+        </a>
     </div>
     <div class="card-body">
-        @if (Model.Any())
+        @if (listaReservas.Any())
         {
             <div class="table-responsive">
-                <table class="table table-hover" id="tabelaReservas">
+                <table class="table table-hover">
                     <thead class="table-dark">
                         <tr>
                             <th>Data Reserva</th>
@@ -213,17 +135,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var reserva in Model)
+                        @foreach (var reserva in listaReservas)
                         {
                             <tr>
                                 <td>@reserva.DataReserva.ToString("dd/MM/yyyy")</td>
                                 <td>
-                                    <strong>@reserva.Cliente.Nome</strong><br>
-                                    <small class="text-muted">@reserva.Cliente.Email</small>
+                                    <strong>@(reserva.Cliente?.Nome ?? "N/A")</strong><br>
+                                    <small class="text-muted">@(reserva.Cliente?.Email ?? "")</small>
                                 </td>
                                 <td>
-                                    <strong>@reserva.PacoteViagem.Nome</strong><br>
-                                    <small class="text-muted">@reserva.PacoteViagem.Destino</small>
+                                    <strong>@(reserva.PacoteViagem?.Nome ?? "N/A")</strong><br>
+                                    <small class="text-muted">@(reserva.PacoteViagem?.Destino ?? "")</small>
                                 </td>
                                 <td>
                                     @reserva.DataViagem.ToString("dd/MM/yyyy")<br>
@@ -246,7 +168,7 @@
                                 <td>@reserva.Quantidade</td>
                                 <td>
                                     @{
-                                        string badgeClass = reserva.StatusReservaViagem.Status switch
+                                        string badgeClass = (reserva.StatusReservaViagem?.Status ?? "") switch
                                         {
                                             "Pendente" => "bg-warning",
                                             "Confirmada" => "bg-success",
@@ -255,90 +177,141 @@
                                             _ => "bg-secondary"
                                         };
                                     }
-                                    <span class="badge @badgeClass">@reserva.StatusReservaViagem.Status</span>
+                                    <span class="badge @badgeClass">@(reserva.StatusReservaViagem?.Status ?? "N/A")</span>
                                 </td>
                                 <td class="text-success fw-bold">@reserva.ValorTotal.ToString("C")</td>
                                 <td>
-                                    <a asp-controller="ReservasViagens" asp-action="Details" asp-route-id="@reserva.Id" class="btn btn-sm btn-outline-primary" title="Detalhes">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-controller="ReservasViagens" asp-action="Details" asp-route-id="@reserva.Id" class="btn btn-outline-info" title="Ver Detalhes">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a asp-controller="ReservasViagens" asp-action="Edit" asp-route-id="@reserva.Id" class="btn btn-outline-primary" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         }
                     </tbody>
-                    <tfoot class="table-light">
-                        <tr>
-                            <th colspan="4" class="text-end">Totais:</th>
-                            <th>@Model.Sum(r => r.Quantidade)</th>
-                            <th>@Model.Count()</th>
-                            <th class="text-success">@ViewBag.TotalReceita.ToString("C")</th>
-                            <th></th>
-                        </tr>
-                    </tfoot>
                 </table>
             </div>
         }
         else
         {
-            <div class="text-center text-muted py-5">
-                <i class="fas fa-search fa-3x mb-3"></i>
+            <div class="text-center py-5 text-muted">
+                <i class="fas fa-inbox fa-4x mb-3"></i>
                 <h5>Nenhuma reserva encontrada</h5>
-                <p>Não há reservas no período selecionado.</p>
-                <div class="d-flex gap-2 justify-content-center">
-                    <a asp-controller="ReservasViagens" asp-action="Create" class="btn btn-primary">
-                        <i class="fas fa-plus me-1"></i>Nova Reserva
-                    </a>
-                    <a asp-controller="PacotesViagens" asp-action="Index" class="btn btn-success">
-                        <i class="fas fa-suitcase me-1"></i>Ver Pacotes
-                    </a>
-                </div>
+                <p>Ajuste os filtros e tente novamente.</p>
             </div>
         }
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        // Configurar filtros padrão
-        document.addEventListener('DOMContentLoaded', function() {
-            const hoje = new Date();
-            const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-
-            if (!document.getElementById('dataInicio').value) {
-                document.getElementById('dataInicio').value = inicioMes.toISOString().split('T')[0];
-            }
-
-            if (!document.getElementById('dataFim').value) {
-                document.getElementById('dataFim').value = hoje.toISOString().split('T')[0];
-            }
-
-            // Ordenação de tabela
-            setupTableSort('#tabelaReservas');
-        });
-
-        // Função para exportar dados
-        function exportarDados() {
-            const tabela = document.getElementById('tabelaReservas');
-            const dados = [];
-
-            // Extrair dados da tabela
-            const linhas = tabela.querySelectorAll('tbody tr');
-            linhas.forEach(linha => {
-                const colunas = linha.querySelectorAll('td');
-                dados.push({
-                    dataReserva: colunas[0].textContent.trim(),
-                    cliente: colunas[1].querySelector('strong').textContent.trim(),
-                    pacote: colunas[2].querySelector('strong').textContent.trim(),
-                    dataViagem: colunas[3].textContent.split('\n')[0].trim(),
-                    pessoas: colunas[4].textContent.trim(),
-                    status: colunas[5].textContent.trim(),
-                    valor: colunas[6].textContent.trim()
-                });
-            });
-
-            // Simular download (implementar biblioteca real em produção)
-            console.log('Dados para exportação:', dados);
-            alert('Funcionalidade de exportação em desenvolvimento');
-        }
-    </script>
+<!-- Análise por Pacotes -->
+@if (listaReservas.Any())
+{
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-suitcase me-2"></i>Top 5 Pacotes
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Pacote</th>
+                                    <th class="text-center">Reservas</th>
+                                    <th class="text-end">Receita</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var topPacotes = listaReservas
+                                    .Where(r => r.PacoteViagem != null && r.StatusReservaViagem != null && r.StatusReservaViagem.Status == "Confirmada")
+                                    .GroupBy(r => r.PacoteViagem.Nome)
+                                    .Select(g => new
+                                    {
+                                        Nome = g.Key,
+                                        Quantidade = g.Count(),
+                                        Receita = g.Sum(r => r.ValorTotal)
+                                    })
+                                    .OrderByDescending(p => p.Quantidade)
+                                    .Take(5);
+                                }
+                                @foreach (var pacote in topPacotes)
+                                {
+                                    <tr>
+                                        <td>@pacote.Nome</td>
+                                        <td class="text-center"><span class="badge bg-primary">@pacote.Quantidade</span></td>
+                                        <td class="text-end text-success fw-bold">@pacote.Receita.ToString("C")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>Distribuição por Status
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th class="text-center">Quantidade</th>
+                                    <th class="text-end">Percentual</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var totalReservasCalc = listaReservas.Count();
+                                    var distribuicao = listaReservas
+                                    .Where(r => r.StatusReservaViagem != null)
+                                    .GroupBy(r => r.StatusReservaViagem.Status)
+                                    .Select(g => new
+                                    {
+                                        Status = g.Key,
+                                        Quantidade = g.Count(),
+                                        Percentual = totalReservasCalc > 0 ? (g.Count() * 100.0 / totalReservasCalc) : 0
+                                    })
+                                    .OrderByDescending(d => d.Quantidade);
+                                }
+                                @foreach (var item in distribuicao)
+                                {
+                                    <tr>
+                                        <td>
+                                            @{
+                                                string badge = item.Status switch
+                                                {
+                                                    "Pendente" => "bg-warning",
+                                                    "Confirmada" => "bg-success",
+                                                    "Cancelada" => "bg-danger",
+                                                    "Realizada" => "bg-info",
+                                                    _ => "bg-secondary"
+                                                };
+                                            }
+                                            <span class="badge @badge">@item.Status</span>
+                                        </td>
+                                        <td class="text-center">@item.Quantidade</td>
+                                        <td class="text-end">@item.Percentual.ToString("F1")%</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 }
