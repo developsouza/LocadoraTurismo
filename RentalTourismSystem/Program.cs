@@ -36,6 +36,8 @@ var supportedCultures = new[]
     new CultureInfo("en-US")
 };
 
+
+
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     options.DefaultRequestCulture = new RequestCulture("pt-BR", "pt-BR");
@@ -210,6 +212,8 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 builder.Services.AddScoped<IRelatorioService, RelatorioService>();
 builder.Services.AddScoped<ILocacaoService, LocacaoService>();
 builder.Services.AddScoped<IVeiculoService, VeiculoService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddHostedService<NotificationBackgroundService>();
 
 // ===== CONFIGURAÇÃO DE CACHE =====
 builder.Services.AddMemoryCache(options =>

@@ -20,6 +20,7 @@ namespace RentalTourismSystem.Data
         public DbSet<PacoteViagem> PacotesViagens { get; set; }
         public DbSet<ReservaViagem> ReservasViagens { get; set; }
         public DbSet<ServicoAdicional> ServicosAdicionais { get; set; }
+        public DbSet<Notificacao> Notificacoes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -161,6 +162,35 @@ namespace RentalTourismSystem.Data
                 .Property(f => f.Salario)
                 .HasColumnType("decimal(10,2)")
                 .HasPrecision(10, 2);
+
+            // Configuração de Notificações
+            modelBuilder.Entity<Notificacao>(entity =>
+            {
+                entity.HasIndex(e => e.DataCriacao);
+                entity.HasIndex(e => e.Lida);
+                entity.HasIndex(e => e.Tipo);
+                entity.HasIndex(e => e.Categoria);
+
+                entity.HasOne(e => e.Cliente)
+                    .WithMany()
+                    .HasForeignKey(e => e.ClienteId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Veiculo)
+                    .WithMany()
+                    .HasForeignKey(e => e.VeiculoId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Locacao)
+                    .WithMany()
+                    .HasForeignKey(e => e.LocacaoId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Reserva)
+                    .WithMany()
+                    .HasForeignKey(e => e.ReservaId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             // ========== DADOS INICIAIS (SEED DATA) ==========
 

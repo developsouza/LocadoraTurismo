@@ -283,51 +283,32 @@
                     <div class="topbar-actions">
                         <!-- Notifications -->
                         <div class="dropdown">
-                            <button class="btn btn-outline-secondary position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notificações">
+                            <button class="btn btn-outline-secondary position-relative" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" title="Notificações">
                                 <i class="fas fa-bell"></i>
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
-                                    3
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                      id="notification-badge" style="display: none;">
+                                    0
                                 </span>
                             </button>
-                            <div class="dropdown-menu dropdown-menu-end p-0" style="width: 320px;">
+                            <div class="dropdown-menu dropdown-menu-end notification-dropdown" style="width: 380px; max-height: 500px; overflow-y: auto;">
                                 <div class="dropdown-header d-flex justify-content-between align-items-center">
-                                    <h6 class="mb-0">Notificações</h6>
-                                    <small class="text-muted">3 pendentes</small>
+                                    <span><i class="fas fa-bell me-2"></i>Notificações</span>
+                                    <button class="btn btn-sm btn-link text-primary p-0" id="mark-all-read-btn" title="Marcar todas como lidas">
+                                        <i class="fas fa-check-double"></i>
+                                    </button>
                                 </div>
-                                <div class="dropdown-divider m-0"></div>
-                                <div class="list-group list-group-flush">
-                                    <a href="#" class="list-group-item list-group-item-action border-0 py-3">
-                                        <div class="d-flex">
-                                            <div class="flex-shrink-0">
-                                                <div class="bg-warning bg-opacity-10 rounded-circle p-2">
-                                                    <i class="fas fa-id-card text-warning"></i>
-                                                </div>
-                                            </div>
-                                            <div class="flex-grow-1 ms-3">
-                                                <h6 class="mb-1 fw-semibold">CNH Vencendo</h6>
-                                                <p class="mb-1 small text-muted">3 clientes com habilitação próxima ao vencimento</p>
-                                                <small class="text-muted">2 horas atrás</small>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="list-group-item list-group-item-action border-0 py-3">
-                                        <div class="d-flex">
-                                            <div class="flex-shrink-0">
-                                                <div class="bg-success bg-opacity-10 rounded-circle p-2">
-                                                    <i class="fas fa-handshake text-success"></i>
-                                                </div>
-                                            </div>
-                                            <div class="flex-grow-1 ms-3">
-                                                <h6 class="mb-1 fw-semibold">Nova Locação</h6>
-                                                <p class="mb-1 small text-muted">Contrato #1234 foi finalizado com sucesso</p>
-                                                <small class="text-muted">4 horas atrás</small>
-                                            </div>
-                                        </div>
-                                    </a>
+                                <div class="dropdown-divider"></div>
+                                <div id="notifications-list">
+                                    <div class="dropdown-item text-center text-muted py-4">
+                                        <i class="fas fa-spinner fa-spin fa-2x mb-2 d-block"></i>
+                                        <small>Carregando...</small>
+                                    </div>
                                 </div>
-                                <div class="dropdown-footer text-center p-2 border-top">
-                                    <a href="#" class="small">Ver todas as notificações</a>
-                                </div>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-center small text-primary" href="#" id="ver-todas-notificacoes">
+                                    <i class="fas fa-eye me-1"></i>Ver todas as notificações
+                                </a>
                             </div>
                         </div>
 
@@ -507,7 +488,7 @@
                     return;
                 }
 
-                // Sistema já inicializa automaticamente via site.js, apenas configurar específicos do layout
+                // Inicializar sistema do Layout
                 LayoutSystem.init();
 
                 console.log('Sistema de Locação e Turismo - Layout inicializado com sucesso');
@@ -515,7 +496,7 @@
                 console.log('Role:', '@(User.IsInRole("Admin") ? "Admin" : User.IsInRole("Manager") ? "Manager" : User.IsInRole("Employee") ? "Employee" : "User")');
             });
 
-            // Sistema específico do Layout
+            // Sistema específico do Layout (gerencia funcionalidades da interface)
             const LayoutSystem = {
                 init: function() {
                     this.setupNavigation();
@@ -525,6 +506,7 @@
                     this.setupLoadingSystem();
                     this.setupAnimations();
                     this.setupUserFeedback();
+                    console.log('LayoutSystem inicializado');
                 },
 
                 setupNavigation: function() {
@@ -554,9 +536,10 @@
                 setupGlobalSearch: function() {
                     const searchInput = document.getElementById('globalSearchInput');
                     const searchResults = document.getElementById('searchResults');
-                    let searchTimeout;
 
-                    if (!searchInput) return;
+                    if (!searchInput || !searchResults) return;
+
+                    let searchTimeout;
 
                     searchInput.addEventListener('input', function() {
                         clearTimeout(searchTimeout);
@@ -587,37 +570,56 @@
                     });
                 },
 
-                performSearch: function(query) {
-                    // Implementar busca real aqui - por enquanto mock
+                performSearch: async function(query) {
                     const searchResults = document.getElementById('searchResults');
-                    const mockResults = [
-                        { type: 'Cliente', name: `Cliente: ${query}`, url: '/Clientes', icon: 'fas fa-user' },
-                        { type: 'Veículo', name: `Veículo: ${query}`, url: '/Veiculos', icon: 'fas fa-car' }
-                    ];
 
-                    let resultsHTML = '<div class="list-group list-group-flush">';
-                    mockResults.forEach(result => {
-                        resultsHTML += `
-                            <a href="${result.url}" class="list-group-item list-group-item-action border-0 py-3">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0 me-3">
-                                        <i class="${result.icon} text-primary"></i>
+                    try {
+                        // Buscar em múltiplas entidades
+                        const [clientes, veiculos] = await Promise.all([
+                            fetch(`/Clientes/Index?busca=${encodeURIComponent(query)}`).then(r => r.ok ? r.text() : null).catch(() => null),
+                            fetch(`/Veiculos/Index?busca=${encodeURIComponent(query)}`).then(r => r.ok ? r.text() : null).catch(() => null)
+                        ]);
+
+                        // Construir resultados (mock por enquanto - pode ser melhorado com uma API específica)
+                        const mockResults = [
+                            { type: 'Cliente', name: `Buscar clientes: "${query}"`, url: `/Clientes/Index?busca=${encodeURIComponent(query)}`, icon: 'fas fa-user' },
+                            { type: 'Veículo', name: `Buscar veículos: "${query}"`, url: `/Veiculos/Index?busca=${encodeURIComponent(query)}`, icon: 'fas fa-car' },
+                            { type: 'Locação', name: `Buscar locações`, url: `/Locacoes/Index`, icon: 'fas fa-file-contract' },
+                            { type: 'Pacote', name: `Buscar pacotes`, url: `/PacotesViagens/Index`, icon: 'fas fa-suitcase-rolling' }
+                        ];
+
+                        let resultsHTML = '<div class="list-group list-group-flush">';
+                        mockResults.forEach(result => {
+                            resultsHTML += `
+                                <a href="${result.url}" class="list-group-item list-group-item-action border-0 py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0 me-3">
+                                            <i class="${result.icon} text-primary"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="fw-semibold">${result.name}</div>
+                                            <small class="text-muted">${result.type}</small>
+                                        </div>
+                                        <i class="fas fa-chevron-right text-muted"></i>
                                     </div>
-                                    <div class="flex-grow-1">
-                                        <div class="fw-semibold">${result.name}</div>
-                                        <small class="text-muted">${result.type}</small>
-                                    </div>
-                                    <i class="fas fa-chevron-right text-muted"></i>
-                                </div>
-                            </a>
+                                </a>
+                            `;
+                        });
+                        resultsHTML += '</div>';
+                        searchResults.innerHTML = resultsHTML;
+                    } catch (error) {
+                        console.error('Erro na busca:', error);
+                        searchResults.innerHTML = `
+                            <div class="text-center text-danger py-4">
+                                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                                <p>Erro ao buscar. Tente novamente.</p>
+                            </div>
                         `;
-                    });
-                    resultsHTML += '</div>';
-                    searchResults.innerHTML = resultsHTML;
+                    }
                 },
 
                 setupNotifications: function() {
-                    // Auto-hide alerts after 6 seconds
+                    // Auto-hide alerts temporários após 6 segundos
                     const alerts = document.querySelectorAll('.alert:not(.alert-permanent)');
                     alerts.forEach(alert => {
                         setTimeout(() => {
@@ -633,19 +635,32 @@
                         // Ctrl+K para busca global
                         if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                             e.preventDefault();
-                            const searchModal = new bootstrap.Modal(document.getElementById('searchModal'));
-                            searchModal.show();
-                            setTimeout(() => {
-                                document.getElementById('globalSearchInput').focus();
-                            }, 150);
+                            const searchModal = document.getElementById('searchModal');
+                            if (searchModal && typeof bootstrap !== 'undefined') {
+                                const modal = new bootstrap.Modal(searchModal);
+                                modal.show();
+                                setTimeout(() => {
+                                    const searchInput = document.getElementById('globalSearchInput');
+                                    if (searchInput) searchInput.focus();
+                                }, 150);
+                            }
                         }
 
                         // Ctrl+B para toggle sidebar (desktop)
                         if ((e.ctrlKey || e.metaKey) && e.key === 'b' && window.innerWidth > 768) {
                             e.preventDefault();
-                            if (window.sidebarManager) {
-                                window.sidebarManager.toggle();
+                            if (window.RentalTourismSystem?.SidebarManager) {
+                                window.RentalTourismSystem.SidebarManager.toggle();
                             }
+                        }
+
+                        // ESC para fechar modals
+                        if (e.key === 'Escape') {
+                            const openModals = document.querySelectorAll('.modal.show');
+                            openModals.forEach(modal => {
+                                const modalInstance = bootstrap.Modal.getInstance(modal);
+                                if (modalInstance) modalInstance.hide();
+                            });
                         }
                     });
                 },
@@ -654,20 +669,28 @@
                     // Loading overlay para forms
                     const forms = document.querySelectorAll('form:not(.no-loading)');
                     forms.forEach(form => {
-                        form.addEventListener('submit', function() {
-                            // Verificar se há validação ativa
+                        form.addEventListener('submit', function(e) {
+                            // Verificar se o form é válido antes de mostrar loading
+                            const isValid = this.checkValidity?.() !== false;
+
+                            // Se usar jQuery Validation
                             if (typeof $ !== 'undefined' && typeof $.fn.valid === 'function') {
                                 if ($(this).valid()) {
                                     LayoutSystem.showLoading();
                                 }
-                            } else {
+                            } else if (isValid) {
                                 LayoutSystem.showLoading();
                             }
                         });
                     });
 
-                    // Auto-hide loading after page load
+                    // Auto-hide loading após page load
                     window.addEventListener('load', function() {
+                        LayoutSystem.hideLoading();
+                    });
+
+                    // Hide loading se houver erro
+                    window.addEventListener('error', function() {
                         LayoutSystem.hideLoading();
                     });
                 },
@@ -676,8 +699,8 @@
                     // Entrance animations para cards
                     const cards = document.querySelectorAll('.card');
                     cards.forEach((card, index) => {
-                        card.style.animationDelay = `${index * 0.1}s`;
-                        card.classList.add('animate-fade-in-scale');
+                        card.style.animationDelay = `${index * 0.05}s`;
+                        card.classList.add('animate-fade-in');
                     });
 
                     // Enhanced tooltips
@@ -693,29 +716,60 @@
                 },
 
                 setupUserFeedback: function() {
-                    // Feedback visual para ações do usuário
+                    // Feedback visual para botões
                     document.addEventListener('click', function(e) {
-                        if (e.target.matches('button[type="submit"], .btn-primary, .btn-success')) {
-                            e.target.style.transform = 'scale(0.95)';
+                        if (e.target.matches('button[type="submit"], .btn-primary, .btn-success, .btn-danger')) {
+                            const btn = e.target;
+                            btn.style.transform = 'scale(0.95)';
                             setTimeout(() => {
-                                e.target.style.transform = 'scale(1)';
+                                btn.style.transform = 'scale(1)';
                             }, 150);
                         }
+                    });
+
+                    // Adicionar ripple effect em cards clicáveis
+                    const clickableCards = document.querySelectorAll('.card[onclick], .dashboard-card');
+                    clickableCards.forEach(card => {
+                        card.style.cursor = 'pointer';
+                        card.addEventListener('mousedown', function(e) {
+                            this.style.transform = 'scale(0.98)';
+                        });
+                        card.addEventListener('mouseup', function(e) {
+                            this.style.transform = 'scale(1)';
+                        });
                     });
                 },
 
                 showLoading: function() {
-                    const overlay = document.getElementById('loadingOverlay');
-                    if (overlay) overlay.style.display = 'flex';
+                    if (window.RentalTourismSystem?.LoadingOverlaySystem) {
+                        window.RentalTourismSystem.LoadingOverlaySystem.show();
+                    } else {
+                        const overlay = document.getElementById('loadingOverlay');
+                        if (overlay) {
+                            overlay.style.display = 'flex';
+                            overlay.style.opacity = '1';
+                        }
+                    }
                 },
 
                 hideLoading: function() {
-                    const overlay = document.getElementById('loadingOverlay');
-                    if (overlay) overlay.style.display = 'none';
+                    if (window.RentalTourismSystem?.LoadingOverlaySystem) {
+                        window.RentalTourismSystem.LoadingOverlaySystem.hide();
+                    } else {
+                        const overlay = document.getElementById('loadingOverlay');
+                        if (overlay) {
+                            overlay.style.opacity = '0';
+                            setTimeout(() => {
+                                overlay.style.display = 'none';
+                            }, 300);
+                        }
+                    }
                 }
             };
 
-            // Funções utilitárias globais para APIs (compatibilidade mantida)
+            // ===== FUNÇÕES GLOBAIS DE COMPATIBILIDADE =====
+            // Mantidas para compatibilidade com código existente em outras páginas
+
             async function carregarDadosCliente(clienteId) {
                 LayoutSystem.showLoading();
                 try {
@@ -723,7 +777,7 @@
                     if (response.ok) {
                         const cliente = await response.json();
                         if (window.RentalTourismSystem?.NotificationSystem) {
-                            window.RentalTourismSystem.NotificationSystem.success('Dados do cliente carregados');
+                            window.RentalTourismSystem.NotificationSystem.success('Dados do cliente carregados', 2000);
                         }
                         return cliente;
                     }
@@ -746,7 +800,7 @@
                     if (response.ok) {
                         const veiculo = await response.json();
                         if (window.RentalTourismSystem?.NotificationSystem) {
-                            window.RentalTourismSystem.NotificationSystem.success('Dados do veículo carregados');
+                            window.RentalTourismSystem.NotificationSystem.success('Dados do veículo carregados', 2000);
                         }
                         return veiculo;
                     }
@@ -762,19 +816,50 @@
                 }
             }
 
-            // Função para mostrar notificações (compatibilidade mantida)
             function mostrarNotificacao(mensagem, tipo = 'info') {
                 if (window.RentalTourismSystem?.NotificationSystem) {
-                    switch(tipo) {
-                        case 'success': window.RentalTourismSystem.NotificationSystem.success(mensagem); break;
-                        case 'error': window.RentalTourismSystem.NotificationSystem.error(mensagem); break;
-                        case 'warning': window.RentalTourismSystem.NotificationSystem.warning(mensagem); break;
-                        default: window.RentalTourismSystem.NotificationSystem.info(mensagem); break;
+                    switch(tipo.toLowerCase()) {
+                        case 'success':
+                        case 'sucesso':
+                            window.RentalTourismSystem.NotificationSystem.success(mensagem);
+                            break;
+                        case 'error':
+                        case 'erro':
+                        case 'danger':
+                            window.RentalTourismSystem.NotificationSystem.error(mensagem);
+                            break;
+                        case 'warning':
+                        case 'aviso':
+                            window.RentalTourismSystem.NotificationSystem.warning(mensagem);
+                            break;
+                        case 'info':
+                        case 'informacao':
+                        default:
+                            window.RentalTourismSystem.NotificationSystem.info(mensagem);
+                            break;
                     }
                 } else {
                     console.log(`[${tipo.toUpperCase()}] ${mensagem}`);
+                    alert(`${tipo.toUpperCase()}: ${mensagem}`);
                 }
             }
+
+            /**
+             * Alias para compatibilidade com código antigo
+             */
+            const NotificationSystem = {
+                success: (msg, duration) => mostrarNotificacao(msg, 'success'),
+                error: (msg, duration) => mostrarNotificacao(msg, 'error'),
+                warning: (msg, duration) => mostrarNotificacao(msg, 'warning'),
+                info: (msg, duration) => mostrarNotificacao(msg, 'info')
+            };
+
+            // Expor globalmente para compatibilidade
+            window.LayoutSystem = LayoutSystem;
+            window.carregarDadosCliente = carregarDadosCliente;
+            window.carregarDadosVeiculo = carregarDadosVeiculo;
+            window.mostrarNotificacao = mostrarNotificacao;
+            window.NotificationSystem = window.RentalTourismSystem?.NotificationSystem || NotificationSystem;
         </script>
     }
 </body>

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RentalTourismSystem.Data;
+using RentalTourismSystem.Services;
 using System.Diagnostics;
 
 namespace RentalTourismSystem.Controllers
@@ -10,11 +11,15 @@ namespace RentalTourismSystem.Controllers
     {
         private readonly RentalTourismContext _context;
         private readonly ILogger<HomeController> _logger;
+        private readonly INotificationService _notificationService;
 
-        public HomeController(RentalTourismContext context, ILogger<HomeController> logger)
+
+        public HomeController(RentalTourismContext context, ILogger<HomeController> logger,
+            INotificationService notificationService)
         {
             _context = context;
             _logger = logger;
+            _notificationService = notificationService;
         }
 
         [Authorize]
@@ -27,6 +32,10 @@ namespace RentalTourismSystem.Controllers
                 var hoje = DateTime.Now;
                 var inicioMes = new DateTime(hoje.Year, hoje.Month, 1);
                 var mesPassado = inicioMes.AddMonths(-1);
+
+                // ========== GERAR NOTIFICAÇÕES AUTOMÁTICAS ==========
+                // Gera notificações baseadas em CNHs, locações atrasadas, etc.
+                await _notificationService.GerarNotificacoesAutomaticasAsync();
 
                 // ========== DADOS BÁSICOS ==========
                 ViewBag.TotalClientes = await _context.Clientes.CountAsync();
@@ -143,6 +152,20 @@ namespace RentalTourismSystem.Controllers
                     .Where(c => c.ValidadeCNH.HasValue && c.ValidadeCNH.Value.Date < hoje.Date)
                     .CountAsync();
 
+                // Locações atrasadas (necessário para a View)
+                ViewBag.LocacoesAtrasadas = await _context.Locacoes
+                    .Where(l => l.DataDevolucaoReal == null && l.DataDevolucao < hoje)
+                    .CountAsync();
+
+                // Taxa de disponibilidade (útil para a View)
+                ViewBag.TaxaDisponibilidade = ViewBag.TotalVeiculos > 0
+                    ? Math.Round(((decimal)ViewBag.VeiculosDisponiveis / ViewBag.TotalVeiculos) * 100, 1)
+                    : 0;
+
+                // ========== SISTEMA DE NOTIFICAÇÕES ==========
+                // Contar notificações não lidas para exibir no badge
+                ViewBag.TotalNotificacoes = await _notificationService.ContarNotificacoesNaoLidasAsync();
+
                 // ========== TOP 5 CLIENTES (apenas para admins e gerentes) ==========
                 if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                 {
@@ -205,6 +228,15 @@ namespace RentalTourismSystem.Controllers
                 ViewBag.TotalClientes = 0;
                 ViewBag.TotalVeiculos = 0;
                 ViewBag.VeiculosDisponiveis = 0;
+                ViewBag.VeiculosAlugados = 0;
+                ViewBag.VeiculosManutencao = 0;
+                ViewBag.LocacoesAtivas = 0;
+                ViewBag.LocacoesAtrasadas = 0;
+                ViewBag.CNHsVencendo = 0;
+                ViewBag.CNHsVencidas = 0;
+                ViewBag.TotalNotificacoes = 0;
+                ViewBag.ReceitaTotalMes = 0;
+                ViewBag.TaxaDisponibilidade = 0;
                 ViewBag.UserName = User.Identity?.Name;
                 ViewBag.IsAdmin = User.IsInRole("Admin");
                 ViewBag.IsManager = User.IsInRole("Manager");
@@ -220,8 +252,9 @@ namespace RentalTourismSystem.Controllers
             return View();
         }
 
-        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+
+        [AllowAnonymous]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

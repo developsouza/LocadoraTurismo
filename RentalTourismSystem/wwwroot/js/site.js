@@ -272,20 +272,47 @@ class ThemeManager {
 }
 
 /* ===== NOTIFICATION SYSTEM ===== */
+/* ===== NOTIFICATION SYSTEM - VERSÃO COMPLETA ===== */
 class NotificationSystem {
+    static notificationContainer = null;
+    static pollingInterval = null;
+    static updateFrequency = 60000; // 1 minuto
+
+    static initialize() {
+        this.createContainer();
+        this.startPolling();
+        this.setupBadgeClick();
+        console.log('Sistema de Notificações inicializado');
+    }
+
+    static createContainer() {
+        if (!this.notificationContainer) {
+            this.notificationContainer = document.createElement('div');
+            this.notificationContainer.id = 'notification-container';
+            this.notificationContainer.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                z-index: 9999;
+                max-width: 400px;
+                pointer-events: none;
+            `;
+            document.body.appendChild(this.notificationContainer);
+        }
+    }
+
     static show(message, type = 'info', duration = 5000) {
+        this.createContainer();
+
         const notification = document.createElement('div');
         notification.className = `alert alert-${type === 'error' ? 'danger' : type} notification-toast animate-slide-in`;
         notification.style.cssText = `
-            position: fixed;
-            top: 120px;
-            right: 20px;
-            z-index: 9999;
-            min-width: 350px;
-            max-width: 400px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            pointer-events: auto;
+            margin-bottom: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             border: none;
             animation: slideInRight 0.3s ease;
+            word-wrap: break-word;
         `;
 
         const icons = {
@@ -304,12 +331,14 @@ class NotificationSystem {
             </div>
         `;
 
-        document.body.appendChild(notification);
+        this.notificationContainer.appendChild(notification);
 
-        setTimeout(() => {
-            notification.style.animation = 'slideOutRight 0.3s ease';
-            setTimeout(() => notification.remove(), 300);
-        }, duration);
+        if (duration > 0) {
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, duration);
+        }
 
         return notification;
     }
@@ -318,7 +347,168 @@ class NotificationSystem {
     static error(message, duration) { return this.show(message, 'error', duration); }
     static warning(message, duration) { return this.show(message, 'warning', duration); }
     static info(message, duration) { return this.show(message, 'info', duration); }
+
+    static async startPolling() {
+        // Carregar notificações imediatamente
+        await this.loadNotifications();
+
+        // Configurar polling periódico
+        if (this.pollingInterval) {
+            clearInterval(this.pollingInterval);
+        }
+
+        this.pollingInterval = setInterval(async () => {
+            await this.loadNotifications();
+        }, this.updateFrequency);
+
+        console.log('Polling de notificações iniciado');
+    }
+
+    static stopPolling() {
+        if (this.pollingInterval) {
+            clearInterval(this.pollingInterval);
+            this.pollingInterval = null;
+            console.log('Polling de notificações parado');
+        }
+    }
+
+    static async loadNotifications() {
+        try {
+            const response = await fetch('/api/Notificacoes/ativas?limite=5');
+            if (!response.ok) throw new Error('Erro ao carregar notificações');
+
+            const notificacoes = await response.json();
+            this.updateBadge(notificacoes.length);
+            this.updateDropdown(notificacoes);
+        } catch (error) {
+            console.error('Erro ao carregar notificações:', error);
+        }
+    }
+
+    static updateBadge(count) {
+        const badge = document.getElementById('notification-badge');
+        if (badge) {
+            badge.textContent = count > 9 ? '9+' : count;
+            badge.style.display = count > 0 ? 'inline-block' : 'none';
+        }
+
+        // Atualizar título da página
+        if (count > 0) {
+            document.title = `(${count}) ${document.title.replace(/^\(\d+\)\s/, '')}`;
+        } else {
+            document.title = document.title.replace(/^\(\d+\)\s/, '');
+        }
+    }
+
+    static updateDropdown(notificacoes) {
+        const dropdown = document.getElementById('notifications-list');
+        if (!dropdown) return;
+
+        if (notificacoes.length === 0) {
+            dropdown.innerHTML = `
+                <div class="dropdown-item text-center text-muted py-4">
+                    <i class="fas fa-bell-slash fa-2x mb-2 d-block"></i>
+                    <small>Nenhuma notificação</small>
+                </div>
+            `;
+            return;
+        }
+
+        dropdown.innerHTML = notificacoes.map(n => this.createNotificationItem(n)).join('');
+    }
+
+    static createNotificationItem(notif) {
+        const iconMap = {
+            'danger': 'exclamation-triangle text-danger',
+            'warning': 'exclamation-circle text-warning',
+            'info': 'info-circle text-info',
+            'success': 'check-circle text-success'
+        };
+
+        const icon = iconMap[notif.tipo] || iconMap['info'];
+
+        return `
+            <div class="dropdown-item notification-item" data-id="${notif.id}">
+                <div class="d-flex">
+                    <div class="flex-shrink-0 me-3">
+                        <i class="fas fa-${icon}"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">${notif.titulo}</h6>
+                        <p class="mb-1 small text-muted">${notif.mensagem}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">${notif.tempoDecorrido}</small>
+                            ${notif.linkAcao ? `<a href="${notif.linkAcao}" class="btn btn-sm btn-outline-primary">${notif.textoLinkAcao || 'Ver'}</a>` : ''}
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-link text-muted" onclick="NotificationSystem.markAsRead(${notif.id})" title="Marcar como lida">
+                        <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="dropdown-divider"></div>
+        `;
+    }
+
+    static async markAsRead(id) {
+        try {
+            const response = await fetch(`/api/Notificacoes/${id}/marcar-lida`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.ok) {
+                await this.loadNotifications();
+                this.success('Notificação marcada como lida', 2000);
+            }
+        } catch (error) {
+            console.error('Erro ao marcar notificação como lida:', error);
+        }
+    }
+
+    static async markAllAsRead() {
+        try {
+            const response = await fetch('/api/Notificacoes/marcar-todas-lidas', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.ok) {
+                await this.loadNotifications();
+                this.success('Todas as notificações foram marcadas como lidas', 3000);
+            }
+        } catch (error) {
+            console.error('Erro ao marcar todas como lidas:', error);
+        }
+    }
+
+    static setupBadgeClick() {
+        const markAllBtn = document.getElementById('mark-all-read-btn');
+        if (markAllBtn) {
+            markAllBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.markAllAsRead();
+            });
+        }
+    }
 }
+
+// Inicializar quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+    NotificationSystem.initialize();
+});
+
+// Parar polling quando a página não estiver visível
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        NotificationSystem.stopPolling();
+    } else {
+        NotificationSystem.startPolling();
+    }
+});
+
+// Expor globalmente
+window.NotificationSystem = NotificationSystem;
 
 /* ===== LOADING OVERLAY SYSTEM - CORRIGIDO ===== */
 class LoadingOverlaySystem {
