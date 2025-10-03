@@ -7,7 +7,7 @@ namespace RentalTourismSystem.Extensions
     {
         public static string CpfFormatado(this Cliente cliente)
         {
-            return FormatHelpers.FormatarCpf(cliente.Cpf);
+            return FormatHelpers.FormatarCpf(cliente.CPF);
         }
 
         public static string TelefoneFormatado(this Cliente cliente)

@@ -94,22 +94,30 @@ namespace RentalTourismSystem.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             // ========== CONFIGURAÇÕES DE ÍNDICES ÚNICOS ==========
+
+            // Cliente - CPF (atualizado para maiúsculo)
             modelBuilder.Entity<Cliente>()
-                .HasIndex(c => c.Cpf)
+                .HasIndex(c => c.CPF)
                 .IsUnique();
 
+            // Cliente - Email
             modelBuilder.Entity<Cliente>()
                 .HasIndex(c => c.Email)
-                .IsUnique();
+                .IsUnique()
+                .HasFilter("[Email] IS NOT NULL");
 
+            // Funcionario - Cpf (mantém como está no seu modelo Funcionario)
             modelBuilder.Entity<Funcionario>()
                 .HasIndex(f => f.Cpf)
                 .IsUnique();
 
+            // Funcionario - Email
             modelBuilder.Entity<Funcionario>()
                 .HasIndex(f => f.Email)
-                .IsUnique();
+                .IsUnique()
+                .HasFilter("[Email] IS NOT NULL");
 
+            // Veiculo - Placa
             modelBuilder.Entity<Veiculo>()
                 .HasIndex(v => v.Placa)
                 .IsUnique();
@@ -163,7 +171,7 @@ namespace RentalTourismSystem.Data
                 .HasColumnType("decimal(10,2)")
                 .HasPrecision(10, 2);
 
-            // Configuração de Notificações
+            // ========== CONFIGURAÇÃO DE NOTIFICAÇÕES ==========
             modelBuilder.Entity<Notificacao>(entity =>
             {
                 entity.HasIndex(e => e.DataCriacao);
@@ -210,14 +218,16 @@ namespace RentalTourismSystem.Data
                 new StatusReservaViagem { Id = 4, Status = "Realizada" }
             );
 
-            // Agência Central (exemplo)
+            // Agência Central (atualizada com novos campos)
             modelBuilder.Entity<Agencia>().HasData(
                 new Agencia
                 {
                     Id = 1,
                     Nome = "Agência Central",
+                    CNPJ = "12.345.678/0001-90",
                     Endereco = "Rua Principal, 123 - Centro",
-                    Telefone = "(11) 9999-9999",
+                    Cidade = "João Pessoa - PB",
+                    Telefone = "(83) 3221-1234",
                     Email = "central@rentaltourism.com.br"
                 }
             );

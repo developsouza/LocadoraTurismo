@@ -1,7 +1,6 @@
 ﻿@model RentalTourismSystem.Models.Cliente
 @{
     ViewData["Title"] = "Novo Cliente";
-    ViewData["EnableValidation"] = true; // Habilitar sistema de validação
 }
 
 <div class="row">
@@ -23,141 +22,144 @@
         <div class="card hover-lift">
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">
-                    <i class="fas fa-user-plus me-2"></i>Informações do Cliente
+                    <i class="fas fa-user me-2"></i>Dados do Cliente
                 </h5>
             </div>
             <div class="card-body">
-                <!-- FORMULÁRIO CORRIGIDO - Com classes específicas para validação -->
-                <form asp-action="Create" id="formNovoCliente" class="needs-validation form-cliente" novalidate>
-                    <!-- Exibir erros do ModelState -->
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none" role="alert" id="validationSummary">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>Corrija os erros abaixo:</strong>
-                    </div>
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-                    <!-- Seção: Dados Pessoais -->
-                    <div class="mb-4">
-                        <h6 class="text-primary border-bottom pb-2 mb-3">
-                            <i class="fas fa-user me-2"></i>Dados Pessoais
-                        </h6>
-                        
-                        <div class="row">
-                            <div class="col-lg-8 mb-3">
-                                <label asp-for="Nome" class="form-label required">
-                                    <i class="fas fa-user me-1"></i>Nome Completo
-                                </label>
-                                <input asp-for="Nome" class="form-control" 
-                                       placeholder="Digite o nome completo do cliente"
-                                       required minlength="2" maxlength="100" />
-                                <span asp-validation-for="Nome" class="invalid-feedback"></span>
-                                <div class="form-text">
-                                    <i class="fas fa-info-circle me-1"></i>Informe o nome completo como aparece no documento
-                                </div>
-                            </div>
-                            <div class="col-lg-4 mb-3">
-                                <label asp-for="Cpf" class="form-label required">
-                                    <i class="fas fa-id-card me-1"></i>CPF
-                                </label>
-                                <input asp-for="Cpf" class="form-control cpf-mask" 
-                                       placeholder="000.000.000-00" required 
-                                       data-mask="cpf" />
-                                <span asp-validation-for="Cpf" class="invalid-feedback"></span>
-                                <div class="form-text">
-                                    <i class="fas fa-shield-alt me-1"></i>Validação automática de CPF
-                                </div>
-                            </div>
+                    <!-- Seção: Informações Pessoais -->
+                    <h6 class="text-primary border-bottom pb-2 mb-3">
+                        <i class="fas fa-id-card me-2"></i>Informações Pessoais
+                    </h6>
+
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label asp-for="Nome" class="form-label required"></label>
+                            <input asp-for="Nome" class="form-control" placeholder="Nome completo do cliente" />
+                            <span asp-validation-for="Nome" class="text-danger small"></span>
                         </div>
 
-                        <div class="row">
-                            <div class="col-lg-4 mb-3">
-                                <label asp-for="DataNascimento" class="form-label required">
-                                    <i class="fas fa-calendar-alt me-1"></i>Data de Nascimento
-                                </label>
-                                <input asp-for="DataNascimento" class="form-control" type="date" 
-                                       required max="@DateTime.Now.AddYears(-18).ToString("yyyy-MM-dd")" />
-                                <span asp-validation-for="DataNascimento" class="invalid-feedback"></span>
-                                <div id="idade-info" class="form-text"></div>
-                            </div>
-                            <div class="col-lg-4 mb-3">
-                                <label asp-for="Telefone" class="form-label required">
-                                    <i class="fas fa-phone me-1"></i>Telefone
-                                </label>
-                                <input asp-for="Telefone" class="form-control phone-mask" 
-                                       placeholder="(11) 99999-9999" required 
-                                       data-mask="telefone" />
-                                <span asp-validation-for="Telefone" class="invalid-feedback"></span>
-                            </div>
-                            <div class="col-lg-4 mb-3">
-                                <label asp-for="Email" class="form-label required">
-                                    <i class="fas fa-envelope me-1"></i>Email
-                                </label>
-                                <input asp-for="Email" class="form-control" type="email" 
-                                       placeholder="email@exemplo.com" required />
-                                <span asp-validation-for="Email" class="invalid-feedback"></span>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Endereco" class="form-label required">
-                                <i class="fas fa-map-marker-alt me-1"></i>Endereço Completo
-                            </label>
-                            <textarea asp-for="Endereco" class="form-control" rows="2"
-                                      placeholder="Rua, número, bairro, cidade - Estado, CEP"
-                                      required minlength="10" maxlength="200"></textarea>
-                            <span asp-validation-for="Endereco" class="invalid-feedback"></span>
-                            <div class="form-text">
-                                <i class="fas fa-map me-1"></i>Endereço completo para correspondência
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="DataNascimento" class="form-label required"></label>
+                            <input asp-for="DataNascimento" class="form-control" type="date" />
+                            <span asp-validation-for="DataNascimento" class="text-danger small"></span>
                         </div>
                     </div>
 
-                    <!-- Seção: Carteira de Habilitação -->
-                    <div class="mb-4">
-                        <h6 class="text-success border-bottom pb-2 mb-3">
-                            <i class="fas fa-id-badge me-2"></i>Carteira de Habilitação (Opcional)
-                        </h6>
-                        
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>Importante:</strong> Dados de CNH são opcionais, mas recomendados para clientes que irão alugar veículos.
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="CPF" class="form-label required"></label>
+                            <input asp-for="CPF" class="form-control" id="cpfInput" placeholder="000.000.000-00" maxlength="14" />
+                            <span asp-validation-for="CPF" class="text-danger small"></span>
+                            <small class="form-text text-muted">Apenas números são aceitos</small>
                         </div>
 
-                        <div class="row">
-                            <div class="col-lg-6 mb-3">
-                                <label asp-for="NumeroHabilitacao" class="form-label">
-                                    <i class="fas fa-id-badge me-1"></i>Número da CNH
-                                    <span class="text-muted">(opcional)</span>
-                                </label>
-                                <input asp-for="NumeroHabilitacao" class="form-control" 
-                                       placeholder="Digite o número da habilitação" 
-                                       minlength="11" maxlength="20" />
-                                <span asp-validation-for="NumeroHabilitacao" class="invalid-feedback"></span>
-                                <div class="form-text">
-                                    <i class="fas fa-car me-1"></i>Necessário para locação de veículos
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mb-3">
-                                <label asp-for="ValidadeCNH" class="form-label">
-                                    <i class="fas fa-calendar-check me-1"></i>Validade da CNH
-                                    <span class="text-muted">(opcional)</span>
-                                </label>
-                                <input asp-for="ValidadeCNH" class="form-control" type="date" 
-                                       min="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                                <span asp-validation-for="ValidadeCNH" class="invalid-feedback"></span>
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="EstadoCivil" class="form-label"></label>
+                            <select asp-for="EstadoCivil" class="form-select">
+                                <option value="">Selecione...</option>
+                                <option value="Solteiro(a)">Solteiro(a)</option>
+                                <option value="Casado(a)">Casado(a)</option>
+                                <option value="Divorciado(a)">Divorciado(a)</option>
+                                <option value="Viúvo(a)">Viúvo(a)</option>
+                                <option value="União Estável">União Estável</option>
+                            </select>
+                            <span asp-validation-for="EstadoCivil" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Profissao" class="form-label"></label>
+                            <input asp-for="Profissao" class="form-control" placeholder="Profissão do cliente" />
+                            <span asp-validation-for="Profissao" class="text-danger small"></span>
                         </div>
                     </div>
 
-                    <!-- Botões de Ação -->
+                    <!-- Seção: Contato -->
+                    <h6 class="text-primary border-bottom pb-2 mb-3 mt-4">
+                        <i class="fas fa-phone me-2"></i>Contato
+                    </h6>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Telefone" class="form-label required"></label>
+                            <input asp-for="Telefone" class="form-control" id="telefoneInput" placeholder="(00) 00000-0000" maxlength="15" />
+                            <span asp-validation-for="Telefone" class="text-danger small"></span>
+                            <small class="form-text text-muted">10 ou 11 dígitos</small>
+                        </div>
+
+                        <div class="col-md-8 mb-3">
+                            <label asp-for="Email" class="form-label required"></label>
+                            <input asp-for="Email" class="form-control" type="email" placeholder="email@exemplo.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Seção: Endereço -->
+                    <h6 class="text-primary border-bottom pb-2 mb-3 mt-4">
+                        <i class="fas fa-map-marker-alt me-2"></i>Endereço
+                    </h6>
+
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label asp-for="CEP" class="form-label"></label>
+                            <input asp-for="CEP" class="form-control" id="cepInput" placeholder="00000-000" maxlength="9" />
+                            <span asp-validation-for="CEP" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-9 mb-3">
+                            <label asp-for="Endereco" class="form-label required"></label>
+                            <input asp-for="Endereco" class="form-control" id="enderecoInput" placeholder="Rua, número, complemento, bairro, cidade - UF" />
+                            <span asp-validation-for="Endereco" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Seção: CNH -->
+                    <h6 class="text-primary border-bottom pb-2 mb-3 mt-4">
+                        <i class="fas fa-id-card-alt me-2"></i>Carteira Nacional de Habilitação
+                    </h6>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>CNH é opcional.</strong> Necessária apenas para locação de veículos.
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <label asp-for="CNH" class="form-label"></label>
+                            <input asp-for="CNH" class="form-control" placeholder="Número da CNH" />
+                            <span asp-validation-for="CNH" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="ValidadeCNH" class="form-label"></label>
+                            <input asp-for="ValidadeCNH" class="form-control" type="date" />
+                            <span asp-validation-for="ValidadeCNH" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label asp-for="CategoriaCNH" class="form-label"></label>
+                            <select asp-for="CategoriaCNH" class="form-select">
+                                <option value="">Selecione...</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="AB">AB</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
+                            </select>
+                            <span asp-validation-for="CategoriaCNH" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Botões -->
                     <div class="d-flex gap-2 mt-4">
-                        <button type="submit" class="btn btn-primary hover-lift" id="btnSalvar">
-                            <i class="fas fa-save me-1"></i>Salvar Cliente
-                        </button>
-                        <button type="button" class="btn btn-outline-warning" onclick="limparFormulario()">
-                            <i class="fas fa-eraser me-1"></i>Limpar
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Salvar
                         </button>
                         <a asp-action="Index" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left me-1"></i>Cancelar
+                            <i class="fas fa-arrow-left me-2"></i>Voltar
                         </a>
                     </div>
                 </form>
@@ -167,44 +169,6 @@
 
     <!-- Sidebar com Informações -->
     <div class="col-lg-4">
-        <!-- Card de Status de Validação -->
-        <div class="card mb-4 border-info">
-            <div class="card-header bg-info text-white">
-                <h6 class="mb-0">
-                    <i class="fas fa-check-circle me-1"></i>Status dos Campos
-                </h6>
-            </div>
-            <div class="card-body">
-                <div class="validation-status">
-                    <div class="validation-item mb-2" id="status-nome">
-                        <i class="fas fa-circle text-muted me-2"></i>
-                        <span>Nome completo</span>
-                    </div>
-                    <div class="validation-item mb-2" id="status-cpf">
-                        <i class="fas fa-circle text-muted me-2"></i>
-                        <span>CPF válido</span>
-                    </div>
-                    <div class="validation-item mb-2" id="status-email">
-                        <i class="fas fa-circle text-muted me-2"></i>
-                        <span>Email válido</span>
-                    </div>
-                    <div class="validation-item mb-2" id="status-telefone">
-                        <i class="fas fa-circle text-muted me-2"></i>
-                        <span>Telefone válido</span>
-                    </div>
-                    <div class="validation-item mb-2" id="status-idade">
-                        <i class="fas fa-circle text-muted me-2"></i>
-                        <span>Idade adequada (21+)</span>
-                    </div>
-                    <div class="validation-item mb-2" id="status-cnh">
-                        <i class="fas fa-circle text-muted me-2"></i>
-                        <span>CNH (se informada)</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card de Campos Obrigatórios -->
         <div class="card mb-4 border-warning">
             <div class="card-header bg-warning text-dark">
                 <h6 class="mb-0">
@@ -223,7 +187,7 @@
                         <i class="fas fa-check text-success me-1"></i>Email válido e único
                     </li>
                     <li class="mb-1">
-                        <i class="fas fa-check text-success me-1"></i>Telefone
+                        <i class="fas fa-check text-success me-1"></i>Telefone (10 ou 11 dígitos)
                     </li>
                     <li class="mb-1">
                         <i class="fas fa-check text-success me-1"></i>Data de nascimento (21+ anos)
@@ -235,369 +199,168 @@
             </div>
         </div>
 
-        <!-- Card de Dicas -->
-        <div class="card border-success">
-            <div class="card-header bg-success text-white">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
                 <h6 class="mb-0">
-                    <i class="fas fa-lightbulb me-1"></i>Dicas Importantes
+                    <i class="fas fa-question-circle me-1"></i>Ajuda
                 </h6>
             </div>
             <div class="card-body">
-                <div class="small">
-                    <p><i class="fas fa-info-circle text-info me-1"></i>
-                       <strong>Formatação automática:</strong> CPF e telefone são formatados durante a digitação.
-                    </p>
-                    <p><i class="fas fa-shield-alt text-success me-1"></i>
-                       <strong>Validação em tempo real:</strong> Erros são exibidos imediatamente.
-                    </p>
-                    <p><i class="fas fa-car text-warning me-1"></i>
-                       <strong>CNH opcional:</strong> Necessária apenas para locação de veículos.
-                    </p>
-                    <p><i class="fas fa-calendar text-primary me-1"></i>
-                       <strong>Idade mínima:</strong> Cliente deve ter pelo menos 21 anos.
-                    </p>
-                </div>
+                <p class="small"><strong>Validações:</strong></p>
+                <ul class="small">
+                    <li>Idade mínima: 21 anos</li>
+                    <li>CPF deve ser válido</li>
+                    <li>Email deve ser único</li>
+                    <li>Telefone: 10 ou 11 dígitos</li>
+                    <li>CNH opcional, mas se informar deve estar válida</li>
+                </ul>
+                <hr>
+                <p class="small"><strong>Dica:</strong></p>
+                <p class="small mb-0">Os campos são formatados automaticamente durante a digitação.</p>
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
     <script>
         $(document).ready(function() {
-            console.log('Inicializando formulário de cliente...');
+            // ✅ MÁSCARAS CORRIGIDAS - Aplicar formatação visual sem interferir no valor enviado
 
-            // Aguardar sistema principal carregar
-            setTimeout(() => {
-                initializeClientForm();
-            }, 300);
-        });
-
-        function initializeClientForm() {
-            // 1. Configurar tooltips
-            initializeTooltips();
-
-            // 2. Sistema de validação específico
-            setupClientValidation();
-
-            // 3. Validação em tempo real dos campos especiais
-            setupRealTimeValidation();
-
-            // 4. Sistema de status visual
-            setupValidationStatus();
-
-            console.log('Formulário de cliente inicializado');
-        }
-
-        function setupClientValidation() {
-            const form = document.getElementById('formNovoCliente');
-            if (!form) return;
-
-            // Interceptar submit
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                console.log('Validando formulário de cliente...');
-
-                // Validar todos os campos
-                const isValid = validateAllFields();
-
-                if (isValid) {
-                    console.log('Formulário válido, enviando...');
-                    // Remover class que interfere no loading
-                    form.classList.remove('no-loading');
-                    submitClientForm();
-                } else {
-                    console.log('Formulário inválido');
-                    form.classList.add('was-validated');
-                    showValidationSummary();
-                    focusFirstInvalidField();
+            // Máscara de CPF
+            $('#cpfInput').on('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                if (value.length <= 11) {
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                    this.value = value;
                 }
             });
-        }
 
-        function setupRealTimeValidation() {
-            // CPF com validação customizada
-            const cpfField = document.querySelector('input[name="Cpf"]');
-            if (cpfField) {
-                cpfField.addEventListener('blur', function() {
-                    validateCPFField(this);
-                });
-            }
+            // Máscara de Telefone
+            $('#telefoneInput').on('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                if (value.length <= 11) {
+                    if (value.length <= 10) {
+                        value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                        value = value.replace(/(\d{4})(\d)/, '$1-$2');
+                    } else {
+                        value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                        value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                    }
+                    this.value = value;
+                }
+            });
 
-            // Email com validação de unicidade
-            const emailField = document.querySelector('input[name="Email"]');
-            if (emailField) {
-                let emailTimeout;
-                emailField.addEventListener('input', function() {
-                    clearTimeout(emailTimeout);
-                    emailTimeout = setTimeout(() => {
-                        validateEmailField(this);
-                    }, 1000);
-                });
-            }
+            // Máscara de CEP
+            $('#cepInput').on('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                if (value.length <= 8) {
+                    value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                    this.value = value;
+                }
+            });
 
-            // Data de nascimento com validação de idade
-            const birthField = document.querySelector('input[name="DataNascimento"]');
-            if (birthField) {
-                birthField.addEventListener('change', function() {
-                    validateAgeField(this);
-                });
-            }
+            // Buscar endereço por CEP (ViaCEP)
+            $('#cepInput').on('blur', function() {
+                let cep = this.value.replace(/\D/g, '');
+                if (cep.length === 8) {
+                    $.getJSON('https://viacep.com.br/ws/' + cep + '/json/', function(data) {
+                        if (!data.erro) {
+                            let endereco = data.logradouro + ', ' + data.bairro + ', ' +
+                                         data.localidade + ' - ' + data.uf;
+                            $('#enderecoInput').val(endereco);
+                        }
+                    }).fail(function() {
+                        console.log('Erro ao buscar CEP');
+                    });
+                }
+            });
 
-            // CNH com validação condicional
-            const cnhField = document.querySelector('input[name="NumeroHabilitacao"]');
-            const cnhValidadeField = document.querySelector('input[name="ValidadeCNH"]');
-            
-            if (cnhField || cnhValidadeField) {
-                [cnhField, cnhValidadeField].forEach(field => {
-                    if (field) {
-                        field.addEventListener('change', function() {
-                            validateCNHFields();
-                        });
+            // Validação de idade ao mudar data de nascimento
+            $('input[name="DataNascimento"]').on('change', function() {
+                let dataNasc = new Date(this.value);
+                let hoje = new Date();
+                let idade = hoje.getFullYear() - dataNasc.getFullYear();
+                let m = hoje.getMonth() - dataNasc.getMonth();
+                if (m < 0 || (m === 0 && hoje.getDate() < dataNasc.getDate())) {
+                    idade--;
+                }
+
+                if (idade < 21) {
+                    alert('⚠️ Cliente deve ter pelo menos 21 anos. Idade atual: ' + idade + ' anos.');
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+            // Validação de CNH
+            $('input[name="CNH"], input[name="ValidadeCNH"]').on('change', function() {
+                let cnh = $('input[name="CNH"]').val();
+                let validade = $('input[name="ValidadeCNH"]').val();
+
+                if (cnh && !validade) {
+                    alert('⚠️ Se informar o número da CNH, deve informar também a validade.');
+                }
+
+                if (validade && !cnh) {
+                    alert('⚠️ Se informar a validade da CNH, deve informar também o número.');
+                }
+
+                if (cnh && validade) {
+                    let dataValidade = new Date(validade);
+                    let hoje = new Date();
+
+                    if (dataValidade < hoje) {
+                        alert('⚠️ A CNH está vencida. Data de validade: ' + dataValidade.toLocaleDateString('pt-BR'));
+                    }
+                }
+            });
+
+            // Feedback visual de validação
+            $('form').on('submit', function(e) {
+                let isValid = true;
+
+                // Validar campos obrigatórios
+                $('input[required], select[required]').each(function() {
+                    if (!$(this).val()) {
+                        $(this).addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        $(this).removeClass('is-invalid');
                     }
                 });
-            }
-        }
 
-        function validateAllFields() {
-            const form = document.getElementById('formNovoCliente');
-            const inputs = form.querySelectorAll('input[required], input[type="email"]');
-            let isValid = true;
-
-            inputs.forEach(input => {
-                if (!validateSingleField(input)) {
-                    isValid = false;
+                if (!isValid) {
+                    e.preventDefault();
+                    alert('⚠️ Por favor, preencha todos os campos obrigatórios.');
+                    $('html, body').animate({
+                        scrollTop: $('.is-invalid').first().offset().top - 100
+                    }, 500);
                 }
             });
-
-            // Validar CNH se informada
-            if (!validateCNHFields()) {
-                isValid = false;
-            }
-
-            return isValid;
-        }
-
-        function validateSingleField(field) {
-            if (!field) return true;
-
-            const fieldName = field.name;
-            let isValid = true;
-            let message = '';
-
-            // Campo obrigatório vazio
-            if (field.required && !field.value.trim()) {
-                isValid = false;
-                message = `${getFieldDisplayName(fieldName)} é obrigatório`;
-            }
-            // CPF
-            else if (fieldName === 'Cpf' && field.value) {
-                isValid = window.RentalTourismSystem?.FormattingSystem?.validateCPF(field.value) || false;
-                message = isValid ? '' : 'CPF inválido';
-            }
-            // Telefone
-            else if (fieldName === 'Telefone' && field.value) {
-                const numbers = field.value.replace(/\D/g, '');
-                isValid = numbers.length >= 10 && numbers.length <= 11;
-                message = isValid ? '' : 'Telefone deve ter 10 ou 11 dígitos';
-            }
-            // Data de nascimento
-            else if (fieldName === 'DataNascimento' && field.value) {
-                const age = calculateAge(new Date(field.value));
-                isValid = age >= 21 && age <= 120;
-                message = isValid ? '' : 'Cliente deve ter entre 21 e 120 anos';
-            }
-
-            // Aplicar classes visuais
-            field.classList.toggle('is-valid', isValid && field.value.trim());
-            field.classList.toggle('is-invalid', !isValid);
-
-            // Atualizar status visual
-            updateFieldStatus(fieldName, isValid, message);
-
-            return isValid;
-        }
-
-        function validateCPFField(field) {
-            if (!field.value) return true;
-            
-            const isValid = window.RentalTourismSystem?.FormattingSystem?.validateCPF(field.value) || false;
-            field.classList.toggle('is-valid', isValid);
-            field.classList.toggle('is-invalid', !isValid);
-            
-            updateFieldStatus('Cpf', isValid, isValid ? 'CPF válido' : 'CPF inválido');
-            return isValid;
-        }
-
-        function validateAgeField(field) {
-            if (!field.value) return true;
-            
-            const age = calculateAge(new Date(field.value));
-            const isValid = age >= 21 && age <= 120;
-            
-            field.classList.toggle('is-valid', isValid);
-            field.classList.toggle('is-invalid', !isValid);
-            
-            updateFieldStatus('DataNascimento', isValid, `Idade: ${age} anos`);
-            
-            // Mostrar info da idade
-            const idadeInfo = document.getElementById('idade-info');
-            if (idadeInfo) {
-                idadeInfo.innerHTML = `<i class="fas fa-birthday-cake me-1"></i>Idade: ${age} anos`;
-                idadeInfo.className = `form-text ${isValid ? 'text-success' : 'text-danger'}`;
-            }
-            
-            return isValid;
-        }
-
-        function validateCNHFields() {
-            const numeroCNH = document.querySelector('input[name="NumeroHabilitacao"]')?.value || '';
-            const validadeCNH = document.querySelector('input[name="ValidadeCNH"]')?.value || '';
-            
-            // CNH é opcional, mas se uma for preenchida, a outra deve ser também
-            if (numeroCNH && !validadeCNH) {
-                updateFieldStatus('NumeroHabilitacao', false, 'Informe a validade da CNH');
-                return false;
-            }
-            
-            if (validadeCNH && !numeroCNH) {
-                updateFieldStatus('ValidadeCNH', false, 'Informe o número da CNH');
-                return false;
-            }
-            
-            // Se ambas preenchidas, validar data
-            if (numeroCNH && validadeCNH) {
-                const dataValidade = new Date(validadeCNH);
-                const hoje = new Date();
-                const isValid = dataValidade >= hoje;
-                
-                updateFieldStatus('ValidadeCNH', isValid, isValid ? 'CNH válida' : 'CNH vencida');
-                return isValid;
-            }
-            
-            // Se nenhuma preenchida, ok
-            updateFieldStatus('NumeroHabilitacao', true, 'CNH não informada');
-            return true;
-        }
-
-        function setupValidationStatus() {
-            // Monitorar mudanças em todos os campos para atualizar status
-            const form = document.getElementById('formNovoCliente');
-            const inputs = form.querySelectorAll('input');
-            
-            inputs.forEach(input => {
-                input.addEventListener('input', function() {
-                    setTimeout(() => validateSingleField(this), 100);
-                });
-                
-                input.addEventListener('blur', function() {
-                    validateSingleField(this);
-                });
-            });
-        }
-
-        function updateFieldStatus(fieldName, isValid, message) {
-            const statusElement = document.getElementById(`status-${fieldName.toLowerCase()}`);
-            if (statusElement) {
-                const icon = statusElement.querySelector('i');
-                const text = statusElement.querySelector('span');
-                
-                if (icon) {
-                    icon.className = `fas fa-circle me-2 ${isValid ? 'text-success' : 'text-danger'}`;
-                }
-                if (text && message) {
-                    text.textContent = message;
-                }
-            }
-        }
-
-        function submitClientForm() {
-            const form = document.getElementById('formNovoCliente');
-            const btnSalvar = document.getElementById('btnSalvar');
-            
-            if (btnSalvar) {
-                const originalText = btnSalvar.innerHTML;
-                btnSalvar.disabled = true;
-                btnSalvar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Salvando...';
-            }
-            
-            // Mostrar loading overlay
-            window.RentalTourismSystem.LoadingOverlaySystem.show('body', { 
-                message: 'Salvando cliente...' 
-            });
-            
-            // Enviar formulário
-            setTimeout(() => {
-                form.submit();
-            }, 500);
-        }
-
-        function showValidationSummary() {
-            const summary = document.getElementById('validationSummary');
-            if (summary) {
-                summary.classList.remove('d-none');
-                summary.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                setTimeout(() => {
-                    summary.classList.add('d-none');
-                }, 5000);
-            }
-        }
-
-        function focusFirstInvalidField() {
-            const firstInvalid = document.querySelector('.is-invalid');
-            if (firstInvalid) {
-                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                firstInvalid.focus();
-            }
-        }
-
-        function limparFormulario() {
-            if (confirm('Tem certeza que deseja limpar todos os campos?')) {
-                const form = document.getElementById('formNovoCliente');
-                form.reset();
-                
-                // Limpar classes de validação
-                form.querySelectorAll('.is-valid, .is-invalid').forEach(el => {
-                    el.classList.remove('is-valid', 'is-invalid');
-                });
-                
-                // Resetar status
-                document.querySelectorAll('[id^="status-"]').forEach(status => {
-                    const icon = status.querySelector('i');
-                    if (icon) icon.className = 'fas fa-circle text-muted me-2';
-                });
-                
-                window.RentalTourismSystem.NotificationSystem.info('Formulário limpo');
-            }
-        }
-
-        // Funções auxiliares
-        function calculateAge(birthDate) {
-            const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-            
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-            
-            return age;
-        }
-
-        function getFieldDisplayName(fieldName) {
-            const names = {
-                'Nome': 'Nome',
-                'Cpf': 'CPF',
-                'Email': 'Email',
-                'Telefone': 'Telefone',
-                'DataNascimento': 'Data de nascimento',
-                'Endereco': 'Endereço',
-                'NumeroHabilitacao': 'Número da CNH',
-                'ValidadeCNH': 'Validade da CNH'
-            };
-            return names[fieldName] || fieldName;
-        }
+        });
     </script>
 }
+
+<style>
+    .required::after {
+        content: " *";
+        color: red;
+    }
+
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    .text-danger.small {
+        display: block;
+        margin-top: 0.25rem;
+    }
+</style>

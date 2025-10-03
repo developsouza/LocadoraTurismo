@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using RentalTourismSystem.Data;
+using RentalTourismSystem.Extensions;
 using System.ComponentModel.DataAnnotations;
 
 namespace RentalTourismSystem.Controllers
@@ -60,9 +61,9 @@ namespace RentalTourismSystem.Controllers
                         Nome = c.Nome,
                         Email = c.Email,
                         Telefone = c.Telefone,
-                        Cpf = c.Cpf,
+                        Cpf = c.CPF,
                         DataNascimento = c.DataNascimento,
-                        NumeroHabilitacao = c.NumeroHabilitacao,
+                        NumeroHabilitacao = c.CNH,
                         ValidadeCNH = c.ValidadeCNH,
                         HabilitacaoVencida = c.ValidadeCNH.HasValue && c.ValidadeCNH.Value.Date < DateTime.Now.Date,
                         DiasParaVencimentoCNH = c.ValidadeCNH.HasValue ?
@@ -394,69 +395,47 @@ namespace RentalTourismSystem.Controllers
             {
                 _logger.LogInformation("Dados do dashboard solicitados via API por {User}", User.Identity?.Name);
 
-                var cacheKey = "dashboard_dados";
-                if (_cache.TryGetValue(cacheKey, out DashboardResponseDto cachedData))
-                {
-                    return Ok(cachedData);
-                }
-
                 var hoje = DateTime.Now;
                 var inicioMes = new DateTime(hoje.Year, hoje.Month, 1);
+                var fimMes = inicioMes.AddMonths(1).AddDays(-1);
 
-                var dados = new DashboardResponseDto
+                // Buscar totais gerais
+                var totalClientes = await _context.Clientes.CountAsync();
+                var totalVeiculos = await _context.Veiculos.CountAsync();
+
+                var veiculosDisponiveis = await _context.Veiculos
+                    .Include(v => v.StatusCarro)
+                    .CountAsync(v => v.StatusCarro != null && v.StatusCarro.Status == "Disponível");
+
+                var locacoesAtivas = await _context.Locacoes
+                    .CountAsync(l => l.DataDevolucaoReal == null);
+
+                // CORREÇÃO: Buscar receita de reservas COM serviços adicionais
+                var reservasConfirmadasMes = await _context.ReservasViagens
+                    .Include(r => r.StatusReservaViagem)
+                    .Include(r => r.ServicosAdicionais) // INCLUIR SERVIÇOS
+                    .Where(r => r.DataReserva >= inicioMes && r.DataReserva <= fimMes &&
+                               r.StatusReservaViagem != null &&
+                               r.StatusReservaViagem.Status == "Confirmada")
+                    .ToListAsync();
+
+                var receitaReservasMes = reservasConfirmadasMes.Sum(r => r.ObterValorTotalComServicos());
+
+                var receitaLocacoesMes = await _context.Locacoes
+                    .Where(l => l.DataRetirada >= inicioMes && l.DataRetirada <= fimMes)
+                    .SumAsync(l => (decimal?)l.ValorTotal) ?? 0;
+
+                var resultado = new DashboardResponseDto
                 {
-                    // Dados gerais
-                    TotalClientes = await _context.Clientes.CountAsync(),
-                    TotalVeiculos = await _context.Veiculos.CountAsync(),
-                    TotalPacotes = await _context.PacotesViagens.CountAsync(),
-                    TotalFuncionarios = await _context.Funcionarios.CountAsync(),
-
-                    // Veículos por status
-                    VeiculosDisponiveis = await _context.Veiculos
-                        .Include(v => v.StatusCarro)
-                        .CountAsync(v => v.StatusCarro.Status == "Disponível"),
-                    VeiculosAlugados = await _context.Veiculos
-                        .Include(v => v.StatusCarro)
-                        .CountAsync(v => v.StatusCarro.Status == "Alugado"),
-                    VeiculosManutencao = await _context.Veiculos
-                        .Include(v => v.StatusCarro)
-                        .CountAsync(v => v.StatusCarro.Status == "Manutenção"),
-
-                    // Locações
-                    LocacoesAtivas = await _context.Locacoes
-                        .CountAsync(l => l.DataDevolucaoReal == null),
-                    LocacoesMes = await _context.Locacoes
-                        .CountAsync(l => l.DataRetirada >= inicioMes),
-                    ReceitaLocacoesMes = await _context.Locacoes
-                        .Where(l => l.DataRetirada >= inicioMes)
-                        .SumAsync(l => l.ValorTotal),
-
-                    // Reservas
-                    ReservasAtivas = await _context.ReservasViagens
-                        .Include(r => r.StatusReservaViagem)
-                        .CountAsync(r => r.StatusReservaViagem.Status == "Confirmada" || r.StatusReservaViagem.Status == "Pendente"),
-                    ReservasMes = await _context.ReservasViagens
-                        .CountAsync(r => r.DataReserva >= inicioMes),
-                    ReceitaReservasMes = await _context.ReservasViagens
-                        .Include(r => r.StatusReservaViagem)
-                        .Where(r => r.DataReserva >= inicioMes && r.StatusReservaViagem.Status == "Confirmada")
-                        .SumAsync(r => r.ValorTotal),
-
-                    // CNHs
-                    CNHsVencendo = await _context.Clientes
-                        .CountAsync(c => c.ValidadeCNH.HasValue &&
-                                       c.ValidadeCNH.Value.Date <= hoje.AddDays(30).Date &&
-                                       c.ValidadeCNH.Value.Date >= hoje.Date),
-
+                    TotalClientes = totalClientes,
+                    TotalVeiculos = totalVeiculos,
+                    VeiculosDisponiveis = veiculosDisponiveis,
+                    LocacoesAtivas = locacoesAtivas,
+                    ReceitaMes = receitaLocacoesMes + receitaReservasMes,
                     DataAtualizacao = DateTime.Now
                 };
 
-                dados.ReceitaTotalMes = dados.ReceitaLocacoesMes + dados.ReceitaReservasMes;
-
-                // Cache por 5 minutos
-                _cache.Set(cacheKey, dados, TimeSpan.FromMinutes(5));
-
-                return Ok(dados);
+                return Ok(resultado);
             }
             catch (Exception ex)
             {
@@ -757,6 +736,7 @@ namespace RentalTourismSystem.Controllers
         public decimal ReceitaTotalMes { get; set; }
         public int CNHsVencendo { get; set; }
         public DateTime DataAtualizacao { get; set; }
+        public decimal ReceitaMes { get; internal set; }
     }
 
     public class ReceitaMensalResponseDto

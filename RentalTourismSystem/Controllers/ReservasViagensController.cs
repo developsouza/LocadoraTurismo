@@ -52,7 +52,7 @@ namespace RentalTourismSystem.Controllers
                 if (!string.IsNullOrEmpty(busca))
                 {
                     reservas = reservas.Where(r => r.Cliente.Nome.Contains(busca) ||
-                                                 r.Cliente.Cpf.Contains(busca) ||
+                                                 r.Cliente.CPF.Contains(busca) ||
                                                  r.PacoteViagem.Nome.Contains(busca) ||
                                                  r.PacoteViagem.Destino.Contains(busca));
                     _logger.LogInformation("Busca por reservas '{Busca}' realizada por {User}", busca, User.Identity?.Name);

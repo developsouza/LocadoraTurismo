@@ -1,0 +1,287 @@
+﻿@model RentalTourismSystem.Models.ViewModels.LaudoVistoriaViewModel
+@{
+    ViewData["Title"] = "Laudo de Vistoria";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Locação #@Model.Locacao.Id</title>
+    <link rel="stylesheet" href="~/css/documento-print.css" />
+    <style>
+        @@media print {
+            .no-print {
+                display: none !important;
+            }
+
+            @@page {
+                margin: 1.5cm;
+                size: A4;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Botões de Ação (não imprime) -->
+    <div class="no-print" style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <button onclick="window.print()" class="btn btn-primary" style="margin-right: 10px;">
+            <i class="fas fa-print"></i> Imprimir
+        </button>
+        <button onclick="window.close()" class="btn btn-secondary">
+            <i class="fas fa-times"></i> Fechar
+        </button>
+    </div>
+
+    <!-- Documento -->
+    <div class="documento-laudo">
+        <!-- Cabeçalho -->
+        <div class="cabecalho-laudo">
+            <h1>LAUDO DE VISTORIA PARA LOCAÇÃO DE VEÍCULO</h1>
+            <p class="numero-laudo">Laudo Nº @Model.Locacao.Id.ToString("D6")</p>
+        </div>
+
+        <!-- Informações Principais -->
+        <div class="info-partes">
+            <div class="info-item">
+                <strong>Locador:</strong> @Model.Locacao.Agencia.Nome
+            </div>
+            <div class="info-item">
+                <strong>Locatário:</strong> @Model.Locacao.Cliente.Nome
+            </div>
+        </div>
+
+        <!-- Introdução -->
+        <div class="texto-introducao">
+            <p>
+                O presente laudo é resultado da vistoria realizada em
+                <strong>@Model.DataVistoria.ToString("dd/MM/yyyy")</strong> do veículo descrito abaixo:
+            </p>
+        </div>
+
+        <!-- Dados do Veículo -->
+        <div class="dados-veiculo-laudo">
+            <div class="row-dados">
+                <div class="col-dados">
+                    <strong>Fabricante:</strong> @Model.Locacao.Veiculo.Marca
+                </div>
+                <div class="col-dados">
+                    <strong>Modelo:</strong> @Model.Locacao.Veiculo.Modelo
+                </div>
+            </div>
+            <div class="row-dados">
+                <div class="col-dados">
+                    <strong>Ano:</strong> @Model.Locacao.Veiculo.Ano
+                </div>
+                <div class="col-dados">
+                    <strong>Placa:</strong> @Model.Locacao.Veiculo.Placa
+                </div>
+            </div>
+            <div class="row-dados">
+                <div class="col-dados">
+                    <strong>Cor:</strong> @Model.Locacao.Veiculo.Cor
+                </div>
+                <div class="col-dados">
+                    <strong>Quilometragem:</strong> @Model.Locacao.Veiculo.Quilometragem.ToString("N0") km
+                </div>
+            </div>
+        </div>
+
+        <!-- Nota Importante -->
+        <div class="nota-importante">
+            <p>
+                O presente laudo é parte integrante do contrato de locação de veículo celebrado entre o locador
+                e o locatário acima especificados. Qualquer restrição ao presente laudo, ou qualquer irregularidade
+                encontrada no veículo que não conste neste laudo, deverá ser comunicado ao locador por escrito,
+                dentro de 24 horas, a contar da data da locação.
+            </p>
+        </div>
+
+        <!-- Estado Geral -->
+        <div class="estado-geral">
+            <p>
+                Vistoriado o veículo, foi constatado que o mesmo encontra-se em <strong>BOM</strong> estado de conservação
+                e <strong>BOM</strong> estado de funcionamento, conforme especificado na tabela a seguir.
+            </p>
+        </div>
+
+        <!-- Tabela de Vistoria -->
+        <div class="tabela-vistoria">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">ITEM</th>
+                        <th style="width: 40%;">DESCRIÇÃO</th>
+                        <th style="width: 25%;">CONDIÇÃO / FUNCIONAMENTO</th>
+                        <th style="width: 30%;">COMENTÁRIO / OBSERVAÇÕES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ItensVistoria)
+                    {
+                        <tr>
+                            <td class="text-center">@item.Numero</td>
+                            <td>@item.Descricao</td>
+                            <td class="text-center">
+                                @if (item.Funcionando || item.NaoFunciona)
+                                {
+                                    <div class="opcoes-vistoria">
+                                        <label>
+                                            <input type="checkbox" @(item.Funcionando ? "checked" : "") disabled />
+                                            FUNCIONANDO
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" @(item.NaoFunciona ? "checked" : "") disabled />
+                                            NÃO FUNCIONA
+                                        </label>
+                                    </div>
+                                }
+                                @if (item.Ok || item.Faltando)
+                                {
+                                    <div class="opcoes-vistoria">
+                                        <label>
+                                            <input type="checkbox" @(item.Ok ? "checked" : "") disabled />
+                                            OK
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" @(item.Faltando ? "checked" : "") disabled />
+                                            FALTANDO
+                                        </label>
+                                    </div>
+                                }
+                                @if (item.EmDia || item.Vencido)
+                                {
+                                    <div class="opcoes-vistoria">
+                                        <label>
+                                            <input type="checkbox" @(item.EmDia ? "checked" : "") disabled />
+                                            EM DIA
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" @(item.Vencido ? "checked" : "") disabled />
+                                            VENCIDO
+                                        </label>
+                                    </div>
+                                }
+                                @if (item.NoNivel || item.Completar)
+                                {
+                                    <div class="opcoes-vistoria">
+                                        <label>
+                                            <input type="checkbox" @(item.NoNivel ? "checked" : "") disabled />
+                                            NO NÍVEL
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" @(item.Completar ? "checked" : "") disabled />
+                                            COMPLETAR
+                                        </label>
+                                    </div>
+                                }
+                                @if (item.Bom || item.Ruim)
+                                {
+                                    <div class="opcoes-vistoria">
+                                        <label>
+                                            <input type="checkbox" @(item.Bom ? "checked" : "") disabled />
+                                            BOM
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" @(item.Ruim ? "checked" : "") disabled />
+                                            RUIM
+                                        </label>
+                                    </div>
+                                }
+                                @if (item.Normal || item.Trincado || item.RiscadoAmassado)
+                                {
+                                    <div class="opcoes-vistoria">
+                                        <label>
+                                            <input type="checkbox" @(item.Normal ? "checked" : "") disabled />
+                                            NORMAL
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" @(item.Trincado || item.RiscadoAmassado ? "checked" : "") disabled />
+                                            @(item.Descricao.Contains("PARA") ? "TRINCADO" : "RISCADO/AMASSADO")
+                                        </label>
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.Comentario))
+                                {
+                                    <text>@item.Comentario</text>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Observações Gerais -->
+        <div class="observacoes-gerais">
+            <h3>OBSERVAÇÕES GERAIS:</h3>
+            <div class="campo-observacoes">
+                @if (!string.IsNullOrEmpty(Model.Observacoes))
+                {
+                    <p>@Model.Observacoes</p>
+                }
+                else
+                {
+                    <p class="text-muted">Nenhuma observação adicional registrada.</p>
+                    <div class="linhas-observacoes">
+                        <div class="linha-obs"></div>
+                        <div class="linha-obs"></div>
+                        <div class="linha-obs"></div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Combustível -->
+        <div class="info-combustivel">
+            <h3>NÍVEL DE COMBUSTÍVEL NA RETIRADA:</h3>
+            <div class="marcadores-combustivel">
+                <label><input type="checkbox" checked disabled /> 8/8 (TANQUE CHEIO)</label>
+                <label><input type="checkbox" disabled /> 7/8</label>
+                <label><input type="checkbox" disabled /> 6/8</label>
+                <label><input type="checkbox" disabled /> 5/8</label>
+                <label><input type="checkbox" disabled /> 4/8 (MEIO TANQUE)</label>
+                <label><input type="checkbox" disabled /> 3/8</label>
+                <label><input type="checkbox" disabled /> 2/8</label>
+                <label><input type="checkbox" disabled /> 1/8</label>
+            </div>
+        </div>
+
+        <!-- Local e Data -->
+        <div class="local-data-laudo">
+            <p>
+                @(Model.Locacao.Agencia.Cidade ?? "João Pessoa"),
+                @Model.DataVistoria.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("pt-BR")).
+            </p>
+        </div>
+
+        <!-- Assinaturas -->
+        <div class="assinaturas-laudo">
+            <div class="assinatura-laudo">
+                <div class="linha-assinatura"></div>
+                <p><strong>LOCADOR:</strong> @Model.Locacao.Agencia.Nome</p>
+                <p class="small">Representante: @(Model.Locacao.Funcionario?.Nome ?? "_______________")</p>
+            </div>
+
+            <div class="assinatura-laudo">
+                <div class="linha-assinatura"></div>
+                <p><strong>LOCATÁRIO:</strong> @Model.Locacao.Cliente.Nome</p>
+                <p class="small">CPF: @Model.Locacao.Cliente.CPF</p>
+            </div>
+        </div>
+
+        <!-- Rodapé -->
+        <div class="rodape-laudo">
+            <p>Documento gerado eletronicamente em @DateTime.Now.ToString("dd/MM/yyyy 'às' HH:mm")</p>
+            <p>Laudo de Vistoria - Locação #@Model.Locacao.Id</p>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

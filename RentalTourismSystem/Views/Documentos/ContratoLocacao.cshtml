@@ -1,0 +1,384 @@
+﻿@model RentalTourismSystem.Models.ViewModels.ContratoLocacaoViewModel
+@{
+    ViewData["Title"] = "Contrato de Locação";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Locação #@Model.Locacao.Id</title>
+    <link rel="stylesheet" href="~/css/documento-print.css" />
+    <style>
+        @@media print {
+            .no-print { display: none !important; }
+            @@page { margin: 2cm; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Botões de Ação (não imprime) -->
+    <div class="no-print" style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <button onclick="window.print()" class="btn btn-primary" style="margin-right: 10px;">
+            <i class="fas fa-print"></i> Imprimir
+        </button>
+        <button onclick="window.close()" class="btn btn-secondary">
+            <i class="fas fa-times"></i> Fechar
+        </button>
+    </div>
+
+    <!-- Documento -->
+    <div class="documento-contrato">
+        <!-- Cabeçalho -->
+        <div class="cabecalho-contrato">
+            <h1>CONTRATO DE LOCAÇÃO DE VEÍCULOS</h1>
+            <p class="numero-contrato">Contrato Nº @Model.Locacao.Id.ToString("D6")</p>
+        </div>
+
+        <!-- Partes do Contrato -->
+        <div class="secao-partes">
+            <h2>Entre:</h2>
+
+            <!-- LOCADOR -->
+            <div class="parte">
+                <p>
+                    <strong>@Model.Locacao.Agencia.Nome</strong>,
+                    @if (!string.IsNullOrEmpty(Model.Locacao.Agencia.CNPJ))
+                    {
+                        <text>inscrita sob o CNPJ n.º <strong>@Model.Locacao.Agencia.CNPJ</strong>,</text>
+                    }
+                    com sede em <strong>@Model.Locacao.Agencia.Endereco</strong>,
+                    telefone <strong>@Model.Locacao.Agencia.Telefone</strong>,
+                    e-mail <strong>@Model.Locacao.Agencia.Email</strong>,
+                    neste ato representada por: <strong>@(Model.Locacao.Funcionario?.Nome ?? "REPRESENTANTE LEGAL")</strong>,
+                    doravante denominada <strong>LOCADOR</strong>,
+                </p>
+            </div>
+
+            <p style="text-align: center; margin: 20px 0;">e:</p>
+
+            <!-- LOCATÁRIO -->
+            <div class="parte">
+                <p>
+                    <strong>@Model.Locacao.Cliente.Nome.ToUpper()</strong>,
+                    @(Model.Locacao.Cliente.EstadoCivil ?? "brasileiro"),
+                    profissão: @(Model.Locacao.Cliente.Profissao ?? "NÃO INFORMADA"),
+                    CPF n.º <strong>@Model.Locacao.Cliente.CPF</strong>,
+                    CNH n.º <strong>@Model.Locacao.Cliente.CNH</strong>,
+                    categoria <strong>@(Model.Locacao.Cliente.CategoriaCNH ?? "B")</strong>,
+                    residente em: <strong>@Model.Locacao.Cliente.Endereco</strong>,
+                    CEP <strong>@Model.Locacao.Cliente.CEP</strong>,
+                    telefone <strong>@Model.Locacao.Cliente.Telefone</strong>,
+                    e-mail <strong>@Model.Locacao.Cliente.Email</strong>,
+                    doravante denominado <strong>LOCATÁRIO</strong>.
+                </p>
+            </div>
+        </div>
+
+        <!-- Introdução -->
+        <div class="texto-padrao">
+            <p>
+                As partes acima identificadas têm entre si justo e acertado o presente contrato de locação de veículo,
+                ficando desde já aceito nas cláusulas e condições abaixo descritas.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 1ª - DO OBJETO -->
+        <div class="clausula">
+            <h3>CLÁUSULA 1ª - DO OBJETO</h3>
+            <p>
+                Por meio deste contrato, que firmam entre si o <strong>LOCADOR</strong> e o <strong>LOCATÁRIO</strong>,
+                regula-se a locação do veículo:
+            </p>
+            <div class="destaque-veiculo">
+                <p>
+                    <strong>@Model.Locacao.Veiculo.Marca.ToUpper() @Model.Locacao.Veiculo.Modelo.ToUpper()</strong>,
+                    ano <strong>@Model.Locacao.Veiculo.Ano</strong>,
+                    cor <strong>@Model.Locacao.Veiculo.Cor</strong>,
+                    @Model.Locacao.Veiculo.Combustivel,
+                    @Model.Locacao.Veiculo.Cambio,
+                    placa <strong>@Model.Locacao.Veiculo.Placa</strong>,
+                    com quilometragem de <strong>@Model.Locacao.Veiculo.Quilometragem.ToString("N0") km</strong>,
+                    e com o valor de mercado aproximado em <strong>R$ @((Model.Locacao.Veiculo.ValorDiaria * 500).ToString("N2"))</strong>.
+                </p>
+            </div>
+            <p class="paragrafo">
+                <strong>Parágrafo único:</strong> O presente contrato é acompanhado de um laudo de vistoria,
+                que descreve o veículo e o seu estado de conservação no momento em que o mesmo foi entregue ao <strong>LOCATÁRIO</strong>.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 2ª - DO VALOR DO ALUGUEL -->
+        <div class="clausula">
+            <h3>CLÁUSULA 2ª - DO VALOR DO ALUGUEL</h3>
+            <p>
+                O valor da diária do aluguel, livremente ajustado pelas partes, e pago antecipadamente pelo <strong>LOCATÁRIO</strong>,
+                é de <strong>R$ @Model.ValorDiaria.ToString("N2") (@ExtensoHelper.ValorPorExtenso(Model.ValorDiaria))</strong>.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 1º.</strong> Diária corresponde ao período de 24 (vinte e quatro) horas contados da assinatura do contrato.
+                Após o término da diária, há tolerância de 1 (uma) hora para ocorrer a devolução do veículo alugado.
+                Após esse período, serão cobrados valores de horas extras até a décima segunda hora.
+                Após o início da décima segunda hora, ocorrerá a cobrança da diária extra.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 2º.</strong> O <strong>LOCATÁRIO</strong> deverá efetuar o pagamento do valor acordado no ato da assinatura
+                do contrato de locação, em espécie ou por transferência bancária, diretamente para o <strong>LOCADOR</strong>
+                ou terceiro autorizado por este.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 3º.</strong> Será de responsabilidade do <strong>LOCATÁRIO</strong> as despesas referentes à utilização do veículo.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 3ª - DO PRAZO DO ALUGUEL -->
+        <div class="clausula">
+            <h3>CLÁUSULA 3ª - DO PRAZO DO ALUGUEL</h3>
+            <p>
+                O prazo de locação do referido veículo é de <strong>@Model.DiasLocacao (@ExtensoHelper.NumeroPorExtenso(Model.DiasLocacao)) dias</strong>,
+                com início às <strong>@Model.Locacao.DataRetirada.ToString("HH:mm")</strong>h do dia
+                <strong>@Model.Locacao.DataRetirada.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("pt-BR"))</strong>,
+                e com término às <strong>@Model.Locacao.DataDevolucao.ToString("HH:mm")</strong>h do dia
+                <strong>@Model.Locacao.DataDevolucao.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("pt-BR"))</strong>.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 1º.</strong> Ao final do prazo estipulado, caso as partes permaneçam inertes,
+                a locação prorrogar-se-á automaticamente por tempo indeterminado.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 2º.</strong> Em caso de prorrogação da locação, o LOCATÁRIO deverá comunicar de imediato ao LOCADOR
+                para aditivo de contrato, bem como efetuar o pagamento da(s) diária(s) complementares.
+                Havendo atraso no pagamento do aluguel das diárias complementares, será aplicada multa de 10% (dez por cento),
+                sobre o valor devido, bem como juros de mora de 1% (um por cento) ao mês, mais correção monetária,
+                apurada conforme variação do IGP-M no período.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 3º.</strong> Caso o LOCADOR não queira prorrogar a locação ao terminar o prazo estipulado neste contrato,
+                e o referido veículo não for devolvido pelo LOCATÁRIO, será cobrado o valor do aluguel proporcional aos dias de atraso,
+                na forma da Cláusula 2ª, acumulado de multa diária de <strong>R$ @Model.ValorDiaria.ToString("N2")</strong>,
+                pelo prazo máximo de 03 (três) diárias.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 4º.</strong> Finda a locação, o LOCATÁRIO deverá devolver o veículo nas mesmas condições em que recebeu,
+                salvo os desgastes decorrentes do uso normal, sob pena de indenização por perdas e danos a ser apurada.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 5º.</strong> Findo o prazo do contrato, o LOCATÁRIO, não vindo a devolver o veículo por um período de atraso
+                superior a 3 (três) dias, fica sujeito a ter a posse do veículo configurada como Apropriação Indébita,
+                implicando também a possibilidade de adoção de medidas judiciais, inclusive a Busca e Apreensão do veículo
+                e/ou lavratura de Boletim de Ocorrência.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 4ª - DO COMBUSTÍVEL -->
+        <div class="clausula">
+            <h3>CLÁUSULA 4ª - DO COMBUSTÍVEL</h3>
+            <p>
+                O veículo será entregue ao LOCATÁRIO com o tanque de combustível completo,
+                e sua quantidade será marcada no laudo de vistoria no momento da retirada.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 1º.</strong> Ao final do prazo estipulado, o LOCATÁRIO deverá devolver o veículo ao LOCADOR
+                com o tanque de combustível completo.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 2º.</strong> Caso não ocorra o cumprimento do parágrafo anterior, será cobrado o valor correspondente
+                à leitura do marcador em oitavos, com base em tabela própria, e o valor do litro será informado no momento
+                da retirada pelo LOCADOR.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 3º.</strong> Caso seja constatada a utilização de combustível adulterado, o LOCATÁRIO responderá
+                pelo mesmo e pelos danos decorrentes de tal utilização.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 5ª - DA LIMPEZA -->
+        <div class="clausula">
+            <h3>CLÁUSULA 5ª - DA LIMPEZA</h3>
+            <p>
+                O veículo será entregue ao LOCATÁRIO limpo e deverá ser devolvido ao LOCADOR nas mesmas condições
+                higiênicas que foi retirado.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 1º.</strong> Caso o veículo seja devolvido sujo, interna ou externamente, será cobrada uma taxa
+                de lavagem simples ou especial, dependendo do estado do veículo na devolução.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 6ª - DA UTILIZAÇÃO -->
+        <div class="clausula">
+            <h3>CLÁUSULA 6ª - DA UTILIZAÇÃO</h3>
+            <p>
+                O veículo deverá ser utilizado pelo LOCATÁRIO exclusivamente de acordo com a sua natureza
+                e respeitando as especificações do seu fabricante.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 1º.</strong> O LOCATÁRIO indica: <strong>@Model.Locacao.Cliente.Nome.ToUpper()</strong>,
+                CPF n.º <strong>@Model.Locacao.Cliente.CPF</strong>, como principal condutor do veículo descrito na cláusula 1ª
+                deste contrato, sob número de licença de direção: <strong>@Model.Locacao.Cliente.CNH</strong>,
+                categoria: <strong>@(Model.Locacao.Cliente.CategoriaCNH ?? "B")</strong>,
+                válida até <strong>@Model.Locacao.Cliente.ValidadeCNH?.ToString("dd/MM/yyyy")</strong>.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 2º.</strong> Deverá também o LOCATÁRIO utilizar o veículo alugado sempre de acordo com os regulamentos
+                estabelecidos pelo Conselho Nacional de Trânsito (CONTRAN) e pelo Departamento Estadual de Trânsito (DETRAN).
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 7ª - DAS MULTAS E INFRAÇÕES -->
+        <div class="clausula">
+            <h3>CLÁUSULA 7ª - DAS MULTAS E INFRAÇÕES</h3>
+            <p>
+                As multas ou quaisquer outras infrações às leis de trânsito, cometidas durante o período da locação do veículo,
+                serão de responsabilidade do LOCATÁRIO, devendo ser liquidadas quando da notificação pelos órgãos competentes
+                ou no final do contrato, o que ocorrer primeiro.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 8ª - DA VEDAÇÃO À SUBLOCAÇÃO -->
+        <div class="clausula">
+            <h3>CLÁUSULA 8ª - DA VEDAÇÃO À SUBLOCAÇÃO E EMPRÉSTIMO DO VEÍCULO</h3>
+            <p>
+                Será permitido o uso do veículo objeto do presente contrato apenas ao LOCATÁRIO, sendo vedada,
+                no todo ou em parte, a sublocação, transferência, empréstimo, comodato ou cessão da locação,
+                seja a qualquer título, sem expressa anuência do LOCADOR, sob pena de imediata rescisão,
+                aplicação de multa e de demais penalidades contratuais e legais cabíveis.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 9ª - DO SEGURO -->
+        <div class="clausula">
+            <h3>CLÁUSULA 9ª - DA UTILIZAÇÃO DO SEGURO</h3>
+            <p>
+                Ocorrendo a necessidade da utilização do seguro veicular, devido à perda, extravio, furto, roubo,
+                destruição parcial ou total, ou colisão do veículo por ora locado, fica desde já estipulada
+                indenização devida pelo LOCATÁRIO que deverá, para efeito de cobertura do valor da franquia do seguro veicular,
+                pagar ao LOCADOR o valor de <strong>R$ @Model.ValorFranquia.ToString("N2") (@ExtensoHelper.ValorPorExtenso(Model.ValorFranquia))</strong>.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 10ª - DA GARANTIA -->
+        <div class="clausula">
+            <h3>CLÁUSULA 10ª - DA GARANTIA</h3>
+            <p>
+                O cumprimento das obrigações previstas neste contrato, inclusive o pagamento pontual do aluguel,
+                estará garantido por caução dada em dinheiro, perfazendo o montante de
+                <strong>R$ @Model.ValorCaucao.ToString("N2") (@ExtensoHelper.ValorPorExtenso(Model.ValorCaucao))</strong>,
+                entregue ao LOCADOR no ato de assinatura deste contrato.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 1º.</strong> Ao final da locação, tendo sido todas as obrigações devidamente cumpridas,
+                o LOCATÁRIO estará autorizado a levantar a respectiva soma.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 11ª - DA RESCISÃO -->
+        <div class="clausula">
+            <h3>CLÁUSULA 11ª - DA RESCISÃO</h3>
+            <p>
+                Considera-se rescindido o contrato após a entrega do veículo e quitação de eventuais débitos
+                que ainda estejam pendentes.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 12ª - DAS PENALIDADES -->
+        <div class="clausula">
+            <h3>CLÁUSULA 12ª - DAS PENALIDADES</h3>
+            <p>
+                Exceto nos casos em que ocorra penalidade contratual prevista, a violação das cláusulas deste instrumento
+                acarretará à parte infratora uma aplicação de multa de <strong>R$ @Model.ValorDiaria.ToString("N2")</strong>.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 13ª - DO FORO -->
+        <div class="clausula">
+            <h3>CLÁUSULA 13ª - DO FORO</h3>
+            <p>
+                Fica desde já eleito o foro da comarca de <strong>@(Model.Locacao.Agencia.Cidade ?? "JOÃO PESSOA - PB")</strong>
+                para serem resolvidas eventuais pendências decorrentes deste contrato.
+            </p>
+        </div>
+
+        <!-- Encerramento -->
+        <div class="texto-padrao">
+            <p>
+                Por estarem assim certos e ajustados, firmam os signatários este instrumento em 02 (duas) vias
+                de igual teor e forma.
+            </p>
+        </div>
+
+        <!-- Local e Data -->
+        <div class="local-data">
+            <p>
+                @(Model.Locacao.Agencia.Cidade ?? "João Pessoa - PB"),
+                @Model.DataEmissao.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("pt-BR")).
+            </p>
+        </div>
+
+        <!-- Assinaturas -->
+        <div class="assinaturas">
+            <div class="assinatura">
+                <div class="linha-assinatura"></div>
+                <p><strong>LOCADOR: @Model.Locacao.Agencia.Nome</strong></p>
+                <p class="small">Representante: @(Model.Locacao.Funcionario?.Nome ?? "_______________")</p>
+            </div>
+
+            <div class="assinatura">
+                <div class="linha-assinatura"></div>
+                <p><strong>LOCATÁRIO: @Model.Locacao.Cliente.Nome.ToUpper()</strong></p>
+                <p class="small">CPF: @Model.Locacao.Cliente.CPF</p>
+            </div>
+        </div>
+
+        <!-- Rodapé -->
+        <div class="rodape">
+            <p>Documento gerado eletronicamente em @DateTime.Now.ToString("dd/MM/yyyy 'às' HH:mm")</p>
+            <p>Locação #@Model.Locacao.Id - Sistema de Locação e Turismo</p>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+@functions {
+    public static class ExtensoHelper
+    {
+        public static string ValorPorExtenso(decimal valor)
+        {
+            if (valor == 0) return "zero reais";
+
+            var parteInteira = (int)valor;
+            var parteCentavos = (int)((valor - parteInteira) * 100);
+
+            var extenso = NumeroPorExtenso(parteInteira) + (parteInteira == 1 ? " real" : " reais");
+
+            if (parteCentavos > 0)
+            {
+                extenso += " e " + NumeroPorExtenso(parteCentavos) + (parteCentavos == 1 ? " centavo" : " centavos");
+            }
+
+            return extenso;
+        }
+
+        public static string NumeroPorExtenso(int numero)
+        {
+            if (numero == 0) return "zero";
+            if (numero == 1) return "um";
+            if (numero == 2) return "dois";
+            if (numero == 3) return "três";
+            if (numero == 4) return "quatro";
+            if (numero == 5) return "cinco";
+            if (numero == 6) return "seis";
+            if (numero == 7) return "sete";
+            if (numero == 8) return "oito";
+            if (numero == 9) return "nove";
+            if (numero == 10) return "dez";
+
+            return numero.ToString();
+        }
+    }
+}

@@ -690,11 +690,11 @@
             dadosCliente.innerHTML = `
                 <div class="client-details">
                     <h6 class="mb-2">${cliente.nome}</h6>
-                    <p class="mb-1"><strong>CPF:</strong> ${cliente.cpf || 'N/A'}</p>
+                    <p class="mb-1"><strong>CPF:</strong> ${cliente.CPF || 'N/A'}</p>
                     <p class="mb-1"><strong>Email:</strong> ${cliente.email || 'N/A'}</p>
                     <p class="mb-1"><strong>Telefone:</strong> ${cliente.telefone || 'N/A'}</p>
-                    ${cliente.numeroHabilitacao ? `
-                        <p class="mb-1"><strong>CNH:</strong> ${cliente.numeroHabilitacao}</p>
+                    ${cliente.CNH ? `
+                        <p class="mb-1"><strong>CNH:</strong> ${cliente.CNH}</p>
                         ${cliente.validadeCNH ? `<p class="mb-0"><strong>Validade:</strong> ${cliente.validadeCNH}</p>` : ''}
                     ` : '<p class="mb-0 text-warning"><small>CNH não cadastrada</small></p>'}
                 </div>

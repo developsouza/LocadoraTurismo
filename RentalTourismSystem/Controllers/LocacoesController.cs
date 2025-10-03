@@ -631,7 +631,7 @@ namespace RentalTourismSystem.Controllers
                 // Carregar clientes com CNH válida
                 ViewBag.ClienteId = new SelectList(
                     await _context.Clientes
-                        .Where(c => !string.IsNullOrEmpty(c.NumeroHabilitacao) &&
+                        .Where(c => !string.IsNullOrEmpty(c.CNH) &&
                                    c.ValidadeCNH.HasValue &&
                                    c.ValidadeCNH.Value.Date >= DateTime.Now.Date)
                         .OrderBy(c => c.Nome)
@@ -709,7 +709,7 @@ namespace RentalTourismSystem.Controllers
             if (cliente == null)
                 return new ValidationResult { IsValid = false, ErrorMessage = "Cliente não encontrado." };
 
-            if (string.IsNullOrWhiteSpace(cliente.NumeroHabilitacao))
+            if (string.IsNullOrWhiteSpace(cliente.CNH))
                 return new ValidationResult { IsValid = false, ErrorMessage = "Cliente não possui número de habilitação cadastrado." };
 
             if (!cliente.ValidadeCNH.HasValue)
@@ -746,12 +746,12 @@ namespace RentalTourismSystem.Controllers
                 {
                     id = cliente.Id,
                     nome = cliente.Nome,
-                    cpf = cliente.Cpf,
+                    cpf = cliente.CPF,
                     email = cliente.Email,
                     telefone = cliente.Telefone,
-                    numeroHabilitacao = cliente.NumeroHabilitacao,
+                    numeroHabilitacao = cliente.CNH,
                     validadeCNH = cliente.ValidadeCNH?.ToString("dd/MM/yyyy"),
-                    cnhValida = !string.IsNullOrWhiteSpace(cliente.NumeroHabilitacao) &&
+                    cnhValida = !string.IsNullOrWhiteSpace(cliente.CNH) &&
                                cliente.ValidadeCNH.HasValue &&
                                cliente.ValidadeCNH.Value.Date >= DateTime.Now.Date
                 });

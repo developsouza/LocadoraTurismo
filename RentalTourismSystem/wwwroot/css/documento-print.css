@@ -1,0 +1,535 @@
+﻿/* ===================================
+   CSS PARA IMPRESSÃO DE DOCUMENTOS
+   Sistema de Locação e Turismo
+   =================================== */
+
+/* === ESTILOS GERAIS === */
+body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #000;
+    background: #fff;
+    margin: 0;
+    padding: 20px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+    .btn-primary:hover {
+        background: #0056b3;
+    }
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+    .btn-secondary:hover {
+        background: #545b62;
+    }
+
+.btn i {
+    margin-right: 5px;
+}
+
+/* === ESTILOS DO CONTRATO === */
+.documento-contrato {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    background: #fff;
+}
+
+.cabecalho-contrato {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 3px double #000;
+    padding-bottom: 15px;
+}
+
+    .cabecalho-contrato h1 {
+        font-size: 18pt;
+        font-weight: bold;
+        text-decoration: underline;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+    }
+
+.numero-contrato {
+    font-size: 10pt;
+    font-style: italic;
+    margin-top: 5px;
+}
+
+.secao-partes {
+    margin: 30px 0;
+}
+
+    .secao-partes h2 {
+        font-size: 12pt;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+.parte {
+    margin: 15px 0;
+    padding: 15px;
+    background: #f9f9f9;
+    border-left: 4px solid #333;
+}
+
+    .parte p {
+        text-align: justify;
+        line-height: 1.8;
+    }
+
+.texto-padrao {
+    margin: 20px 0;
+}
+
+    .texto-padrao p {
+        text-align: justify;
+        text-indent: 40px;
+    }
+
+.clausula {
+    margin: 25px 0;
+    page-break-inside: avoid;
+}
+
+    .clausula h3 {
+        font-size: 12pt;
+        font-weight: bold;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+    }
+
+    .clausula p {
+        text-align: justify;
+        margin-bottom: 10px;
+    }
+
+.destaque-veiculo {
+    background: #f0f0f0;
+    padding: 15px;
+    margin: 15px 0;
+    border: 2px solid #333;
+    border-radius: 4px;
+}
+
+    .destaque-veiculo p {
+        text-align: center;
+        font-weight: bold;
+        margin: 0;
+    }
+
+.paragrafo {
+    margin-left: 30px;
+    text-indent: -30px;
+    padding-left: 30px;
+}
+
+    .paragrafo strong {
+        margin-right: 5px;
+    }
+
+.local-data {
+    text-align: center;
+    margin: 40px 0 50px 0;
+}
+
+.assinaturas {
+    display: flex;
+    justify-content: space-between;
+    margin: 60px 0 30px 0;
+    page-break-inside: avoid;
+}
+
+.assinatura {
+    width: 45%;
+    text-align: center;
+}
+
+.linha-assinatura {
+    border-top: 1px solid #000;
+    margin-bottom: 10px;
+    padding-top: 60px;
+}
+
+.assinatura p {
+    margin: 5px 0;
+    font-size: 10pt;
+}
+
+.assinatura .small {
+    font-size: 9pt;
+    color: #666;
+}
+
+.rodape {
+    text-align: center;
+    font-size: 8pt;
+    color: #666;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+    .rodape p {
+        margin: 3px 0;
+    }
+
+/* === ESTILOS DO LAUDO === */
+.documento-laudo {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px;
+    background: #fff;
+}
+
+.cabecalho-laudo {
+    text-align: center;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 12px;
+}
+
+    .cabecalho-laudo h1 {
+        font-size: 16pt;
+        font-weight: bold;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+    }
+
+.numero-laudo {
+    font-size: 10pt;
+    font-style: italic;
+    margin-top: 5px;
+}
+
+.info-partes {
+    margin: 20px 0;
+    padding: 12px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+}
+
+.info-item {
+    margin: 8px 0;
+    font-size: 11pt;
+}
+
+.texto-introducao {
+    margin: 20px 0;
+}
+
+    .texto-introducao p {
+        text-align: justify;
+    }
+
+.dados-veiculo-laudo {
+    margin: 25px 0;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 2px solid #333;
+}
+
+.row-dados {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+}
+
+.col-dados {
+    flex: 1;
+    padding: 0 10px;
+}
+
+.nota-importante {
+    margin: 20px 0;
+    padding: 12px;
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+}
+
+    .nota-importante p {
+        text-align: justify;
+        font-size: 10pt;
+        margin: 0;
+    }
+
+.estado-geral {
+    margin: 20px 0;
+}
+
+    .estado-geral p {
+        text-align: justify;
+    }
+
+.tabela-vistoria {
+    margin: 25px 0;
+}
+
+    .tabela-vistoria table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 2px solid #000;
+        font-size: 9pt;
+    }
+
+    .tabela-vistoria thead {
+        background: #333;
+        color: #fff;
+    }
+
+    .tabela-vistoria th {
+        padding: 10px 5px;
+        text-align: center;
+        font-weight: bold;
+        border: 1px solid #000;
+    }
+
+    .tabela-vistoria td {
+        padding: 8px 5px;
+        border: 1px solid #666;
+        vertical-align: middle;
+    }
+
+    .tabela-vistoria tbody tr:nth-child(even) {
+        background: #f9f9f9;
+    }
+
+.opcoes-vistoria {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+    .opcoes-vistoria label {
+        display: flex;
+        align-items: center;
+        font-size: 8pt;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .opcoes-vistoria input[type="checkbox"] {
+        margin-right: 5px;
+        cursor: pointer;
+    }
+
+.text-center {
+    text-align: center;
+}
+
+.text-muted {
+    color: #999;
+}
+
+.observacoes-gerais {
+    margin: 25px 0;
+    page-break-inside: avoid;
+}
+
+    .observacoes-gerais h3 {
+        font-size: 11pt;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+
+.campo-observacoes {
+    min-height: 80px;
+    padding: 10px;
+    border: 1px solid #666;
+    background: #fff;
+}
+
+.linhas-observacoes {
+    margin-top: 10px;
+}
+
+.linha-obs {
+    border-bottom: 1px solid #ccc;
+    height: 25px;
+    margin: 5px 0;
+}
+
+.info-combustivel {
+    margin: 25px 0;
+    padding: 15px;
+    background: #e8f4f8;
+    border: 1px solid #007bff;
+    page-break-inside: avoid;
+}
+
+    .info-combustivel h3 {
+        font-size: 11pt;
+        font-weight: bold;
+        margin-bottom: 12px;
+    }
+
+.marcadores-combustivel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+    .marcadores-combustivel label {
+        display: flex;
+        align-items: center;
+        font-size: 10pt;
+        margin: 0;
+    }
+
+    .marcadores-combustivel input[type="checkbox"] {
+        margin-right: 5px;
+    }
+
+.local-data-laudo {
+    text-align: center;
+    margin: 40px 0 50px 0;
+}
+
+.assinaturas-laudo {
+    display: flex;
+    justify-content: space-between;
+    margin: 60px 0 30px 0;
+    page-break-inside: avoid;
+}
+
+.assinatura-laudo {
+    width: 45%;
+    text-align: center;
+}
+
+.rodape-laudo {
+    text-align: center;
+    font-size: 8pt;
+    color: #666;
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+
+    .rodape-laudo p {
+        margin: 3px 0;
+    }
+
+/* === ESTILOS DE IMPRESSÃO === */
+@media print {
+    body {
+        padding: 0;
+        margin: 0;
+    }
+
+    .documento-contrato,
+    .documento-laudo {
+        padding: 0;
+        max-width: 100%;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .clausula,
+    .assinaturas,
+    .assinaturas-laudo,
+    .observacoes-gerais,
+    .info-combustivel {
+        page-break-inside: avoid;
+    }
+
+    /* Garantir que títulos não fiquem sozinhos no final da página */
+    h1, h2, h3 {
+        page-break-after: avoid;
+    }
+
+    /* Forçar quebra de página antes de assinaturas se necessário */
+    .assinaturas,
+    .assinaturas-laudo {
+        page-break-before: auto;
+    }
+
+    /* Melhorar contraste para impressão */
+    .parte {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .destaque-veiculo {
+        background: #e8e8e8 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .tabela-vistoria thead {
+        background: #333 !important;
+        color: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .tabela-vistoria tbody tr:nth-child(even) {
+        background: #f5f5f5 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .nota-importante {
+        background: #fffbea !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .info-combustivel {
+        background: #f0f8ff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
+/* === RESPONSIVIDADE PARA VISUALIZAÇÃO === */
+@media screen and (max-width: 768px) {
+    .documento-contrato,
+    .documento-laudo {
+        padding: 20px;
+    }
+
+    .assinaturas,
+    .assinaturas-laudo {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .assinatura,
+    .assinatura-laudo {
+        width: 100%;
+    }
+
+    .row-dados {
+        flex-direction: column;
+    }
+
+    .marcadores-combustivel {
+        flex-direction: column;
+    }
+}

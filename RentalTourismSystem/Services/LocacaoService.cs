@@ -333,7 +333,7 @@ namespace RentalTourismSystem.Services
                 }
 
                 // Validar CNH
-                if (string.IsNullOrEmpty(cliente.NumeroHabilitacao))
+                if (string.IsNullOrEmpty(cliente.CNH))
                 {
                     erros.Add("Cliente deve ter CNH cadastrada");
                 }

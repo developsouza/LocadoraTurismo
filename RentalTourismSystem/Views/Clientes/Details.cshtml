@@ -36,7 +36,7 @@
     // Verificação de CNH
     var diasParaVencimentoCNH = Model.ValidadeCNH.HasValue ? 
         (int)(Model.ValidadeCNH.Value - DateTime.Now).TotalDays : (int?)null;
-    var cnhValida = !string.IsNullOrEmpty(Model.NumeroHabilitacao) && 
+    var cnhValida = !string.IsNullOrEmpty(Model.CNH) && 
                     Model.ValidadeCNH.HasValue && 
                     Model.ValidadeCNH.Value.Date >= DateTime.Now.Date;
 }
@@ -167,10 +167,10 @@
                             <label class="text-muted small">CPF:</label>
                             <p class="mb-0">
                                 <code class="bg-adaptive-surface text-adaptive-primary px-2 py-1 rounded">
-                                    @Model.Cpf
+                                    @Model.CPF
                                 </code>
                                 <button type="button" class="btn btn-sm btn-outline-secondary ms-2" 
-                                        onclick="copiarTexto('@Model.Cpf')">
+                                        onclick="copiarTexto('@Model.CPF')">
                                     <i class="fas fa-copy"></i>
                                 </button>
                             </p>
@@ -233,7 +233,7 @@
         </div>
 
         <!-- Card de CNH -->
-        @if (!string.IsNullOrEmpty(Model.NumeroHabilitacao))
+        @if (!string.IsNullOrEmpty(Model.CNH))
         {
             <div class="card mb-4 hover-lift border-@(cnhValida ? "success" : "danger")">
                 <div class="card-header bg-@(cnhValida ? "success" : "danger") text-white">
@@ -250,7 +250,7 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <label class="text-muted small">Número da CNH:</label>
-                                    <p class="h6 mb-2">@Model.NumeroHabilitacao</p>
+                                    <p class="h6 mb-2">@Model.CNH</p>
                                 </div>
                                 <div class="col-sm-6">
                                     <label class="text-muted small">Validade:</label>
@@ -687,7 +687,7 @@
         var clienteEmail = '@Html.Raw(Html.Encode(Model.Email))';
         var clienteTelefone = '@Html.Raw(Html.Encode(Model.Telefone))';
         var clienteEndereco = '@Html.Raw(Html.Encode(Model.Endereco))';
-        var clienteCpf = '@Html.Raw(Html.Encode(Model.Cpf))';
+        var clienteCpf = '@Html.Raw(Html.Encode(Model.CPF))';
 
         $(document).ready(function() {
             // Configurar tooltips
@@ -718,8 +718,8 @@
                     
                     // Verificar completude dos dados
                     const checks = {
-                        'Dados básicos': cliente.nome && cliente.cpf && cliente.email && cliente.telefone,
-                        'CNH informada': cliente.numeroHabilitacao,
+                        'Dados básicos': cliente.nome && cliente.CPF && cliente.email && cliente.telefone,
+                        'CNH informada': cliente.CNH,
                         'CNH válida': cliente.cnhValida,
                         'Endereço': true // Assumindo que sempre tem endereço pois é obrigatório
                     };

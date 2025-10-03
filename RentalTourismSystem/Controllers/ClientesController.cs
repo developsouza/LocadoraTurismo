@@ -6,7 +6,7 @@ using RentalTourismSystem.Models;
 
 namespace RentalTourismSystem.Controllers
 {
-    [Authorize] // Todo o controller requer autenticação
+    [Authorize]
     public class ClientesController : Controller
     {
         private readonly RentalTourismContext _context;
@@ -18,7 +18,7 @@ namespace RentalTourismSystem.Controllers
             _logger = logger;
         }
 
-        // GET: Clientes - Todos os funcionários podem ver
+        // GET: Clientes
         public async Task<IActionResult> Index(string? busca)
         {
             try
@@ -30,7 +30,7 @@ namespace RentalTourismSystem.Controllers
                 if (!string.IsNullOrEmpty(busca))
                 {
                     clientes = clientes.Where(c => c.Nome.Contains(busca) ||
-                                                 c.Cpf.Contains(busca) ||
+                                                 c.CPF.Contains(busca) ||
                                                  (c.Email != null && c.Email.Contains(busca)));
 
                     _logger.LogInformation("Busca por clientes realizada: '{Busca}' por usuário {User}", busca, User.Identity?.Name);
@@ -50,7 +50,7 @@ namespace RentalTourismSystem.Controllers
             }
         }
 
-        // GET: Clientes/Details/5 - Todos podem ver detalhes
+        // GET: Clientes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -87,7 +87,7 @@ namespace RentalTourismSystem.Controllers
             }
         }
 
-        // GET: Clientes/Create - Todos os funcionários podem criar
+        // GET: Clientes/Create
         [Authorize(Roles = "Admin,Manager,Employee")]
         public IActionResult Create()
         {
@@ -99,52 +99,33 @@ namespace RentalTourismSystem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager,Employee")]
-        public async Task<IActionResult> Create([Bind("Nome,Cpf,Telefone,Email,Endereco,DataNascimento,NumeroHabilitacao,ValidadeCNH")] Cliente cliente)
+        public async Task<IActionResult> Create([Bind("Nome,CPF,Telefone,Email,Endereco,CEP,DataNascimento,EstadoCivil,Profissao,CNH,ValidadeCNH,CategoriaCNH")] Cliente cliente)
         {
             try
             {
-                // Limpar dados antes da validação
-                if (!string.IsNullOrEmpty(cliente.Cpf))
-                    cliente.Cpf = cliente.Cpf.Replace(".", "").Replace("-", "");
+                // ✅ CORRIGIDO: Limpar dados ANTES da validação
+                LimparDadosCliente(cliente);
 
-                if (!string.IsNullOrEmpty(cliente.Telefone))
-                    cliente.Telefone = cliente.Telefone.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("-", "");
-
-                // ===== VALIDAÇÃO DE EMAIL ÚNICO =====
-                if (!string.IsNullOrWhiteSpace(cliente.Email))
-                {
-                    var emailExiste = await _context.Clientes
-                        .AnyAsync(c => c.Email.ToLower() == cliente.Email.ToLower());
-
-                    if (emailExiste)
-                    {
-                        ModelState.AddModelError("Email", "Já existe um cliente cadastrado com este email.");
-                        _logger.LogWarning("Tentativa de cadastro com email duplicado: {Email} por {User}",
-                            cliente.Email, User.Identity?.Name);
-                    }
-                }
-
-                // Validações customizadas antes de verificar ModelState
+                // ✅ Validações customizadas DEPOIS da limpeza
                 await ValidarClienteUnico(cliente);
-                ValidarCamposObrigatorios(cliente);
+                ValidarCamposAdicionais(cliente);
 
                 if (ModelState.IsValid)
                 {
-                    // Garantir que a data de cadastro seja definida
                     cliente.DataCadastro = DateTime.Now;
 
                     _context.Add(cliente);
                     await _context.SaveChangesAsync();
 
-                    _logger.LogInformation("Novo cliente {ClienteNome} (CPF: {ClienteCpf}) criado por {User}",
-                        cliente.Nome, cliente.Cpf, User.Identity?.Name);
+                    _logger.LogInformation("Novo cliente {ClienteNome} (CPF: {ClienteCPF}) criado por {User}",
+                        cliente.Nome, cliente.CPF, User.Identity?.Name);
 
                     TempData["Sucesso"] = "Cliente cadastrado com sucesso!";
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    // Log dos erros de validação para debug
+                    // Log dos erros de validação
                     var errors = ModelState
                         .Where(x => x.Value.Errors.Count > 0)
                         .Select(x => new { Field = x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) });
@@ -167,8 +148,7 @@ namespace RentalTourismSystem.Controllers
             return View(cliente);
         }
 
-
-        // GET: Clientes/Edit/5 - Apenas Admin e Manager podem editar
+        // GET: Clientes/Edit/5
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -202,7 +182,7 @@ namespace RentalTourismSystem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cpf,Telefone,Email,Endereco,DataNascimento,NumeroHabilitacao,ValidadeCNH")] Cliente cliente)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,CPF,Telefone,Email,Endereco,CEP,DataNascimento,EstadoCivil,Profissao,CNH,ValidadeCNH,CategoriaCNH")] Cliente cliente)
         {
             if (id != cliente.Id)
             {
@@ -212,13 +192,12 @@ namespace RentalTourismSystem.Controllers
 
             try
             {
-                // AJUSTE: Limpar dados antes da validação
-                if (!string.IsNullOrEmpty(cliente.Telefone))
-                    cliente.Telefone = cliente.Telefone.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("-", "");
+                // ✅ CORRIGIDO: Limpar dados ANTES da validação
+                LimparDadosCliente(cliente);
 
-                // Validações customizadas (exclusão do próprio cliente)
+                // Validações customizadas
                 await ValidarClienteUnico(cliente, cliente.Id);
-                ValidarCamposObrigatorios(cliente);
+                ValidarCamposAdicionais(cliente);
 
                 if (ModelState.IsValid)
                 {
@@ -240,7 +219,6 @@ namespace RentalTourismSystem.Controllers
                 }
                 else
                 {
-                    // AJUSTE: Log dos erros de validação para debug
                     var errors = ModelState
                         .Where(x => x.Value.Errors.Count > 0)
                         .Select(x => new { Field = x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) });
@@ -275,7 +253,7 @@ namespace RentalTourismSystem.Controllers
             return View(cliente);
         }
 
-        // GET: Clientes/Delete/5 - Apenas Admin pode excluir
+        // GET: Clientes/Delete/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -296,30 +274,6 @@ namespace RentalTourismSystem.Controllers
                 {
                     _logger.LogWarning("Tentativa de exclusão de cliente inexistente {ClienteId} por {User}", id, User.Identity?.Name);
                     return NotFound();
-                }
-
-                // Verificar se há impedimentos para exclusão
-                var impedimentos = new List<string>();
-
-                if (cliente.Locacoes.Any(l => l.DataDevolucaoReal == null))
-                {
-                    impedimentos.Add($"{cliente.Locacoes.Count(l => l.DataDevolucaoReal == null)} locação(ões) ativa(s)");
-                }
-
-                if (cliente.ReservasViagens.Any(r => r.StatusReservaViagem.Status == "Confirmada" || r.StatusReservaViagem.Status == "Pendente"))
-                {
-                    var reservasAtivas = await _context.ReservasViagens
-                        .Include(r => r.StatusReservaViagem)
-                        .Where(r => r.ClienteId == id && (r.StatusReservaViagem.Status == "Confirmada" || r.StatusReservaViagem.Status == "Pendente"))
-                        .CountAsync();
-                    impedimentos.Add($"{reservasAtivas} reserva(s) ativa(s)");
-                }
-
-                if (impedimentos.Any())
-                {
-                    ViewBag.Impedimentos = impedimentos;
-                    _logger.LogInformation("Exclusão do cliente {ClienteId} bloqueada devido a impedimentos: {Impedimentos}",
-                        id, string.Join(", ", impedimentos));
                 }
 
                 _logger.LogInformation("Formulário de confirmação de exclusão do cliente {ClienteId} acessado por {User}", id, User.Identity?.Name);
@@ -349,7 +303,7 @@ namespace RentalTourismSystem.Controllers
 
                 if (cliente != null)
                 {
-                    // Verificar novamente os impedimentos (segurança extra)
+                    // Verificar impedimentos
                     var locacoesAtivas = cliente.Locacoes.Where(l => l.DataDevolucaoReal == null).Count();
                     var reservasAtivas = cliente.ReservasViagens
                         .Where(r => r.StatusReservaViagem.Status == "Confirmada" || r.StatusReservaViagem.Status == "Pendente")
@@ -367,13 +321,13 @@ namespace RentalTourismSystem.Controllers
                     }
 
                     string nomeCliente = cliente.Nome;
-                    string cpfCliente = cliente.Cpf;
+                    string CPFCliente = cliente.CPF;
 
                     _context.Clientes.Remove(cliente);
                     await _context.SaveChangesAsync();
 
-                    _logger.LogInformation("Cliente {ClienteId} ({ClienteNome} - {ClienteCpf}) excluído por {User}",
-                        id, nomeCliente, cpfCliente, User.Identity?.Name);
+                    _logger.LogInformation("Cliente {ClienteId} ({ClienteNome} - {ClienteCPF}) excluído por {User}",
+                        id, nomeCliente, CPFCliente, User.Identity?.Name);
 
                     TempData["Sucesso"] = "Cliente excluído com sucesso!";
                 }
@@ -399,19 +353,108 @@ namespace RentalTourismSystem.Controllers
             return _context.Clientes.Any(e => e.Id == id);
         }
 
+        /// <summary>
+        /// ✅ NOVO: Limpa e formata dados do cliente ANTES da validação
+        /// </summary>
+        private void LimparDadosCliente(Cliente cliente)
+        {
+            // Limpar CPF - remover formatação
+            if (!string.IsNullOrEmpty(cliente.CPF))
+            {
+                cliente.CPF = cliente.CPF.Replace(".", "").Replace("-", "").Trim();
+            }
+
+            // Limpar Telefone - remover formatação
+            if (!string.IsNullOrEmpty(cliente.Telefone))
+            {
+                cliente.Telefone = cliente.Telefone
+                    .Replace("(", "")
+                    .Replace(")", "")
+                    .Replace(" ", "")
+                    .Replace("-", "")
+                    .Trim();
+            }
+
+            // Limpar CEP - remover hífen se existir
+            if (!string.IsNullOrEmpty(cliente.CEP))
+            {
+                cliente.CEP = cliente.CEP.Replace("-", "").Trim();
+                // Reformatar para padrão 00000-000
+                if (cliente.CEP.Length == 8)
+                {
+                    cliente.CEP = $"{cliente.CEP.Substring(0, 5)}-{cliente.CEP.Substring(5)}";
+                }
+            }
+
+            // Limpar CNH - trim
+            if (!string.IsNullOrEmpty(cliente.CNH))
+            {
+                cliente.CNH = cliente.CNH.Trim();
+            }
+
+            // Limpar campos de texto
+            if (!string.IsNullOrEmpty(cliente.Nome))
+                cliente.Nome = cliente.Nome.Trim();
+
+            if (!string.IsNullOrEmpty(cliente.Email))
+                cliente.Email = cliente.Email.Trim().ToLower();
+
+            if (!string.IsNullOrEmpty(cliente.Endereco))
+                cliente.Endereco = cliente.Endereco.Trim();
+        }
+
+        /// <summary>
+        /// ✅ CORRIGIDO: Validações adicionais mais claras
+        /// </summary>
+        private void ValidarCamposAdicionais(Cliente cliente)
+        {
+            // Validar formato do telefone (apenas números, 10 ou 11 dígitos)
+            if (!string.IsNullOrWhiteSpace(cliente.Telefone))
+            {
+                if (cliente.Telefone.Length < 10 || cliente.Telefone.Length > 11)
+                {
+                    ModelState.AddModelError("Telefone", "Telefone deve ter 10 ou 11 dígitos.");
+                }
+
+                if (!cliente.Telefone.All(char.IsDigit))
+                {
+                    ModelState.AddModelError("Telefone", "Telefone deve conter apenas números.");
+                }
+            }
+
+            // Validar CNH se informada
+            if (!string.IsNullOrWhiteSpace(cliente.CNH))
+            {
+                if (!cliente.ValidadeCNH.HasValue)
+                {
+                    ModelState.AddModelError("ValidadeCNH", "Informe a data de validade da CNH.");
+                }
+                else if (cliente.ValidadeCNH.Value.Date < DateTime.Now.Date)
+                {
+                    ModelState.AddModelError("ValidadeCNH", "A CNH está vencida.");
+                }
+            }
+
+            // Se tem validade mas não tem número
+            if (cliente.ValidadeCNH.HasValue && string.IsNullOrWhiteSpace(cliente.CNH))
+            {
+                ModelState.AddModelError("CNH", "Informe o número da CNH.");
+            }
+        }
+
         private async Task ValidarClienteUnico(Cliente cliente, int? idExcluir = null)
         {
             // Validar CPF único
-            var cpfExistente = await _context.Clientes
-                .AnyAsync(c => c.Cpf == cliente.Cpf && c.Id != idExcluir);
+            var CPFExistente = await _context.Clientes
+                .AnyAsync(c => c.CPF == cliente.CPF && c.Id != idExcluir);
 
-            if (cpfExistente)
+            if (CPFExistente)
             {
-                ModelState.AddModelError("Cpf", "Já existe um cliente cadastrado com este CPF.");
-                _logger.LogWarning("Tentativa de cadastro com CPF duplicado: {Cpf}", cliente.Cpf);
+                ModelState.AddModelError("CPF", "Já existe um cliente cadastrado com este CPF.");
+                _logger.LogWarning("Tentativa de cadastro com CPF duplicado: {CPF}", cliente.CPF);
             }
 
-            // ===== CORREÇÃO: Validar email único com comparação case-insensitive =====
+            // Validar email único
             if (!string.IsNullOrWhiteSpace(cliente.Email))
             {
                 var emailExistente = await _context.Clientes
@@ -425,117 +468,13 @@ namespace RentalTourismSystem.Controllers
             }
         }
 
-        private void ValidarCamposObrigatorios(Cliente cliente)
-        {
-            // AJUSTE: Melhorar validação do telefone
-            if (string.IsNullOrWhiteSpace(cliente.Telefone))
-            {
-                ModelState.AddModelError("Telefone", "O telefone é obrigatório.");
-            }
-            else
-            {
-                // Validar formato do telefone
-                var numeros = cliente.Telefone.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("-", "");
-                if (numeros.Length < 10 || numeros.Length > 11)
-                {
-                    ModelState.AddModelError("Telefone", "Telefone deve ter 10 ou 11 dígitos.");
-                }
-            }
-
-            // AJUSTE: Melhorar validação do email
-            if (string.IsNullOrWhiteSpace(cliente.Email))
-            {
-                ModelState.AddModelError("Email", "O email é obrigatório.");
-            }
-            else if (!IsValidEmail(cliente.Email))
-            {
-                ModelState.AddModelError("Email", "Email deve ter um formato válido.");
-            }
-
-            // Validação de idade mínima (CORRIGIR: era 21, mas modelo diz 18+)
-            var idade = DateTime.Now.Year - cliente.DataNascimento.Year;
-            if (DateTime.Now.DayOfYear < cliente.DataNascimento.DayOfYear)
-                idade--;
-
-            if (idade < 21) // Manter 21 como regra de negócio
-            {
-                ModelState.AddModelError("DataNascimento", "O cliente deve ter pelo menos 21 anos.");
-            }
-            else if (idade > 120)
-            {
-                ModelState.AddModelError("DataNascimento", "Idade inválida.");
-            }
-
-            // AJUSTE: Melhorar validação de CNH
-            if (!string.IsNullOrWhiteSpace(cliente.NumeroHabilitacao))
-            {
-                if (!cliente.ValidadeCNH.HasValue)
-                {
-                    ModelState.AddModelError("ValidadeCNH", "Informe a data de validade da CNH.");
-                }
-                else if (cliente.ValidadeCNH.Value.Date < DateTime.Now.Date)
-                {
-                    ModelState.AddModelError("ValidadeCNH", "A CNH está vencida.");
-                }
-            }
-
-            // Se tem data de validade mas não tem número
-            if (cliente.ValidadeCNH.HasValue && string.IsNullOrWhiteSpace(cliente.NumeroHabilitacao))
-            {
-                ModelState.AddModelError("NumeroHabilitacao", "Informe o número da CNH.");
-            }
-        }
-
-        private static bool IsValidEmail(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-                return false;
-
-            try
-            {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        // API: Validar email único
-        [HttpGet]
-        public async Task<IActionResult> ValidarEmailUnico(string email, int? id)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(email))
-                {
-                    return Json(new { valido = true });
-                }
-
-                var emailExiste = await _context.Clientes
-                    .AnyAsync(c => c.Email.ToLower() == email.ToLower() && c.Id != id);
-
-                return Json(new
-                {
-                    valido = !emailExiste,
-                    mensagem = emailExiste ? "Este email já está cadastrado." : null
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao validar email único");
-                return Json(new { valido = true }); // Em caso de erro, permite continuar
-            }
-        }
-
         private void TratarErrosBanco(DbUpdateException ex, Cliente cliente)
         {
             var errorMessage = ex.InnerException?.Message ?? ex.Message;
 
-            if (errorMessage.Contains("CPF") || errorMessage.Contains("IX_Clientes_Cpf"))
+            if (errorMessage.Contains("CPF") || errorMessage.Contains("IX_Clientes_CPF"))
             {
-                ModelState.AddModelError("Cpf", "Já existe um cliente com este CPF.");
+                ModelState.AddModelError("CPF", "Já existe um cliente com este CPF.");
             }
             else if (errorMessage.Contains("Email") || errorMessage.Contains("IX_Clientes_Email"))
             {
@@ -544,8 +483,6 @@ namespace RentalTourismSystem.Controllers
             else
             {
                 ModelState.AddModelError(string.Empty, "Erro ao salvar no banco de dados. Verifique os dados e tente novamente.");
-
-                // Log detalhado para debug
                 _logger.LogError("Erro de banco não tratado: {ErrorMessage}", errorMessage);
             }
         }
@@ -571,12 +508,12 @@ namespace RentalTourismSystem.Controllers
                 {
                     id = cliente.Id,
                     nome = cliente.Nome,
-                    cpf = cliente.Cpf,
+                    CPF = cliente.CPF,
                     email = cliente.Email,
                     telefone = cliente.Telefone,
-                    numeroHabilitacao = cliente.NumeroHabilitacao,
+                    CNH = cliente.CNH,
                     validadeCNH = cliente.ValidadeCNH?.ToString("dd/MM/yyyy"),
-                    cnhValida = !string.IsNullOrWhiteSpace(cliente.NumeroHabilitacao) &&
+                    cnhValida = !string.IsNullOrWhiteSpace(cliente.CNH) &&
                                cliente.ValidadeCNH.HasValue &&
                                cliente.ValidadeCNH.Value.Date >= DateTime.Now.Date,
                     idade = DateTime.Now.Year - cliente.DataNascimento.Year -
@@ -608,12 +545,12 @@ namespace RentalTourismSystem.Controllers
                 }
 
                 var hoje = DateTime.Now.Date;
-                bool cnhValida = !string.IsNullOrWhiteSpace(cliente.NumeroHabilitacao) &&
+                bool cnhValida = !string.IsNullOrWhiteSpace(cliente.CNH) &&
                                 cliente.ValidadeCNH.HasValue &&
                                 cliente.ValidadeCNH.Value.Date >= hoje;
 
                 string mensagem;
-                if (string.IsNullOrWhiteSpace(cliente.NumeroHabilitacao))
+                if (string.IsNullOrWhiteSpace(cliente.CNH))
                 {
                     mensagem = "Cliente não possui número de habilitação cadastrado.";
                 }
@@ -652,7 +589,33 @@ namespace RentalTourismSystem.Controllers
             }
         }
 
-        // Busca rápida de clientes para autocomplete
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> ValidarEmailUnico(string email, int? id)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    return Json(new { valido = true });
+                }
+
+                var emailExiste = await _context.Clientes
+                    .AnyAsync(c => c.Email.ToLower() == email.ToLower() && c.Id != id);
+
+                return Json(new
+                {
+                    valido = !emailExiste,
+                    mensagem = emailExiste ? "Este email já está cadastrado." : null
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao validar email único");
+                return Json(new { valido = true });
+            }
+        }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> BuscarClientes(string termo)
@@ -665,12 +628,12 @@ namespace RentalTourismSystem.Controllers
                 }
 
                 var clientes = await _context.Clientes
-                    .Where(c => c.Nome.Contains(termo) || c.Cpf.Contains(termo))
+                    .Where(c => c.Nome.Contains(termo) || c.CPF.Contains(termo))
                     .Select(c => new
                     {
                         id = c.Id,
                         nome = c.Nome,
-                        cpf = c.Cpf,
+                        CPF = c.CPF,
                         email = c.Email,
                         telefone = c.Telefone
                     })
@@ -683,46 +646,6 @@ namespace RentalTourismSystem.Controllers
             {
                 _logger.LogError(ex, "Erro na busca de clientes com termo '{Termo}' por {User}", termo, User.Identity?.Name);
                 return Json(new List<object>());
-            }
-        }
-
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> BuscarClientesAvancada(string termo, int? limit = 10)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(termo) || termo.Length < 2)
-                {
-                    return Json(new { success = false, message = "Digite pelo menos 2 caracteres" });
-                }
-
-                var termoBusca = termo.Trim().ToLower();
-
-                var clientes = await _context.Clientes
-                    .Where(c => c.Nome.ToLower().Contains(termoBusca) ||
-                               c.Cpf.Contains(termoBusca) ||
-                               (c.Email != null && c.Email.ToLower().Contains(termoBusca)))
-                    .Select(c => new
-                    {
-                        id = c.Id,
-                        nome = c.Nome,
-                        cpf = c.Cpf,
-                        email = c.Email,
-                        telefone = c.Telefone,
-                        cnhValida = !string.IsNullOrEmpty(c.NumeroHabilitacao) &&
-                                   c.ValidadeCNH.HasValue &&
-                                   c.ValidadeCNH.Value.Date >= DateTime.Now.Date
-                    })
-                    .Take(limit ?? 10)
-                    .ToListAsync();
-
-                return Json(new { success = true, data = clientes, total = clientes.Count });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro na busca avançada de clientes com termo '{Termo}' por {User}", termo, User.Identity?.Name);
-                return Json(new { success = false, message = "Erro interno na busca" });
             }
         }
     }

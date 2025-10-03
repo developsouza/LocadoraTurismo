@@ -17,40 +17,58 @@ namespace RentalTourismSystem.Models
         [CpfValidation]
         [StringLength(14)]
         [Display(Name = "CPF")]
-        public string Cpf { get; set; }
+        public string CPF { get; set; }
 
-        // Removido Required do telefone se não for sempre obrigatório
+        // ✅ CORRIGIDO: Required adicionado, regex removida (validação no controller)
+        [Required(ErrorMessage = "O telefone é obrigatório")]
         [StringLength(20)]
-        [RegularExpression(@"^\(\d{2}\)\s\d{4,5}-\d{4}$",
-            ErrorMessage = "Telefone deve estar no formato (11) 99999-9999")]
         [Display(Name = "Telefone")]
-        public string? Telefone { get; set; }
+        public string Telefone { get; set; }
 
-        // Email pode ser opcional dependendo da regra de negócio
+        // ✅ CORRIGIDO: Required adicionado
+        [Required(ErrorMessage = "O email é obrigatório")]
         [EmailAddress(ErrorMessage = "Email inválido")]
         [StringLength(100)]
         [Display(Name = "Email")]
-        public string? Email { get; set; }
+        public string Email { get; set; }
 
         [Required(ErrorMessage = "O endereço é obrigatório")]
         [StringLength(200)]
         [Display(Name = "Endereço")]
         public string Endereco { get; set; }
 
+        [StringLength(10)]
+        [RegularExpression(@"^\d{5}-?\d{3}$", ErrorMessage = "CEP deve estar no formato 00000-000")]
+        [Display(Name = "CEP")]
+        public string? CEP { get; set; }
+
         [Required(ErrorMessage = "A data de nascimento é obrigatória")]
         [DataType(DataType.Date)]
-        [IdadeValidation(21, 100, ErrorMessage = "Cliente deve ter entre 21 e 100 anos")]
+        [IdadeValidacao(21, 100, ErrorMessage = "Cliente deve ter entre 21 e 100 anos")]
         [Display(Name = "Data de Nascimento")]
         public DateTime DataNascimento { get; set; }
 
+        [StringLength(50)]
+        [Display(Name = "Estado Civil")]
+        public string? EstadoCivil { get; set; }
+
+        [StringLength(100)]
+        [Display(Name = "Profissão")]
+        public string? Profissao { get; set; }
+
+        // ✅ CORRIGIDO: Required REMOVIDO - CNH é opcional
         [StringLength(20, ErrorMessage = "Número da CNH deve ter no máximo 20 caracteres")]
         [Display(Name = "Número da CNH")]
-        public string? NumeroHabilitacao { get; set; }
+        public string? CNH { get; set; }
 
         [DataType(DataType.Date)]
         [Display(Name = "Validade da CNH")]
         [ValidadeCNH(ErrorMessage = "CNH deve estar válida")]
         public DateTime? ValidadeCNH { get; set; }
+
+        [StringLength(5)]
+        [Display(Name = "Categoria CNH")]
+        public string? CategoriaCNH { get; set; }
 
         [Display(Name = "Data de Cadastro")]
         public DateTime DataCadastro { get; set; } = DateTime.Now;
@@ -61,7 +79,7 @@ namespace RentalTourismSystem.Models
             (DateTime.Now.DayOfYear < DataNascimento.DayOfYear ? 1 : 0);
 
         [Display(Name = "CNH Válida")]
-        public bool CNHValida => !string.IsNullOrEmpty(NumeroHabilitacao) &&
+        public bool CNHValida => !string.IsNullOrEmpty(CNH) &&
                                 ValidadeCNH.HasValue &&
                                 ValidadeCNH.Value.Date >= DateTime.Now.Date;
 
@@ -87,21 +105,12 @@ namespace RentalTourismSystem.Models
 
     public class ValidadeCNHAttribute : ValidationAttribute
     {
-        public override bool IsValid(object? value)
-        {
-            if (value is DateTime validadeCNH)
-            {
-                return validadeCNH.Date >= DateTime.Now.Date;
-            }
-            return true; // Permite null se não for obrigatório
-        }
-
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             var cliente = validationContext.ObjectInstance as Cliente;
 
-            // Se tem número da CNH, deve ter validade
-            if (!string.IsNullOrEmpty(cliente?.NumeroHabilitacao))
+            // ✅ CORRIGIDO: Validação mais clara
+            if (!string.IsNullOrWhiteSpace(cliente?.CNH))
             {
                 if (!cliente.ValidadeCNH.HasValue)
                 {
@@ -111,6 +120,34 @@ namespace RentalTourismSystem.Models
                 if (cliente.ValidadeCNH.Value.Date < DateTime.Now.Date)
                 {
                     return new ValidationResult("CNH está vencida");
+                }
+            }
+
+            return ValidationResult.Success;
+        }
+    }
+
+    public class IdadeValidacaoAttribute : ValidationAttribute
+    {
+        private readonly int _idadeMinima;
+        private readonly int _idadeMaxima;
+
+        public IdadeValidacaoAttribute(int idadeMinima, int idadeMaxima)
+        {
+            _idadeMinima = idadeMinima;
+            _idadeMaxima = idadeMaxima;
+        }
+
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        {
+            if (value is DateTime dataNascimento)
+            {
+                var idade = DateTime.Now.Year - dataNascimento.Year;
+                if (DateTime.Now.DayOfYear < dataNascimento.DayOfYear) idade--;
+
+                if (idade < _idadeMinima || idade > _idadeMaxima)
+                {
+                    return new ValidationResult(ErrorMessage ?? $"Idade deve estar entre {_idadeMinima} e {_idadeMaxima} anos");
                 }
             }
 

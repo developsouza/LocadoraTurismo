@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RentalTourismSystem.Data;
 using System.Text;
+using RentalTourismSystem.Extensions;
 
 namespace RentalTourismSystem.Controllers
 {
@@ -55,15 +56,20 @@ namespace RentalTourismSystem.Controllers
                 ViewBag.LocacoesAtivas = await _context.Locacoes
                     .CountAsync(l => l.DataDevolucaoReal == null);
 
-                // ========== TURISMO - ESTATÍSTICAS DO MÊS ==========
+                // ========== TURISMO - ESTATÍSTICAS DO MÊS (COM SERVIÇOS ADICIONAIS) ==========
                 ViewBag.ReservasMes = await _context.ReservasViagens
                     .CountAsync(r => r.DataReserva >= inicioMes && r.DataReserva <= fimMes);
 
-                ViewBag.ReceitaReservasMes = await _context.ReservasViagens
+                // CORREÇÃO: Buscar reservas COM serviços adicionais incluídos
+                var reservasConfirmadasMes = await _context.ReservasViagens
                     .Include(r => r.StatusReservaViagem)
+                    .Include(r => r.ServicosAdicionais) // INCLUIR SERVIÇOS
                     .Where(r => r.DataReserva >= inicioMes && r.DataReserva <= fimMes &&
                                r.StatusReservaViagem != null && r.StatusReservaViagem.Status == "Confirmada")
-                    .SumAsync(r => (decimal?)r.ValorTotal) ?? 0;
+                    .ToListAsync();
+
+                // Calcular receita REAL incluindo serviços adicionais
+                ViewBag.ReceitaReservasMes = reservasConfirmadasMes.Sum(r => r.ObterValorTotalComServicos());
 
                 ViewBag.ReservasAtivas = await _context.ReservasViagens
                     .Include(r => r.StatusReservaViagem)
@@ -71,28 +77,32 @@ namespace RentalTourismSystem.Controllers
                                     (r.StatusReservaViagem.Status == "Confirmada" ||
                                      r.StatusReservaViagem.Status == "Pendente"));
 
-                // ========== RECEITAS CONSOLIDADAS ==========
+                // ========== RECEITAS CONSOLIDADAS (COM SERVIÇOS) ==========
                 ViewBag.ReceitaTotalMes = (decimal)ViewBag.ReceitaLocacoesMes + (decimal)ViewBag.ReceitaReservasMes;
 
                 ViewBag.ReceitaLocacoesAno = await _context.Locacoes
                     .Where(l => l.DataRetirada >= inicioAno)
                     .SumAsync(l => (decimal?)l.ValorTotal) ?? 0;
 
-                ViewBag.ReceitaReservasAno = await _context.ReservasViagens
+                // CORREÇÃO: Receita anual com serviços adicionais
+                var reservasConfirmadasAno = await _context.ReservasViagens
                     .Include(r => r.StatusReservaViagem)
+                    .Include(r => r.ServicosAdicionais) // INCLUIR SERVIÇOS
                     .Where(r => r.DataReserva >= inicioAno &&
                                r.StatusReservaViagem != null &&
                                r.StatusReservaViagem.Status == "Confirmada")
-                    .SumAsync(r => (decimal?)r.ValorTotal) ?? 0;
+                    .ToListAsync();
 
+                ViewBag.ReceitaReservasAno = reservasConfirmadasAno.Sum(r => r.ObterValorTotalComServicos());
                 ViewBag.ReceitaTotalAno = (decimal)ViewBag.ReceitaLocacoesAno + (decimal)ViewBag.ReceitaReservasAno;
 
-                // ========== TOP 5 CLIENTES POR VALOR GASTO ==========
-                // CORREÇÃO: Buscar clientes com relacionamentos e processar em memória
+                // ========== TOP 5 CLIENTES POR VALOR GASTO (COM SERVIÇOS) ==========
                 var todosClientes = await _context.Clientes
                     .Include(c => c.Locacoes)
                     .Include(c => c.ReservasViagens)
                         .ThenInclude(r => r.StatusReservaViagem)
+                    .Include(c => c.ReservasViagens)
+                        .ThenInclude(r => r.ServicosAdicionais) // INCLUIR SERVIÇOS
                     .ToListAsync();
 
                 ViewBag.TopClientes = todosClientes
@@ -102,13 +112,14 @@ namespace RentalTourismSystem.Controllers
                         c.Nome,
                         c.Email,
                         TotalGastoLocacoes = c.Locacoes.Sum(l => (decimal?)l.ValorTotal) ?? 0,
+                        // CORREÇÃO: Calcular com serviços adicionais
                         TotalGastoReservas = c.ReservasViagens
                             .Where(r => r.StatusReservaViagem != null && r.StatusReservaViagem.Status == "Confirmada")
-                            .Sum(r => (decimal?)r.ValorTotal) ?? 0,
+                            .Sum(r => r.ObterValorTotalComServicos()),
                         TotalGasto = (c.Locacoes.Sum(l => (decimal?)l.ValorTotal) ?? 0) +
-                                    (c.ReservasViagens
+                                    c.ReservasViagens
                                         .Where(r => r.StatusReservaViagem != null && r.StatusReservaViagem.Status == "Confirmada")
-                                        .Sum(r => (decimal?)r.ValorTotal) ?? 0),
+                                        .Sum(r => r.ObterValorTotalComServicos()),
                         TotalLocacoes = c.Locacoes.Count,
                         TotalReservas = c.ReservasViagens.Count,
                         TotalTransacoes = c.Locacoes.Count + c.ReservasViagens.Count
@@ -118,7 +129,7 @@ namespace RentalTourismSystem.Controllers
                     .Take(5)
                     .ToList();
 
-                // ========== VEÍCULOS MAIS ALUGADOS ==========
+                // ========== VEÍCULOS MAIS ALUGADOS (NÃO PRECISA ALTERAR) ==========
                 var todosVeiculos = await _context.Veiculos
                     .Include(v => v.Locacoes)
                     .ToListAsync();
@@ -141,10 +152,12 @@ namespace RentalTourismSystem.Controllers
                     .Take(5)
                     .ToList();
 
-                // ========== PACOTES MAIS VENDIDOS ==========
+                // ========== PACOTES MAIS VENDIDOS (COM SERVIÇOS) ==========
                 var todosPacotes = await _context.PacotesViagens
                     .Include(p => p.ReservasViagens)
                         .ThenInclude(r => r.StatusReservaViagem)
+                    .Include(p => p.ReservasViagens)
+                        .ThenInclude(r => r.ServicosAdicionais) // INCLUIR SERVIÇOS
                     .ToListAsync();
 
                 ViewBag.TopPacotes = todosPacotes
@@ -156,51 +169,20 @@ namespace RentalTourismSystem.Controllers
                         p.Preco,
                         TotalReservas = p.ReservasViagens.Count,
                         TotalPessoas = p.ReservasViagens.Sum(r => (int?)r.Quantidade) ?? 0,
+                        ReservasConfirmadas = p.ReservasViagens
+                            .Count(r => r.StatusReservaViagem != null && r.StatusReservaViagem.Status == "Confirmada"),
+                        // CORREÇÃO: Receita total com serviços adicionais
                         ReceitaTotal = p.ReservasViagens
                             .Where(r => r.StatusReservaViagem != null && r.StatusReservaViagem.Status == "Confirmada")
-                            .Sum(r => (decimal?)r.ValorTotal) ?? 0
+                            .Sum(r => r.ObterValorTotalComServicos()),
+                        MediaPessoasPorReserva = p.ReservasViagens.Any() ?
+                            p.ReservasViagens.Average(r => (double?)r.Quantidade) ?? 0 : 0
                     })
                     .Where(p => p.TotalReservas > 0)
-                    .OrderByDescending(p => p.TotalReservas)
+                    .OrderByDescending(p => p.ReservasConfirmadas)
                     .ThenByDescending(p => p.ReceitaTotal)
                     .Take(5)
                     .ToList();
-
-                // ========== FUNCIONÁRIOS TOP VENDEDORES ==========
-                var todosFuncionarios = await _context.Funcionarios
-                    .Include(f => f.Locacoes)
-                    .Include(f => f.Agencia)
-                    .ToListAsync();
-
-                ViewBag.TopFuncionarios = todosFuncionarios
-                    .Select(f => new
-                    {
-                        f.Id,
-                        f.Nome,
-                        f.Cargo,
-                        Agencia = f.Agencia?.Nome ?? "Sem Agência",
-                        VendasMes = f.Locacoes.Count(l => l.DataRetirada >= inicioMes && l.DataRetirada <= fimMes),
-                        ReceitaMes = f.Locacoes
-                            .Where(l => l.DataRetirada >= inicioMes && l.DataRetirada <= fimMes)
-                            .Sum(l => (decimal?)l.ValorTotal) ?? 0,
-                        TotalVendas = f.Locacoes.Count,
-                        ReceitaTotal = f.Locacoes.Sum(l => (decimal?)l.ValorTotal) ?? 0
-                    })
-                    .Where(f => f.TotalVendas > 0)
-                    .OrderByDescending(f => f.ReceitaMes)
-                    .ThenByDescending(f => f.VendasMes)
-                    .Take(5)
-                    .ToList();
-
-                // ========== CNHs VENCENDO (ALERTA) ==========
-                var dataLimite = hoje.AddDays(30);
-                ViewBag.CNHsVencendo = await _context.Clientes
-                    .CountAsync(c => c.ValidadeCNH.HasValue &&
-                                   c.ValidadeCNH.Value.Date <= dataLimite.Date &&
-                                   c.ValidadeCNH.Value.Date >= hoje.Date);
-
-                ViewBag.CNHsVencidas = await _context.Clientes
-                    .CountAsync(c => c.ValidadeCNH.HasValue && c.ValidadeCNH.Value.Date < hoje.Date);
 
                 return View();
             }
@@ -367,69 +349,70 @@ namespace RentalTourismSystem.Controllers
         #region RELATÓRIOS DE TURISMO
 
         // GET: Relatórios/ReservasPorPeriodo
+        [HttpGet]
         public async Task<IActionResult> ReservasPorPeriodo(DateTime? dataInicio, DateTime? dataFim, int? statusId)
         {
             try
             {
-                // Definir período padrão (último mês)
-                dataInicio ??= DateTime.Now.AddMonths(-1);
-                dataFim ??= DateTime.Now;
+                // Definir período padrão (mês atual)
+                var inicio = dataInicio ?? new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                var fim = dataFim ?? inicio.AddMonths(1).AddDays(-1);
 
-                _logger.LogInformation("Relatório de reservas por período acessado por {User} - Período: {DataInicio} a {DataFim}",
-                    User.Identity?.Name, dataInicio?.ToString("dd/MM/yyyy"), dataFim?.ToString("dd/MM/yyyy"));
+                _logger.LogInformation("Relatório de reservas por período ({Inicio} a {Fim}) acessado por {User}",
+                    inicio, fim, User.Identity?.Name);
 
-                var reservas = _context.ReservasViagens
+                // Query base COM serviços adicionais incluídos
+                var query = _context.ReservasViagens
                     .Include(r => r.Cliente)
                     .Include(r => r.PacoteViagem)
                     .Include(r => r.StatusReservaViagem)
-                    .Where(r => r.DataReserva >= dataInicio && r.DataReserva <= dataFim)
-                    .AsQueryable();
+                    .Include(r => r.ServicosAdicionais) // INCLUIR SERVIÇOS
+                    .Where(r => r.DataReserva >= inicio && r.DataReserva <= fim);
 
-                // Filtro por status
-                if (statusId.HasValue)
+                // Filtro por status (opcional)
+                if (statusId.HasValue && statusId.Value > 0)
                 {
-                    reservas = reservas.Where(r => r.StatusReservaViagemId == statusId);
+                    query = query.Where(r => r.StatusReservaViagemId == statusId.Value);
                 }
 
-                var listaReservas = await reservas
-                    .OrderByDescending(r => r.DataReserva)
-                    .ToListAsync();
+                var reservas = await query.OrderByDescending(r => r.DataReserva).ToListAsync();
 
-                // Calcular estatísticas
-                ViewBag.TotalReservas = listaReservas.Count;
-                ViewBag.ReceitaTotal = listaReservas.Where(r => r.StatusReservaViagem.Status == "Confirmada").Sum(r => r.ValorTotal);
-                ViewBag.TotalPessoas = listaReservas.Sum(r => r.Quantidade);
-                ViewBag.TicketMedio = listaReservas.Where(r => r.StatusReservaViagem.Status == "Confirmada").Any() ?
-                    listaReservas.Where(r => r.StatusReservaViagem.Status == "Confirmada").Average(r => r.ValorTotal) : 0;
+                // ========== ESTATÍSTICAS (COM SERVIÇOS ADICIONAIS) ==========
+                ViewBag.TotalReservas = reservas.Count;
 
-                // Estatísticas por status
-                ViewBag.ReservasConfirmadas = listaReservas.Where(r => r.StatusReservaViagem.Status == "Confirmada").Count();
-                ViewBag.ReservasPendentes = listaReservas.Where(r => r.StatusReservaViagem.Status == "Pendente").Count();
-                ViewBag.ReservasCanceladas = listaReservas.Where(r => r.StatusReservaViagem.Status == "Cancelada").Count();
+                // CORREÇÃO: Calcular receita total com serviços adicionais
+                ViewBag.ReceitaTotal = reservas
+                    .Where(r => r.StatusReservaViagem.Status == "Confirmada")
+                    .Sum(r => r.ObterValorTotalComServicos());
 
-                // Agrupamento por mês para gráfico
-                ViewBag.ReservasPorMes = listaReservas
-                    .GroupBy(r => new { r.DataReserva.Year, r.DataReserva.Month })
-                    .Select(g => new
-                    {
-                        Periodo = $"{g.Key.Month:D2}/{g.Key.Year}",
-                        Quantidade = g.Count(),
-                        Receita = g.Where(r => r.StatusReservaViagem.Status == "Confirmada").Sum(r => r.ValorTotal)
-                    })
-                    .OrderBy(g => g.Periodo)
-                    .ToList();
+                ViewBag.TotalPessoas = reservas.Sum(r => r.Quantidade);
 
-                // ViewBags para filtros
-                ViewBag.DataInicio = dataInicio;
-                ViewBag.DataFim = dataFim;
-                ViewBag.StatusId = statusId;
-                ViewBag.StatusReservas = new SelectList(await _context.StatusReservaViagens.ToListAsync(), "Id", "Status", statusId);
+                ViewBag.ReservasConfirmadas = reservas
+                    .Count(r => r.StatusReservaViagem.Status == "Confirmada");
 
-                return View(listaReservas);
+                ViewBag.ReservasPendentes = reservas
+                    .Count(r => r.StatusReservaViagem.Status == "Pendente");
+
+                ViewBag.ReservasCanceladas = reservas
+                    .Count(r => r.StatusReservaViagem.Status == "Cancelada");
+
+                // Passar os filtros de volta para a view
+                ViewBag.DataInicio = inicio;
+                ViewBag.DataFim = fim;
+
+                ViewBag.StatusReservas = new SelectList(
+                    await _context.StatusReservaViagens.ToListAsync(),
+                    "Id",
+                    "Status",
+                    statusId
+                );
+
+                return View(reservas);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao gerar relatório de reservas por período para usuário {User}", User.Identity?.Name);
+                _logger.LogError(ex, "Erro ao gerar relatório de reservas por período para usuário {User}",
+                    User.Identity?.Name);
                 TempData["Erro"] = "Erro ao gerar relatório. Tente novamente.";
                 return RedirectToAction(nameof(Index));
             }
@@ -825,7 +808,7 @@ namespace RentalTourismSystem.Controllers
 
             foreach (var loc in locacoes)
             {
-                csv.AppendLine($"{loc.Id},{loc.Cliente.Nome},{loc.Cliente.Cpf},{loc.Veiculo.Marca} {loc.Veiculo.Modelo}," +
+                csv.AppendLine($"{loc.Id},{loc.Cliente.Nome},{loc.Cliente.CPF},{loc.Veiculo.Marca} {loc.Veiculo.Modelo}," +
                               $"{loc.Veiculo.Placa},{loc.DataRetirada:dd/MM/yyyy},{loc.DataDevolucao:dd/MM/yyyy}," +
                               $"{loc.DataDevolucaoReal?.ToString("dd/MM/yyyy") ?? "Em aberto"},{loc.ValorTotal:C}," +
                               $"{loc.Funcionario.Nome},{loc.Agencia.Nome}");
@@ -837,21 +820,26 @@ namespace RentalTourismSystem.Controllers
         private async Task<StringBuilder> GerarCSVReservas(DateTime dataInicio, DateTime dataFim)
         {
             var csv = new StringBuilder();
-            csv.AppendLine("ID,Cliente,CPF,Pacote,Destino,Data Reserva,Data Viagem,Quantidade,Valor Total,Status");
+            csv.AppendLine("ID,Cliente,CPF,Pacote,Destino,Data Reserva,Data Viagem,Quantidade,Valor Pacote,Valor Serviços,Valor Total,Status");
 
+            // CORREÇÃO: Incluir serviços adicionais na consulta
             var reservas = await _context.ReservasViagens
                 .Include(r => r.Cliente)
                 .Include(r => r.PacoteViagem)
                 .Include(r => r.StatusReservaViagem)
+                .Include(r => r.ServicosAdicionais) // INCLUIR SERVIÇOS
                 .Where(r => r.DataReserva >= dataInicio && r.DataReserva <= dataFim)
                 .OrderByDescending(r => r.DataReserva)
                 .ToListAsync();
 
             foreach (var res in reservas)
             {
-                csv.AppendLine($"{res.Id},{res.Cliente.Nome},{res.Cliente.Cpf},{res.PacoteViagem.Nome}," +
+                var valorServicos = res.ServicosAdicionais?.Sum(s => s.Preco) ?? 0;
+                var valorTotal = res.ValorTotal + valorServicos;
+
+                csv.AppendLine($"{res.Id},{res.Cliente.Nome},{res.Cliente.CPF},{res.PacoteViagem.Nome}," +
                               $"{res.PacoteViagem.Destino},{res.DataReserva:dd/MM/yyyy},{res.DataViagem:dd/MM/yyyy}," +
-                              $"{res.Quantidade},{res.ValorTotal:C},{res.StatusReservaViagem.Status}");
+                              $"{res.Quantidade},{res.ValorTotal:C},{valorServicos:C},{valorTotal:C},{res.StatusReservaViagem.Status}");
             }
 
             return csv;
@@ -862,18 +850,27 @@ namespace RentalTourismSystem.Controllers
             var csv = new StringBuilder();
             csv.AppendLine("ID,Nome,CPF,Email,Telefone,Data Nascimento,Total Locações,Total Reservas,Gasto Total");
 
+            // CORREÇÃO: Incluir serviços adicionais na consulta
             var clientes = await _context.Clientes
                 .Include(c => c.Locacoes)
                 .Include(c => c.ReservasViagens)
                     .ThenInclude(r => r.StatusReservaViagem)
+                .Include(c => c.ReservasViagens)
+                    .ThenInclude(r => r.ServicosAdicionais) // INCLUIR SERVIÇOS
                 .ToListAsync();
 
             foreach (var cli in clientes)
             {
-                var gastoTotal = cli.Locacoes.Sum(l => l.ValorTotal) +
-                                cli.ReservasViagens.Where(r => r.StatusReservaViagem.Status == "Confirmada").Sum(r => r.ValorTotal);
+                var gastoLocacoes = cli.Locacoes.Sum(l => l.ValorTotal);
 
-                csv.AppendLine($"{cli.Id},{cli.Nome},{cli.Cpf},{cli.Email},{cli.Telefone}," +
+                // CORREÇÃO: Calcular gasto em reservas COM serviços adicionais
+                var gastoReservas = cli.ReservasViagens
+                    .Where(r => r.StatusReservaViagem.Status == "Confirmada")
+                    .Sum(r => r.ObterValorTotalComServicos());
+
+                var gastoTotal = gastoLocacoes + gastoReservas;
+
+                csv.AppendLine($"{cli.Id},{cli.Nome},{cli.CPF},{cli.Email},{cli.Telefone}," +
                               $"{cli.DataNascimento:dd/MM/yyyy},{cli.Locacoes.Count},{cli.ReservasViagens.Count},{gastoTotal:C}");
             }
 

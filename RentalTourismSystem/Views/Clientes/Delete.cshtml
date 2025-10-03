@@ -113,7 +113,7 @@
                                 <label class="text-muted small">CPF:</label>
                                 <p class="mb-0">
                                     <code class="bg-adaptive-surface text-adaptive-primary px-2 py-1 rounded">
-                                        @Model.Cpf
+                                        @Model.CPF
                                     </code>
                                 </p>
                             </div>
@@ -148,7 +148,7 @@
                 </div>
 
                 <!-- CNH (se informada) -->
-                @if (!string.IsNullOrEmpty(Model.NumeroHabilitacao))
+                @if (!string.IsNullOrEmpty(Model.CNH))
                 {
                     <div class="alert alert-info">
                         <h6 class="alert-heading">
@@ -156,7 +156,7 @@
                         </h6>
                         <div class="row">
                             <div class="col-sm-6">
-                                <strong>Número:</strong> @Model.NumeroHabilitacao
+                                <strong>Número:</strong> @Model.CNH
                             </div>
                             <div class="col-sm-6">
                                 <strong>Validade:</strong> @(Model.ValidadeCNH?.ToString("dd/MM/yyyy") ?? "Não informada")
@@ -369,7 +369,7 @@
                     <div class="alert alert-danger text-center">
                         <h5 class="mb-3">
                             <strong>"@Model.Nome"</strong><br>
-                            <code>@Model.Cpf</code>
+                            <code>@Model.CPF</code>
                         </h5>
 
                         @if (totalTransacoes > 0)

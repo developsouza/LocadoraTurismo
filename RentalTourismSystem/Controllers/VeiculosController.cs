@@ -7,7 +7,7 @@ using RentalTourismSystem.Models;
 
 namespace RentalTourismSystem.Controllers
 {
-    [Authorize] // Todo o controller requer autenticação
+    [Authorize]
     public class VeiculosController : Controller
     {
         private readonly RentalTourismContext _context;
@@ -19,7 +19,7 @@ namespace RentalTourismSystem.Controllers
             _logger = logger;
         }
 
-        // GET: Veiculos - Todos os funcionários podem ver
+        // GET: Veiculos
         public async Task<IActionResult> Index(int? statusId, string? busca)
         {
             try
@@ -61,7 +61,7 @@ namespace RentalTourismSystem.Controllers
             }
         }
 
-        // GET: Veiculos/Details/5 - Todos podem ver detalhes
+        // GET: Veiculos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -97,7 +97,7 @@ namespace RentalTourismSystem.Controllers
             }
         }
 
-        // GET: Veiculos/Create - Apenas Admin e Manager podem criar
+        // GET: Veiculos/Create
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create()
         {
@@ -119,15 +119,22 @@ namespace RentalTourismSystem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> Create([Bind("Marca,Modelo,Ano,Placa,Cor,ValorDiaria,Quilometragem,StatusCarroId,AgenciaId")] Veiculo veiculo)
+        // ✅ CORRIGIDO: Bind agora inclui Combustivel e Cambio
+        public async Task<IActionResult> Create([Bind("Marca,Modelo,Ano,Placa,Cor,Combustivel,Cambio,ValorDiaria,Quilometragem,StatusCarroId,AgenciaId")] Veiculo veiculo)
         {
             try
             {
+                // ✅ NOVO: Limpar dados antes da validação
+                LimparDadosVeiculo(veiculo);
+
                 // Validar placa única
                 await ValidarPlacaUnica(veiculo);
 
                 if (ModelState.IsValid)
                 {
+                    // Garantir data de cadastro
+                    veiculo.DataCadastro = DateTime.Now;
+
                     _context.Add(veiculo);
                     await _context.SaveChangesAsync();
 
@@ -136,6 +143,16 @@ namespace RentalTourismSystem.Controllers
 
                     TempData["Sucesso"] = "Veículo cadastrado com sucesso!";
                     return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    // Log dos erros
+                    var errors = ModelState
+                        .Where(x => x.Value.Errors.Count > 0)
+                        .Select(x => new { Field = x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) });
+
+                    _logger.LogWarning("Validação falhou para veículo. Erros: {Errors}",
+                        System.Text.Json.JsonSerializer.Serialize(errors));
                 }
             }
             catch (DbUpdateException ex)
@@ -153,7 +170,7 @@ namespace RentalTourismSystem.Controllers
             return View(veiculo);
         }
 
-        // GET: Veiculos/Edit/5 - Apenas Admin e Manager podem editar
+        // GET: Veiculos/Edit/5
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -168,6 +185,7 @@ namespace RentalTourismSystem.Controllers
                 var veiculo = await _context.Veiculos
                     .Include(v => v.StatusCarro)
                     .Include(v => v.Agencia)
+                    .Include(v => v.Locacoes) // ✅ CORRIGIDO: Incluir locações para estatísticas
                     .FirstOrDefaultAsync(v => v.Id == id);
 
                 if (veiculo == null)
@@ -193,7 +211,8 @@ namespace RentalTourismSystem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Marca,Modelo,Ano,Placa,Cor,ValorDiaria,Quilometragem,StatusCarroId,AgenciaId")] Veiculo veiculo)
+        // ✅ CORRIGIDO: Bind agora inclui Combustivel e Cambio
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Marca,Modelo,Ano,Placa,Cor,Combustivel,Cambio,ValorDiaria,Quilometragem,StatusCarroId,AgenciaId")] Veiculo veiculo)
         {
             if (id != veiculo.Id)
             {
@@ -204,11 +223,21 @@ namespace RentalTourismSystem.Controllers
 
             try
             {
+                // ✅ NOVO: Limpar dados antes da validação
+                LimparDadosVeiculo(veiculo);
+
                 // Validar placa única (excluindo o próprio veículo)
                 await ValidarPlacaUnica(veiculo, veiculo.Id);
 
                 if (ModelState.IsValid)
                 {
+                    // ✅ NOVO: Preservar a data de cadastro original
+                    var veiculoOriginal = await _context.Veiculos.AsNoTracking().FirstOrDefaultAsync(v => v.Id == veiculo.Id);
+                    if (veiculoOriginal != null)
+                    {
+                        veiculo.DataCadastro = veiculoOriginal.DataCadastro;
+                    }
+
                     _context.Update(veiculo);
                     await _context.SaveChangesAsync();
 
@@ -217,6 +246,15 @@ namespace RentalTourismSystem.Controllers
 
                     TempData["Sucesso"] = "Veículo atualizado com sucesso!";
                     return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    // Log dos erros
+                    var errors = ModelState
+                        .Where(x => x.Value.Errors.Count > 0)
+                        .Select(x => new { Field = x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) });
+
+                    _logger.LogWarning("Validação falhou para edição do veículo {VeiculoId}. Erros: {@Errors}", veiculo.Id, errors);
                 }
             }
             catch (DbUpdateConcurrencyException ex)
@@ -247,7 +285,7 @@ namespace RentalTourismSystem.Controllers
             return View(veiculo);
         }
 
-        // GET: Veiculos/Delete/5 - Apenas Admin pode excluir
+        // GET: Veiculos/Delete/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -320,7 +358,7 @@ namespace RentalTourismSystem.Controllers
 
                 if (veiculo != null)
                 {
-                    // Verificar novamente os impedimentos (segurança extra)
+                    // Verificar novamente os impedimentos
                     var locacoesAtivas = veiculo.Locacoes.Where(l => l.DataDevolucaoReal == null).Count();
 
                     if (locacoesAtivas > 0)
@@ -355,9 +393,7 @@ namespace RentalTourismSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ========== AÇÕES ESPECIAIS ==========
-
-        // POST: Veiculos/AlterarStatus/5 - Admin e Manager podem alterar status
+        // POST: Veiculos/AlterarStatus/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
@@ -423,6 +459,38 @@ namespace RentalTourismSystem.Controllers
             return _context.Veiculos.Any(e => e.Id == id);
         }
 
+        /// <summary>
+        /// ✅ NOVO: Limpa e formata dados do veículo ANTES da validação
+        /// </summary>
+        private void LimparDadosVeiculo(Veiculo veiculo)
+        {
+            // Limpar placa - remover formatação e converter para maiúsculas
+            if (!string.IsNullOrEmpty(veiculo.Placa))
+            {
+                veiculo.Placa = veiculo.Placa
+                    .Replace("-", "")
+                    .Replace(" ", "")
+                    .Trim()
+                    .ToUpper();
+            }
+
+            // Limpar campos de texto
+            if (!string.IsNullOrEmpty(veiculo.Marca))
+                veiculo.Marca = veiculo.Marca.Trim();
+
+            if (!string.IsNullOrEmpty(veiculo.Modelo))
+                veiculo.Modelo = veiculo.Modelo.Trim();
+
+            if (!string.IsNullOrEmpty(veiculo.Cor))
+                veiculo.Cor = veiculo.Cor.Trim();
+
+            if (!string.IsNullOrEmpty(veiculo.Combustivel))
+                veiculo.Combustivel = veiculo.Combustivel.Trim();
+
+            if (!string.IsNullOrEmpty(veiculo.Cambio))
+                veiculo.Cambio = veiculo.Cambio.Trim();
+        }
+
         private async Task CarregarViewBags(int? statusSelecionado = null, int? agenciaSelecionada = null)
         {
             ViewBag.StatusCarroId = new SelectList(await _context.StatusCarros.ToListAsync(), "Id", "Status", statusSelecionado);
@@ -442,13 +510,16 @@ namespace RentalTourismSystem.Controllers
 
         private void TratarErrosBanco(DbUpdateException ex, Veiculo veiculo)
         {
-            if (ex.InnerException != null && ex.InnerException.Message.Contains("Placa"))
+            var errorMessage = ex.InnerException?.Message ?? ex.Message;
+
+            if (errorMessage.Contains("Placa") || errorMessage.Contains("IX_Veiculos_Placa"))
             {
                 ModelState.AddModelError("Placa", "Já existe um veículo com esta placa.");
             }
             else
             {
                 ModelState.AddModelError(string.Empty, "Erro ao salvar no banco de dados. Verifique os dados e tente novamente.");
+                _logger.LogError("Erro de banco não tratado: {ErrorMessage}", errorMessage);
             }
         }
 
@@ -482,6 +553,8 @@ namespace RentalTourismSystem.Controllers
                     placa = veiculo.Placa,
                     ano = veiculo.Ano,
                     cor = veiculo.Cor,
+                    combustivel = veiculo.Combustivel,
+                    cambio = veiculo.Cambio,
                     valorDiaria = veiculo.ValorDiaria,
                     quilometragem = veiculo.Quilometragem,
                     status = veiculo.StatusCarro.Status,
@@ -507,7 +580,6 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
-                // Verificar se o veículo existe
                 var veiculo = await _context.Veiculos
                     .Include(v => v.StatusCarro)
                     .AsNoTracking()
@@ -518,7 +590,6 @@ namespace RentalTourismSystem.Controllers
                     return NotFound(new { message = "Veículo não encontrado" });
                 }
 
-                // Verificar se o status permite locação
                 if (veiculo.StatusCarro.Status != "Disponível")
                 {
                     return Json(new
@@ -528,7 +599,6 @@ namespace RentalTourismSystem.Controllers
                     });
                 }
 
-                // Verificar conflitos de datas com outras locações
                 var conflito = await _context.Locacoes
                     .Where(l => l.VeiculoId == veiculoId && l.DataDevolucaoReal == null)
                     .AnyAsync(l => (dataInicio < l.DataDevolucao && dataFim > l.DataRetirada));
@@ -555,7 +625,6 @@ namespace RentalTourismSystem.Controllers
             }
         }
 
-        // Busca rápida de veículos disponíveis
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> BuscarVeiculosDisponiveis(string? termo = null)
@@ -596,7 +665,6 @@ namespace RentalTourismSystem.Controllers
             }
         }
 
-        // Obter lista de status para dropdown
         [HttpGet]
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> GetStatusCarros()

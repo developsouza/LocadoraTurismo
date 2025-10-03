@@ -933,7 +933,7 @@ class MaskSystem {
         const cpfSelectors = [
             'input[name*="Cpf"]', 'input[name*="CPF"]',
             'input[id*="cpf"]', 'input[id*="CPF"]',
-            'input[data-mask="cpf"]', 'input.cpf-mask',
+            'input[data-mask="cpf"]', 'input.CPF-mask',
             'input[placeholder*="CPF"]', 'input[placeholder*="cpf"]'
         ];
 

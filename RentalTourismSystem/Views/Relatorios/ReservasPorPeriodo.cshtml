@@ -179,7 +179,21 @@
                                     }
                                     <span class="badge @badgeClass">@(reserva.StatusReservaViagem?.Status ?? "N/A")</span>
                                 </td>
-                                <td class="text-success fw-bold">@reserva.ValorTotal.ToString("C")</td>
+                                <td class="text-success fw-bold">
+                                    @{
+                                        var valorTotalReserva = reserva.ValorTotal + (reserva.ServicosAdicionais?.Sum(s => s.Preco) ?? 0);
+                                    }
+                                    @valorTotalReserva.ToString("C")
+                                    @if (reserva.ServicosAdicionais?.Any() ?? false)
+                                    {
+                                        <br>
+                                        <small class="text-muted">
+                                            Pacote: @reserva.ValorTotal.ToString("C")
+                                            <br>
+                                            + Serviços: @reserva.ServicosAdicionais.Sum(s => s.Preco).ToString("C")
+                                        </small>
+                                    }
+                                </td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
                                         <a asp-controller="ReservasViagens" asp-action="Details" asp-route-id="@reserva.Id" class="btn btn-outline-info" title="Ver Detalhes">
