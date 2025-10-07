@@ -344,13 +344,37 @@
                     </div>
                 </div>
 
-                <!-- Chart Placeholder -->
-                <div class="mt-4 p-5 chart-placeholder-adaptive rounded-3 text-center">
-                    <i class="fas fa-chart-line fa-4x text-adaptive-muted mb-3"></i>
-                    <h5 class="text-adaptive-muted mb-2">Gráfico de Performance</h5>
-                    <p class="text-adaptive-muted mb-0">Visualização de dados será implementada em breve</p>
-                    <button class="btn btn-outline-primary mt-3" type="button">
-                        <i class="fas fa-cog me-2"></i>Configurar Gráficos
+                <!-- Chart Canvas -->
+                <div class="mt-4 position-relative" style="height: 350px;">
+                    <canvas id="performanceChart"></canvas>
+                    <div id="chartLoadingOverlay" class="position-absolute top-0 start-0 w-100 h-100 d-none align-items-center justify-content-center" style="background: rgba(255,255,255,0.9); z-index: 10;">
+                        <div class="text-center">
+                            <div class="spinner-border spinner-adaptive mb-2" role="status">
+                                <span class="visually-hidden">Carregando...</span>
+                            </div>
+                            <p class="text-adaptive-muted mb-0">Carregando dados...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Legend and Controls -->
+                <div class="mt-4 d-flex justify-content-between align-items-center">
+                    <div class="d-flex gap-3 flex-wrap">
+                        <div class="d-flex align-items-center">
+                            <div class="me-2" style="width: 16px; height: 16px; background: #6366f1; border-radius: 3px;"></div>
+                            <small class="text-adaptive-muted">Locações</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="me-2" style="width: 16px; height: 16px; background: #10b981; border-radius: 3px;"></div>
+                            <small class="text-adaptive-muted">Reservas</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="me-2" style="width: 16px; height: 16px; background: #f59e0b; border-radius: 3px;"></div>
+                            <small class="text-adaptive-muted">Receita Total</small>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary" type="button" id="toggleChartType">
+                        <i class="fas fa-chart-bar me-1"></i>Alternar Tipo
                     </button>
                 </div>
             </div>
@@ -701,6 +725,9 @@
 </div>
 
 @section Scripts {
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
     <script>
         // Enhanced Dashboard Manager
         class DashboardManager {
@@ -708,6 +735,9 @@
                 this.intervalId = null;
                 this.isUpdating = false;
                 this.updateFrequency = 300000; // 5 minutes
+                this.performanceChart = null;
+                this.currentChartType = 'bar';
+                this.currentPeriod = 7;
                 this.initialize();
             }
 
@@ -716,6 +746,7 @@
 
                 this.setupEventListeners();
                 this.animateInitialLoad();
+                this.initializePerformanceChart();
                 this.startAutoRefresh();
                 this.setupAccessibilityFeatures();
 
@@ -733,9 +764,17 @@
                 document.querySelectorAll('input[name="periodOptions"]').forEach(radio => {
                     radio.addEventListener('change', (e) => {
                         const period = e.target.id.replace('period', '');
-                        this.handlePeriodChange(period);
+                        this.handlePeriodChange(parseInt(period));
                     });
                 });
+
+                // Chart type toggle
+                const toggleButton = document.getElementById('toggleChartType');
+                if (toggleButton) {
+                    toggleButton.addEventListener('click', () => {
+                        this.toggleChartType();
+                    });
+                }
 
                 // Card hover effects
                 document.querySelectorAll('.dashboard-card').forEach(card => {
@@ -762,8 +801,6 @@
                     clearTimeout(hoverTimeout);
                     card.style.transform = 'translateY(-8px) scale(1.02)';
                     card.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-
-                    // Add subtle glow effect
                     card.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.25)';
                 });
 
@@ -774,7 +811,6 @@
                     }, 100);
                 });
 
-                // Keyboard navigation support
                 card.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
@@ -784,7 +820,6 @@
             }
 
             setupAccessibilityFeatures() {
-                // Add ARIA labels to dashboard cards
                 document.querySelectorAll('.dashboard-card').forEach(card => {
                     const statLabel = card.querySelector('.stat-label');
                     const statNumber = card.querySelector('.stat-number');
@@ -796,7 +831,6 @@
                     }
                 });
 
-                // Improve focus indicators
                 const style = document.createElement('style');
                 style.textContent = `
                     .dashboard-card:focus {
@@ -833,7 +867,6 @@
                     const increment = target / steps;
                     const stepTime = duration / steps;
 
-                    // Add slight delay between counters
                     setTimeout(() => {
                         const timer = setInterval(() => {
                             current += increment;
@@ -844,7 +877,6 @@
                                 counter.dataset.animated = 'true';
                             }
 
-                            // Format based on type
                             if (isPercentage) {
                                 counter.textContent = Math.floor(current) + '%';
                             } else if (isCurrency) {
@@ -877,36 +909,337 @@
                 return parseInt(cleaned) || 0;
             }
 
-            handlePeriodChange(period) {
-                console.log(`Período alterado para: ${period} dias`);
-
-                // Show loading state
-                const chartArea = document.querySelector('.chart-placeholder-adaptive');
-                if (chartArea) {
-                    chartArea.innerHTML = `
-                        <div class="d-flex align-items-center justify-content-center py-5">
-                            <div class="spinner-border spinner-adaptive me-3" role="status">
-                                <span class="visually-hidden">Carregando...</span>
-                            </div>
-                            <span class="text-adaptive-primary">Carregando dados dos últimos ${period} dias...</span>
-                        </div>
-                    `;
-
-                    // Simulate loading and restore placeholder after delay
-                    setTimeout(() => {
-                        chartArea.innerHTML = `
-                            <i class="fas fa-chart-line fa-4x text-adaptive-muted mb-3"></i>
-                            <h5 class="text-adaptive-muted mb-2">Gráfico de Performance - ${period} dias</h5>
-                            <p class="text-adaptive-muted mb-0">Visualização de dados será implementada em breve</p>
-                            <button class="btn btn-outline-primary mt-3" type="button">
-                                <i class="fas fa-cog me-2"></i>Configurar Gráficos
-                            </button>
-                        `;
-                    }, 2000);
+            // ========== GRÁFICO DE PERFORMANCE =========
+            async initializePerformanceChart() {
+                const canvas = document.getElementById('performanceChart');
+                if (!canvas) {
+                    console.error('Canvas do gráfico não encontrado');
+                    return;
                 }
 
-                if (window.NotificationSystem) {
-                    window.NotificationSystem.info(`Dados dos últimos ${period} dias carregados`);
+                const ctx = canvas.getContext('2d');
+                
+                // Configuração do tema (adaptar ao dark mode se necessário)
+                const isDarkMode = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+                const textColor = isDarkMode ? '#e5e7eb' : '#374151';
+                const gridColor = isDarkMode ? '#374151' : '#e5e7eb';
+
+                this.performanceChart = new Chart(ctx, {
+                    type: this.currentChartType,
+                    data: {
+                        labels: [],
+                        datasets: [
+                            {
+                                label: 'Locações',
+                                data: [],
+                                backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                                borderColor: 'rgb(99, 102, 241)',
+                                borderWidth: 2,
+                                borderRadius: 6,
+                                yAxisID: 'y',
+                                order: 2  // ADICIONAR ordem para renderizar depois da linha
+                            },
+                            {
+                                label: 'Reservas',
+                                data: [],
+                                backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                                borderColor: 'rgb(16, 185, 129)',
+                                borderWidth: 2,
+                                borderRadius: 6,
+                                yAxisID: 'y',
+                                order: 3  // ADICIONAR ordem para renderizar por último
+                            },
+                            {
+                                label: 'Receita Total',
+                                data: [],
+                                backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                                borderColor: 'rgb(245, 158, 11)',
+                                borderWidth: 3,
+                                type: 'line',
+                                fill: true,
+                                tension: 0.4,
+                                yAxisID: 'y1',
+                                order: 1  // ADICIONAR ordem para renderizar primeiro (linha fica atrás)
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                                titleColor: textColor,
+                                bodyColor: textColor,
+                                borderColor: gridColor,
+                                borderWidth: 1,
+                                padding: 12,
+                                displayColors: true,
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.dataset.yAxisID === 'y1') {
+                                            label += new Intl.NumberFormat('pt-BR', {
+                                                style: 'currency',
+                                                currency: 'BRL'
+                                            }).format(context.parsed.y);
+                                        } else {
+                                            label += context.parsed.y;
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: textColor,
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            },
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                beginAtZero: true,
+                                grid: {
+                                    color: gridColor,
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    color: textColor,
+                                    font: {
+                                        size: 11
+                                    },
+                                    stepSize: 1
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Quantidade',
+                                    color: textColor,
+                                    font: {
+                                        size: 12,
+                                        weight: 'bold'
+                                    }
+                                }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                beginAtZero: true,
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                                ticks: {
+                                    color: textColor,
+                                    font: {
+                                        size: 11
+                                    },
+                                    callback: function(value) {
+                                        return 'R$ ' + value.toLocaleString('pt-BR');
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Receita (R$)',
+                                    color: textColor,
+                                    font: {
+                                        size: 12,
+                                        weight: 'bold'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                console.log('Gráfico inicializado, carregando dados...');
+                await this.loadChartData(this.currentPeriod);
+            }
+
+            async loadChartData(dias) {
+                const overlay = document.getElementById('chartLoadingOverlay');
+                if (overlay) {
+                    // Usar classes do Bootstrap
+                    overlay.classList.remove('d-none');
+                    overlay.classList.add('d-flex');
+                }
+
+                try {
+                    const endpoint = dias <= 7 
+                        ? `/Home/GetPerformanceChartData?dias=${dias}`
+                        : `/Home/GetPerformanceChartDataMonthly?dias=${dias}`;
+
+                    console.log(`Carregando dados do endpoint: ${endpoint}`);
+                    const response = await fetch(endpoint);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    console.log('Resposta da API:', result);
+
+                    if (result.success && result.dados) {
+                        console.log(`Dados recebidos: ${result.dados.length} pontos`);
+                        this.updateChartData(result.dados);
+                    } else {
+                        console.error('Erro nos dados do gráfico:', result.error);
+                        this.showChartError('Erro ao carregar dados: ' + (result.error || 'Formato inválido'));
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar dados do gráfico:', error);
+                    this.showChartError('Erro ao conectar com o servidor: ' + error.message);
+                } finally {
+                    // GARANTIR que o overlay seja escondido usando classes Bootstrap
+                    if (overlay) {
+                        console.log('Escondendo overlay de loading');
+                        overlay.classList.remove('d-flex');
+                        overlay.classList.add('d-none');
+                    }
+                }
+            }
+
+            showChartError(message) {
+                const canvas = document.getElementById('performanceChart');
+                if (canvas) {
+                    const parent = canvas.parentElement;
+                    parent.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                            <h5 class="text-muted">${message}</h5>
+                            <button class="btn btn-primary mt-3" onclick="window.dashboardManager.initializePerformanceChart()">
+                                <i class="fas fa-sync-alt me-2"></i>Tentar Novamente
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+            updateChartData(dados) {
+                if (!this.performanceChart) {
+                    console.error('Gráfico não inicializado');
+                    return;
+                }
+                
+                if (!dados || dados.length === 0) {
+                    console.warn('Dados vazios recebidos');
+                    this.showChartError('Nenhum dado disponível para o período selecionado');
+                    return;
+                }
+
+                console.log('Atualizando gráfico com', dados.length, 'pontos de dados');
+                
+                const labels = dados.map(d => d.data);
+                const locacoes = dados.map(d => d.locacoes || 0);
+                const reservas = dados.map(d => d.reservas || 0);
+                const receita = dados.map(d => d.receitaTotal || 0);
+
+                console.log('Labels:', labels);
+                console.log('Locações:', locacoes);
+                console.log('Reservas:', reservas);
+                console.log('Receita:', receita);
+
+                // Verificar se há pelo menos algum dado não-zero
+                const temDados = locacoes.some(v => v > 0) || reservas.some(v => v > 0) || receita.some(v => v > 0);
+                
+                if (!temDados) {
+                    console.warn('Todos os valores são zero');
+                }
+
+                this.performanceChart.data.labels = labels;
+                this.performanceChart.data.datasets[0].data = locacoes;
+                this.performanceChart.data.datasets[1].data = reservas;
+                this.performanceChart.data.datasets[2].data = receita;
+
+                this.performanceChart.update('active');
+                console.log('Gráfico atualizado com sucesso');
+                
+                // GARANTIR que o overlay seja removido após atualizar o gráfico
+                const overlay = document.getElementById('chartLoadingOverlay');
+                if (overlay) {
+                    console.log('Removendo overlay após atualização do gráfico');
+                    overlay.classList.remove('d-flex');
+                    overlay.classList.add('d-none');
+                }
+            }
+
+            toggleChartType() {
+                if (!this.performanceChart) return;
+
+                this.currentChartType = this.currentChartType === 'bar' ? 'line' : 'bar';
+
+                // Atualizar tipo dos datasets de quantidade
+                this.performanceChart.data.datasets[0].type = this.currentChartType;
+                this.performanceChart.data.datasets[1].type = this.currentChartType;
+
+                if (this.currentChartType === 'line') {
+                    // Configurar como linha
+                    this.performanceChart.data.datasets[0].fill = false;
+                    this.performanceChart.data.datasets[1].fill = false;
+                    this.performanceChart.data.datasets[0].tension = 0.4;
+                    this.performanceChart.data.datasets[1].tension = 0.4;
+                    this.performanceChart.data.datasets[0].pointRadius = 4;
+                    this.performanceChart.data.datasets[1].pointRadius = 4;
+                    this.performanceChart.data.datasets[0].pointHoverRadius = 6;
+                    this.performanceChart.data.datasets[1].pointHoverRadius = 6;
+                } else {
+                    // Configurar como barra
+                    this.performanceChart.data.datasets[0].borderRadius = 6;
+                    this.performanceChart.data.datasets[1].borderRadius = 6;
+                    // Remover propriedades de linha
+                    delete this.performanceChart.data.datasets[0].fill;
+                    delete this.performanceChart.data.datasets[1].fill;
+                    delete this.performanceChart.data.datasets[0].tension;
+                    delete this.performanceChart.data.datasets[1].tension;
+                    delete this.performanceChart.data.datasets[0].pointRadius;
+                    delete this.performanceChart.data.datasets[1].pointRadius;
+                    delete this.performanceChart.data.datasets[0].pointHoverRadius;
+                    delete this.performanceChart.data.datasets[1].pointHoverRadius;
+                }
+
+                // MANTER a ordem de renderização
+                this.performanceChart.data.datasets[0].order = 2;
+                this.performanceChart.data.datasets[1].order = 3;
+                this.performanceChart.data.datasets[2].order = 1;
+
+                this.performanceChart.update('active');
+
+                const button = document.getElementById('toggleChartType');
+                if (button) {
+                    const icon = button.querySelector('i');
+                    if (icon) {
+                        icon.className = this.currentChartType === 'bar' 
+                            ? 'fas fa-chart-line me-1' 
+                            : 'fas fa-chart-bar me-1';
+                    }
+                }
+            }
+
+            async handlePeriodChange(period) {
+                console.log(`Período alterado para: ${period} dias`);
+                this.currentPeriod = period;
+                await this.loadChartData(period);
+
+                if (window.RentalTourismSystem?.NotificationSystem) {
+                    window.RentalTourismSystem.NotificationSystem.info(`Dados dos últimos ${period} dias carregados`);
                 }
             }
 
@@ -941,18 +1274,26 @@
                 console.log('Iniciando atualização do dashboard...');
 
                 try {
-                    const response = await fetch('/api/Api/dashboard/dados');
+                    // CORRIGIDO: Usar o endpoint correto
+                    const response = await fetch('/Home/GetDashboardStats');
 
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
 
                     const dados = await response.json();
+                    
+                    // Verificar se há erro na resposta
+                    if (dados.error) {
+                        throw new Error(dados.error);
+                    }
+
                     this.updateDashboardData(dados);
                     this.updateTimestamp();
+                    await this.loadChartData(this.currentPeriod);
 
-                    if (window.NotificationSystem) {
-                        window.NotificationSystem.success('Dashboard atualizado', 2000);
+                    if (window.RentalTourismSystem?.NotificationSystem) {
+                        window.RentalTourismSystem.NotificationSystem.success('Dashboard atualizado', 2000);
                     }
 
                     console.log('Dashboard atualizado com sucesso');
@@ -960,8 +1301,8 @@
                 } catch (error) {
                     console.error('Erro ao atualizar dashboard:', error);
 
-                    if (window.NotificationSystem) {
-                        window.NotificationSystem.error('Erro ao atualizar dashboard', 3000);
+                    if (window.RentalTourismSystem?.NotificationSystem) {
+                        window.RentalTourismSystem.NotificationSystem.error('Erro ao atualizar dashboard', 3000);
                     }
                 } finally {
                     this.isUpdating = false;
@@ -1001,7 +1342,6 @@
                 let current = from;
                 let step = 0;
 
-                // Add visual feedback
                 element.style.transform = 'scale(1.1)';
                 element.style.transition = 'transform 0.2s ease';
 
@@ -1013,13 +1353,11 @@
                         current = to;
                         clearInterval(timer);
 
-                        // Reset transform
                         setTimeout(() => {
                             element.style.transform = 'scale(1)';
                         }, 100);
                     }
 
-                    // Format value
                     if (isPercentage) {
                         element.textContent = Math.floor(current) + '%';
                     } else if (isCurrency) {
@@ -1046,16 +1384,17 @@
                 if (this.intervalId) {
                     clearInterval(this.intervalId);
                     this.intervalId = null;
-                    console.log('Dashboard Manager - cleanup executado');
                 }
+                console.log('Dashboard Manager - cleanup executado');
             }
         }
 
         // Initialize Dashboard Manager
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM carregado, inicializando Dashboard Manager...');
             window.dashboardManager = new DashboardManager();
 
-            // Add click tracking for analytics (optional)
+            // Add click tracking for analytics
             document.querySelectorAll('.dashboard-card[onclick]').forEach(card => {
                 card.addEventListener('click', (e) => {
                     const statLabel = card.querySelector('.stat-label')?.textContent;

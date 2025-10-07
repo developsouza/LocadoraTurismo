@@ -11,6 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Locação #@Model.Locacao.Id</title>
     <link rel="stylesheet" href="~/css/documento-print.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <style>
         @@media print {
             .no-print {
@@ -18,8 +20,12 @@
             }
 
             @@page {
-                margin: 1.5cm;
+                margin: 1cm;    
                 size: A4;
+            }
+            
+            body {
+                padding: 0;
             }
         }
     </style>
@@ -46,7 +52,7 @@
         <!-- Informações Principais -->
         <div class="info-partes">
             <div class="info-item">
-                <strong>Locador:</strong> @Model.Locacao.Agencia.Nome
+                <strong>Locador:</strong> @(Model.Locacao.Agencia?.Nome ?? "NÃO INFORMADO")
             </div>
             <div class="info-item">
                 <strong>Locatário:</strong> @Model.Locacao.Cliente.Nome
@@ -129,11 +135,11 @@
                                 {
                                     <div class="opcoes-vistoria">
                                         <label>
-                                            <input type="checkbox" @(item.Funcionando ? "checked" : "") disabled />
+                                            <input type="checkbox"/>
                                             FUNCIONANDO
                                         </label>
                                         <label>
-                                            <input type="checkbox" @(item.NaoFunciona ? "checked" : "") disabled />
+                                            <input type="checkbox"/>
                                             NÃO FUNCIONA
                                         </label>
                                     </div>
@@ -142,11 +148,11 @@
                                 {
                                     <div class="opcoes-vistoria">
                                         <label>
-                                            <input type="checkbox" @(item.Ok ? "checked" : "") disabled />
+                                            <input type="checkbox"/>
                                             OK
                                         </label>
                                         <label>
-                                            <input type="checkbox" @(item.Faltando ? "checked" : "") disabled />
+                                            <input type="checkbox"/>
                                             FALTANDO
                                         </label>
                                     </div>
@@ -155,11 +161,11 @@
                                 {
                                     <div class="opcoes-vistoria">
                                         <label>
-                                            <input type="checkbox" @(item.EmDia ? "checked" : "") disabled />
+                                            <input type="checkbox"/>
                                             EM DIA
                                         </label>
                                         <label>
-                                            <input type="checkbox" @(item.Vencido ? "checked" : "") disabled />
+                                            <input type="checkbox"/>
                                             VENCIDO
                                         </label>
                                     </div>
@@ -168,11 +174,11 @@
                                 {
                                     <div class="opcoes-vistoria">
                                         <label>
-                                            <input type="checkbox" @(item.NoNivel ? "checked" : "") disabled />
+                                            <input type="checkbox"/>
                                             NO NÍVEL
                                         </label>
                                         <label>
-                                            <input type="checkbox" @(item.Completar ? "checked" : "") disabled />
+                                            <input type="checkbox"/>
                                             COMPLETAR
                                         </label>
                                     </div>
@@ -181,11 +187,11 @@
                                 {
                                     <div class="opcoes-vistoria">
                                         <label>
-                                            <input type="checkbox" @(item.Bom ? "checked" : "") disabled />
+                                            <input type="checkbox"/>
                                             BOM
                                         </label>
                                         <label>
-                                            <input type="checkbox" @(item.Ruim ? "checked" : "") disabled />
+                                            <input type="checkbox"/>
                                             RUIM
                                         </label>
                                     </div>
@@ -194,11 +200,11 @@
                                 {
                                     <div class="opcoes-vistoria">
                                         <label>
-                                            <input type="checkbox" @(item.Normal ? "checked" : "") disabled />
+                                            <input type="checkbox"/>
                                             NORMAL
                                         </label>
                                         <label>
-                                            <input type="checkbox" @(item.Trincado || item.RiscadoAmassado ? "checked" : "") disabled />
+                                            <input type="checkbox"/>
                                             @(item.Descricao.Contains("PARA") ? "TRINCADO" : "RISCADO/AMASSADO")
                                         </label>
                                     </div>
@@ -240,21 +246,21 @@
         <div class="info-combustivel">
             <h3>NÍVEL DE COMBUSTÍVEL NA RETIRADA:</h3>
             <div class="marcadores-combustivel">
-                <label><input type="checkbox" checked disabled /> 8/8 (TANQUE CHEIO)</label>
-                <label><input type="checkbox" disabled /> 7/8</label>
-                <label><input type="checkbox" disabled /> 6/8</label>
-                <label><input type="checkbox" disabled /> 5/8</label>
-                <label><input type="checkbox" disabled /> 4/8 (MEIO TANQUE)</label>
-                <label><input type="checkbox" disabled /> 3/8</label>
-                <label><input type="checkbox" disabled /> 2/8</label>
-                <label><input type="checkbox" disabled /> 1/8</label>
+                <label><input type="checkbox"/> 8/8 (TANQUE CHEIO)</label>
+                <label><input type="checkbox"/> 7/8</label>
+                <label><input type="checkbox"/> 6/8</label>
+                <label><input type="checkbox"/> 5/8</label>
+                <label><input type="checkbox"/> 4/8 (MEIO TANQUE)</label>
+                <label><input type="checkbox"/> 3/8</label>
+                <label><input type="checkbox"/> 2/8</label>
+                <label><input type="checkbox"/> 1/8</label>
             </div>
         </div>
 
         <!-- Local e Data -->
         <div class="local-data-laudo">
             <p>
-                @(Model.Locacao.Agencia.Cidade ?? "João Pessoa"),
+                @(Model.Locacao.Agencia?.Cidade ?? "João Pessoa"),
                 @Model.DataVistoria.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("pt-BR")).
             </p>
         </div>
@@ -263,7 +269,7 @@
         <div class="assinaturas-laudo">
             <div class="assinatura-laudo">
                 <div class="linha-assinatura"></div>
-                <p><strong>LOCADOR:</strong> @Model.Locacao.Agencia.Nome</p>
+                <p><strong>LOCADOR:</strong> @(Model.Locacao.Agencia?.Nome ?? "NÃO INFORMADO")</p>
                 <p class="small">Representante: @(Model.Locacao.Funcionario?.Nome ?? "_______________")</p>
             </div>
 

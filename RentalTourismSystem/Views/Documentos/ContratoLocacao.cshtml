@@ -11,6 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Locação #@Model.Locacao.Id</title>
     <link rel="stylesheet" href="~/css/documento-print.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <style>
         @@media print {
             .no-print { display: none !important; }
@@ -44,14 +46,14 @@
             <!-- LOCADOR -->
             <div class="parte">
                 <p>
-                    <strong>@Model.Locacao.Agencia.Nome</strong>,
-                    @if (!string.IsNullOrEmpty(Model.Locacao.Agencia.CNPJ))
+                    <strong>@(Model.Locacao.Agencia?.Nome ?? "AGÊNCIA NÃO INFORMADA")</strong>,
+                    @if (!string.IsNullOrEmpty(Model.Locacao.Agencia?.CNPJ))
                     {
                         <text>inscrita sob o CNPJ n.º <strong>@Model.Locacao.Agencia.CNPJ</strong>,</text>
                     }
-                    com sede em <strong>@Model.Locacao.Agencia.Endereco</strong>,
-                    telefone <strong>@Model.Locacao.Agencia.Telefone</strong>,
-                    e-mail <strong>@Model.Locacao.Agencia.Email</strong>,
+                    com sede em <strong>@(Model.Locacao.Agencia?.Endereco ?? "NÃO INFORMADO")</strong>,
+                    telefone <strong>@(Model.Locacao.Agencia?.Telefone ?? "NÃO INFORMADO")</strong>,
+                    e-mail <strong>@(Model.Locacao.Agencia?.Email ?? "NÃO INFORMADO")</strong>,
                     neste ato representada por: <strong>@(Model.Locacao.Funcionario?.Nome ?? "REPRESENTANTE LEGAL")</strong>,
                     doravante denominada <strong>LOCADOR</strong>,
                 </p>
@@ -66,10 +68,10 @@
                     @(Model.Locacao.Cliente.EstadoCivil ?? "brasileiro"),
                     profissão: @(Model.Locacao.Cliente.Profissao ?? "NÃO INFORMADA"),
                     CPF n.º <strong>@Model.Locacao.Cliente.CPF</strong>,
-                    CNH n.º <strong>@Model.Locacao.Cliente.CNH</strong>,
+                    CNH n.º <strong>@(Model.Locacao.Cliente.CNH ?? "NÃO INFORMADA")</strong>,
                     categoria <strong>@(Model.Locacao.Cliente.CategoriaCNH ?? "B")</strong>,
                     residente em: <strong>@Model.Locacao.Cliente.Endereco</strong>,
-                    CEP <strong>@Model.Locacao.Cliente.CEP</strong>,
+                    CEP <strong>@(Model.Locacao.Cliente.CEP ?? "NÃO INFORMADO")</strong>,
                     telefone <strong>@Model.Locacao.Cliente.Telefone</strong>,
                     e-mail <strong>@Model.Locacao.Cliente.Email</strong>,
                     doravante denominado <strong>LOCATÁRIO</strong>.
@@ -217,9 +219,9 @@
             <p class="paragrafo">
                 <strong>§ 1º.</strong> O LOCATÁRIO indica: <strong>@Model.Locacao.Cliente.Nome.ToUpper()</strong>,
                 CPF n.º <strong>@Model.Locacao.Cliente.CPF</strong>, como principal condutor do veículo descrito na cláusula 1ª
-                deste contrato, sob número de licença de direção: <strong>@Model.Locacao.Cliente.CNH</strong>,
+                deste contrato, sob número de licença de direção: <strong>@(Model.Locacao.Cliente.CNH ?? "NÃO INFORMADA")</strong>,
                 categoria: <strong>@(Model.Locacao.Cliente.CategoriaCNH ?? "B")</strong>,
-                válida até <strong>@Model.Locacao.Cliente.ValidadeCNH?.ToString("dd/MM/yyyy")</strong>.
+                válida até <strong>@(Model.Locacao.Cliente.ValidadeCNH?.ToString("dd/MM/yyyy") ?? "NÃO INFORMADA")</strong>.
             </p>
             <p class="paragrafo">
                 <strong>§ 2º.</strong> Deverá também o LOCATÁRIO utilizar o veículo alugado sempre de acordo com os regulamentos
@@ -296,7 +298,7 @@
         <div class="clausula">
             <h3>CLÁUSULA 13ª - DO FORO</h3>
             <p>
-                Fica desde já eleito o foro da comarca de <strong>@(Model.Locacao.Agencia.Cidade ?? "JOÃO PESSOA - PB")</strong>
+                Fica desde já eleito o foro da comarca de <strong>@(Model.Locacao.Agencia?.Cidade ?? "JOÃO PESSOA - PB")</strong>
                 para serem resolvidas eventuais pendências decorrentes deste contrato.
             </p>
         </div>
@@ -312,7 +314,7 @@
         <!-- Local e Data -->
         <div class="local-data">
             <p>
-                @(Model.Locacao.Agencia.Cidade ?? "João Pessoa - PB"),
+                @(Model.Locacao.Agencia?.Cidade ?? "João Pessoa - PB"),
                 @Model.DataEmissao.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("pt-BR")).
             </p>
         </div>
@@ -321,7 +323,7 @@
         <div class="assinaturas">
             <div class="assinatura">
                 <div class="linha-assinatura"></div>
-                <p><strong>LOCADOR: @Model.Locacao.Agencia.Nome</strong></p>
+                <p><strong>LOCADOR: @(Model.Locacao.Agencia?.Nome ?? "NÃO INFORMADO")</strong></p>
                 <p class="small">Representante: @(Model.Locacao.Funcionario?.Nome ?? "_______________")</p>
             </div>
 

@@ -218,6 +218,223 @@ namespace RentalTourismSystem.Controllers
                 return Json(new { error = "Erro ao carregar estatísticas" });
             }
         }
+
+        // ========== API PARA DADOS DO GRÁFICO DE PERFORMANCE ==========
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetPerformanceChartData(int dias = 7)
+        {
+            try
+            {
+                _logger.LogInformation("Solicitação de dados do gráfico para {Dias} dias", dias);
+                
+                var dataFim = DateTime.Now.Date;
+                var dataInicio = dataFim.AddDays(-dias + 1);
+
+                _logger.LogInformation("Período: {DataInicio} até {DataFim}", dataInicio, dataFim);
+
+                var dados = new List<object>();
+
+                for (var data = dataInicio; data <= dataFim; data = data.AddDays(1))
+                {
+                    var dataProxima = data.AddDays(1);
+
+                    // Locações do dia
+                    var locacoesDia = await _context.Locacoes
+                        .Where(l => l.DataRetirada >= data && l.DataRetirada < dataProxima)
+                        .CountAsync();
+
+                    var receitaLocacoesDia = await _context.Locacoes
+                        .Where(l => l.DataRetirada >= data && l.DataRetirada < dataProxima)
+                        .SumAsync(l => (decimal?)l.ValorTotal) ?? 0;
+
+                    // Reservas do dia (simplificado - sem dependência da extensão)
+                    var reservasDia = await _context.ReservasViagens
+                        .Include(r => r.StatusReservaViagem)
+                        .Where(r => r.DataReserva >= data && r.DataReserva < dataProxima &&
+                                   r.StatusReservaViagem != null &&
+                                   r.StatusReservaViagem.Status == "Confirmada")
+                        .CountAsync();
+
+                    var receitaReservasDia = await _context.ReservasViagens
+                        .Where(r => r.DataReserva >= data && r.DataReserva < dataProxima &&
+                                   r.StatusReservaViagem != null &&
+                                   r.StatusReservaViagem.Status == "Confirmada")
+                        .SumAsync(r => (decimal?)r.ValorTotal) ?? 0;
+
+                    // Soma dos serviços adicionais
+                    var servicosAdicionaisDia = await _context.ReservasViagens
+                        .Where(r => r.DataReserva >= data && r.DataReserva < dataProxima &&
+                                   r.StatusReservaViagem != null &&
+                                   r.StatusReservaViagem.Status == "Confirmada")
+                        .SelectMany(r => r.ServicosAdicionais)
+                        .SumAsync(s => (decimal?)s.Preco) ?? 0;
+
+                    var receitaTotalReservas = receitaReservasDia + servicosAdicionaisDia;
+
+                    dados.Add(new
+                    {
+                        data = data.ToString("dd/MM"),
+                        dataCompleta = data.ToString("dd/MM/yyyy"),
+                        locacoes = locacoesDia,
+                        reservas = reservasDia,
+                        receitaLocacoes = receitaLocacoesDia,
+                        receitaReservas = receitaTotalReservas,
+                        receitaTotal = receitaLocacoesDia + receitaTotalReservas,
+                        totalOperacoes = locacoesDia + reservasDia
+                    });
+                }
+
+                _logger.LogInformation("Retornando {Count} dias de dados do gráfico", dados.Count);
+                
+                // Log de debug para ver os dados
+                _logger.LogDebug("Dados do gráfico: {@Dados}", dados);
+                
+                return Json(new { success = true, dados = dados });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter dados do gráfico de performance");
+                return Json(new { success = false, error = ex.Message, details = ex.ToString() });
+            }
+        }
+
+        // ========== API PARA DADOS MENSAIS (30 e 90 dias) ==========
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetPerformanceChartDataMonthly(int dias = 30)
+        {
+            try
+            {
+                _logger.LogInformation("Solicitação de dados mensais para {Dias} dias", dias);
+                
+                var dataFim = DateTime.Now.Date;
+                var dataInicio = dataFim.AddDays(-dias + 1);
+
+                _logger.LogInformation("Período mensal: {DataInicio} até {DataFim}", dataInicio, dataFim);
+
+                var dados = new List<object>();
+                
+                if (dias <= 30)
+                {
+                    // Agrupar por dia
+                    for (var data = dataInicio; data <= dataFim; data = data.AddDays(1))
+                    {
+                        var dataProxima = data.AddDays(1);
+
+                        var locacoesDia = await _context.Locacoes
+                            .Where(l => l.DataRetirada >= data && l.DataRetirada < dataProxima)
+                            .CountAsync();
+
+                        var receitaLocacoesDia = await _context.Locacoes
+                            .Where(l => l.DataRetirada >= data && l.DataRetirada < dataProxima)
+                            .SumAsync(l => (decimal?)l.ValorTotal) ?? 0;
+
+                        var reservasDia = await _context.ReservasViagens
+                            .Include(r => r.StatusReservaViagem)
+                            .Where(r => r.DataReserva >= data && r.DataReserva < dataProxima &&
+                                       r.StatusReservaViagem != null &&
+                                       r.StatusReservaViagem.Status == "Confirmada")
+                            .CountAsync();
+
+                        var receitaReservasDia = await _context.ReservasViagens
+                            .Where(r => r.DataReserva >= data && r.DataReserva < dataProxima &&
+                                       r.StatusReservaViagem != null &&
+                                       r.StatusReservaViagem.Status == "Confirmada")
+                            .SumAsync(r => (decimal?)r.ValorTotal) ?? 0;
+
+                        var servicosAdicionaisDia = await _context.ReservasViagens
+                            .Where(r => r.DataReserva >= data && r.DataReserva < dataProxima &&
+                                       r.StatusReservaViagem != null &&
+                                       r.StatusReservaViagem.Status == "Confirmada")
+                            .SelectMany(r => r.ServicosAdicionais)
+                            .SumAsync(s => (decimal?)s.Preco) ?? 0;
+
+                        var receitaTotalReservas = receitaReservasDia + servicosAdicionaisDia;
+
+                        dados.Add(new
+                        {
+                            data = data.ToString("dd/MM"),
+                            dataCompleta = data.ToString("dd/MM/yyyy"),
+                            locacoes = locacoesDia,
+                            reservas = reservasDia,
+                            receitaLocacoes = receitaLocacoesDia,
+                            receitaReservas = receitaTotalReservas,
+                            receitaTotal = receitaLocacoesDia + receitaTotalReservas,
+                            totalOperacoes = locacoesDia + reservasDia
+                        });
+                    }
+                }
+                else
+                {
+                    // Agrupar por semana para 90 dias
+                    var semanas = (int)Math.Ceiling(dias / 7.0);
+                    
+                    for (int i = 0; i < semanas; i++)
+                    {
+                        var inicioSemana = dataInicio.AddDays(i * 7);
+                        var fimSemana = inicioSemana.AddDays(7);
+                        
+                        if (fimSemana > dataFim)
+                            fimSemana = dataFim.AddDays(1);
+
+                        var locacoesSemana = await _context.Locacoes
+                            .Where(l => l.DataRetirada >= inicioSemana && l.DataRetirada < fimSemana)
+                            .CountAsync();
+
+                        var receitaLocacoesSemana = await _context.Locacoes
+                            .Where(l => l.DataRetirada >= inicioSemana && l.DataRetirada < fimSemana)
+                            .SumAsync(l => (decimal?)l.ValorTotal) ?? 0;
+
+                        var reservasSemana = await _context.ReservasViagens
+                            .Include(r => r.StatusReservaViagem)
+                            .Where(r => r.DataReserva >= inicioSemana && r.DataReserva < fimSemana &&
+                                       r.StatusReservaViagem != null &&
+                                       r.StatusReservaViagem.Status == "Confirmada")
+                            .CountAsync();
+
+                        var receitaReservasSemana = await _context.ReservasViagens
+                            .Where(r => r.DataReserva >= inicioSemana && r.DataReserva < fimSemana &&
+                                       r.StatusReservaViagem != null &&
+                                       r.StatusReservaViagem.Status == "Confirmada")
+                            .SumAsync(r => (decimal?)r.ValorTotal) ?? 0;
+
+                        var servicosAdicionaisSemana = await _context.ReservasViagens
+                            .Where(r => r.DataReserva >= inicioSemana && r.DataReserva < fimSemana &&
+                                       r.StatusReservaViagem != null &&
+                                       r.StatusReservaViagem.Status == "Confirmada")
+                            .SelectMany(r => r.ServicosAdicionais)
+                            .SumAsync(s => (decimal?)s.Preco) ?? 0;
+
+                        var receitaTotalReservas = receitaReservasSemana + servicosAdicionaisSemana;
+
+                        dados.Add(new
+                        {
+                            data = $"Sem {i + 1}",
+                            dataCompleta = $"{inicioSemana:dd/MM} - {fimSemana.AddDays(-1):dd/MM}",
+                            locacoes = locacoesSemana,
+                            reservas = reservasSemana,
+                            receitaLocacoes = receitaLocacoesSemana,
+                            receitaReservas = receitaTotalReservas,
+                            receitaTotal = receitaLocacoesSemana + receitaTotalReservas,
+                            totalOperacoes = locacoesSemana + reservasSemana
+                        });
+                    }
+                }
+
+                _logger.LogInformation("Retornando {Count} pontos de dados mensais", dados.Count);
+                
+                // Log de debug
+                _logger.LogDebug("Dados mensais do gráfico: {@Dados}", dados);
+                
+                return Json(new { success = true, dados = dados });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter dados mensais do gráfico");
+                return Json(new { success = false, error = ex.Message, details = ex.ToString() });
+            }
+        }
     }
 
     // Classe auxiliar para dados do erro

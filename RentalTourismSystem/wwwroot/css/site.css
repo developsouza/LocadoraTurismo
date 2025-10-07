@@ -124,6 +124,7 @@ body {
 .sidebar {
     width: var(--sidebar-width);
     min-height: 100vh;
+    max-height: 100vh;
     background: var(--sidebar-bg);
     border-right: 1px solid var(--sidebar-border);
     position: fixed;
@@ -134,6 +135,8 @@ body {
     transition: var(--transition-base);
     overflow-y: auto;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
     .sidebar.collapsed {
@@ -144,6 +147,24 @@ body {
         transform: translateX(-100%);
     }
 
+    /* Customizar scrollbar do sidebar */
+    .sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+        background: var(--sidebar-bg);
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+        background: var(--sidebar-border);
+        border-radius: 3px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb:hover {
+        background: var(--sidebar-bg-hover);
+    }
+
 /* === Sidebar Header === */
 .sidebar-header {
     padding: 1.5rem 1rem;
@@ -152,6 +173,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 10;
+    flex-shrink: 0;
 }
 
 .sidebar-brand {
@@ -193,6 +215,9 @@ body {
 /* === Sidebar Navigation === */
 .sidebar-nav {
     padding: 1rem 0;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .nav-section {
@@ -334,6 +359,10 @@ body {
     border-top: 1px solid var(--sidebar-border);
     margin-top: auto;
     background: var(--sidebar-bg);
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    flex-shrink: 0;
 }
 
 .sidebar-user {
@@ -1027,6 +1056,7 @@ body {
 @media (max-width: 768px) {
     .sidebar {
         transform: translateX(-100%);
+        max-height: 100vh;
     }
 
         .sidebar.mobile-visible {
@@ -1056,24 +1086,15 @@ body {
     .card-body {
         padding: 1rem;
     }
-}
 
-@media (max-width: 576px) {
-    .stat-number {
-        font-size: 1.75rem;
-    }
-
-    .sidebar-brand {
-        font-size: 1rem;
-    }
-
-    .nav-link {
-        padding: 0.75rem;
-        font-size: 0.85rem;
+    /* Garantir que o sidebar mobile também tenha scroll */
+    .sidebar-nav {
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
     }
 }
 
-/* ===== SCROLLBAR PERSONALIZADA ===== */
+/*===== SCROLLBAR PERSONALIZADA ===== */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -1235,6 +1256,6 @@ select.form-control.campo-valido {
 }
 
 .form-select.campo-invalido,
-select.form-control.campo-invalido {
+select.form-control.campo-valido {
     border-color: var(--danger) !important;
 }

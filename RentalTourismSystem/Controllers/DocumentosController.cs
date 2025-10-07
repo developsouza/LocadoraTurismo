@@ -33,14 +33,39 @@ namespace RentalTourismSystem.Controllers
                     .Include(l => l.Cliente)
                     .Include(l => l.Veiculo)
                         .ThenInclude(v => v.Agencia)
+                    .Include(l => l.Veiculo)
+                        .ThenInclude(v => v.StatusCarro)
                     .Include(l => l.Funcionario)
                     .Include(l => l.Agencia)
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(m => m.Id == id);
 
                 if (locacao == null)
                 {
                     _logger.LogWarning("Locação {LocacaoId} não encontrada para gerar contrato", id);
                     return NotFound();
+                }
+
+                // Verificação adicional de dados obrigatórios
+                if (locacao.Cliente == null)
+                {
+                    _logger.LogError("Cliente não encontrado para locação {LocacaoId}", id);
+                    TempData["Erro"] = "Dados do cliente não encontrados.";
+                    return RedirectToAction("Details", "Locacoes", new { id });
+                }
+
+                if (locacao.Veiculo == null)
+                {
+                    _logger.LogError("Veículo não encontrado para locação {LocacaoId}", id);
+                    TempData["Erro"] = "Dados do veículo não encontrados.";
+                    return RedirectToAction("Details", "Locacoes", new { id });
+                }
+
+                if (locacao.Agencia == null)
+                {
+                    _logger.LogError("Agência não encontrada para locação {LocacaoId}", id);
+                    TempData["Erro"] = "Dados da agência não encontrados.";
+                    return RedirectToAction("Details", "Locacoes", new { id });
                 }
 
                 // Preparar ViewModel com dados calculados
@@ -81,7 +106,11 @@ namespace RentalTourismSystem.Controllers
                     .Include(l => l.Cliente)
                     .Include(l => l.Veiculo)
                         .ThenInclude(v => v.Agencia)
+                    .Include(l => l.Veiculo)
+                        .ThenInclude(v => v.StatusCarro)
                     .Include(l => l.Funcionario)
+                    .Include(l => l.Agencia)
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(m => m.Id == id);
 
                 if (locacao == null)
