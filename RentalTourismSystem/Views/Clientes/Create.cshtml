@@ -301,10 +301,11 @@
             });
 
             // Validação de CNH
-            $('input[name="CNH"], input[name="ValidadeCNH"]').on('change', function() {
+            $('input[name="CNH"], input[name="ValidadeCNH"]').on('blur', function() {
                 let cnh = $('input[name="CNH"]').val();
                 let validade = $('input[name="ValidadeCNH"]').val();
 
+                // Só valida se os campos tiverem valores completos
                 if (cnh && !validade) {
                     alert('⚠️ Se informar o número da CNH, deve informar também a validade.');
                 }
@@ -313,12 +314,17 @@
                     alert('⚠️ Se informar a validade da CNH, deve informar também o número.');
                 }
 
-                if (cnh && validade) {
+                // Só valida a data se ambos os campos estiverem preenchidos e a data estiver completa
+                if (cnh && validade && validade.length === 10) {
                     let dataValidade = new Date(validade);
                     let hoje = new Date();
+                    hoje.setHours(0, 0, 0, 0); // Zera as horas para comparar apenas a data
 
                     if (dataValidade < hoje) {
                         alert('⚠️ A CNH está vencida. Data de validade: ' + dataValidade.toLocaleDateString('pt-BR'));
+                        $('input[name="ValidadeCNH"]').addClass('is-invalid');
+                    } else {
+                        $('input[name="ValidadeCNH"]').removeClass('is-invalid');
                     }
                 }
             });

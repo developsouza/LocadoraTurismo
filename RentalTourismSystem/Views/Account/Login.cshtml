@@ -71,7 +71,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 1rem;
             /* MANTENDO SEU FUNDO ORIGINAL */
             background: linear-gradient(to top, rgba(135, 206, 250, 0.4), rgba(0, 119, 190, 0.6)), url('/img/fundologin.png');
             background-size: cover;
@@ -83,7 +83,7 @@
         .login-card {
             width: 100%;
             max-width: 420px;
-            padding: 2.5rem;
+            padding: 2rem 1.5rem;
             text-align: center;
             /* GLASSMORPHISM COM TOM DOURADO */
             background: rgba(255, 215, 0, 0.15);
@@ -101,7 +101,8 @@
 
         .logo-wrapper {
             margin: 0 auto 1.5rem;
-            width: 200px;
+            width: 100%;
+            max-width: 200px;
             height: auto;
         }
 
@@ -114,7 +115,7 @@
 
         .brand-title {
             font-weight: 700;
-            font-size: 1.8rem;
+            font-size: clamp(1.25rem, 5vw, 1.8rem);
             margin-bottom: 0.5rem;
             color: var(--black-text);
             text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
@@ -122,7 +123,7 @@
 
         .brand-subtitle {
             color: var(--black-text);
-            font-size: 1rem;
+            font-size: clamp(0.875rem, 3vw, 1rem);
             opacity: 0.8;
             font-weight: 500;
         }
@@ -134,6 +135,7 @@
             backdrop-filter: blur(10px);
             color: var(--black-text);
             font-weight: 500;
+            font-size: 1rem;
         }
 
             .form-control::placeholder {
@@ -161,6 +163,7 @@
         .form-check-label {
             color: var(--black-text);
             font-weight: 500;
+            font-size: 0.9rem;
         }
 
         .form-check-input {
@@ -177,7 +180,7 @@
         .btn-login {
             width: 100%;
             padding: 0.875rem;
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 3vw, 1rem);
             background: linear-gradient(135deg, var(--primary-gold) 0%, var(--secondary-gold) 100%);
             border: 2px solid var(--dark-gold);
             backdrop-filter: blur(10px);
@@ -204,6 +207,10 @@
             opacity: 0.8;
         }
 
+            .login-footer small {
+                font-size: 0.75rem;
+            }
+
         /* ALERTA DE ERRO COM TEMA DOURADO */
         .alert-danger {
             background: rgba(220, 53, 69, 0.15);
@@ -211,12 +218,14 @@
             backdrop-filter: blur(10px);
             color: #dc3545;
             font-weight: 600;
+            font-size: 0.9rem;
         }
 
         /* FEEDBACK DE VALIDAÇÃO */
         .invalid-feedback {
             color: #dc3545;
             font-weight: 600;
+            font-size: 0.85rem;
         }
 
         /* ANIMAÇÕES SUAVES */
@@ -246,52 +255,120 @@
         }
 
         @@keyframes fadeInScale {
-            from
-
-        {
-            opacity: 0;
-            transform: scale(0.9);
-        }
-
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         @@keyframes slideIn {
-            from
-
-        {
-            opacity: 0;
-            transform: translateY(20px);
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
+        /* RESPONSIVIDADE APRIMORADA */
+        @@media (max-width: 575.98px) {
+            .login-container {
+                padding: 0.5rem;
+            }
+
+            .login-card {
+                padding: 1.5rem 1rem;
+                border-radius: 15px;
+            }
+
+            .company-logo {
+                max-width: 150px;
+            }
+
+            .login-header {
+                margin-bottom: 1.5rem;
+            }
+
+            .logo-wrapper {
+                margin-bottom: 1rem;
+            }
+
+            .form-floating {
+                margin-bottom: 0.75rem !important;
+            }
+
+            .form-check {
+                margin-bottom: 1rem !important;
+            }
+
+            .btn-login {
+                padding: 0.75rem;
+            }
+
+            .login-footer {
+                margin-top: 1.5rem;
+                padding-top: 1rem;
+            }
         }
 
+        /* Tablets */
+        @@media (min-width: 576px) and (max-width: 767.98px) {
+            .login-card {
+                padding: 2rem;
+            }
         }
 
-        /* RESPONSIVIDADE */
-        @@media (max-width: 480px) {
-            .login-card
+        /* Landscape mobile */
+        @@media (max-height: 600px) and (orientation: landscape) {
+            .login-container {
+                padding: 0.5rem;
+            }
 
-        {
-            padding: 2rem 1.5rem;
-            margin: 1rem;
-        }
+            .login-card {
+                padding: 1rem;
+                max-width: 500px;
+            }
 
-        .company-logo {
-            max-width: 150px;
-        }
+            .login-header {
+                margin-bottom: 1rem;
+            }
 
-        .brand-title {
-            font-size: 1.5rem;
-        }
+            .logo-wrapper {
+                max-width: 120px;
+                margin-bottom: 0.75rem;
+            }
 
+            .company-logo {
+                max-width: 120px;
+            }
+
+            .brand-title {
+                font-size: 1.25rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .brand-subtitle {
+                font-size: 0.85rem;
+            }
+
+            .form-floating {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .form-check {
+                margin-bottom: 0.75rem !important;
+            }
+
+            .login-footer {
+                margin-top: 1rem;
+                padding-top: 0.75rem;
+            }
         }
     </style>
 }

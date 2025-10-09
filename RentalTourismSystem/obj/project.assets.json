@@ -6640,23 +6640,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Gilney Souza\\.nuget\\packages\\": {},
+    "C:\\Users\\Litoral Sul\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Projetos\\LitoralSul\\SistemaAtual\\RentalTourismSystem\\RentalTourismSystem\\RentalTourismSystem.csproj",
+      "projectUniqueName": "C:\\Users\\Litoral Sul\\Downloads\\Projetos\\Projetos\\LitoralSul\\SistemaIntegrado\\LocadoraTurismo\\RentalTourismSystem\\RentalTourismSystem.csproj",
       "projectName": "RentalTourismSystem",
-      "projectPath": "C:\\Projetos\\LitoralSul\\SistemaAtual\\RentalTourismSystem\\RentalTourismSystem\\RentalTourismSystem.csproj",
-      "packagesPath": "C:\\Users\\Gilney Souza\\.nuget\\packages\\",
-      "outputPath": "C:\\Projetos\\LitoralSul\\SistemaAtual\\RentalTourismSystem\\RentalTourismSystem\\obj\\",
+      "projectPath": "C:\\Users\\Litoral Sul\\Downloads\\Projetos\\Projetos\\LitoralSul\\SistemaIntegrado\\LocadoraTurismo\\RentalTourismSystem\\RentalTourismSystem.csproj",
+      "packagesPath": "C:\\Users\\Litoral Sul\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Litoral Sul\\Downloads\\Projetos\\Projetos\\LitoralSul\\SistemaIntegrado\\LocadoraTurismo\\RentalTourismSystem\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Gilney Souza\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Litoral Sul\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -6665,6 +6665,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

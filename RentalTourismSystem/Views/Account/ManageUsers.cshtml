@@ -1,41 +1,51 @@
-Ôªø@model IEnumerable<dynamic>
+@model IEnumerable<dynamic>
 @{
-    ViewData["Title"] = "Gerenciar Usu√°rios";
+    ViewData["Title"] = "Gerenciar Usu·rios";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>
-        <i class="fas fa-users"></i>
-        Gerenciar Usu√°rios
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 mb-md-4 gap-2 gap-md-3">
+    <h2 class="mb-0 d-flex align-items-center">
+        <i class="fas fa-users me-2"></i>
+        <span class="d-none d-sm-inline">Gerenciar Usu·rios</span>
+        <span class="d-inline d-sm-none">Usu·rios</span>
     </h2>
     <a asp-action="Register" class="btn btn-success">
         <i class="fas fa-user-plus"></i>
-        Novo Usu√°rio
+        <span class="ms-1">Novo Usu·rio</span>
     </a>
 </div>
 
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover" id="usersTable">
-                <thead>
+<div class="card shadow-sm">
+    <div class="card-body p-0 p-md-3">
+        <!-- Vers„o Desktop/Tablet Grande: Tabela -->
+        <div class="table-responsive d-none d-xl-block">
+            <table class="table table-hover mb-0" id="usersTable">
+                <thead class="table-light">
                     <tr>
                         <th>Nome</th>
                         <th>Email</th>
                         <th>Cargo</th>
-                        <th>Ag√™ncia</th>
-                        <th>Permiss√µes</th>
+                        <th>AgÍncia</th>
+                        <th>Permissıes</th>
                         <th>Status</th>
                         <th>Data Cadastro</th>
-                        <th>A√ß√µes</th>
+                        <th style="min-width: 180px;">AÁıes</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var user in Model)
                     {
                         <tr>
-                            <td>@user.NomeCompleto</td>
-                            <td>@user.Email</td>
+                            <td>
+                                <div class="text-truncate" style="max-width: 200px;" title="@user.NomeCompleto">
+                                    @user.NomeCompleto
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-truncate" style="max-width: 180px;" title="@user.Email">
+                                    @user.Email
+                                </div>
+                            </td>
                             <td>@user.Cargo</td>
                             <td>@user.Agencia</td>
                             <td>
@@ -53,52 +63,62 @@
                             </td>
                             <td>@DateTime.Parse(user.DataCadastro.ToString()).ToString("dd/MM/yyyy")</td>
                             <td>
-                                <div class="btn-group" role="group">
-                                    <form asp-action="ToggleUserStatus" method="post" style="display: inline;">
+                                <div class="d-flex gap-1 flex-nowrap">
+                                    <form asp-action="ToggleUserStatus" method="post" class="d-inline">
                                         <input type="hidden" name="userId" value="@user.Id" />
                                         @if (user.Ativo)
                                         {
                                             <button type="submit" class="btn btn-sm btn-warning"
-                                                    onclick="return confirm('Desativar usu√°rio?')">
+                                                    onclick="return confirm('Desativar usu·rio?')"
+                                                    title="Desativar usu·rio">
                                                 <i class="fas fa-user-lock"></i>
-                                                Desativar
+                                                <span class="d-none d-xxl-inline ms-1">Desativar</span>
                                             </button>
                                         }
                                         else
                                         {
                                             <button type="submit" class="btn btn-sm btn-success"
-                                                    onclick="return confirm('Ativar usu√°rio?')">
+                                                    onclick="return confirm('Ativar usu·rio?')"
+                                                    title="Ativar usu·rio">
                                                 <i class="fas fa-user-check"></i>
-                                                Ativar
+                                                <span class="d-none d-xxl-inline ms-1">Ativar</span>
                                             </button>
                                         }
                                     </form>
 
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-secondary dropdown-toggle"
-                                                type="button" data-bs-toggle="dropdown">
-                                            Permiss√£o
+                                                type="button" data-bs-toggle="dropdown"
+                                                title="Alterar permiss„o">
+                                            <i class="fas fa-user-tag"></i>
+                                            <span class="d-none d-xxl-inline ms-1">Permiss„o</span>
                                         </button>
                                         <ul class="dropdown-menu">
                                             <li>
                                                 <form asp-action="ChangeUserRole" method="post">
                                                     <input type="hidden" name="userId" value="@user.Id" />
                                                     <input type="hidden" name="role" value="Employee" />
-                                                    <button type="submit" class="dropdown-item">Funcion√°rio</button>
+                                                    <button type="submit" class="dropdown-item">
+                                                        <i class="fas fa-user me-2"></i>Funcion·rio
+                                                    </button>
                                                 </form>
                                             </li>
                                             <li>
                                                 <form asp-action="ChangeUserRole" method="post">
                                                     <input type="hidden" name="userId" value="@user.Id" />
                                                     <input type="hidden" name="role" value="Manager" />
-                                                    <button type="submit" class="dropdown-item">Gerente</button>
+                                                    <button type="submit" class="dropdown-item">
+                                                        <i class="fas fa-user-tie me-2"></i>Gerente
+                                                    </button>
                                                 </form>
                                             </li>
                                             <li>
                                                 <form asp-action="ChangeUserRole" method="post">
                                                     <input type="hidden" name="userId" value="@user.Id" />
                                                     <input type="hidden" name="role" value="Admin" />
-                                                    <button type="submit" class="dropdown-item">Administrador</button>
+                                                    <button type="submit" class="dropdown-item">
+                                                        <i class="fas fa-user-shield me-2"></i>Administrador
+                                                    </button>
                                                 </form>
                                             </li>
                                         </ul>
@@ -110,19 +130,297 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Vers„o Mobile/Tablet: Cards -->
+        <div class="d-xl-none px-2 px-md-0">
+            @foreach (var user in Model)
+            {
+                <div class="card mb-3 user-card-mobile border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="flex-grow-1 me-2">
+                                <h5 class="card-title mb-1 text-primary fw-bold">
+                                    @user.NomeCompleto
+                                </h5>
+                                <p class="text-muted mb-0 small text-break">
+                                    <i class="fas fa-envelope me-1"></i>@user.Email
+                                </p>
+                            </div>
+                            <div>
+                                @if (user.Ativo)
+                                {
+                                    <span class="badge bg-success">Ativo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Inativo</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <div class="info-item">
+                                    <small class="text-muted d-block mb-1">
+                                        <i class="fas fa-briefcase me-1"></i>Cargo
+                                    </small>
+                                    <strong class="d-block">@user.Cargo</strong>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="info-item">
+                                    <small class="text-muted d-block mb-1">
+                                        <i class="fas fa-building me-1"></i>AgÍncia
+                                    </small>
+                                    <strong class="d-block text-truncate" title="@user.Agencia">@user.Agencia</strong>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="info-item">
+                                    <small class="text-muted d-block mb-1">
+                                        <i class="fas fa-user-shield me-1"></i>Permiss„o
+                                    </small>
+                                    <span class="badge bg-info">@user.Roles</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="info-item">
+                                    <small class="text-muted d-block mb-1">
+                                        <i class="fas fa-calendar me-1"></i>Cadastro
+                                    </small>
+                                    <strong class="d-block">@DateTime.Parse(user.DataCadastro.ToString()).ToString("dd/MM/yyyy")</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <form asp-action="ToggleUserStatus" method="post" class="flex-fill">
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                @if (user.Ativo)
+                                {
+                                    <button type="submit" class="btn btn-sm btn-warning w-100"
+                                            onclick="return confirm('Desativar usu·rio?')">
+                                        <i class="fas fa-user-lock"></i>
+                                        <span class="ms-1">Desativar</span>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-sm btn-success w-100"
+                                            onclick="return confirm('Ativar usu·rio?')">
+                                        <i class="fas fa-user-check"></i>
+                                        <span class="ms-1">Ativar</span>
+                                    </button>
+                                }
+                            </form>
+
+                            <div class="dropdown flex-fill">
+                                <button class="btn btn-sm btn-secondary dropdown-toggle w-100"
+                                        type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user-tag"></i>
+                                    <span class="ms-1">Permiss„o</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <form asp-action="ChangeUserRole" method="post">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <input type="hidden" name="role" value="Employee" />
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="fas fa-user me-2"></i>Funcion·rio
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form asp-action="ChangeUserRole" method="post">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <input type="hidden" name="role" value="Manager" />
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="fas fa-user-tie me-2"></i>Gerente
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form asp-action="ChangeUserRole" method="post">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <input type="hidden" name="role" value="Admin" />
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="fas fa-user-shield me-2"></i>Administrador
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
         $(document).ready(function() {
-            $('#usersTable').DataTable({
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
-                },
-                order: [[6, 'desc']], // Ordenar por data de cadastro
-                pageLength: 25
-            });
+            if ($(window).width() >= 1200) {
+                $('#usersTable').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+                    },
+                    order: [[6, 'desc']],
+                    pageLength: 25,
+                    responsive: false,
+                    autoWidth: false,
+                    columnDefs: [
+                        { width: "15%", targets: 0 },
+                        { width: "15%", targets: 1 },
+                        { width: "10%", targets: 2 },
+                        { width: "12%", targets: 3 },
+                        { width: "10%", targets: 4 },
+                        { width: "8%", targets: 5 },
+                        { width: "10%", targets: 6 },
+                        { width: "15%", targets: 7, orderable: false }
+                    ]
+                });
+            }
         });
     </script>
+}
+
+@section Styles {
+    <style>
+        .user-card-mobile {
+            border-left: 4px solid var(--primary) !important;
+            background-color: var(--bg-surface) !important;
+            transition: var(--transition-base);
+        }
+
+        .user-card-mobile:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg) !important;
+        }
+
+        .user-card-mobile .card-title {
+            font-size: clamp(1rem, 4vw, 1.1rem);
+            color: var(--primary) !important;
+        }
+
+        .user-card-mobile .text-muted {
+            color: var(--text-muted) !important;
+        }
+
+        .user-card-mobile strong {
+            color: var(--text-primary) !important;
+        }
+
+        .info-item {
+            background: var(--bg-surface-secondary);
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+        }
+
+        .info-item small {
+            color: var(--text-muted) !important;
+        }
+
+        #usersTable {
+            font-size: 0.9rem;
+            background: var(--bg-surface);
+            color: var(--text-primary);
+        }
+
+        #usersTable thead th {
+            background-color: var(--bg-surface-secondary) !important;
+            color: var(--text-primary) !important;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        #usersTable tbody tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        #usersTable tbody tr:hover {
+            background-color: var(--bg-surface-hover) !important;
+        }
+
+        #usersTable tbody td {
+            color: var(--text-primary) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        .dropdown-menu {
+            min-width: 180px;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .dropdown-item {
+            color: var(--text-primary);
+            transition: var(--transition-base);
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--bg-surface-hover);
+            color: var(--text-primary);
+        }
+
+        .dataTables_wrapper {
+            color: var(--text-primary);
+        }
+
+        .dataTables_wrapper .dataTables_length label,
+        .dataTables_wrapper .dataTables_filter label {
+            color: var(--text-primary);
+        }
+
+        .dataTables_wrapper .dataTables_length select,
+        .dataTables_wrapper .dataTables_filter input {
+            background-color: var(--bg-surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            color: var(--text-primary) !important;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: var(--bg-surface-hover) !important;
+            color: var(--text-primary) !important;
+            border-color: var(--primary);
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--primary) !important;
+            color: white !important;
+        }
+
+        @@media (max-width: 575.98px) {
+            .user-card-mobile {
+                margin-bottom: 1rem !important;
+            }
+            h2 {
+                font-size: 1.25rem;
+            }
+            .info-item {
+                padding: 0.4rem;
+            }
+        }
+
+        @@media (min-width: 1200px) and (max-width: 1399.98px) {
+            #usersTable {
+                font-size: 0.85rem;
+            }
+            .btn-sm {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
+            }
+        }
+    </style>
 }

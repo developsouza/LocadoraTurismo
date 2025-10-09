@@ -4,7 +4,7 @@
 }
 
 <div class="row justify-content-center">
-    <div class="col-lg-8">
+    <div class="col-12 col-lg-10 col-xl-8">
         <div class="card">
             <div class="card-header">
                 <h4 class="mb-0">
@@ -17,14 +17,14 @@
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <div class="form-floating mb-3">
                                 <input asp-for="NomeCompleto" class="form-control" placeholder="Nome completo">
                                 <label asp-for="NomeCompleto"></label>
                                 <span asp-validation-for="NomeCompleto" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <div class="form-floating mb-3">
                                 <input asp-for="Email" class="form-control" placeholder="email@exemplo.com">
                                 <label asp-for="Email"></label>
@@ -34,14 +34,14 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <div class="form-floating mb-3">
                                 <input asp-for="Password" class="form-control" placeholder="Senha">
                                 <label asp-for="Password"></label>
                                 <span asp-validation-for="Password" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <div class="form-floating mb-3">
                                 <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirmar senha">
                                 <label asp-for="ConfirmPassword"></label>
@@ -51,14 +51,14 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <div class="form-floating mb-3">
                                 <input asp-for="Cpf" class="form-control" placeholder="CPF" data-mask="cpf">
                                 <label asp-for="Cpf"></label>
                                 <span asp-validation-for="Cpf" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <div class="form-floating mb-3">
                                 <input asp-for="Cargo" class="form-control" placeholder="Cargo">
                                 <label asp-for="Cargo"></label>
@@ -68,7 +68,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <div class="form-floating mb-3">
                                 <select asp-for="AgenciaId" asp-items="ViewBag.AgenciaId" class="form-select">
                                     <option value="">Selecione uma agência</option>
@@ -80,15 +80,17 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-12">
-                            <button type="submit" class="btn btn-success me-2">
-                                <i class="fas fa-save"></i>
-                                Cadastrar Usuário
-                            </button>
-                            <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left"></i>
-                                Cancelar
-                            </a>
+                        <div class="col-12">
+                            <div class="d-flex flex-column flex-sm-row gap-2">
+                                <button type="submit" class="btn btn-success flex-fill flex-sm-grow-0">
+                                    <i class="fas fa-save"></i>
+                                    Cadastrar Usuário
+                                </button>
+                                <a asp-action="Index" asp-controller="Home" class="btn btn-secondary flex-fill flex-sm-grow-0">
+                                    <i class="fas fa-arrow-left"></i>
+                                    Cancelar
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -96,3 +98,17 @@
         </div>
     </div>
 </div>
+
+@section Styles {
+    <style>
+        @@media (max-width: 767.98px) {
+            .card {
+                margin-bottom: 1rem;
+            }
+
+            .form-floating {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+}
