@@ -76,7 +76,14 @@ CultureInfo.DefaultThreadCurrentUICulture = brazilCulture;
 // ===== CONFIGURE ENTITY FRAMEWORK =====
 builder.Services.AddDbContext<RentalTourismContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlServerOptionsAction: sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 3,
+                maxRetryDelay: TimeSpan.FromSeconds(5),
+                errorNumbersToAdd: null);
+        });
 
     if (builder.Environment.IsProduction())
     {
