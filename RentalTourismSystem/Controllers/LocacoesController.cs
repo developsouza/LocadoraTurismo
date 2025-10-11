@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using RentalTourismSystem.Data;
 using RentalTourismSystem.Models;
 using System.Globalization;
+using System.Security.Claims;
 
 namespace RentalTourismSystem.Controllers
 {
@@ -142,7 +143,7 @@ namespace RentalTourismSystem.Controllers
             }
         }
 
-        // POST: Locacoes/Create - VERSÃO CORRIGIDA COM DEBUG
+        // POST: Locacoes/Create - COM EXECUTION STRATEGY
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager,Employee")]
@@ -153,19 +154,6 @@ namespace RentalTourismSystem.Controllers
                 _logger.LogInformation("=== INICIANDO CRIAÇÃO DE LOCAÇÃO ===");
                 _logger.LogInformation("Dados recebidos: ClienteId={ClienteId}, VeiculoId={VeiculoId}, DataRetirada={DataRetirada}, DataDevolucao={DataDevolucao}, FuncionarioId={FuncionarioId}, AgenciaId={AgenciaId}",
                     locacao.ClienteId, locacao.VeiculoId, locacao.DataRetirada, locacao.DataDevolucao, locacao.FuncionarioId, locacao.AgenciaId);
-
-                // LOG: Verificar ModelState ANTES de remover itens
-                _logger.LogInformation("ModelState válido antes da limpeza: {IsValid}", ModelState.IsValid);
-                if (!ModelState.IsValid)
-                {
-                    foreach (var error in ModelState)
-                    {
-                        foreach (var errorMessage in error.Value.Errors)
-                        {
-                            _logger.LogWarning("ModelState Error (antes limpeza) - Campo: {Campo}, Erro: {Erro}", error.Key, errorMessage.ErrorMessage);
-                        }
-                    }
-                }
 
                 // Remover validações de navegação e de ValorTotal (será calculado no servidor)
                 ModelState.Remove("Agencia");
@@ -186,118 +174,84 @@ namespace RentalTourismSystem.Controllers
                     locacao.ValorTotal = await CalcularValorLocacao(locacao.VeiculoId, locacao.DataRetirada, locacao.DataDevolucao);
                 }
 
-                // LOG: Verificar ModelState APÓS a limpeza
-                _logger.LogInformation("ModelState válido após a limpeza: {IsValid}", ModelState.IsValid);
-
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
-                    _logger.LogInformation("ModelState válido, iniciando transação...");
+                    await CarregarViewBags(locacao, locacao?.VeiculoId, locacao?.ClienteId);
+                    return View(locacao);
+                }
 
+                _logger.LogInformation("ModelState válido, iniciando transação com execution strategy...");
+
+                // ✅ CORREÇÃO: Usar CreateExecutionStrategy para compatibilidade com retry
+                var strategy = _context.Database.CreateExecutionStrategy();
+                
+                await strategy.ExecuteAsync(async () =>
+                {
                     using var transaction = await _context.Database.BeginTransactionAsync();
                     try
                     {
                         _logger.LogInformation("Transação iniciada");
 
-                        // 1. Verificar disponibilidade novamente
-                        _logger.LogInformation("Verificando disponibilidade do veículo {VeiculoId}...", locacao.VeiculoId);
-                        var disponivel = await VerificarDisponibilidadeAsync(locacao.VeiculoId,
-                            locacao.DataRetirada, locacao.DataDevolucao);
-
+                        // 1) Validar disponibilidade e CNH novamente
+                        var disponivel = await VerificarDisponibilidadeAsync(locacao.VeiculoId, locacao.DataRetirada, locacao.DataDevolucao);
                         if (!disponivel)
                         {
                             _logger.LogWarning("Veículo {VeiculoId} não disponível no período", locacao.VeiculoId);
-                            ModelState.AddModelError(string.Empty, "Veículo não está mais disponível no período selecionado.");
-                            await CarregarViewBags(locacao, locacao.VeiculoId, locacao.ClienteId);
-                            return View(locacao);
+                            throw new InvalidOperationException("Veículo não está mais disponível no período selecionado.");
                         }
                         _logger.LogInformation("Veículo disponível");
 
-                        // 2. Validar se cliente tem CNH válida
-                        _logger.LogInformation("Validando CNH do cliente {ClienteId}...", locacao.ClienteId);
                         var validacaoCNH = await ValidarCNHCliente(locacao.ClienteId);
                         if (!validacaoCNH.IsValid)
                         {
                             _logger.LogWarning("CNH inválida: {ErrorMessage}", validacaoCNH.ErrorMessage);
-                            ModelState.AddModelError("ClienteId", validacaoCNH.ErrorMessage);
-                            await CarregarViewBags(locacao, locacao.VeiculoId, locacao.ClienteId);
-                            return View(locacao);
+                            throw new InvalidOperationException(validacaoCNH.ErrorMessage);
                         }
                         _logger.LogInformation("CNH válida");
 
-                        // LOG: Dados finais antes de salvar
-                        _logger.LogInformation("Dados finais da locação - ClienteId: {ClienteId}, VeiculoId: {VeiculoId}, DataRetirada: {DataRetirada}, DataDevolucao: {DataDevolucao}, ValorTotal: {ValorTotal}",
-                            locacao.ClienteId, locacao.VeiculoId, locacao.DataRetirada, locacao.DataDevolucao, locacao.ValorTotal);
+                        // 2) Atualizar status do veículo para Alugado e adicionar locação
+                        var statusAlugado = await _context.StatusCarros.FirstOrDefaultAsync(s => s.Status == "Alugado");
+                        var veiculo = await _context.Veiculos.FirstOrDefaultAsync(v => v.Id == locacao.VeiculoId);
+                        if (statusAlugado != null && veiculo != null)
+                        {
+                            veiculo.StatusCarroId = statusAlugado.Id;
+                            _context.Veiculos.Update(veiculo);
+                        }
 
-                        // 4. Criar locação
-                        _logger.LogInformation("Adicionando locação ao contexto...");
-                        _context.Add(locacao);
+                        _context.Locacoes.Add(locacao);
 
-                        _logger.LogInformation("Salvando no banco de dados...");
+                        // 3) Persistir tudo de uma vez
                         await _context.SaveChangesAsync();
-
-                        _logger.LogInformation("Locação criada com ID: {LocacaoId}", locacao.Id);
-
-                        // 5. Atualizar status do veículo para "Alugado"
-                        _logger.LogInformation("Atualizando status do veículo para 'Alugado'...");
-                        var statusAlugado = await _context.StatusCarros
-                            .FirstOrDefaultAsync(s => s.Status == "Alugado");
-
-                        if (statusAlugado != null)
-                        {
-                            var veiculo = await _context.Veiculos.FindAsync(locacao.VeiculoId);
-                            if (veiculo != null)
-                            {
-                                veiculo.StatusCarroId = statusAlugado.Id;
-                                _context.Update(veiculo);
-                                await _context.SaveChangesAsync();
-                                _logger.LogInformation("Status do veículo atualizado");
-                            }
-                            else
-                            {
-                                _logger.LogWarning("Veículo não encontrado para atualizar status");
-                            }
-                        }
-                        else
-                        {
-                            _logger.LogWarning("Status 'Alugado' não encontrado na tabela StatusCarros");
-                        }
-
                         await transaction.CommitAsync();
-                        _logger.LogInformation("Transação commitada com sucesso");
 
-                        _logger.LogInformation("Nova locação {LocacaoId} criada por {User}. Cliente: {ClienteId}, Veículo: {VeiculoId}, Período: {DataRetirada} a {DataDevolucao}",
-                            locacao.Id, User.Identity?.Name, locacao.ClienteId, locacao.VeiculoId,
-                            locacao.DataRetirada.ToString("dd/MM/yyyy"), locacao.DataDevolucao.ToString("dd/MM/yyyy"));
-
-                        TempData["Sucesso"] = "Locação criada com sucesso!";
-                        return RedirectToAction(nameof(Details), new { id = locacao.Id });
+                        _logger.LogInformation("Locação criada com sucesso. Id={LocacaoId}", locacao.Id);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        await transaction.RollbackAsync();
+                        throw; // Re-throw para capturar no catch externo
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        await transaction.RollbackAsync();
+                        _logger.LogError(ex, "DbUpdateException ao salvar locação. Mensagem: {Message}. Inner: {Inner}", ex.Message, ex.InnerException?.Message);
+                        throw new InvalidOperationException($"Erro ao processar locação: {ex.InnerException?.Message ?? ex.Message}", ex);
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        _logger.LogError(ex, "Erro na transação ao criar locação por {User}", User.Identity?.Name);
-                        ModelState.AddModelError(string.Empty, "Erro ao processar locação. Tente novamente.");
+                        _logger.LogError(ex, "Erro na transação ao criar locação");
+                        throw new InvalidOperationException("Erro ao processar locação. Tente novamente.", ex);
+                    }
+                });
 
-                        // LOG: Detalhes do erro
-                        _logger.LogError("Erro detalhado: {Message}", ex.Message);
-                        if (ex.InnerException != null)
-                        {
-                            _logger.LogError("Inner Exception: {InnerMessage}", ex.InnerException.Message);
-                        }
-                    }
-                }
-                else
-                {
-                    _logger.LogWarning("ModelState inválido, não foi possível criar a locação");
-                    // LOG: Todos os erros do ModelState
-                    foreach (var error in ModelState)
-                    {
-                        foreach (var errorMessage in error.Value.Errors)
-                        {
-                            _logger.LogWarning("ModelState Error - Campo: {Campo}, Erro: {Erro}", error.Key, errorMessage.ErrorMessage);
-                        }
-                    }
-                }
+                TempData["Sucesso"] = "Locação criada com sucesso!";
+                return RedirectToAction(nameof(Details), new { id = locacao.Id });
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Erro de validação ou negócio ao criar locação");
+                ModelState.AddModelError(string.Empty, ex.Message);
             }
             catch (Exception ex)
             {
@@ -355,6 +309,7 @@ namespace RentalTourismSystem.Controllers
         }
 
         // POST: Locacoes/Edit/5
+        // POST: Locacoes/Edit/5 - COM EXECUTION STRATEGY
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
@@ -369,43 +324,75 @@ namespace RentalTourismSystem.Controllers
 
             try
             {
-                    using var transaction = await _context.Database.BeginTransactionAsync();
-                    try
+                ModelState.Remove("Agencia");
+                ModelState.Remove("Cliente");
+                ModelState.Remove("Veiculo");
+                ModelState.Remove("Funcionario");
+
+                // Validação customizada: datas
+                if (locacao.DataDevolucao <= locacao.DataRetirada)
+                {
+                    ModelState.AddModelError(nameof(Locacao.DataDevolucao), "Data de devolução deve ser posterior à data de retirada.");
+                }
+
+                // ✅ RECALCULAR ValorTotal sempre no servidor com base nas datas atuais
+                if (locacao.VeiculoId > 0 && locacao.DataDevolucao > locacao.DataRetirada)
+                {
+                    var valorRecalculado = await CalcularValorLocacao(locacao.VeiculoId, locacao.DataRetirada, locacao.DataDevolucao);
+                    
+                    // Log para debug
+                    _logger.LogInformation("Recalculando valor na edição: VeiculoId={VeiculoId}, DataRetirada={DataRetirada}, DataDevolucao={DataDevolucao}, ValorRecalculado={ValorRecalculado}, ValorInformado={ValorInformado}",
+                        locacao.VeiculoId, locacao.DataRetirada, locacao.DataDevolucao, valorRecalculado, locacao.ValorTotal);
+                    
+                    // Atualizar o valor para o recalculado
+                    locacao.ValorTotal = valorRecalculado;
+                }
+
+                if (ModelState.IsValid)
+                {
+                    // ✅ CORREÇÃO: Usar ExecutionStrategy
+                    var strategy = _context.Database.CreateExecutionStrategy();
+
+                    await strategy.ExecuteAsync(async () =>
                     {
-                        var locacaoOriginal = await _context.Locacoes.AsNoTracking().FirstOrDefaultAsync(l => l.Id == id);
-
-                        // Se estava ativa e agora foi finalizada, liberar o veículo
-                        if (!locacaoOriginal.DataDevolucaoReal.HasValue && locacao.DataDevolucaoReal.HasValue)
+                        using var transaction = await _context.Database.BeginTransactionAsync();
+                        try
                         {
-                            var statusDisponivel = await _context.StatusCarros
-                                .FirstOrDefaultAsync(s => s.Status == "Disponível");
+                            var locacaoOriginal = await _context.Locacoes.AsNoTracking().FirstOrDefaultAsync(l => l.Id == id);
 
-                            if (statusDisponivel != null)
+                            // Se estava ativa e agora foi finalizada, liberar o veículo
+                            if (!locacaoOriginal.DataDevolucaoReal.HasValue && locacao.DataDevolucaoReal.HasValue)
                             {
-                                var veiculo = await _context.Veiculos.FindAsync(locacao.VeiculoId);
-                                if (veiculo != null)
+                                var statusDisponivel = await _context.StatusCarros
+                                    .FirstOrDefaultAsync(s => s.Status == "Disponível");
+
+                                if (statusDisponivel != null)
                                 {
-                                    veiculo.StatusCarroId = statusDisponivel.Id;
-                                    _context.Update(veiculo);
+                                    var veiculo = await _context.Veiculos.FindAsync(locacao.VeiculoId);
+                                    if (veiculo != null)
+                                    {
+                                        veiculo.StatusCarroId = statusDisponivel.Id;
+                                        _context.Update(veiculo);
+                                    }
                                 }
                             }
+
+                            _context.Update(locacao);
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+
+                            _logger.LogInformation("Locação {LocacaoId} atualizada por {User}. Novo valor total: {ValorTotal}", 
+                                locacao.Id, User.Identity?.Name, locacao.ValorTotal);
                         }
+                        catch
+                        {
+                            await transaction.RollbackAsync();
+                            throw;
+                        }
+                    });
 
-                        _context.Update(locacao);
-                        await _context.SaveChangesAsync();
-                        await transaction.CommitAsync();
-
-                        _logger.LogInformation("Locação {LocacaoId} atualizada por {User}", locacao.Id, User.Identity?.Name);
-
-                        TempData["Sucesso"] = "Locação atualizada com sucesso!";
-                        return RedirectToAction(nameof(Details), new { id = locacao.Id });
-                    }
-                    catch (Exception ex)
-                    {
-                        await transaction.RollbackAsync();
-                        _logger.LogError(ex, "Erro na transação ao editar locação {LocacaoId} por {User}", locacao.Id, User.Identity?.Name);
-                        throw;
-                    }
+                    TempData["Sucesso"] = "Locação atualizada com sucesso!";
+                    return RedirectToAction(nameof(Details), new { id = locacao.Id });
                 }
             }
             catch (DbUpdateConcurrencyException ex)
@@ -432,6 +419,7 @@ namespace RentalTourismSystem.Controllers
         }
 
         // POST: Finalizar Locação - Todos os funcionários podem finalizar
+        // POST: Finalizar Locação - COM EXECUTION STRATEGY
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager,Employee")]
@@ -455,57 +443,64 @@ namespace RentalTourismSystem.Controllers
                     return RedirectToAction(nameof(Details), new { id = id });
                 }
 
-                using var transaction = await _context.Database.BeginTransactionAsync();
-                try
+                // ✅ CORREÇÃO: Usar ExecutionStrategy
+                var strategy = _context.Database.CreateExecutionStrategy();
+
+                await strategy.ExecuteAsync(async () =>
                 {
-                    // Atualizar dados da devolução
-                    locacao.DataDevolucaoReal = DateTime.Now;
-                    if (quilometragemDevolucao.HasValue)
+                    using var transaction = await _context.Database.BeginTransactionAsync();
+                    try
                     {
-                        locacao.QuilometragemDevolucao = quilometragemDevolucao.Value;
-                        // Atualizar quilometragem do veículo
-                        locacao.Veiculo.Quilometragem = quilometragemDevolucao.Value;
-                    }
+                        // Atualizar dados da devolução
+                        locacao.DataDevolucaoReal = DateTime.Now;
+                        if (quilometragemDevolucao.HasValue)
+                        {
+                            locacao.QuilometragemDevolucao = quilometragemDevolucao.Value;
+                            // Atualizar quilometragem do veículo
+                            locacao.Veiculo.Quilometragem = quilometragemDevolucao.Value;
+                        }
 
-                    if (!string.IsNullOrEmpty(observacoesDevolucao))
+                        if (!string.IsNullOrEmpty(observacoesDevolucao))
+                        {
+                            locacao.Observacoes = string.IsNullOrEmpty(locacao.Observacoes)
+                                ? $"Devolução: {observacoesDevolucao}"
+                                : $"{locacao.Observacoes}\n\nDevolução: {observacoesDevolucao}";
+                        }
+
+                        // Calcular multa por atraso se necessário
+                        if (locacao.DataDevolucaoReal > locacao.DataDevolucao)
+                        {
+                            var diasAtraso = (int)Math.Ceiling((locacao.DataDevolucaoReal.Value - locacao.DataDevolucao).TotalDays);
+                            // Implementar lógica de multa aqui se necessário
+                        }
+
+                        // Alterar status do veículo para "Disponível"
+                        var statusDisponivel = await _context.StatusCarros
+                            .FirstOrDefaultAsync(s => s.Status == "Disponível");
+
+                        if (statusDisponivel != null)
+                        {
+                            locacao.Veiculo.StatusCarroId = statusDisponivel.Id;
+                        }
+
+                        _context.Update(locacao);
+                        _context.Update(locacao.Veiculo);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+
+                        _logger.LogInformation("Locação {LocacaoId} finalizada por {User} em {DataDevolucao}",
+                            id, User.Identity?.Name, locacao.DataDevolucaoReal);
+
+                        TempData["Sucesso"] = "Locação finalizada com sucesso!";
+                    }
+                    catch (Exception ex)
                     {
-                        locacao.Observacoes = string.IsNullOrEmpty(locacao.Observacoes)
-                            ? $"Devolução: {observacoesDevolucao}"
-                            : $"{locacao.Observacoes}\n\nDevolução: {observacoesDevolucao}";
+                        await transaction.RollbackAsync();
+                        _logger.LogError(ex, "Erro ao finalizar locação {LocacaoId} por {User}", id, User.Identity?.Name);
+                        TempData["Erro"] = "Erro ao finalizar locação. Tente novamente.";
+                        throw;
                     }
-
-                    // Calcular multa por atraso se necessário
-                    if (locacao.DataDevolucaoReal > locacao.DataDevolucao)
-                    {
-                        var diasAtraso = (int)Math.Ceiling((locacao.DataDevolucaoReal.Value - locacao.DataDevolucao).TotalDays);
-                        // Implementar lógica de multa aqui se necessário
-                    }
-
-                    // Alterar status do veículo para "Disponível"
-                    var statusDisponivel = await _context.StatusCarros
-                        .FirstOrDefaultAsync(s => s.Status == "Disponível");
-
-                    if (statusDisponivel != null)
-                    {
-                        locacao.Veiculo.StatusCarroId = statusDisponivel.Id;
-                    }
-
-                    _context.Update(locacao);
-                    _context.Update(locacao.Veiculo);
-                    await _context.SaveChangesAsync();
-                    await transaction.CommitAsync();
-
-                    _logger.LogInformation("Locação {LocacaoId} finalizada por {User} em {DataDevolucao}",
-                        id, User.Identity?.Name, locacao.DataDevolucaoReal);
-
-                    TempData["Sucesso"] = "Locação finalizada com sucesso!";
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    _logger.LogError(ex, "Erro ao finalizar locação {LocacaoId} por {User}", id, User.Identity?.Name);
-                    TempData["Erro"] = "Erro ao finalizar locação. Tente novamente.";
-                }
+                });
             }
             catch (Exception ex)
             {
@@ -566,6 +561,7 @@ namespace RentalTourismSystem.Controllers
         }
 
         // POST: Locacoes/Delete/5
+        // POST: Locacoes/Delete/5 - COM EXECUTION STRATEGY
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -586,22 +582,29 @@ namespace RentalTourismSystem.Controllers
                         return RedirectToAction(nameof(Delete), new { id = id });
                     }
 
-                    using var transaction = await _context.Database.BeginTransactionAsync();
-                    try
-                    {
-                        _context.Locacoes.Remove(locacao);
-                        await _context.SaveChangesAsync();
-                        await transaction.CommitAsync();
+                    // ✅ CORREÇÃO: Usar ExecutionStrategy
+                    var strategy = _context.Database.CreateExecutionStrategy();
 
-                        _logger.LogInformation("Locação {LocacaoId} excluída por {User}", id, User.Identity?.Name);
-                        TempData["Sucesso"] = "Locação excluída com sucesso!";
-                    }
-                    catch (Exception ex)
+                    await strategy.ExecuteAsync(async () =>
                     {
-                        await transaction.RollbackAsync();
-                        _logger.LogError(ex, "Erro na transação ao excluir locação {LocacaoId} por {User}", id, User.Identity?.Name);
-                        TempData["Erro"] = "Erro ao excluir locação. Tente novamente.";
-                    }
+                        using var transaction = await _context.Database.BeginTransactionAsync();
+                        try
+                        {
+                            _context.Locacoes.Remove(locacao);
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+
+                            _logger.LogInformation("Locação {LocacaoId} excluída por {User}", id, User.Identity?.Name);
+                            TempData["Sucesso"] = "Locação excluída com sucesso!";
+                        }
+                        catch (Exception ex)
+                        {
+                            await transaction.RollbackAsync();
+                            _logger.LogError(ex, "Erro na transação ao excluir locação {LocacaoId} por {User}", id, User.Identity?.Name);
+                            TempData["Erro"] = "Erro ao excluir locação. Tente novamente.";
+                            throw;
+                        }
+                    });
                 }
                 else
                 {
@@ -631,6 +634,7 @@ namespace RentalTourismSystem.Controllers
             {
                 // Carregar clientes com CNH válida
                 var clientesList = await _context.Clientes
+                    .AsNoTracking()
                     .Where(c => !string.IsNullOrEmpty(c.CNH) &&
                                c.ValidadeCNH.HasValue &&
                                c.ValidadeCNH.Value.Date >= DateTime.Now.Date)
@@ -643,6 +647,7 @@ namespace RentalTourismSystem.Controllers
 
                 // Carregar veículos disponíveis ou o veículo atual/pré-selecionado
                 var veiculosQuery = _context.Veiculos
+                    .AsNoTracking()
                     .Include(v => v.StatusCarro)
                     .Include(v => v.Agencia)
                     .Where(v => v.StatusCarro.Status == "Disponível" ||
@@ -662,13 +667,60 @@ namespace RentalTourismSystem.Controllers
                 ViewBag.VeiculoId = new SelectList(veiculosSelectList, "Value", "Text");
 
                 // Carregar funcionários
+                var funcionarios = await _context.Funcionarios
+                    .AsNoTracking()
+                    .OrderBy(f => f.Nome)
+                    .ToListAsync();
+
+                // Fallback: incluir funcionário do usuário logado se lista veio vazia
+                if (funcionarios.Count == 0)
+                {
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    if (!string.IsNullOrEmpty(userId))
+                    {
+                        var usuario = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+                        if (usuario?.FuncionarioId != null)
+                        {
+                            var func = await _context.Funcionarios.AsNoTracking().FirstOrDefaultAsync(f => f.Id == usuario.FuncionarioId.Value);
+                            if (func != null)
+                            {
+                                funcionarios.Add(func);
+                                _logger.LogWarning("Lista de funcionários estava vazia. Adicionando funcionário do usuário logado: {FuncionarioId}", func.Id);
+                            }
+                        }
+                    }
+                }
+
                 ViewBag.FuncionarioId = new SelectList(
-                    await _context.Funcionarios.OrderBy(f => f.Nome).ToListAsync(),
+                    funcionarios,
                     "Id", "Nome", locacao?.FuncionarioId);
 
                 // Carregar agências
+                var agencias = await _context.Agencias
+                    .AsNoTracking()
+                    .OrderBy(a => a.Nome)
+                    .ToListAsync();
+
+                if (agencias.Count == 0)
+                {
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    if (!string.IsNullOrEmpty(userId))
+                    {
+                        var usuario = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+                        if (usuario?.AgenciaId != null)
+                        {
+                            var ag = await _context.Agencias.AsNoTracking().FirstOrDefaultAsync(a => a.Id == usuario.AgenciaId.Value);
+                            if (ag != null)
+                            {
+                                agencias.Add(ag);
+                                _logger.LogWarning("Lista de agências estava vazia. Adicionando agência do usuário logado: {AgenciaId}", ag.Id);
+                            }
+                        }
+                    }
+                }
+
                 ViewBag.AgenciaId = new SelectList(
-                    await _context.Agencias.OrderBy(a => a.Nome).ToListAsync(),
+                    agencias,
                     "Id", "Nome", locacao?.AgenciaId);
 
                 // Informações adicionais para a view
@@ -676,7 +728,8 @@ namespace RentalTourismSystem.Controllers
                 ViewBag.ClienteIdPreSelecionado = clientePreSelecionado;
                 ViewBag.TotalVeiculosDisponiveis = veiculos.Count();
 
-                _logger.LogInformation("ViewBags carregadas com sucesso. Veículos disponíveis: {Count}", veiculos.Count);
+                _logger.LogInformation("ViewBags carregadas. Clientes={Clientes}, Veiculos={Veiculos}, Funcionarios={Funcionarios}, Agencias={Agencias}",
+                    clientesList.Count, veiculos.Count, funcionarios.Count, agencias.Count);
             }
             catch (Exception ex)
             {
@@ -732,6 +785,7 @@ namespace RentalTourismSystem.Controllers
             if (veiculo == null) return 0;
 
             var totalDias = (int)Math.Ceiling((dataDevolucao - dataRetirada).TotalDays);
+            if (totalDias <= 0) return 0;
             return totalDias * veiculo.ValorDiaria;
         }
 
@@ -876,7 +930,7 @@ namespace RentalTourismSystem.Controllers
                 if (veiculo == null) return Json(new { valor = 0, totalDias = 0 });
 
                 var totalDias = (int)Math.Ceiling((dataDevolucao - dataRetirada).TotalDays);
-                var valorCalculado = totalDias * veiculo.ValorDiaria;
+                var valorCalculado = totalDias > 0 ? totalDias * veiculo.ValorDiaria : 0;
 
                 _logger.LogInformation("Diária: {ValorDiaria}, Dias: {TotalDias}, Total: {ValorCalculado}",
                     veiculo.ValorDiaria, totalDias, valorCalculado);

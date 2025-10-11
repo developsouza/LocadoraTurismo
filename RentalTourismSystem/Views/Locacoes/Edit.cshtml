@@ -555,17 +555,58 @@
             }
         }
 
-        function calcularValorTotal() {
+        async function calcularValorTotal() {
+            const veiculoId = $('select[name="VeiculoId"]').val();
             const dataRetirada = $('input[name="DataRetirada"]').val();
             const dataDevolucao = $('input[name="DataDevolucao"]').val();
 
-            if (dataRetirada && dataDevolucao) {
-                const inicio = new Date(dataRetirada);
-                const fim = new Date(dataDevolucao);
-                const diffTime = fim.getTime() - inicio.getTime();
-                const dias = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+            if (!veiculoId || !dataRetirada || !dataDevolucao) {
+                return;
+            }
 
-                atualizarInfoValor(dias);
+            // Validar se data de devolução é posterior à retirada
+            const inicio = new Date(dataRetirada);
+            const fim = new Date(dataDevolucao);
+            
+            if (fim <= inicio) {
+                return;
+            }
+
+            try {
+                // Mostrar indicador de carregamento
+                const valorInput = $('input[name="ValorTotal"]');
+                const valorOriginal = valorInput.val();
+                valorInput.prop('disabled', true);
+                $('#valor-info').html('<i class="fas fa-spinner fa-spin me-1"></i>Calculando...');
+
+                // Chamar API para calcular valor
+                const response = await fetch(`@Url.Action("CalcularValor")?veiculoId=${veiculoId}&dataRetirada=${encodeURIComponent(dataRetirada)}&dataDevolucao=${encodeURIComponent(dataDevolucao)}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.valor > 0) {
+                        // Atualizar valor total
+                        valorInput.val(data.valor.toFixed(2));
+                        
+                        // Atualizar informações visuais
+                        atualizarInfoValor(data.totalDias);
+                        
+                        // Mostrar notificação de recálculo
+                        if (parseFloat(valorOriginal) !== data.valor) {
+                            mostrarInfo(`Valor recalculado: ${data.totalDias} dia(s) × R$ ${(data.valor / data.totalDias).toFixed(2)} = R$ ${data.valor.toFixed(2)}`);
+                        }
+                    }
+                } else {
+                    console.error('Erro ao calcular valor:', response.statusText);
+                    mostrarErro('Erro ao calcular valor. Verifique os dados informados.');
+                }
+            } catch (error) {
+                console.error('Erro ao calcular valor:', error);
+                mostrarErro('Erro ao calcular valor. Tente novamente.');
+            } finally {
+                // Reabilitar campo
+                $('input[name="ValorTotal"]').prop('disabled', false);
             }
         }
 

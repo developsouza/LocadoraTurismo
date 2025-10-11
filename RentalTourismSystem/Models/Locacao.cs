@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace RentalTourismSystem.Models
 {
@@ -23,21 +24,36 @@ namespace RentalTourismSystem.Models
         [StringLength(500)]
         public string? Observacoes { get; set; }
 
-        [Required]
+        // Quilometragens
+        [NotMapped]
+        [Range(0, int.MaxValue)]
+        public int QuilometragemRetirada { get; set; }
+
+        public int QuilometragemDevolucao { get; set; }
+
+        // IDs obrigatórios e não podem ser 0
+        [Range(1, int.MaxValue, ErrorMessage = "Selecione um cliente válido")]
         public int ClienteId { get; set; }
-        public virtual Cliente Cliente { get; set; }
 
-        [Required]
+        [ValidateNever]
+        public virtual Cliente? Cliente { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = "Selecione um veículo válido")]
         public int VeiculoId { get; set; }
-        public virtual Veiculo Veiculo { get; set; }
 
-        [Required]
+        [ValidateNever]
+        public virtual Veiculo? Veiculo { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = "Selecione um funcionário válido")]
         public int FuncionarioId { get; set; }
-        public virtual Funcionario Funcionario { get; set; }
 
-        [Required]
+        [ValidateNever]
+        public virtual Funcionario? Funcionario { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = "Selecione uma agência válida")]
         public int AgenciaId { get; set; }
-        public virtual Agencia Agencia { get; set; }
-        public int QuilometragemDevolucao { get; internal set; }
+
+        [ValidateNever]
+        public virtual Agencia? Agencia { get; set; }
     }
 }
