@@ -71,5 +71,6 @@ namespace RentalTourismSystem.Models
         public virtual Agencia? Agencia { get; set; }
 
         public virtual ICollection<Locacao> Locacoes { get; set; } = new List<Locacao>();
+        public virtual ICollection<Documento> Documentos { get; set; } = new List<Documento>();
     }
 }

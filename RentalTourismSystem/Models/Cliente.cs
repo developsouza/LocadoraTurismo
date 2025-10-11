@@ -101,6 +101,7 @@ namespace RentalTourismSystem.Models
         // Navigation properties
         public virtual ICollection<Locacao> Locacoes { get; set; } = new List<Locacao>();
         public virtual ICollection<ReservaViagem> ReservasViagens { get; set; } = new List<ReservaViagem>();
+        public virtual ICollection<Documento> Documentos { get; set; } = new List<Documento>();
     }
 
     public class ValidadeCNHAttribute : ValidationAttribute

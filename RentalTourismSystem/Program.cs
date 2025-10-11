@@ -220,6 +220,7 @@ builder.Services.AddScoped<IRelatorioService, RelatorioService>();
 builder.Services.AddScoped<ILocacaoService, LocacaoService>();
 builder.Services.AddScoped<IVeiculoService, VeiculoService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddHostedService<NotificationBackgroundService>();
 
 // ===== CONFIGURAÇÃO DE CACHE =====

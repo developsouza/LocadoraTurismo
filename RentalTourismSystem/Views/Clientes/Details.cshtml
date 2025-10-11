@@ -63,6 +63,9 @@
                 <button type="button" class="btn btn-outline-info btn-sm" onclick="validarDadosCompletos()">
                     <i class="fas fa-check-circle me-1"></i>Validar Dados
                 </button>
+                <a asp-controller="DocumentosUpload" asp-action="UploadCliente" asp-route-id="@Model.Id" class="btn btn-info hover-lift">
+                    <i class="fas fa-file-upload me-1"></i>Documentos
+                </a>
                 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning hover-lift">
                     <i class="fas fa-edit me-1"></i>Editar
                 </a>

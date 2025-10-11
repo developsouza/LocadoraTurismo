@@ -1,0 +1,403 @@
+@{
+    ViewData["Title"] = $"Upload de Documentos - {ViewBag.VeiculoInfo}";
+    var veiculoId = (int)ViewBag.VeiculoId;
+    var tiposDocumento = ViewBag.TiposDocumento as List<string>;
+    var documentosExistentes = ViewBag.DocumentosExistentes as List<RentalTourismSystem.Models.Documento>;
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-gradient">
+            <i class="fas fa-file-upload me-2"></i>Upload de Documentos do Veículo
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Veiculos" asp-action="Index">Veículos</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Veiculos" asp-action="Details" asp-route-id="@veiculoId">@ViewBag.VeiculoInfo</a></li>
+                <li class="breadcrumb-item active">Upload de Documentos</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Formulário de Upload -->
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-cloud-upload-alt me-2"></i>Enviar Novo Documento
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="formUpload" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="veiculoId" value="@veiculoId" />
+
+                    <div class="mb-3">
+                        <label for="tipoDocumento" class="form-label required">Tipo de Documento:</label>
+                        <select class="form-select" id="tipoDocumento" name="tipoDocumento" required>
+                            <option value="">Selecione o tipo...</option>
+                            @foreach (var tipo in tiposDocumento)
+                            {
+                                <option value="@tipo">@tipo</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="arquivo" class="form-label required">Arquivo:</label>
+                        <input type="file" class="form-control" id="arquivo" name="arquivo" 
+                               accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp" required />
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Formatos aceitos: PDF, JPG, PNG, GIF, BMP (Tamanho máximo: 10MB)
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="descricao" class="form-label">Descrição (opcional):</label>
+                        <textarea class="form-control" id="descricao" name="descricao" rows="3"
+                                  placeholder="Adicione observações sobre o documento..."></textarea>
+                    </div>
+
+                    <!-- Preview do arquivo -->
+                    <div id="preview" class="mb-3" style="display: none;">
+                        <label class="form-label">Preview:</label>
+                        <div id="previewContent" class="border rounded p-3 text-center">
+                            <img id="previewImage" src="" alt="Preview" class="img-fluid" style="max-height: 200px; display: none;" />
+                            <div id="previewPdf" style="display: none;">
+                                <i class="fas fa-file-pdf fa-4x text-danger"></i>
+                                <p class="mt-2 mb-0"><span id="nomeArquivo"></span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary" id="btnEnviar">
+                            <i class="fas fa-upload me-1"></i>Enviar Documento
+                        </button>
+                        <a asp-controller="Veiculos" asp-action="Details" asp-route-id="@veiculoId" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Voltar para Veículo
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Informações -->
+        <div class="card mt-3 border-info">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0"><i class="fas fa-info-circle me-1"></i>Informações</h6>
+            </div>
+            <div class="card-body">
+                <p class="small mb-2"><strong>Veículo:</strong> @ViewBag.VeiculoInfo</p>
+                <p class="small mb-2"><strong>Documentos permitidos:</strong></p>
+                <ul class="small mb-0">
+                    <li>CRLV (Certificado de Registro e Licenciamento do Veículo)</li>
+                    <li>Nota Fiscal</li>
+                    <li>Apólice de Seguro</li>
+                    <li>Comprovante de IPVA</li>
+                    <li>Fotos do Veículo</li>
+                    <li>Outros documentos relevantes</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Documentos Existentes -->
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header bg-adaptive-light">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-folder-open me-2"></i>Documentos Enviados
+                    </h5>
+                    <span class="badge bg-primary" id="contadorDocumentos">
+                        @(documentosExistentes?.Count ?? 0) documento(s)
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="listaDocumentos">
+                    @if (documentosExistentes != null && documentosExistentes.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var doc in documentosExistentes)
+                            {
+                                <div class="list-group-item documento-item" data-documento-id="@doc.Id">
+                                    <div class="d-flex align-items-start">
+                                        <div class="me-3">
+                                            <i class="fas @doc.IconeFont fa-2x @doc.IconeColor"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h6 class="mb-1">@doc.NomeArquivo</h6>
+                                                    <p class="mb-1 small">
+                                                        <span class="badge bg-secondary">@doc.TipoDocumento</span>
+                                                        <span class="text-muted ms-2">@doc.TamanhoFormatado</span>
+                                                    </p>
+                                                    @if (!string.IsNullOrEmpty(doc.Descricao))
+                                                    {
+                                                        <p class="mb-1 small text-muted"><i class="fas fa-comment me-1"></i>@doc.Descricao</p>
+                                                    }
+                                                    <p class="mb-0 small text-muted">
+                                                        <i class="fas fa-calendar me-1"></i>@doc.DataUpload.ToString("dd/MM/yyyy HH:mm")
+                                                        @if (!string.IsNullOrEmpty(doc.UsuarioUpload))
+                                                        {
+                                                            <span class="ms-2"><i class="fas fa-user me-1"></i>@doc.UsuarioUpload</span>
+                                                        }
+                                                    </p>
+                                                </div>
+                                                <div class="btn-group btn-group-sm">
+                                                    @if (doc.EhImagem)
+                                                    {
+                                                        <a href="@Url.Action("Visualizar", "DocumentosUpload", new { id = doc.Id })" 
+                                                           target="_blank" class="btn btn-outline-info" title="Visualizar">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    }
+                                                    <a href="@Url.Action("Download", "DocumentosUpload", new { id = doc.Id })" 
+                                                       class="btn btn-outline-primary" title="Baixar">
+                                                        <i class="fas fa-download"></i>
+                                                    </a>
+                                                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                                    {
+                                                        <button type="button" class="btn btn-outline-danger btn-excluir" 
+                                                                data-documento-id="@doc.Id" title="Excluir">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5 empty-state">
+                            <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
+                            <h5 class="text-muted">Nenhum documento enviado</h5>
+                            <p class="text-muted">Envie o primeiro documento usando o formulário ao lado.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Preview do arquivo selecionado
+            $('#arquivo').on('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    $('#nomeArquivo').text(file.name);
+                    
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            $('#previewImage').attr('src', e.target.result).show();
+                            $('#previewPdf').hide();
+                            $('#preview').show();
+                        };
+                        reader.readAsDataURL(file);
+                    } else if (file.type === 'application/pdf') {
+                        $('#previewImage').hide();
+                        $('#previewPdf').show();
+                        $('#preview').show();
+                    }
+                }
+            });
+
+            // Submit do formulário via AJAX
+            $('#formUpload').on('submit', async function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+                const btnEnviar = $('#btnEnviar');
+                const textoOriginal = btnEnviar.html();
+
+                // Desabilitar botão e mostrar loading
+                btnEnviar.prop('disabled', true)
+                         .html('<i class="fas fa-spinner fa-spin me-1"></i>Enviando...');
+
+                try {
+                    const response = await fetch('@Url.Action("UploadVeiculo")', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const resultado = await response.json();
+
+                    if (resultado.success) {
+                        showNotification('success', resultado.message);
+                        
+                        // Limpar formulário
+                        $('#formUpload')[0].reset();
+                        $('#preview').hide();
+                        
+                        // Recarregar lista de documentos
+                        await recarregarDocumentos();
+                    } else {
+                        showNotification('error', resultado.message);
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    showNotification('error', 'Erro ao enviar documento');
+                } finally {
+                    btnEnviar.prop('disabled', false).html(textoOriginal);
+                }
+            });
+
+            // Excluir documento
+            $(document).on('click', '.btn-excluir', async function() {
+                const documentoId = $(this).data('documento-id');
+                
+                if (!confirm('Deseja realmente excluir este documento?')) {
+                    return;
+                }
+
+                try {
+                    const token = $('input[name="__RequestVerificationToken"]').val();
+                    const formData = new FormData();
+                    formData.append('__RequestVerificationToken', token);
+
+                    const response = await fetch(`@Url.Action("Excluir")?id=${documentoId}`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const resultado = await response.json();
+
+                    if (resultado.success) {
+                        showNotification('success', resultado.message);
+                        $(`.documento-item[data-documento-id="${documentoId}"]`).fadeOut(300, function() {
+                            $(this).remove();
+                            atualizarContador();
+                        });
+                    } else {
+                        showNotification('error', resultado.message);
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    showNotification('error', 'Erro ao excluir documento');
+                }
+            });
+        });
+
+        // Recarregar lista de documentos
+        async function recarregarDocumentos() {
+            try {
+                const veiculoId = @veiculoId;
+                const response = await fetch(`@Url.Action("ListarPorVeiculo")?veiculoId=${veiculoId}`);
+                const documentos = await response.json();
+
+                if (documentos.length === 0) {
+                    $('#listaDocumentos').html(`
+                        <div class="text-center py-5 empty-state">
+                            <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
+                            <h5 class="text-muted">Nenhum documento enviado</h5>
+                            <p class="text-muted">Envie o primeiro documento usando o formulário ao lado.</p>
+                        </div>
+                    `);
+                } else {
+                    let html = '<div class="list-group">';
+                    documentos.forEach(doc => {
+                        const visualizarBtn = doc.ehImagem ? 
+                            `<a href="/DocumentosUpload/Visualizar/${doc.id}" target="_blank" class="btn btn-outline-info" title="Visualizar">
+                                <i class="fas fa-eye"></i>
+                            </a>` : '';
+
+                        html += `
+                            <div class="list-group-item documento-item" data-documento-id="${doc.id}">
+                                <div class="d-flex align-items-start">
+                                    <div class="me-3">
+                                        <i class="fas ${doc.iconeFont} fa-2x ${doc.iconeColor}"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="mb-1">${doc.nomeArquivo}</h6>
+                                                <p class="mb-1 small">
+                                                    <span class="badge bg-secondary">${doc.tipoDocumento}</span>
+                                                    <span class="text-muted ms-2">${doc.tamanhoFormatado}</span>
+                                                </p>
+                                                ${doc.descricao ? `<p class="mb-1 small text-muted"><i class="fas fa-comment me-1"></i>${doc.descricao}</p>` : ''}
+                                                <p class="mb-0 small text-muted">
+                                                    <i class="fas fa-calendar me-1"></i>${doc.dataUpload}
+                                                </p>
+                                            </div>
+                                            <div class="btn-group btn-group-sm">
+                                                ${visualizarBtn}
+                                                <a href="/DocumentosUpload/Download/${doc.id}" class="btn btn-outline-primary" title="Baixar">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-outline-danger btn-excluir" 
+                                                        data-documento-id="${doc.id}" title="Excluir">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    $('#listaDocumentos').html(html);
+                }
+
+                atualizarContador();
+            } catch (error) {
+                console.error('Erro ao recarregar documentos:', error);
+            }
+        }
+
+        function atualizarContador() {
+            const total = $('.documento-item').length;
+            $('#contadorDocumentos').text(`${total} documento(s)`);
+            
+            if (total === 0) {
+                $('#listaDocumentos').html(`
+                    <div class="text-center py-5 empty-state">
+                        <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
+                        <h5 class="text-muted">Nenhum documento enviado</h5>
+                        <p class="text-muted">Envie o primeiro documento usando o formulário ao lado.</p>
+                    </div>
+                `);
+            }
+        }
+
+        function showNotification(type, message) {
+            const bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            
+            const toast = `
+                <div class="toast align-items-center text-white ${bgClass} border-0 position-fixed bottom-0 end-0 m-3" 
+                     role="alert" style="z-index: 9999;">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="fas ${icon} me-2"></i>${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `;
+            
+            const $toast = $(toast).appendTo('body');
+            const bsToast = new bootstrap.Toast($toast[0], { delay: 3000 });
+            bsToast.show();
+            
+            $toast.on('hidden.bs.toast', function() {
+                $(this).remove();
+            });
+        }
+    </script>
+}

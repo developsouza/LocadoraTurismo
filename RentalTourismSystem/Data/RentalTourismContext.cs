@@ -21,6 +21,7 @@ namespace RentalTourismSystem.Data
         public DbSet<ReservaViagem> ReservasViagens { get; set; }
         public DbSet<ServicoAdicional> ServicosAdicionais { get; set; }
         public DbSet<Notificacao> Notificacoes { get; set; }
+        public DbSet<Documento> Documentos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -92,6 +93,35 @@ namespace RentalTourismSystem.Data
                 .WithMany(r => r.ServicosAdicionais)
                 .HasForeignKey(s => s.ReservaViagemId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Documento>(entity =>
+            {
+                entity.HasIndex(e => e.DataUpload);
+                entity.HasIndex(e => e.TipoDocumento);
+                entity.HasIndex(e => e.ClienteId);
+                entity.HasIndex(e => e.VeiculoId);
+                entity.HasIndex(e => e.FuncionarioId);
+
+                entity.HasOne(e => e.Cliente)
+                    .WithMany(c => c.Documentos)
+                    .HasForeignKey(e => e.ClienteId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Veiculo)
+                    .WithMany(v => v.Documentos)
+                    .HasForeignKey(e => e.VeiculoId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Funcionario)
+                    .WithMany()
+                    .HasForeignKey(e => e.FuncionarioId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.ApplicationUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.ApplicationUserId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
 
             // ========== CONFIGURAÇÕES DE ÍNDICES ÚNICOS ==========
 

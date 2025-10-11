@@ -300,34 +300,77 @@
                 }
             });
 
-            // Validação de CNH
-            $('input[name="CNH"], input[name="ValidadeCNH"]').on('blur', function() {
-                let cnh = $('input[name="CNH"]').val();
+            // Validação de CNH - CORRIGIDA para não bloquear digitação
+            let cnhValidationTimeout;
+            
+            $('input[name="CNH"], input[name="ValidadeCNH"], select[name="CategoriaCNH"]').on('input change', function() {
+                // Limpar timeout anterior para evitar validações múltiplas
+                clearTimeout(cnhValidationTimeout);
+                
+                // Aguardar 500ms após parar de digitar para validar
+                cnhValidationTimeout = setTimeout(function() {
+                    validarCNH();
+                }, 500);
+            });
+
+            function validarCNH() {
+                let cnh = $('input[name="CNH"]').val().trim();
                 let validade = $('input[name="ValidadeCNH"]').val();
-
-                // Só valida se os campos tiverem valores completos
+                let categoria = $('select[name="CategoriaCNH"]').val();
+                
+                let $cnhInput = $('input[name="CNH"]');
+                let $validadeInput = $('input[name="ValidadeCNH"]');
+                let $categoriaSelect = $('select[name="CategoriaCNH"]');
+                
+                // Remover classes de erro anteriores
+                $cnhInput.removeClass('is-invalid');
+                $validadeInput.removeClass('is-invalid');
+                $categoriaSelect.removeClass('is-invalid');
+                
+                // Remover mensagens de erro anteriores
+                $('.cnh-error-message').remove();
+                
+                // Se nenhum campo da CNH estiver preenchido, não validar
+                if (!cnh && !validade && !categoria) {
+                    return;
+                }
+                
+                // Validar campos relacionados
                 if (cnh && !validade) {
-                    alert('⚠️ Se informar o número da CNH, deve informar também a validade.');
+                    $validadeInput.addClass('is-invalid');
+                    $validadeInput.after('<small class="text-danger small cnh-error-message d-block">Informe a validade da CNH</small>');
                 }
-
+                
+                if (cnh && !categoria) {
+                    $categoriaSelect.addClass('is-invalid');
+                    $categoriaSelect.after('<small class="text-danger small cnh-error-message d-block">Informe a categoria da CNH</small>');
+                }
+                
                 if (validade && !cnh) {
-                    alert('⚠️ Se informar a validade da CNH, deve informar também o número.');
+                    $cnhInput.addClass('is-invalid');
+                    $cnhInput.after('<small class="text-danger small cnh-error-message d-block">Informe o número da CNH</small>');
                 }
-
-                // Só valida a data se ambos os campos estiverem preenchidos e a data estiver completa
+                
+                if (categoria && !cnh) {
+                    $cnhInput.addClass('is-invalid');
+                    if (!$cnhInput.next('.cnh-error-message').length) {
+                        $cnhInput.after('<small class="text-danger small cnh-error-message d-block">Informe o número da CNH</small>');
+                    }
+                }
+                
+                // Validar data de validade
                 if (cnh && validade && validade.length === 10) {
                     let dataValidade = new Date(validade);
                     let hoje = new Date();
-                    hoje.setHours(0, 0, 0, 0); // Zera as horas para comparar apenas a data
-
+                    hoje.setHours(0, 0, 0, 0);
+                    
                     if (dataValidade < hoje) {
-                        alert('⚠️ A CNH está vencida. Data de validade: ' + dataValidade.toLocaleDateString('pt-BR'));
-                        $('input[name="ValidadeCNH"]').addClass('is-invalid');
-                    } else {
-                        $('input[name="ValidadeCNH"]').removeClass('is-invalid');
+                        $validadeInput.addClass('is-invalid');
+                        $('.cnh-error-message').remove();
+                        $validadeInput.after('<small class="text-danger small cnh-error-message d-block">A CNH está vencida</small>');
                     }
                 }
-            });
+            }
 
             // Feedback visual de validação
             $('form').on('submit', function(e) {
@@ -342,10 +385,18 @@
                         $(this).removeClass('is-invalid');
                     }
                 });
+                
+                // Validar CNH antes de submeter
+                validarCNH();
+                
+                // Verificar se há campos inválidos (incluindo CNH)
+                if ($('.is-invalid').length > 0) {
+                    isValid = false;
+                }
 
                 if (!isValid) {
                     e.preventDefault();
-                    alert('⚠️ Por favor, preencha todos os campos obrigatórios.');
+                    alert('⚠️ Por favor, corrija os erros no formulário.');
                     $('html, body').animate({
                         scrollTop: $('.is-invalid').first().offset().top - 100
                     }, 500);
