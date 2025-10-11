@@ -7,7 +7,7 @@ using RentalTourismSystem.Models;
 
 namespace RentalTourismSystem.Controllers
 {
-    [Authorize] // Todo o controller requer autenticação
+    [Authorize]
     public class ReservasViagensController : Controller
     {
         private readonly RentalTourismContext _context;
@@ -19,12 +19,14 @@ namespace RentalTourismSystem.Controllers
             _logger = logger;
         }
 
-        // GET: ReservasViagens - Todos os funcionários podem ver
+        // ========== ACTIONS PRINCIPAIS (CRUD) ==========
+
+        // GET: ReservasViagens
         public async Task<IActionResult> Index(int? statusId, DateTime? dataInicio, DateTime? dataFim, string? busca)
         {
             try
             {
-                _logger.LogInformation("Lista de reservas de viagens acessada por usuário {User}", User.Identity?.Name);
+                _logger.LogInformation("Lista de reservas acessada por {User}", User.Identity?.Name);
 
                 var reservas = _context.ReservasViagens
                     .Include(r => r.Cliente)
@@ -36,7 +38,6 @@ namespace RentalTourismSystem.Controllers
                 if (statusId.HasValue)
                 {
                     reservas = reservas.Where(r => r.StatusReservaViagemId == statusId);
-                    _logger.LogInformation("Filtro por status {StatusId} aplicado por {User}", statusId, User.Identity?.Name);
                 }
 
                 if (dataInicio.HasValue)
@@ -55,7 +56,6 @@ namespace RentalTourismSystem.Controllers
                                                  r.Cliente.CPF.Contains(busca) ||
                                                  r.PacoteViagem.Nome.Contains(busca) ||
                                                  r.PacoteViagem.Destino.Contains(busca));
-                    _logger.LogInformation("Busca por reservas '{Busca}' realizada por {User}", busca, User.Identity?.Name);
                 }
 
                 ViewBag.StatusId = new SelectList(await _context.StatusReservaViagens.ToListAsync(), "Id", "Status", statusId);
@@ -71,19 +71,18 @@ namespace RentalTourismSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar lista de reservas para usuário {User}", User.Identity?.Name);
-                TempData["Erro"] = "Erro ao carregar lista de reservas. Tente novamente.";
+                _logger.LogError(ex, "Erro ao carregar reservas por {User}", User.Identity?.Name);
+                TempData["Erro"] = "Erro ao carregar lista de reservas.";
                 ViewBag.StatusId = new SelectList(new List<StatusReservaViagem>(), "Id", "Status");
                 return View(new List<ReservaViagem>());
             }
         }
 
-        // GET: ReservasViagens/Details/5 - Todos podem ver detalhes
+        // GET: ReservasViagens/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                _logger.LogWarning("Tentativa de acesso a detalhes de reserva com ID nulo por {User}", User.Identity?.Name);
                 return NotFound();
             }
 
@@ -98,40 +97,37 @@ namespace RentalTourismSystem.Controllers
 
                 if (reserva == null)
                 {
-                    _logger.LogWarning("Reserva com ID {ReservaId} não encontrada. Acessado por {User}", id, User.Identity?.Name);
                     return NotFound();
                 }
 
-                _logger.LogInformation("Detalhes da reserva {ReservaId} acessados por {User}", id, User.Identity?.Name);
                 return View(reserva);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar detalhes da reserva {ReservaId} para usuário {User}", id, User.Identity?.Name);
+                _logger.LogError(ex, "Erro ao carregar detalhes da reserva {ReservaId}", id);
                 TempData["Erro"] = "Erro ao carregar dados da reserva.";
                 return RedirectToAction(nameof(Index));
             }
         }
 
-        // GET: ReservasViagens/Create - Todos os funcionários podem criar
+        // GET: ReservasViagens/Create
         [Authorize(Roles = "Admin,Manager,Employee")]
         public async Task<IActionResult> Create()
         {
             try
             {
                 await CarregarViewBags();
-                _logger.LogInformation("Formulário de criação de reserva acessado por {User}", User.Identity?.Name);
                 return View();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar formulário de criação de reserva por {User}", User.Identity?.Name);
+                _logger.LogError(ex, "Erro ao carregar formulário de criação");
                 TempData["Erro"] = "Erro ao carregar formulário.";
                 return RedirectToAction(nameof(Index));
             }
         }
 
-        // POST: ReservasViagens/Create
+        // POST: ReservasViagens/Create - ✅ COM EXECUTION STRATEGY
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager,Employee")]
@@ -139,7 +135,6 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
-                // Remove propriedades de navegação do ModelState
                 ModelState.Remove("Cliente");
                 ModelState.Remove("PacoteViagem");
                 ModelState.Remove("StatusReservaViagem");
@@ -147,77 +142,83 @@ namespace RentalTourismSystem.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    using var transaction = await _context.Database.BeginTransactionAsync();
-                    try
+                    // ✅ EXECUTION STRATEGY
+                    var strategy = _context.Database.CreateExecutionStrategy();
+
+                    await strategy.ExecuteAsync(async () =>
                     {
-                        // Buscar o status "Pendente" para novas reservas
-                        var statusPendente = await _context.StatusReservaViagens
-                            .FirstOrDefaultAsync(s => s.Status == "Pendente");
-
-                        if (statusPendente == null)
+                        using var transaction = await _context.Database.BeginTransactionAsync();
+                        try
                         {
-                            ModelState.AddModelError("", "Status 'Pendente' não encontrado no sistema.");
-                            await CarregarViewBags(reserva);
-                            return View(reserva);
+                            // Buscar status Pendente
+                            var statusPendente = await _context.StatusReservaViagens
+                                .FirstOrDefaultAsync(s => s.Status == "Pendente");
+
+                            if (statusPendente == null)
+                            {
+                                throw new InvalidOperationException("Status 'Pendente' não encontrado.");
+                            }
+
+                            reserva.StatusReservaViagemId = statusPendente.Id;
+
+                            // Calcular valor total
+                            var pacote = await _context.PacotesViagens.FindAsync(reserva.PacoteViagemId);
+                            if (pacote == null)
+                            {
+                                throw new InvalidOperationException("Pacote não encontrado.");
+                            }
+
+                            reserva.ValorTotal = pacote.Preco * reserva.Quantidade;
+
+                            // Validar data
+                            if (reserva.DataViagem.Date < DateTime.Now.Date)
+                            {
+                                throw new InvalidOperationException("Data da viagem não pode ser no passado.");
+                            }
+
+                            _context.Add(reserva);
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+
+                            _logger.LogInformation("Reserva {ReservaId} criada por {User}", reserva.Id, User.Identity?.Name);
                         }
-
-                        reserva.StatusReservaViagemId = statusPendente.Id;
-
-                        // Calcular valor total baseado no pacote e quantidade
-                        var pacote = await _context.PacotesViagens.FindAsync(reserva.PacoteViagemId);
-                        if (pacote == null)
+                        catch (InvalidOperationException)
                         {
-                            ModelState.AddModelError("PacoteViagemId", "Pacote não encontrado.");
-                            await CarregarViewBags(reserva);
-                            return View(reserva);
+                            await transaction.RollbackAsync();
+                            throw;
                         }
-
-                        reserva.ValorTotal = pacote.Preco * reserva.Quantidade;
-
-                        // Verificar se a data de viagem não é no passado
-                        if (reserva.DataViagem.Date < DateTime.Now.Date)
+                        catch (Exception ex)
                         {
-                            ModelState.AddModelError("DataViagem", "A data da viagem não pode ser no passado.");
-                            await CarregarViewBags(reserva);
-                            return View(reserva);
+                            await transaction.RollbackAsync();
+                            _logger.LogError(ex, "Erro na transação ao criar reserva");
+                            throw new InvalidOperationException("Erro ao processar reserva.", ex);
                         }
+                    });
 
-                        _context.Add(reserva);
-                        await _context.SaveChangesAsync();
-                        await transaction.CommitAsync();
-
-                        _logger.LogInformation("Nova reserva {ReservaId} criada por {User}. Cliente: {ClienteId}, Pacote: {PacoteId}, Data: {DataViagem}, Quantidade: {Quantidade}",
-                            reserva.Id, User.Identity?.Name, reserva.ClienteId, reserva.PacoteViagemId,
-                            reserva.DataViagem.ToString("dd/MM/yyyy"), reserva.Quantidade);
-
-                        TempData["Sucesso"] = "Reserva de viagem criada com sucesso!";
-                        return RedirectToAction(nameof(Details), new { id = reserva.Id });
-                    }
-                    catch (Exception ex)
-                    {
-                        await transaction.RollbackAsync();
-                        _logger.LogError(ex, "Erro na transação ao criar reserva por {User}", User.Identity?.Name);
-                        ModelState.AddModelError(string.Empty, "Erro ao processar reserva. Tente novamente.");
-                    }
+                    TempData["Sucesso"] = "Reserva criada com sucesso!";
+                    return RedirectToAction(nameof(Details), new { id = reserva.Id });
                 }
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro inesperado ao criar reserva por {User}", User.Identity?.Name);
-                ModelState.AddModelError(string.Empty, "Erro interno do sistema. Tente novamente.");
+                _logger.LogError(ex, "Erro ao criar reserva");
+                ModelState.AddModelError(string.Empty, "Erro interno do sistema.");
             }
 
             await CarregarViewBags(reserva);
             return View(reserva);
         }
 
-        // GET: ReservasViagens/Edit/5 - Apenas Admin e Manager podem editar
+        // GET: ReservasViagens/Edit/5
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
-                _logger.LogWarning("Tentativa de edição de reserva com ID nulo por {User}", User.Identity?.Name);
                 return NotFound();
             }
 
@@ -227,15 +228,14 @@ namespace RentalTourismSystem.Controllers
                     .Include(r => r.Cliente)
                     .Include(r => r.PacoteViagem)
                     .Include(r => r.StatusReservaViagem)
+                    .Include(r => r.ServicosAdicionais)
                     .FirstOrDefaultAsync(r => r.Id == id);
 
                 if (reserva == null)
                 {
-                    _logger.LogWarning("Tentativa de edição de reserva inexistente {ReservaId} por {User}", id, User.Identity?.Name);
                     return NotFound();
                 }
 
-                // Verificar se a reserva pode ser editada
                 if (reserva.StatusReservaViagem.Status == "Cancelada")
                 {
                     TempData["Erro"] = "Não é possível editar uma reserva cancelada.";
@@ -244,23 +244,22 @@ namespace RentalTourismSystem.Controllers
 
                 if (reserva.DataViagem.Date < DateTime.Now.Date)
                 {
-                    TempData["Erro"] = "Não é possível editar uma reserva cuja data de viagem já passou.";
+                    TempData["Erro"] = "Não é possível editar reserva com data passada.";
                     return RedirectToAction(nameof(Details), new { id = id });
                 }
 
                 await CarregarViewBags(reserva);
-                _logger.LogInformation("Formulário de edição da reserva {ReservaId} acessado por {User}", id, User.Identity?.Name);
                 return View(reserva);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar formulário de edição da reserva {ReservaId} por {User}", id, User.Identity?.Name);
-                TempData["Erro"] = "Erro ao carregar dados da reserva para edição.";
+                _logger.LogError(ex, "Erro ao carregar edição da reserva {ReservaId}", id);
+                TempData["Erro"] = "Erro ao carregar dados.";
                 return RedirectToAction(nameof(Index));
             }
         }
 
-        // POST: ReservasViagens/Edit/5
+        // POST: ReservasViagens/Edit/5 - ✅ COM EXECUTION STRATEGY
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
@@ -268,8 +267,6 @@ namespace RentalTourismSystem.Controllers
         {
             if (id != reserva.Id)
             {
-                _logger.LogWarning("Tentativa de edição com ID inconsistente {Id} != {ReservaId} por {User}",
-                    id, reserva.Id, User.Identity?.Name);
                 return NotFound();
             }
 
@@ -282,57 +279,58 @@ namespace RentalTourismSystem.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    using var transaction = await _context.Database.BeginTransactionAsync();
-                    try
+                    // ✅ EXECUTION STRATEGY
+                    var strategy = _context.Database.CreateExecutionStrategy();
+
+                    await strategy.ExecuteAsync(async () =>
                     {
-                        // Recalcular valor total se mudou a quantidade ou o pacote
-                        var pacote = await _context.PacotesViagens.FindAsync(reserva.PacoteViagemId);
-                        if (pacote != null)
+                        using var transaction = await _context.Database.BeginTransactionAsync();
+                        try
                         {
-                            reserva.ValorTotal = pacote.Preco * reserva.Quantidade;
+                            // Recalcular valor total
+                            var pacote = await _context.PacotesViagens.FindAsync(reserva.PacoteViagemId);
+                            if (pacote != null)
+                            {
+                                reserva.ValorTotal = pacote.Preco * reserva.Quantidade;
+                            }
+
+                            _context.Update(reserva);
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+
+                            _logger.LogInformation("Reserva {ReservaId} atualizada por {User}", reserva.Id, User.Identity?.Name);
                         }
+                        catch
+                        {
+                            await transaction.RollbackAsync();
+                            throw;
+                        }
+                    });
 
-                        _context.Update(reserva);
-                        await _context.SaveChangesAsync();
-                        await transaction.CommitAsync();
-
-                        _logger.LogInformation("Reserva {ReservaId} atualizada por {User}", reserva.Id, User.Identity?.Name);
-
-                        TempData["Sucesso"] = "Reserva atualizada com sucesso!";
-                        return RedirectToAction(nameof(Details), new { id = reserva.Id });
-                    }
-                    catch (Exception ex)
-                    {
-                        await transaction.RollbackAsync();
-                        _logger.LogError(ex, "Erro na transação ao editar reserva {ReservaId} por {User}", reserva.Id, User.Identity?.Name);
-                        throw;
-                    }
+                    TempData["Sucesso"] = "Reserva atualizada com sucesso!";
+                    return RedirectToAction(nameof(Details), new { id = reserva.Id });
                 }
             }
             catch (DbUpdateConcurrencyException ex)
             {
                 if (!ReservaExists(reserva.Id))
                 {
-                    _logger.LogWarning("Reserva {ReservaId} não existe mais durante edição por {User}", reserva.Id, User.Identity?.Name);
                     return NotFound();
                 }
-                else
-                {
-                    _logger.LogError(ex, "Erro de concorrência ao editar reserva {ReservaId} por {User}", reserva.Id, User.Identity?.Name);
-                    throw;
-                }
+                _logger.LogError(ex, "Erro de concorrência ao editar reserva");
+                throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro inesperado ao editar reserva {ReservaId} por {User}", reserva.Id, User.Identity?.Name);
-                ModelState.AddModelError(string.Empty, "Erro interno do sistema. Tente novamente.");
+                _logger.LogError(ex, "Erro ao editar reserva {ReservaId}", reserva.Id);
+                ModelState.AddModelError(string.Empty, "Erro interno do sistema.");
             }
 
             await CarregarViewBags(reserva);
             return View(reserva);
         }
 
-        // POST: Confirmar Reserva - Todos os funcionários podem confirmar
+        // POST: Confirmar Reserva - ✅ COM EXECUTION STRATEGY
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager,Employee")]
@@ -346,67 +344,70 @@ namespace RentalTourismSystem.Controllers
 
                 if (reserva == null)
                 {
-                    _logger.LogWarning("Tentativa de confirmar reserva inexistente {ReservaId} por {User}", id, User.Identity?.Name);
                     return NotFound();
                 }
 
                 if (reserva.StatusReservaViagem.Status == "Confirmada")
                 {
-                    TempData["Info"] = "Esta reserva já está confirmada.";
+                    TempData["Info"] = "Reserva já está confirmada.";
                     return RedirectToAction(nameof(Details), new { id = id });
                 }
 
                 if (reserva.StatusReservaViagem.Status == "Cancelada")
                 {
-                    TempData["Erro"] = "Não é possível confirmar uma reserva cancelada.";
+                    TempData["Erro"] = "Não é possível confirmar reserva cancelada.";
                     return RedirectToAction(nameof(Details), new { id = id });
                 }
 
-                using var transaction = await _context.Database.BeginTransactionAsync();
-                try
+                // ✅ EXECUTION STRATEGY
+                var strategy = _context.Database.CreateExecutionStrategy();
+
+                await strategy.ExecuteAsync(async () =>
                 {
-                    var statusConfirmada = await _context.StatusReservaViagens
-                        .FirstOrDefaultAsync(s => s.Status == "Confirmada");
-
-                    if (statusConfirmada == null)
+                    using var transaction = await _context.Database.BeginTransactionAsync();
+                    try
                     {
-                        TempData["Erro"] = "Status 'Confirmada' não encontrado no sistema.";
-                        return RedirectToAction(nameof(Details), new { id = id });
+                        var statusConfirmada = await _context.StatusReservaViagens
+                            .FirstOrDefaultAsync(s => s.Status == "Confirmada");
+
+                        if (statusConfirmada == null)
+                        {
+                            throw new InvalidOperationException("Status 'Confirmada' não encontrado.");
+                        }
+
+                        reserva.StatusReservaViagemId = statusConfirmada.Id;
+
+                        if (!string.IsNullOrEmpty(observacoes))
+                        {
+                            reserva.Observacoes = string.IsNullOrEmpty(reserva.Observacoes)
+                                ? $"Confirmação: {observacoes}"
+                                : $"{reserva.Observacoes}\n\nConfirmação: {observacoes}";
+                        }
+
+                        _context.Update(reserva);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+
+                        _logger.LogInformation("Reserva {ReservaId} confirmada por {User}", id, User.Identity?.Name);
+                        TempData["Sucesso"] = "Reserva confirmada com sucesso!";
                     }
-
-                    reserva.StatusReservaViagemId = statusConfirmada.Id;
-
-                    if (!string.IsNullOrEmpty(observacoes))
+                    catch
                     {
-                        reserva.Observacoes = string.IsNullOrEmpty(reserva.Observacoes)
-                            ? $"Confirmação: {observacoes}"
-                            : $"{reserva.Observacoes}\n\nConfirmação: {observacoes}";
+                        await transaction.RollbackAsync();
+                        throw;
                     }
-
-                    _context.Update(reserva);
-                    await _context.SaveChangesAsync();
-                    await transaction.CommitAsync();
-
-                    _logger.LogInformation("Reserva {ReservaId} confirmada por {User}", id, User.Identity?.Name);
-                    TempData["Sucesso"] = "Reserva confirmada com sucesso!";
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    _logger.LogError(ex, "Erro ao confirmar reserva {ReservaId} por {User}", id, User.Identity?.Name);
-                    TempData["Erro"] = "Erro ao confirmar reserva. Tente novamente.";
-                }
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro inesperado ao confirmar reserva {ReservaId} por {User}", id, User.Identity?.Name);
-                TempData["Erro"] = "Erro interno do sistema. Tente novamente.";
+                _logger.LogError(ex, "Erro ao confirmar reserva {ReservaId}", id);
+                TempData["Erro"] = "Erro ao confirmar reserva.";
             }
 
             return RedirectToAction(nameof(Details), new { id = id });
         }
 
-        // POST: Cancelar Reserva - Apenas Admin e Manager podem cancelar
+        // POST: Cancelar Reserva - ✅ COM EXECUTION STRATEGY
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
@@ -416,7 +417,7 @@ namespace RentalTourismSystem.Controllers
             {
                 if (string.IsNullOrWhiteSpace(motivo))
                 {
-                    TempData["Erro"] = "É obrigatório informar o motivo do cancelamento.";
+                    TempData["Erro"] = "Motivo do cancelamento é obrigatório.";
                     return RedirectToAction(nameof(Details), new { id = id });
                 }
 
@@ -426,65 +427,66 @@ namespace RentalTourismSystem.Controllers
 
                 if (reserva == null)
                 {
-                    _logger.LogWarning("Tentativa de cancelar reserva inexistente {ReservaId} por {User}", id, User.Identity?.Name);
                     return NotFound();
                 }
 
                 if (reserva.StatusReservaViagem.Status == "Cancelada")
                 {
-                    TempData["Info"] = "Esta reserva já está cancelada.";
+                    TempData["Info"] = "Reserva já está cancelada.";
                     return RedirectToAction(nameof(Details), new { id = id });
                 }
 
-                using var transaction = await _context.Database.BeginTransactionAsync();
-                try
-                {
-                    var statusCancelada = await _context.StatusReservaViagens
-                        .FirstOrDefaultAsync(s => s.Status == "Cancelada");
+                // ✅ EXECUTION STRATEGY
+                var strategy = _context.Database.CreateExecutionStrategy();
 
-                    if (statusCancelada == null)
+                await strategy.ExecuteAsync(async () =>
+                {
+                    using var transaction = await _context.Database.BeginTransactionAsync();
+                    try
                     {
-                        TempData["Erro"] = "Status 'Cancelada' não encontrado no sistema.";
-                        return RedirectToAction(nameof(Details), new { id = id });
+                        var statusCancelada = await _context.StatusReservaViagens
+                            .FirstOrDefaultAsync(s => s.Status == "Cancelada");
+
+                        if (statusCancelada == null)
+                        {
+                            throw new InvalidOperationException("Status 'Cancelada' não encontrado.");
+                        }
+
+                        reserva.StatusReservaViagemId = statusCancelada.Id;
+
+                        reserva.Observacoes = string.IsNullOrEmpty(reserva.Observacoes)
+                            ? $"Cancelamento: {motivo}"
+                            : $"{reserva.Observacoes}\n\nCancelamento: {motivo}";
+
+                        _context.Update(reserva);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+
+                        _logger.LogInformation("Reserva {ReservaId} cancelada por {User}. Motivo: {Motivo}", id, User.Identity?.Name, motivo);
+                        TempData["Sucesso"] = "Reserva cancelada com sucesso!";
                     }
-
-                    reserva.StatusReservaViagemId = statusCancelada.Id;
-
-                    reserva.Observacoes = string.IsNullOrEmpty(reserva.Observacoes)
-                        ? $"Cancelamento: {motivo}"
-                        : $"{reserva.Observacoes}\n\nCancelamento: {motivo}";
-
-                    _context.Update(reserva);
-                    await _context.SaveChangesAsync();
-                    await transaction.CommitAsync();
-
-                    _logger.LogInformation("Reserva {ReservaId} cancelada por {User}. Motivo: {Motivo}",
-                        id, User.Identity?.Name, motivo);
-                    TempData["Sucesso"] = "Reserva cancelada com sucesso!";
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    _logger.LogError(ex, "Erro ao cancelar reserva {ReservaId} por {User}", id, User.Identity?.Name);
-                    TempData["Erro"] = "Erro ao cancelar reserva. Tente novamente.";
-                }
+                    catch
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro inesperado ao cancelar reserva {ReservaId} por {User}", id, User.Identity?.Name);
-                TempData["Erro"] = "Erro interno do sistema. Tente novamente.";
+                _logger.LogError(ex, "Erro ao cancelar reserva {ReservaId}", id);
+                TempData["Erro"] = "Erro ao cancelar reserva.";
             }
 
             return RedirectToAction(nameof(Details), new { id = id });
         }
 
-        // GET: ReservasViagens/Delete/5 - Apenas Admin pode excluir
+        // GET: ReservasViagens/Delete/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                _logger.LogWarning("Tentativa de exclusão de reserva com ID nulo por {User}", User.Identity?.Name);
                 return NotFound();
             }
 
@@ -499,11 +501,9 @@ namespace RentalTourismSystem.Controllers
 
                 if (reserva == null)
                 {
-                    _logger.LogWarning("Tentativa de exclusão de reserva inexistente {ReservaId} por {User}", id, User.Identity?.Name);
                     return NotFound();
                 }
 
-                // Verificar se a reserva pode ser excluída
                 var impedimentos = new List<string>();
 
                 if (reserva.StatusReservaViagem.Status == "Confirmada")
@@ -521,18 +521,17 @@ namespace RentalTourismSystem.Controllers
                     ViewBag.Impedimentos = impedimentos;
                 }
 
-                _logger.LogInformation("Formulário de confirmação de exclusão da reserva {ReservaId} acessado por {User}", id, User.Identity?.Name);
                 return View(reserva);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar formulário de exclusão da reserva {ReservaId} por {User}", id, User.Identity?.Name);
-                TempData["Erro"] = "Erro ao carregar dados da reserva para exclusão.";
+                _logger.LogError(ex, "Erro ao carregar exclusão da reserva {ReservaId}", id);
+                TempData["Erro"] = "Erro ao carregar dados.";
                 return RedirectToAction(nameof(Index));
             }
         }
 
-        // POST: ReservasViagens/Delete/5
+        // POST: ReservasViagens/Delete/5 - ✅ COM EXECUTION STRATEGY
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -547,54 +546,53 @@ namespace RentalTourismSystem.Controllers
 
                 if (reserva != null)
                 {
-                    // Verificar novamente se pode ser excluída
                     if (reserva.StatusReservaViagem.Status == "Confirmada")
                     {
-                        TempData["Erro"] = "Não é possível excluir uma reserva confirmada. Cancele a reserva primeiro.";
+                        TempData["Erro"] = "Não é possível excluir reserva confirmada.";
                         return RedirectToAction(nameof(Delete), new { id = id });
                     }
 
-                    using var transaction = await _context.Database.BeginTransactionAsync();
-                    try
+                    // ✅ EXECUTION STRATEGY
+                    var strategy = _context.Database.CreateExecutionStrategy();
+
+                    await strategy.ExecuteAsync(async () =>
                     {
-                        // Remover serviços adicionais primeiro
-                        if (reserva.ServicosAdicionais.Any())
+                        using var transaction = await _context.Database.BeginTransactionAsync();
+                        try
                         {
-                            _context.ServicosAdicionais.RemoveRange(reserva.ServicosAdicionais);
+                            // Remover serviços adicionais
+                            if (reserva.ServicosAdicionais.Any())
+                            {
+                                _context.ServicosAdicionais.RemoveRange(reserva.ServicosAdicionais);
+                            }
+
+                            _context.ReservasViagens.Remove(reserva);
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+
+                            _logger.LogInformation("Reserva {ReservaId} excluída por {User}", id, User.Identity?.Name);
+                            TempData["Sucesso"] = "Reserva excluída com sucesso!";
                         }
-
-                        _context.ReservasViagens.Remove(reserva);
-                        await _context.SaveChangesAsync();
-                        await transaction.CommitAsync();
-
-                        _logger.LogInformation("Reserva {ReservaId} excluída por {User}", id, User.Identity?.Name);
-                        TempData["Sucesso"] = "Reserva excluída com sucesso!";
-                    }
-                    catch (Exception ex)
-                    {
-                        await transaction.RollbackAsync();
-                        _logger.LogError(ex, "Erro na transação ao excluir reserva {ReservaId} por {User}", id, User.Identity?.Name);
-                        TempData["Erro"] = "Erro ao excluir reserva. Tente novamente.";
-                    }
-                }
-                else
-                {
-                    _logger.LogWarning("Tentativa de exclusão de reserva inexistente {ReservaId} por {User}", id, User.Identity?.Name);
-                    TempData["Erro"] = "Reserva não encontrada.";
+                        catch
+                        {
+                            await transaction.RollbackAsync();
+                            throw;
+                        }
+                    });
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro inesperado ao excluir reserva {ReservaId} por {User}", id, User.Identity?.Name);
-                TempData["Erro"] = "Erro interno do sistema. Tente novamente.";
+                _logger.LogError(ex, "Erro ao excluir reserva {ReservaId}", id);
+                TempData["Erro"] = "Erro ao excluir reserva.";
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        // ========== GESTÃO DE SERVIÇOS ADICIONAIS - CÁLCULO CORRETO ==========
+        // ========== GESTÃO DE SERVIÇOS ADICIONAIS - ✅ COM EXECUTION STRATEGY ==========
 
-        // POST: Adicionar Serviço Adicional - CORRIGIDO
+        // POST: Adicionar Serviço - ✅ COM EXECUTION STRATEGY
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager,Employee")]
@@ -605,19 +603,19 @@ namespace RentalTourismSystem.Controllers
                 // Validações
                 if (string.IsNullOrWhiteSpace(nome))
                 {
-                    TempData["Erro"] = "O nome do serviço é obrigatório.";
+                    TempData["Erro"] = "Nome do serviço é obrigatório.";
                     return RedirectToAction(nameof(Details), new { id = reservaId });
                 }
 
                 if (string.IsNullOrWhiteSpace(descricao))
                 {
-                    TempData["Erro"] = "A descrição do serviço é obrigatória.";
+                    TempData["Erro"] = "Descrição do serviço é obrigatória.";
                     return RedirectToAction(nameof(Details), new { id = reservaId });
                 }
 
                 if (preco <= 0)
                 {
-                    TempData["Erro"] = "O preço deve ser maior que zero.";
+                    TempData["Erro"] = "Preço deve ser maior que zero.";
                     return RedirectToAction(nameof(Details), new { id = reservaId });
                 }
 
@@ -628,65 +626,59 @@ namespace RentalTourismSystem.Controllers
 
                 if (reserva == null)
                 {
-                    _logger.LogWarning("Tentativa de adicionar serviço a reserva inexistente {ReservaId} por {User}",
-                        reservaId, User.Identity?.Name);
                     TempData["Erro"] = "Reserva não encontrada.";
                     return RedirectToAction(nameof(Index));
                 }
 
                 if (reserva.StatusReservaViagem.Status == "Cancelada")
                 {
-                    TempData["Erro"] = "Não é possível adicionar serviços a uma reserva cancelada.";
+                    TempData["Erro"] = "Não é possível adicionar serviços a reserva cancelada.";
                     return RedirectToAction(nameof(Details), new { id = reservaId });
                 }
 
-                using var transaction = await _context.Database.BeginTransactionAsync();
-                try
+                // ✅ EXECUTION STRATEGY
+                var strategy = _context.Database.CreateExecutionStrategy();
+
+                await strategy.ExecuteAsync(async () =>
                 {
-                    // Criar serviço
-                    var servico = new ServicoAdicional
+                    using var transaction = await _context.Database.BeginTransactionAsync();
+                    try
                     {
-                        ReservaViagemId = reservaId,
-                        Nome = nome,
-                        Descricao = descricao,
-                        Preco = preco
-                    };
+                        var servico = new ServicoAdicional
+                        {
+                            ReservaViagemId = reservaId,
+                            Nome = nome,
+                            Descricao = descricao,
+                            Preco = preco
+                        };
 
-                    _context.ServicosAdicionais.Add(servico);
+                        _context.ServicosAdicionais.Add(servico);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
 
-                    // ✅ NÃO atualiza o ValorTotal - ele continua sendo apenas o valor do pacote
-                    // Os serviços são somados apenas na exibição
+                        var totalGeral = reserva.ValorTotal + reserva.ServicosAdicionais.Sum(s => s.Preco) + preco;
 
-                    await _context.SaveChangesAsync();
-                    await transaction.CommitAsync();
+                        _logger.LogInformation("Serviço '{Nome}' adicionado à reserva {ReservaId} por {User}", nome, reservaId, User.Identity?.Name);
+                        TempData["Sucesso"] = $"Serviço '{nome}' adicionado! Total geral: {totalGeral:C}";
+                    }
+                    catch
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                });
 
-                    // Calcular total geral para mostrar na mensagem
-                    var totalGeral = reserva.ValorTotal + reserva.ServicosAdicionais.Sum(s => s.Preco) + preco;
-
-                    _logger.LogInformation("Serviço adicional '{Nome}' (R$ {Valor:N2}) adicionado à reserva {ReservaId} por {User}",
-                        nome, preco, reservaId, User.Identity?.Name);
-
-                    TempData["Sucesso"] = $"Serviço '{nome}' adicionado com sucesso! Valor total geral: {totalGeral:C}";
-                    return RedirectToAction(nameof(Details), new { id = reservaId });
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    _logger.LogError(ex, "Erro ao adicionar serviço adicional à reserva {ReservaId} por {User}",
-                        reservaId, User.Identity?.Name);
-                    TempData["Erro"] = "Erro ao adicionar serviço. Tente novamente.";
-                    return RedirectToAction(nameof(Details), new { id = reservaId });
-                }
+                return RedirectToAction(nameof(Details), new { id = reservaId });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro inesperado ao adicionar serviço adicional por {User}", User.Identity?.Name);
-                TempData["Erro"] = "Erro interno do sistema. Tente novamente.";
+                _logger.LogError(ex, "Erro ao adicionar serviço");
+                TempData["Erro"] = "Erro ao adicionar serviço.";
                 return RedirectToAction(nameof(Index));
             }
         }
 
-        // POST: Remover Serviço Adicional - CORRIGIDO
+        // POST: Remover Serviço - ✅ COM EXECUTION STRATEGY
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
@@ -703,8 +695,6 @@ namespace RentalTourismSystem.Controllers
 
                 if (servico == null)
                 {
-                    _logger.LogWarning("Tentativa de remover serviço inexistente {ServicoId} por {User}",
-                        servicoId, User.Identity?.Name);
                     TempData["Erro"] = "Serviço não encontrado.";
                     return RedirectToAction(nameof(Index));
                 }
@@ -713,41 +703,41 @@ namespace RentalTourismSystem.Controllers
 
                 if (servico.ReservaViagem.StatusReservaViagem.Status == "Cancelada")
                 {
-                    TempData["Erro"] = "Não é possível remover serviços de uma reserva cancelada.";
+                    TempData["Erro"] = "Não é possível remover serviços de reserva cancelada.";
                     return RedirectToAction(nameof(Details), new { id = reservaId });
                 }
 
-                using var transaction = await _context.Database.BeginTransactionAsync();
-                try
+                // ✅ EXECUTION STRATEGY
+                var strategy = _context.Database.CreateExecutionStrategy();
+
+                await strategy.ExecuteAsync(async () =>
                 {
-                    // Os serviços são somados apenas na exibição
+                    using var transaction = await _context.Database.BeginTransactionAsync();
+                    try
+                    {
+                        _context.ServicosAdicionais.Remove(servico);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
 
-                    _context.ServicosAdicionais.Remove(servico);
-                    await _context.SaveChangesAsync();
-                    await transaction.CommitAsync();
+                        var servicosRestantes = servico.ReservaViagem.ServicosAdicionais.Where(s => s.Id != servicoId).Sum(s => s.Preco);
+                        var totalGeral = servico.ReservaViagem.ValorTotal + servicosRestantes;
 
-                    // Calcular total geral para mostrar na mensagem
-                    var servicosRestantes = servico.ReservaViagem.ServicosAdicionais.Where(s => s.Id != servicoId).Sum(s => s.Preco);
-                    var totalGeral = servico.ReservaViagem.ValorTotal + servicosRestantes;
+                        _logger.LogInformation("Serviço '{Nome}' removido da reserva {ReservaId}", servico.Nome, reservaId);
+                        TempData["Sucesso"] = $"Serviço '{servico.Nome}' removido! Total geral: {totalGeral:C}";
+                    }
+                    catch
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                });
 
-                    _logger.LogInformation("Serviço adicional '{Nome}' removido da reserva {ReservaId} por {User}",
-                        servico.Nome, reservaId, User.Identity?.Name);
-
-                    TempData["Sucesso"] = $"Serviço '{servico.Nome}' removido com sucesso! Valor total geral: {totalGeral:C}";
-                    return RedirectToAction(nameof(Details), new { id = reservaId });
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    _logger.LogError(ex, "Erro ao remover serviço adicional {ServicoId} por {User}", servicoId, User.Identity?.Name);
-                    TempData["Erro"] = "Erro ao remover serviço. Tente novamente.";
-                    return RedirectToAction(nameof(Details), new { id = reservaId });
-                }
+                return RedirectToAction(nameof(Details), new { id = reservaId });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro inesperado ao remover serviço adicional por {User}", User.Identity?.Name);
-                TempData["Erro"] = "Erro interno do sistema. Tente novamente.";
+                _logger.LogError(ex, "Erro ao remover serviço");
+                TempData["Erro"] = "Erro ao remover serviço.";
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -765,7 +755,6 @@ namespace RentalTourismSystem.Controllers
                 await _context.Clientes.OrderBy(c => c.Nome).ToListAsync(),
                 "Id", "Nome", reserva?.ClienteId);
 
-            // CORRIGIDO: Buscar primeiro, formatar depois
             var pacotes = await _context.PacotesViagens
                 .Where(p => p.Ativo)
                 .OrderBy(p => p.Nome)
@@ -788,7 +777,7 @@ namespace RentalTourismSystem.Controllers
                 "Id", "Status", reserva?.StatusReservaViagemId);
         }
 
-        // ========== APIs PARA CONSUMO INTERNO (AJAX) ==========
+        // ========== APIs AJAX ==========
 
         [HttpGet]
         [Authorize]
@@ -808,7 +797,7 @@ namespace RentalTourismSystem.Controllers
                     return NotFound(new { message = "Reserva não encontrada" });
                 }
 
-                var resultado = new
+                return Json(new
                 {
                     id = reserva.Id,
                     cliente = reserva.Cliente.Nome,
@@ -821,14 +810,12 @@ namespace RentalTourismSystem.Controllers
                     valorTotal = reserva.ValorTotal,
                     status = reserva.StatusReservaViagem.Status,
                     observacoes = reserva.Observacoes
-                };
-
-                return Json(resultado);
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao obter dados da reserva {ReservaId} via API por {User}", id, User.Identity?.Name);
-                return StatusCode(500, new { message = "Erro interno do servidor" });
+                _logger.LogError(ex, "Erro ao obter dados da reserva {ReservaId}", id);
+                return StatusCode(500, new { message = "Erro interno" });
             }
         }
 
@@ -856,12 +843,11 @@ namespace RentalTourismSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao calcular valor da reserva por {User}", User.Identity?.Name);
+                _logger.LogError(ex, "Erro ao calcular valor");
                 return Json(new { valorTotal = 0 });
             }
         }
 
-        // Busca rápida de reservas
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> BuscarReservas(string? termo = null, int? statusId = null)
@@ -896,7 +882,7 @@ namespace RentalTourismSystem.Controllers
                         dataViagem = r.DataViagem,
                         valorTotal = r.ValorTotal,
                         status = r.StatusReservaViagem.Status,
-                        descricao = $"{r.Cliente.Nome} - {r.PacoteViagem.Nome} ({r.DataViagem:dd/MM/yyyy}) - {r.StatusReservaViagem.Status}"
+                        descricao = $"{r.Cliente.Nome} - {r.PacoteViagem.Nome} ({r.DataViagem:dd/MM/yyyy})"
                     })
                     .OrderByDescending(r => r.dataViagem)
                     .Take(20)
@@ -906,12 +892,11 @@ namespace RentalTourismSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro na busca de reservas por {User}", User.Identity?.Name);
+                _logger.LogError(ex, "Erro na busca de reservas");
                 return Json(new List<object>());
             }
         }
 
-        // Estatísticas de reservas
         [HttpGet]
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> GetEstatisticasReservas(DateTime? dataInicio = null, DateTime? dataFim = null)
@@ -942,7 +927,7 @@ namespace RentalTourismSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao obter estatísticas de reservas por {User}", User.Identity?.Name);
+                _logger.LogError(ex, "Erro ao obter estatísticas");
                 return Json(new { error = "Erro ao carregar estatísticas" });
             }
         }

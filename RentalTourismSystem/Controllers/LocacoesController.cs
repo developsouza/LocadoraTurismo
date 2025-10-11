@@ -23,7 +23,7 @@ namespace RentalTourismSystem.Controllers
 
         // ========== ACTIONS PRINCIPAIS (CRUD) ==========
 
-        // GET: Locacoes - Todos os funcionários podem ver
+        // GET: Locacoes
         public async Task<IActionResult> Index(string? status, DateTime? dataInicio, DateTime? dataFim)
         {
             try
@@ -82,7 +82,7 @@ namespace RentalTourismSystem.Controllers
             }
         }
 
-        // GET: Locacoes/Details/5 - Todos podem ver detalhes
+        // GET: Locacoes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -118,15 +118,13 @@ namespace RentalTourismSystem.Controllers
             }
         }
 
-        // GET: Locacoes/Create - Todos os funcionários podem criar
+        // GET: Locacoes/Create
         [Authorize(Roles = "Admin,Manager,Employee")]
         public async Task<IActionResult> Create(int? veiculoId = null, int? clienteId = null)
         {
             try
             {
                 await CarregarViewBags(null, veiculoId, clienteId);
-
-                // Passar o veiculoId para a ViewBag para uso no JavaScript
                 ViewBag.VeiculoIdPreSelecionado = veiculoId;
                 ViewBag.ClienteIdPreSelecionado = clienteId;
 
@@ -143,7 +141,7 @@ namespace RentalTourismSystem.Controllers
             }
         }
 
-        // POST: Locacoes/Create - COM EXECUTION STRATEGY
+        // POST: Locacoes/Create - COM EXECUTION STRATEGY OTIMIZADO
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager,Employee")]
@@ -152,10 +150,10 @@ namespace RentalTourismSystem.Controllers
             try
             {
                 _logger.LogInformation("=== INICIANDO CRIAÇÃO DE LOCAÇÃO ===");
-                _logger.LogInformation("Dados recebidos: ClienteId={ClienteId}, VeiculoId={VeiculoId}, DataRetirada={DataRetirada}, DataDevolucao={DataDevolucao}, FuncionarioId={FuncionarioId}, AgenciaId={AgenciaId}",
-                    locacao.ClienteId, locacao.VeiculoId, locacao.DataRetirada, locacao.DataDevolucao, locacao.FuncionarioId, locacao.AgenciaId);
+                _logger.LogInformation("Dados: ClienteId={ClienteId}, VeiculoId={VeiculoId}, DataRetirada={DataRetirada}, DataDevolucao={DataDevolucao}",
+                    locacao.ClienteId, locacao.VeiculoId, locacao.DataRetirada, locacao.DataDevolucao);
 
-                // Remover validações de navegação e de ValorTotal (será calculado no servidor)
+                // Remover validações de navegação
                 ModelState.Remove("Agencia");
                 ModelState.Remove("Cliente");
                 ModelState.Remove("Veiculo");
@@ -168,7 +166,7 @@ namespace RentalTourismSystem.Controllers
                     ModelState.AddModelError(nameof(Locacao.DataDevolucao), "Data de devolução deve ser posterior à data de retirada.");
                 }
 
-                // Recalcular ValorTotal sempre no servidor para evitar problemas de cultura
+                // Recalcular ValorTotal no servidor
                 if (locacao.VeiculoId > 0 && locacao.DataDevolucao > locacao.DataRetirada)
                 {
                     locacao.ValorTotal = await CalcularValorLocacao(locacao.VeiculoId, locacao.DataRetirada, locacao.DataDevolucao);
@@ -180,38 +178,34 @@ namespace RentalTourismSystem.Controllers
                     return View(locacao);
                 }
 
-                _logger.LogInformation("ModelState válido, iniciando transação com execution strategy...");
+                _logger.LogInformation("ModelState válido, iniciando transação com ExecutionStrategy");
 
-                // ✅ CORREÇÃO: Usar CreateExecutionStrategy para compatibilidade com retry
+                // ✅ EXECUTION STRATEGY OTIMIZADO
                 var strategy = _context.Database.CreateExecutionStrategy();
-                
+
                 await strategy.ExecuteAsync(async () =>
                 {
                     using var transaction = await _context.Database.BeginTransactionAsync();
                     try
                     {
-                        _logger.LogInformation("Transação iniciada");
-
-                        // 1) Validar disponibilidade e CNH novamente
+                        // Validar disponibilidade
                         var disponivel = await VerificarDisponibilidadeAsync(locacao.VeiculoId, locacao.DataRetirada, locacao.DataDevolucao);
                         if (!disponivel)
                         {
-                            _logger.LogWarning("Veículo {VeiculoId} não disponível no período", locacao.VeiculoId);
-                            throw new InvalidOperationException("Veículo não está mais disponível no período selecionado.");
+                            throw new InvalidOperationException("Veículo não está disponível no período selecionado.");
                         }
-                        _logger.LogInformation("Veículo disponível");
 
+                        // Validar CNH
                         var validacaoCNH = await ValidarCNHCliente(locacao.ClienteId);
                         if (!validacaoCNH.IsValid)
                         {
-                            _logger.LogWarning("CNH inválida: {ErrorMessage}", validacaoCNH.ErrorMessage);
                             throw new InvalidOperationException(validacaoCNH.ErrorMessage);
                         }
-                        _logger.LogInformation("CNH válida");
 
-                        // 2) Atualizar status do veículo para Alugado e adicionar locação
+                        // Atualizar status do veículo para Alugado
                         var statusAlugado = await _context.StatusCarros.FirstOrDefaultAsync(s => s.Status == "Alugado");
                         var veiculo = await _context.Veiculos.FirstOrDefaultAsync(v => v.Id == locacao.VeiculoId);
+
                         if (statusAlugado != null && veiculo != null)
                         {
                             veiculo.StatusCarroId = statusAlugado.Id;
@@ -219,29 +213,21 @@ namespace RentalTourismSystem.Controllers
                         }
 
                         _context.Locacoes.Add(locacao);
-
-                        // 3) Persistir tudo de uma vez
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
 
-                        _logger.LogInformation("Locação criada com sucesso. Id={LocacaoId}", locacao.Id);
+                        _logger.LogInformation("Locação {LocacaoId} criada com sucesso por {User}", locacao.Id, User.Identity?.Name);
                     }
                     catch (InvalidOperationException)
                     {
                         await transaction.RollbackAsync();
-                        throw; // Re-throw para capturar no catch externo
-                    }
-                    catch (DbUpdateException ex)
-                    {
-                        await transaction.RollbackAsync();
-                        _logger.LogError(ex, "DbUpdateException ao salvar locação. Mensagem: {Message}. Inner: {Inner}", ex.Message, ex.InnerException?.Message);
-                        throw new InvalidOperationException($"Erro ao processar locação: {ex.InnerException?.Message ?? ex.Message}", ex);
+                        throw;
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
                         _logger.LogError(ex, "Erro na transação ao criar locação");
-                        throw new InvalidOperationException("Erro ao processar locação. Tente novamente.", ex);
+                        throw new InvalidOperationException("Erro ao processar locação.", ex);
                     }
                 });
 
@@ -250,7 +236,7 @@ namespace RentalTourismSystem.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Erro de validação ou negócio ao criar locação");
+                _logger.LogError(ex, "Erro de validação ao criar locação");
                 ModelState.AddModelError(string.Empty, ex.Message);
             }
             catch (Exception ex)
@@ -259,12 +245,11 @@ namespace RentalTourismSystem.Controllers
                 ModelState.AddModelError(string.Empty, "Erro interno do sistema. Tente novamente.");
             }
 
-            _logger.LogInformation("Retornando view com erros");
             await CarregarViewBags(locacao, locacao?.VeiculoId, locacao?.ClienteId);
             return View(locacao);
         }
 
-        // GET: Locacoes/Edit/5 - Apenas Admin e Manager podem editar
+        // GET: Locacoes/Edit/5
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -289,7 +274,6 @@ namespace RentalTourismSystem.Controllers
                     return NotFound();
                 }
 
-                // Verificar se a locação pode ser editada
                 if (locacao.DataDevolucaoReal.HasValue)
                 {
                     TempData["Erro"] = "Não é possível editar uma locação já finalizada.";
@@ -308,8 +292,7 @@ namespace RentalTourismSystem.Controllers
             }
         }
 
-        // POST: Locacoes/Edit/5
-        // POST: Locacoes/Edit/5 - COM EXECUTION STRATEGY
+        // POST: Locacoes/Edit/5 - COM EXECUTION STRATEGY OTIMIZADO
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
@@ -328,29 +311,24 @@ namespace RentalTourismSystem.Controllers
                 ModelState.Remove("Cliente");
                 ModelState.Remove("Veiculo");
                 ModelState.Remove("Funcionario");
+                ModelState.Remove("ValorTotal");
 
-                // Validação customizada: datas
+                // Validação de datas
                 if (locacao.DataDevolucao <= locacao.DataRetirada)
                 {
                     ModelState.AddModelError(nameof(Locacao.DataDevolucao), "Data de devolução deve ser posterior à data de retirada.");
                 }
 
-                // ✅ RECALCULAR ValorTotal sempre no servidor com base nas datas atuais
+                // Recalcular ValorTotal
                 if (locacao.VeiculoId > 0 && locacao.DataDevolucao > locacao.DataRetirada)
                 {
-                    var valorRecalculado = await CalcularValorLocacao(locacao.VeiculoId, locacao.DataRetirada, locacao.DataDevolucao);
-                    
-                    // Log para debug
-                    _logger.LogInformation("Recalculando valor na edição: VeiculoId={VeiculoId}, DataRetirada={DataRetirada}, DataDevolucao={DataDevolucao}, ValorRecalculado={ValorRecalculado}, ValorInformado={ValorInformado}",
-                        locacao.VeiculoId, locacao.DataRetirada, locacao.DataDevolucao, valorRecalculado, locacao.ValorTotal);
-                    
-                    // Atualizar o valor para o recalculado
-                    locacao.ValorTotal = valorRecalculado;
+                    locacao.ValorTotal = await CalcularValorLocacao(locacao.VeiculoId, locacao.DataRetirada, locacao.DataDevolucao);
+                    _logger.LogInformation("Valor recalculado na edição: {ValorTotal}", locacao.ValorTotal);
                 }
 
                 if (ModelState.IsValid)
                 {
-                    // ✅ CORREÇÃO: Usar ExecutionStrategy
+                    // ✅ EXECUTION STRATEGY
                     var strategy = _context.Database.CreateExecutionStrategy();
 
                     await strategy.ExecuteAsync(async () =>
@@ -360,12 +338,10 @@ namespace RentalTourismSystem.Controllers
                         {
                             var locacaoOriginal = await _context.Locacoes.AsNoTracking().FirstOrDefaultAsync(l => l.Id == id);
 
-                            // Se estava ativa e agora foi finalizada, liberar o veículo
+                            // Se foi finalizada agora, liberar o veículo
                             if (!locacaoOriginal.DataDevolucaoReal.HasValue && locacao.DataDevolucaoReal.HasValue)
                             {
-                                var statusDisponivel = await _context.StatusCarros
-                                    .FirstOrDefaultAsync(s => s.Status == "Disponível");
-
+                                var statusDisponivel = await _context.StatusCarros.FirstOrDefaultAsync(s => s.Status == "Disponível");
                                 if (statusDisponivel != null)
                                 {
                                     var veiculo = await _context.Veiculos.FindAsync(locacao.VeiculoId);
@@ -381,8 +357,7 @@ namespace RentalTourismSystem.Controllers
                             await _context.SaveChangesAsync();
                             await transaction.CommitAsync();
 
-                            _logger.LogInformation("Locação {LocacaoId} atualizada por {User}. Novo valor total: {ValorTotal}", 
-                                locacao.Id, User.Identity?.Name, locacao.ValorTotal);
+                            _logger.LogInformation("Locação {LocacaoId} atualizada por {User}", locacao.Id, User.Identity?.Name);
                         }
                         catch
                         {
@@ -399,18 +374,14 @@ namespace RentalTourismSystem.Controllers
             {
                 if (!LocacaoExists(locacao.Id))
                 {
-                    _logger.LogWarning("Locação {LocacaoId} não existe mais durante edição por {User}", locacao.Id, User.Identity?.Name);
                     return NotFound();
                 }
-                else
-                {
-                    _logger.LogError(ex, "Erro de concorrência ao editar locação {LocacaoId} por {User}", locacao.Id, User.Identity?.Name);
-                    throw;
-                }
+                _logger.LogError(ex, "Erro de concorrência ao editar locação {LocacaoId}", locacao.Id);
+                throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro inesperado ao editar locação {LocacaoId} por {User}", locacao.Id, User.Identity?.Name);
+                _logger.LogError(ex, "Erro ao editar locação {LocacaoId}", locacao.Id);
                 ModelState.AddModelError(string.Empty, "Erro interno do sistema. Tente novamente.");
             }
 
@@ -418,7 +389,6 @@ namespace RentalTourismSystem.Controllers
             return View(locacao);
         }
 
-        // POST: Finalizar Locação - Todos os funcionários podem finalizar
         // POST: Finalizar Locação - COM EXECUTION STRATEGY
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -433,7 +403,6 @@ namespace RentalTourismSystem.Controllers
 
                 if (locacao == null)
                 {
-                    _logger.LogWarning("Tentativa de finalizar locação inexistente {LocacaoId} por {User}", id, User.Identity?.Name);
                     return NotFound();
                 }
 
@@ -443,7 +412,7 @@ namespace RentalTourismSystem.Controllers
                     return RedirectToAction(nameof(Details), new { id = id });
                 }
 
-                // ✅ CORREÇÃO: Usar ExecutionStrategy
+                // ✅ EXECUTION STRATEGY
                 var strategy = _context.Database.CreateExecutionStrategy();
 
                 await strategy.ExecuteAsync(async () =>
@@ -451,12 +420,11 @@ namespace RentalTourismSystem.Controllers
                     using var transaction = await _context.Database.BeginTransactionAsync();
                     try
                     {
-                        // Atualizar dados da devolução
                         locacao.DataDevolucaoReal = DateTime.Now;
+
                         if (quilometragemDevolucao.HasValue)
                         {
                             locacao.QuilometragemDevolucao = quilometragemDevolucao.Value;
-                            // Atualizar quilometragem do veículo
                             locacao.Veiculo.Quilometragem = quilometragemDevolucao.Value;
                         }
 
@@ -467,17 +435,8 @@ namespace RentalTourismSystem.Controllers
                                 : $"{locacao.Observacoes}\n\nDevolução: {observacoesDevolucao}";
                         }
 
-                        // Calcular multa por atraso se necessário
-                        if (locacao.DataDevolucaoReal > locacao.DataDevolucao)
-                        {
-                            var diasAtraso = (int)Math.Ceiling((locacao.DataDevolucaoReal.Value - locacao.DataDevolucao).TotalDays);
-                            // Implementar lógica de multa aqui se necessário
-                        }
-
-                        // Alterar status do veículo para "Disponível"
-                        var statusDisponivel = await _context.StatusCarros
-                            .FirstOrDefaultAsync(s => s.Status == "Disponível");
-
+                        // Alterar status do veículo para Disponível
+                        var statusDisponivel = await _context.StatusCarros.FirstOrDefaultAsync(s => s.Status == "Disponível");
                         if (statusDisponivel != null)
                         {
                             locacao.Veiculo.StatusCarroId = statusDisponivel.Id;
@@ -488,36 +447,31 @@ namespace RentalTourismSystem.Controllers
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
 
-                        _logger.LogInformation("Locação {LocacaoId} finalizada por {User} em {DataDevolucao}",
-                            id, User.Identity?.Name, locacao.DataDevolucaoReal);
-
+                        _logger.LogInformation("Locação {LocacaoId} finalizada por {User}", id, User.Identity?.Name);
                         TempData["Sucesso"] = "Locação finalizada com sucesso!";
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         await transaction.RollbackAsync();
-                        _logger.LogError(ex, "Erro ao finalizar locação {LocacaoId} por {User}", id, User.Identity?.Name);
-                        TempData["Erro"] = "Erro ao finalizar locação. Tente novamente.";
                         throw;
                     }
                 });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro inesperado ao finalizar locação {LocacaoId} por {User}", id, User.Identity?.Name);
-                TempData["Erro"] = "Erro interno do sistema. Tente novamente.";
+                _logger.LogError(ex, "Erro ao finalizar locação {LocacaoId}", id);
+                TempData["Erro"] = "Erro ao finalizar locação. Tente novamente.";
             }
 
             return RedirectToAction(nameof(Details), new { id = id });
         }
 
-        // GET: Locacoes/Delete/5 - Apenas Admin pode excluir
+        // GET: Locacoes/Delete/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                _logger.LogWarning("Tentativa de exclusão de locação com ID nulo por {User}", User.Identity?.Name);
                 return NotFound();
             }
 
@@ -532,13 +486,10 @@ namespace RentalTourismSystem.Controllers
 
                 if (locacao == null)
                 {
-                    _logger.LogWarning("Tentativa de exclusão de locação inexistente {LocacaoId} por {User}", id, User.Identity?.Name);
                     return NotFound();
                 }
 
-                // Verificar se a locação pode ser excluída
                 var impedimentos = new List<string>();
-
                 if (!locacao.DataDevolucaoReal.HasValue)
                 {
                     impedimentos.Add("A locação está ativa (não foi finalizada)");
@@ -549,18 +500,16 @@ namespace RentalTourismSystem.Controllers
                     ViewBag.Impedimentos = impedimentos;
                 }
 
-                _logger.LogInformation("Formulário de confirmação de exclusão da locação {LocacaoId} acessado por {User}", id, User.Identity?.Name);
                 return View(locacao);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar formulário de exclusão da locação {LocacaoId} por {User}", id, User.Identity?.Name);
-                TempData["Erro"] = "Erro ao carregar dados da locação para exclusão.";
+                _logger.LogError(ex, "Erro ao carregar exclusão da locação {LocacaoId}", id);
+                TempData["Erro"] = "Erro ao carregar dados da locação.";
                 return RedirectToAction(nameof(Index));
             }
         }
 
-        // POST: Locacoes/Delete/5
         // POST: Locacoes/Delete/5 - COM EXECUTION STRATEGY
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -575,14 +524,13 @@ namespace RentalTourismSystem.Controllers
 
                 if (locacao != null)
                 {
-                    // Verificar novamente se pode ser excluída
                     if (!locacao.DataDevolucaoReal.HasValue)
                     {
-                        TempData["Erro"] = "Não é possível excluir uma locação ativa. Finalize a locação primeiro.";
+                        TempData["Erro"] = "Não é possível excluir uma locação ativa.";
                         return RedirectToAction(nameof(Delete), new { id = id });
                     }
 
-                    // ✅ CORREÇÃO: Usar ExecutionStrategy
+                    // ✅ EXECUTION STRATEGY
                     var strategy = _context.Database.CreateExecutionStrategy();
 
                     await strategy.ExecuteAsync(async () =>
@@ -597,25 +545,18 @@ namespace RentalTourismSystem.Controllers
                             _logger.LogInformation("Locação {LocacaoId} excluída por {User}", id, User.Identity?.Name);
                             TempData["Sucesso"] = "Locação excluída com sucesso!";
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             await transaction.RollbackAsync();
-                            _logger.LogError(ex, "Erro na transação ao excluir locação {LocacaoId} por {User}", id, User.Identity?.Name);
-                            TempData["Erro"] = "Erro ao excluir locação. Tente novamente.";
                             throw;
                         }
                     });
                 }
-                else
-                {
-                    _logger.LogWarning("Tentativa de exclusão de locação inexistente {LocacaoId} por {User}", id, User.Identity?.Name);
-                    TempData["Erro"] = "Locação não encontrada.";
-                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro inesperado ao excluir locação {LocacaoId} por {User}", id, User.Identity?.Name);
-                TempData["Erro"] = "Erro interno do sistema. Tente novamente.";
+                _logger.LogError(ex, "Erro ao excluir locação {LocacaoId}", id);
+                TempData["Erro"] = "Erro ao excluir locação.";
             }
 
             return RedirectToAction(nameof(Index));
@@ -632,7 +573,6 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
-                // Carregar clientes com CNH válida
                 var clientesList = await _context.Clientes
                     .AsNoTracking()
                     .Where(c => !string.IsNullOrEmpty(c.CNH) &&
@@ -641,11 +581,8 @@ namespace RentalTourismSystem.Controllers
                     .OrderBy(c => c.Nome)
                     .ToListAsync();
 
-                ViewBag.ClienteId = new SelectList(
-                    clientesList,
-                    "Id", "Nome", locacao?.ClienteId ?? clientePreSelecionado);
+                ViewBag.ClienteId = new SelectList(clientesList, "Id", "Nome", locacao?.ClienteId ?? clientePreSelecionado);
 
-                // Carregar veículos disponíveis ou o veículo atual/pré-selecionado
                 var veiculosQuery = _context.Veiculos
                     .AsNoTracking()
                     .Include(v => v.StatusCarro)
@@ -666,83 +603,22 @@ namespace RentalTourismSystem.Controllers
 
                 ViewBag.VeiculoId = new SelectList(veiculosSelectList, "Value", "Text");
 
-                // Carregar funcionários
-                var funcionarios = await _context.Funcionarios
-                    .AsNoTracking()
-                    .OrderBy(f => f.Nome)
-                    .ToListAsync();
+                var funcionarios = await _context.Funcionarios.AsNoTracking().OrderBy(f => f.Nome).ToListAsync();
+                ViewBag.FuncionarioId = new SelectList(funcionarios, "Id", "Nome", locacao?.FuncionarioId);
 
-                // Fallback: incluir funcionário do usuário logado se lista veio vazia
-                if (funcionarios.Count == 0)
-                {
-                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    if (!string.IsNullOrEmpty(userId))
-                    {
-                        var usuario = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
-                        if (usuario?.FuncionarioId != null)
-                        {
-                            var func = await _context.Funcionarios.AsNoTracking().FirstOrDefaultAsync(f => f.Id == usuario.FuncionarioId.Value);
-                            if (func != null)
-                            {
-                                funcionarios.Add(func);
-                                _logger.LogWarning("Lista de funcionários estava vazia. Adicionando funcionário do usuário logado: {FuncionarioId}", func.Id);
-                            }
-                        }
-                    }
-                }
+                var agencias = await _context.Agencias.AsNoTracking().OrderBy(a => a.Nome).ToListAsync();
+                ViewBag.AgenciaId = new SelectList(agencias, "Id", "Nome", locacao?.AgenciaId);
 
-                ViewBag.FuncionarioId = new SelectList(
-                    funcionarios,
-                    "Id", "Nome", locacao?.FuncionarioId);
-
-                // Carregar agências
-                var agencias = await _context.Agencias
-                    .AsNoTracking()
-                    .OrderBy(a => a.Nome)
-                    .ToListAsync();
-
-                if (agencias.Count == 0)
-                {
-                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    if (!string.IsNullOrEmpty(userId))
-                    {
-                        var usuario = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
-                        if (usuario?.AgenciaId != null)
-                        {
-                            var ag = await _context.Agencias.AsNoTracking().FirstOrDefaultAsync(a => a.Id == usuario.AgenciaId.Value);
-                            if (ag != null)
-                            {
-                                agencias.Add(ag);
-                                _logger.LogWarning("Lista de agências estava vazia. Adicionando agência do usuário logado: {AgenciaId}", ag.Id);
-                            }
-                        }
-                    }
-                }
-
-                ViewBag.AgenciaId = new SelectList(
-                    agencias,
-                    "Id", "Nome", locacao?.AgenciaId);
-
-                // Informações adicionais para a view
                 ViewBag.VeiculoIdPreSelecionado = veiculoPreSelecionado;
                 ViewBag.ClienteIdPreSelecionado = clientePreSelecionado;
-                ViewBag.TotalVeiculosDisponiveis = veiculos.Count();
-
-                _logger.LogInformation("ViewBags carregadas. Clientes={Clientes}, Veiculos={Veiculos}, Funcionarios={Funcionarios}, Agencias={Agencias}",
-                    clientesList.Count, veiculos.Count, funcionarios.Count, agencias.Count);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao carregar ViewBags");
-
-                // Carregar listas vazias em caso de erro
                 ViewBag.ClienteId = new SelectList(new List<Cliente>(), "Id", "Nome");
                 ViewBag.VeiculoId = new SelectList(new List<Veiculo>(), "Id", "Marca");
                 ViewBag.FuncionarioId = new SelectList(new List<Funcionario>(), "Id", "Nome");
                 ViewBag.AgenciaId = new SelectList(new List<Agencia>(), "Id", "Nome");
-                ViewBag.VeiculoIdPreSelecionado = null;
-                ViewBag.ClienteIdPreSelecionado = null;
-
                 throw;
             }
         }
@@ -768,13 +644,13 @@ namespace RentalTourismSystem.Controllers
                 return new ValidationResult { IsValid = false, ErrorMessage = "Cliente não encontrado." };
 
             if (string.IsNullOrWhiteSpace(cliente.CNH))
-                return new ValidationResult { IsValid = false, ErrorMessage = "Cliente não possui número de habilitação cadastrado." };
+                return new ValidationResult { IsValid = false, ErrorMessage = "Cliente não possui CNH cadastrada." };
 
             if (!cliente.ValidadeCNH.HasValue)
-                return new ValidationResult { IsValid = false, ErrorMessage = "Cliente não possui data de validade da CNH cadastrada." };
+                return new ValidationResult { IsValid = false, ErrorMessage = "Cliente não possui data de validade da CNH." };
 
             if (cliente.ValidadeCNH.Value.Date < DateTime.Now.Date)
-                return new ValidationResult { IsValid = false, ErrorMessage = $"CNH do cliente venceu em {cliente.ValidadeCNH.Value:dd/MM/yyyy}." };
+                return new ValidationResult { IsValid = false, ErrorMessage = $"CNH venceu em {cliente.ValidadeCNH.Value:dd/MM/yyyy}." };
 
             return new ValidationResult { IsValid = true };
         }
@@ -798,8 +674,7 @@ namespace RentalTourismSystem.Controllers
             try
             {
                 var cliente = await _context.Clientes.FindAsync(id);
-                if (cliente == null)
-                    return NotFound();
+                if (cliente == null) return NotFound();
 
                 return Json(new
                 {
@@ -817,8 +692,8 @@ namespace RentalTourismSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao obter dados do cliente {ClienteId} via API por {User}", id, User.Identity?.Name);
-                return StatusCode(500, new { message = "Erro interno do servidor" });
+                _logger.LogError(ex, "Erro ao obter dados do cliente {ClienteId}", id);
+                return StatusCode(500, new { message = "Erro interno" });
             }
         }
 
@@ -832,8 +707,7 @@ namespace RentalTourismSystem.Controllers
                     .Include(v => v.StatusCarro)
                     .FirstOrDefaultAsync(v => v.Id == id);
 
-                if (veiculo == null)
-                    return NotFound();
+                if (veiculo == null) return NotFound();
 
                 return Json(new
                 {
@@ -850,8 +724,8 @@ namespace RentalTourismSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao obter dados do veículo {VeiculoId} via API por {User}", id, User.Identity?.Name);
-                return StatusCode(500, new { message = "Erro interno do servidor" });
+                _logger.LogError(ex, "Erro ao obter dados do veículo {VeiculoId}", id);
+                return StatusCode(500, new { message = "Erro interno" });
             }
         }
 
@@ -922,24 +796,13 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
-                _logger.LogInformation("=== CALCULANDO VALOR ===");
-                _logger.LogInformation("VeiculoId: {VeiculoId}, DataRetirada: {DataRetirada}, DataDevolucao: {DataDevolucao}",
-                    veiculoId, dataRetirada, dataDevolucao);
-
                 var veiculo = await _context.Veiculos.FindAsync(veiculoId);
                 if (veiculo == null) return Json(new { valor = 0, totalDias = 0 });
 
                 var totalDias = (int)Math.Ceiling((dataDevolucao - dataRetirada).TotalDays);
                 var valorCalculado = totalDias > 0 ? totalDias * veiculo.ValorDiaria : 0;
 
-                _logger.LogInformation("Diária: {ValorDiaria}, Dias: {TotalDias}, Total: {ValorCalculado}",
-                    veiculo.ValorDiaria, totalDias, valorCalculado);
-
-                return Json(new
-                {
-                    valor = valorCalculado,
-                    totalDias = totalDias
-                });
+                return Json(new { valor = valorCalculado, totalDias = totalDias });
             }
             catch (Exception ex)
             {
@@ -947,6 +810,7 @@ namespace RentalTourismSystem.Controllers
                 return Json(new { valor = 0, totalDias = 0 });
             }
         }
+
 
         [HttpGet]
         [Authorize]
@@ -979,87 +843,27 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
-                _logger.LogInformation("Validando disponibilidade do veículo {VeiculoId} de {DataInicio} a {DataFim}",
-                    veiculoId, dataInicio, dataFim);
-
                 var veiculo = await _context.Veiculos
                     .Include(v => v.StatusCarro)
                     .FirstOrDefaultAsync(v => v.Id == veiculoId);
 
                 if (veiculo == null)
                 {
-                    return Json(new
-                    {
-                        disponivel = false,
-                        motivo = "Veículo não encontrado",
-                        codigo = "VEICULO_NAO_ENCONTRADO"
-                    });
-                }
-
-                var statusPermitidos = new[] { "Disponível", "Alugado" };
-                if (!statusPermitidos.Contains(veiculo.StatusCarro.Status))
-                {
-                    return Json(new
-                    {
-                        disponivel = false,
-                        motivo = $"Veículo está em status: {veiculo.StatusCarro.Status}",
-                        codigo = "STATUS_INVALIDO",
-                        status = veiculo.StatusCarro.Status
-                    });
+                    return Json(new { disponivel = false, motivo = "Veículo não encontrado" });
                 }
 
                 var disponivel = await VerificarDisponibilidadeAsync(veiculoId, dataInicio, dataFim, locacaoExcluir);
 
-                if (!disponivel)
-                {
-                    var locacoesConflitantes = await _context.Locacoes
-                        .Include(l => l.Cliente)
-                        .Where(l => l.VeiculoId == veiculoId &&
-                                   l.Id != locacaoExcluir &&
-                                   l.DataDevolucaoReal == null &&
-                                   ((l.DataRetirada < dataFim && l.DataDevolucao > dataInicio)))
-                        .ToListAsync();
-
-                    return Json(new
-                    {
-                        disponivel = false,
-                        motivo = "Veículo já está alugado no período solicitado",
-                        codigo = "PERIODO_OCUPADO",
-                        conflitos = locacoesConflitantes.Select(l => new
-                        {
-                            id = l.Id,
-                            cliente = l.Cliente.Nome,
-                            dataRetirada = l.DataRetirada.ToString("dd/MM/yyyy HH:mm"),
-                            dataDevolucao = l.DataDevolucao.ToString("dd/MM/yyyy HH:mm")
-                        })
-                    });
-                }
-
                 return Json(new
                 {
-                    disponivel = true,
-                    motivo = "Veículo disponível",
-                    codigo = "DISPONIVEL",
-                    dadosVeiculo = new
-                    {
-                        id = veiculo.Id,
-                        marca = veiculo.Marca,
-                        modelo = veiculo.Modelo,
-                        placa = veiculo.Placa,
-                        valorDiaria = veiculo.ValorDiaria,
-                        status = veiculo.StatusCarro.Status
-                    }
+                    disponivel = disponivel,
+                    motivo = disponivel ? "Veículo disponível" : "Veículo ocupado no período"
                 });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao validar disponibilidade do veículo {VeiculoId}", veiculoId);
-                return Json(new
-                {
-                    disponivel = false,
-                    motivo = "Erro interno do sistema",
-                    codigo = "ERRO_INTERNO"
-                });
+                _logger.LogError(ex, "Erro ao validar disponibilidade");
+                return Json(new { disponivel = false, motivo = "Erro interno" });
             }
         }
 

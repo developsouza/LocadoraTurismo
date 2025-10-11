@@ -38,8 +38,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label asp-for="PacoteViagemId" class="form-label">Pacote de Viagem</label>
-                            <select asp-for="PacoteViagemId" class="form-select" asp-items="ViewBag.PacoteViagemId" 
-                                    onchange="atualizarPrecoPacote()">
+                            <select asp-for="PacoteViagemId" id="pacoteSelect" class="form-select" asp-items="ViewBag.PacoteViagemId">
                             </select>
                             <span asp-validation-for="PacoteViagemId" class="text-danger"></span>
                         </div>
@@ -65,8 +64,7 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label asp-for="Quantidade" class="form-label">Quantidade de Pessoas</label>
-                            <input asp-for="Quantidade" class="form-control" type="number" min="1" 
-                                   onchange="calcularValorTotal()" />
+                            <input asp-for="Quantidade" id="quantidadeInput" class="form-control" type="number" min="1" />
                             <span asp-validation-for="Quantidade" class="text-danger"></span>
                         </div>
                     </div>
@@ -194,16 +192,18 @@
         let precoUnitarioAtual = @Model.PacoteViagem.Preco;
         
         async function atualizarPrecoPacote() {
-            const pacoteId = document.querySelector('select[name="PacoteViagemId"]').value;
+            const pacoteId = document.getElementById('pacoteSelect').value;
             
             if (!pacoteId) return;
             
             try {
-                const response = await fetch(`/api/Api/pacote/${pacoteId}/preco`);
+                const response = await fetch(`/api/v1/Api/pacote/${pacoteId}/preco`);
                 const data = await response.json();
                 
-                precoUnitarioAtual = data.preco;
-                document.getElementById('precoUnitario').textContent = data.preco.toLocaleString('pt-BR', {
+                // A API retorna PrecoUnitario (pode estar em camelCase ou PascalCase)
+                precoUnitarioAtual = data.precoUnitario || data.PrecoUnitario;
+                
+                document.getElementById('precoUnitario').textContent = precoUnitarioAtual.toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL'
                 });
@@ -215,7 +215,7 @@
         }
         
         function calcularValorTotal() {
-            const quantidade = parseInt(document.querySelector('input[name="Quantidade"]').value) || 1;
+            const quantidade = parseInt(document.getElementById('quantidadeInput').value) || 1;
             const valorTotal = precoUnitarioAtual * quantidade;
             
             document.getElementById('quantidadeDisplay').textContent = quantidade;
@@ -234,5 +234,23 @@
                 currency: 'BRL'
             });
         }
+        
+        // Configurar event listeners quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listener para mudança de pacote
+            const pacoteSelect = document.getElementById('pacoteSelect');
+            if (pacoteSelect) {
+                pacoteSelect.addEventListener('change', atualizarPrecoPacote);
+            }
+            
+            // Event listener para mudança de quantidade
+            const quantidadeInput = document.getElementById('quantidadeInput');
+            if (quantidadeInput) {
+                quantidadeInput.addEventListener('input', calcularValorTotal);
+            }
+            
+            // Calcular valor total inicial
+            calcularValorTotal();
+        });
     </script>
 }
