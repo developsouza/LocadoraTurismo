@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Litoral Sul\\Downloads\\Projetos\\Projetos\\LitoralSul\\SistemaIntegrado\\LocadoraTurismo\\RentalTourismSystem\\RentalTourismSystem.csproj": {}
+    "C:\\Sistemas\\LocadoraTurismo\\RentalTourismSystem\\RentalTourismSystem.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Litoral Sul\\Downloads\\Projetos\\Projetos\\LitoralSul\\SistemaIntegrado\\LocadoraTurismo\\RentalTourismSystem\\RentalTourismSystem.csproj": {
+    "C:\\Sistemas\\LocadoraTurismo\\RentalTourismSystem\\RentalTourismSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Litoral Sul\\Downloads\\Projetos\\Projetos\\LitoralSul\\SistemaIntegrado\\LocadoraTurismo\\RentalTourismSystem\\RentalTourismSystem.csproj",
+        "projectUniqueName": "C:\\Sistemas\\LocadoraTurismo\\RentalTourismSystem\\RentalTourismSystem.csproj",
         "projectName": "RentalTourismSystem",
-        "projectPath": "C:\\Users\\Litoral Sul\\Downloads\\Projetos\\Projetos\\LitoralSul\\SistemaIntegrado\\LocadoraTurismo\\RentalTourismSystem\\RentalTourismSystem.csproj",
+        "projectPath": "C:\\Sistemas\\LocadoraTurismo\\RentalTourismSystem\\RentalTourismSystem.csproj",
         "packagesPath": "C:\\Users\\Litoral Sul\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Litoral Sul\\Downloads\\Projetos\\Projetos\\LitoralSul\\SistemaIntegrado\\LocadoraTurismo\\RentalTourismSystem\\obj\\",
+        "outputPath": "C:\\Sistemas\\LocadoraTurismo\\RentalTourismSystem\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

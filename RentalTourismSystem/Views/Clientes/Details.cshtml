@@ -284,7 +284,10 @@
                             }
                         </div>
                         <div class="col-md-4 text-center">
-                            <button type="button" class="btn btn-outline-info" onclick="validarCNHSistema()">
+                            <a class="btn btn-success" href="@Url.Action("Create", "Locacoes", new { clienteId = Model.Id })">
+                                <i class="fas fa-car me-1"></i>Nova Locação
+                            </a>
+                            <button type="button" class="btn btn-outline-info mt-2" onclick="validarCNHSistema()">
                                 <i class="fas fa-search me-1"></i>Validar no Sistema
                             </button>
                         </div>
@@ -518,9 +521,9 @@
                     <h5 class="text-muted">Nenhuma atividade encontrada</h5>
                     <p class="text-muted">Este cliente ainda não realizou locações ou reservas de viagem.</p>
                     <div class="d-flex gap-2 justify-content-center">
-                        <button type="button" class="btn btn-success" onclick="novaLocacao()">
+                        <a class="btn btn-success" href="@Url.Action("Create", "Locacoes", new { clienteId = Model.Id })">
                             <i class="fas fa-car me-1"></i>Nova Locação
-                        </button>
+                        </a>
                         <button type="button" class="btn btn-info" onclick="novaReserva()">
                             <i class="fas fa-plane me-1"></i>Nova Reserva
                         </button>
@@ -543,9 +546,9 @@
                 <div class="d-grid gap-2">
                     @if (cnhValida)
                     {
-                        <button type="button" class="btn btn-success" onclick="novaLocacao()">
+                        <a class="btn btn-success" href="@Url.Action("Create", "Locacoes", new { clienteId = Model.Id })">
                             <i class="fas fa-car me-1"></i>Nova Locação
-                        </button>
+                        </a>
                     }
                     else
                     {
@@ -810,7 +813,7 @@
 
         // Placeholder functions para ações que podem não ter controllers implementados
         function novaLocacao() {
-            NotificationSystem.info('Função de nova locação será implementada quando o controller estiver disponível');
+            window.location.href = '@Url.Action("Create", "Locacoes", new { clienteId = Model.Id })';
         }
 
         function novaReserva() {

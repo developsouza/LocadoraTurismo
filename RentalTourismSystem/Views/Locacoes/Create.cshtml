@@ -253,11 +253,13 @@
         let clienteSelecionado = null;
         let veiculoSelecionado = null;
         let veiculoIdPreSelecionado = @(ViewBag.VeiculoIdPreSelecionado ?? "null");
+        let clienteIdPreSelecionado = @(ViewBag.ClienteIdPreSelecionado ?? "null");
 
         // === INICIALIZAÇÃO ===
         $(document).ready(function() {
             console.log('=== INICIALIZANDO FORMULÁRIO DE NOVA LOCAÇÃO ===');
             console.log('Veículo pré-selecionado:', veiculoIdPreSelecionado);
+            console.log('Cliente pré-selecionado:', clienteIdPreSelecionado);
 
             // 1. Configurar tooltips
             if (typeof initializeTooltips === 'function') {
@@ -277,6 +279,13 @@
             if (veiculoIdPreSelecionado) {
                 setTimeout(() => {
                     selecionarVeiculoAutomatico(veiculoIdPreSelecionado);
+                }, 500);
+            }
+
+            // 6. Seleção automática do cliente se pré-selecionado
+            if (clienteIdPreSelecionado) {
+                setTimeout(() => {
+                    selecionarClienteAutomatico(clienteIdPreSelecionado);
                 }, 500);
             }
 
@@ -519,6 +528,29 @@
             }
         }
 
+        // === SELEÇÃO AUTOMÁTICA DO CLIENTE ===
+        function selecionarClienteAutomatico(clienteId) {
+            console.log('Tentando selecionar cliente automaticamente:', clienteId);
+
+            const selectCliente = document.querySelector('select[name="ClienteId"]');
+            if (selectCliente && selectCliente.options.length > 1) {
+                const opcaoCliente = Array.from(selectCliente.options).find(option =>
+                    option.value === clienteId.toString()
+                );
+
+                if (opcaoCliente) {
+                    selectCliente.value = clienteId.toString();
+                    selectCliente.dispatchEvent(new Event('change', { bubbles: true }));
+                    console.log('Cliente selecionado automaticamente com sucesso');
+                } else {
+                    console.warn('Cliente não encontrado nas opções');
+                }
+            } else {
+                // Tentar novamente após um delay
+                setTimeout(() => selecionarClienteAutomatico(clienteId), 500);
+            }
+        }
+
         // === FUNÇÕES CHAMADAS PELOS ONCHANGE DO HTML ===
 
         // Função chamada quando seleciona cliente
@@ -690,11 +722,11 @@
             dadosCliente.innerHTML = `
                 <div class="client-details">
                     <h6 class="mb-2">${cliente.nome}</h6>
-                    <p class="mb-1"><strong>CPF:</strong> ${cliente.CPF || 'N/A'}</p>
+                    <p class="mb-1"><strong>CPF:</strong> ${cliente.cpf || 'N/A'}</p>
                     <p class="mb-1"><strong>Email:</strong> ${cliente.email || 'N/A'}</p>
                     <p class="mb-1"><strong>Telefone:</strong> ${cliente.telefone || 'N/A'}</p>
-                    ${cliente.CNH ? `
-                        <p class="mb-1"><strong>CNH:</strong> ${cliente.CNH}</p>
+                    ${cliente.numeroHabilitacao ? `
+                        <p class="mb-1"><strong>CNH:</strong> ${cliente.numeroHabilitacao}</p>
                         ${cliente.validadeCNH ? `<p class="mb-0"><strong>Validade:</strong> ${cliente.validadeCNH}</p>` : ''}
                     ` : '<p class="mb-0 text-warning"><small>CNH não cadastrada</small></p>'}
                 </div>
