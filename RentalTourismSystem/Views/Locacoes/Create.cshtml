@@ -129,6 +129,12 @@
                                     <option value="">Selecione um funcionário</option>
                                 </select>
                                 <span asp-validation-for="FuncionarioId" class="invalid-feedback"></span>
+                                @if (ViewBag.FuncionarioLogadoId != null)
+                                {
+                                    <div class="form-text text-success">
+                                        <i class="fas fa-check-circle me-1"></i>Preenchido automaticamente com seu usuário (pode alterar se necessário)
+                                    </div>
+                                }
                             </div>
                             <div class="col-lg-6 mb-3">
                                 <label asp-for="AgenciaId" class="form-label required">
@@ -138,6 +144,12 @@
                                     <option value="">Selecione uma agência</option>
                                 </select>
                                 <span asp-validation-for="AgenciaId" class="invalid-feedback"></span>
+                                @if (ViewBag.AgenciaLogadaId != null)
+                                {
+                                    <div class="form-text text-success">
+                                        <i class="fas fa-check-circle me-1"></i>Preenchida automaticamente com sua agência (pode alterar se necessário)
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -254,12 +266,16 @@
         let veiculoSelecionado = null;
         let veiculoIdPreSelecionado = @(ViewBag.VeiculoIdPreSelecionado ?? "null");
         let clienteIdPreSelecionado = @(ViewBag.ClienteIdPreSelecionado ?? "null");
+        let funcionarioLogadoId = @(ViewBag.FuncionarioLogadoId ?? "null");
+        let agenciaLogadaId = @(ViewBag.AgenciaLogadaId ?? "null");
 
         // === INICIALIZAÇÃO ===
         $(document).ready(function() {
             console.log('=== INICIALIZANDO FORMULÁRIO DE NOVA LOCAÇÃO ===');
             console.log('Veículo pré-selecionado:', veiculoIdPreSelecionado);
             console.log('Cliente pré-selecionado:', clienteIdPreSelecionado);
+            console.log('Funcionário logado:', funcionarioLogadoId);
+            console.log('Agência logada:', agenciaLogadaId);
 
             // 1. Configurar tooltips
             if (typeof initializeTooltips === 'function') {
@@ -275,14 +291,27 @@
             // 4. Contador de caracteres para observações
             configurarContadorObservacoes();
 
-            // 5. Seleção automática do veículo se pré-selecionado
+            // 5. Pré-selecionar funcionário e agência do usuário logado
+            if (funcionarioLogadoId) {
+                setTimeout(() => {
+                    selecionarFuncionarioAutomatico(funcionarioLogadoId);
+                }, 100);
+            }
+
+            if (agenciaLogadaId) {
+                setTimeout(() => {
+                    selecionarAgenciaAutomatica(agenciaLogadaId);
+                }, 100);
+            }
+
+            // 6. Seleção automática do veículo se pré-selecionado
             if (veiculoIdPreSelecionado) {
                 setTimeout(() => {
                     selecionarVeiculoAutomatico(veiculoIdPreSelecionado);
                 }, 500);
             }
 
-            // 6. Seleção automática do cliente se pré-selecionado
+            // 7. Seleção automática do cliente se pré-selecionado
             if (clienteIdPreSelecionado) {
                 setTimeout(() => {
                     selecionarClienteAutomatico(clienteIdPreSelecionado);
@@ -503,6 +532,58 @@
                 // Não fazer e.preventDefault() aqui para permitir o envio normal
                 return true;
             });
+        }
+
+        // === SELEÇÃO AUTOMÁTICA DO FUNCIONÁRIO ===
+        function selecionarFuncionarioAutomatico(funcionarioId) {
+            console.log('Selecionando funcionário automaticamente:', funcionarioId);
+
+            const selectFuncionario = document.querySelector('select[name="FuncionarioId"]');
+            if (selectFuncionario && selectFuncionario.options.length > 1) {
+                const opcaoFuncionario = Array.from(selectFuncionario.options).find(option =>
+                    option.value === funcionarioId.toString()
+                );
+
+                if (opcaoFuncionario) {
+                    selectFuncionario.value = funcionarioId.toString();
+                    selectFuncionario.dispatchEvent(new Event('change', { bubbles: true }));
+                    console.log('Funcionário selecionado automaticamente com sucesso');
+                    
+                    // Adicionar feedback visual
+                    selectFuncionario.classList.add('is-valid');
+                } else {
+                    console.warn('Funcionário não encontrado nas opções');
+                }
+            } else {
+                // Tentar novamente após um delay
+                setTimeout(() => selecionarFuncionarioAutomatico(funcionarioId), 500);
+            }
+        }
+
+        // === SELEÇÃO AUTOMÁTICA DA AGÊNCIA ===
+        function selecionarAgenciaAutomatica(agenciaId) {
+            console.log('Selecionando agência automaticamente:', agenciaId);
+
+            const selectAgencia = document.querySelector('select[name="AgenciaId"]');
+            if (selectAgencia && selectAgencia.options.length > 1) {
+                const opcaoAgencia = Array.from(selectAgencia.options).find(option =>
+                    option.value === agenciaId.toString()
+                );
+
+                if (opcaoAgencia) {
+                    selectAgencia.value = agenciaId.toString();
+                    selectAgencia.dispatchEvent(new Event('change', { bubbles: true }));
+                    console.log('Agência selecionada automaticamente com sucesso');
+                    
+                    // Adicionar feedback visual
+                    selectAgencia.classList.add('is-valid');
+                } else {
+                    console.warn('Agência não encontrada nas opções');
+                }
+            } else {
+                // Tentar novamente após um delay
+                setTimeout(() => selecionarAgenciaAutomatica(agenciaId), 500);
+            }
         }
 
         // === SELEÇÃO AUTOMÁTICA DO VEÍCULO ===

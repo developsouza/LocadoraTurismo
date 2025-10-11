@@ -196,6 +196,11 @@ namespace RentalTourismSystem.Data
                 .HasColumnType("decimal(10,2)")
                 .HasPrecision(10, 2);
 
+            modelBuilder.Entity<Veiculo>()
+                .Property(v => v.ValorMercado)
+                .HasColumnType("decimal(10,2)")
+                .HasPrecision(10, 2);
+
             modelBuilder.Entity<Funcionario>()
                 .Property(f => f.Salario)
                 .HasColumnType("decimal(10,2)")

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +15,16 @@ namespace RentalTourismSystem.Controllers
     {
         private readonly RentalTourismContext _context;
         private readonly ILogger<LocacoesController> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public LocacoesController(RentalTourismContext context, ILogger<LocacoesController> logger)
+        public LocacoesController(
+            RentalTourismContext context, 
+            ILogger<LocacoesController> logger,
+            UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _logger = logger;
+            _userManager = userManager;
         }
 
         // ========== ACTIONS PRINCIPAIS (CRUD) ==========
@@ -124,9 +130,26 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
+                // Obter funcionário e agência do usuário logado
+                var funcionarioLogado = await ObterFuncionarioLogado();
+                
                 await CarregarViewBags(null, veiculoId, clienteId);
                 ViewBag.VeiculoIdPreSelecionado = veiculoId;
                 ViewBag.ClienteIdPreSelecionado = clienteId;
+                
+                // Passar dados do funcionário logado para pré-selecionar
+                if (funcionarioLogado != null)
+                {
+                    ViewBag.FuncionarioLogadoId = funcionarioLogado.Id;
+                    ViewBag.AgenciaLogadaId = funcionarioLogado.AgenciaId;
+                    
+                    _logger.LogInformation("Funcionário logado identificado: {FuncionarioNome} (ID: {FuncionarioId}) - Agência: {AgenciaId}", 
+                        funcionarioLogado.Nome, funcionarioLogado.Id, funcionarioLogado.AgenciaId);
+                }
+                else
+                {
+                    _logger.LogWarning("Funcionário não encontrado para o usuário {User}", User.Identity?.Name);
+                }
 
                 _logger.LogInformation("Formulário de criação de locação acessado por {User} com veículo {VeiculoId} e cliente {ClienteId}",
                     User.Identity?.Name, veiculoId, clienteId);
@@ -663,6 +686,94 @@ namespace RentalTourismSystem.Controllers
             var totalDias = (int)Math.Ceiling((dataDevolucao - dataRetirada).TotalDays);
             if (totalDias <= 0) return 0;
             return totalDias * veiculo.ValorDiaria;
+        }
+
+        /// <summary>
+        /// Obtém o funcionário logado com base no usuário Identity autenticado
+        /// </summary>
+        private async Task<Funcionario?> ObterFuncionarioLogado()
+        {
+            try
+            {
+                _logger.LogInformation("=== INICIANDO ObterFuncionarioLogado ===");
+                
+                // Obter o usuário Identity atual
+                var user = await _userManager.GetUserAsync(User);
+                
+                if (user == null)
+                {
+                    _logger.LogWarning("❌ Usuário Identity não encontrado. User.Identity.Name: {UserName}", User.Identity?.Name);
+                    _logger.LogWarning("User.Identity.IsAuthenticated: {IsAuth}", User.Identity?.IsAuthenticated);
+                    return null;
+                }
+
+                _logger.LogInformation("✅ Usuário Identity encontrado:");
+                _logger.LogInformation("   - Email: {Email}", user.Email);
+                _logger.LogInformation("   - Nome: {Nome}", user.NomeCompleto);
+                _logger.LogInformation("   - FuncionarioId: {FuncionarioId}", user.FuncionarioId);
+                _logger.LogInformation("   - AgenciaId: {AgenciaId}", user.AgenciaId);
+
+                // Se o usuário tem FuncionarioId vinculado, buscar o funcionário
+                if (user.FuncionarioId.HasValue)
+                {
+                    _logger.LogInformation("🔍 Buscando funcionário pelo FuncionarioId: {FuncionarioId}", user.FuncionarioId.Value);
+                    
+                    var funcionario = await _context.Funcionarios
+                        .Include(f => f.Agencia)
+                        .FirstOrDefaultAsync(f => f.Id == user.FuncionarioId.Value);
+
+                    if (funcionario != null)
+                    {
+                        _logger.LogInformation("✅ Funcionário encontrado via FuncionarioId:");
+                        _logger.LogInformation("   - Nome: {Nome} (ID: {Id})", funcionario.Nome, funcionario.Id);
+                        _logger.LogInformation("   - Agência: {Agencia} (ID: {AgenciaId})", funcionario.Agencia?.Nome, funcionario.AgenciaId);
+                        return funcionario;
+                    }
+                    else
+                    {
+                        _logger.LogWarning("❌ Funcionário com ID {FuncionarioId} não encontrado no banco", user.FuncionarioId.Value);
+                    }
+                }
+                else
+                {
+                    _logger.LogWarning("⚠️ Usuário não tem FuncionarioId vinculado. Tentando fallback por email...");
+                }
+
+                // Fallback: tentar buscar por email (para compatibilidade com dados antigos)
+                if (!string.IsNullOrEmpty(user.Email))
+                {
+                    _logger.LogInformation("🔍 Tentando fallback: buscar funcionário por email: {Email}", user.Email);
+                    
+                    var funcionario = await _context.Funcionarios
+                        .Include(f => f.Agencia)
+                        .FirstOrDefaultAsync(f => f.Email == user.Email);
+
+                    if (funcionario != null)
+                    {
+                        _logger.LogInformation("✅ Funcionário encontrado via email (fallback):");
+                        _logger.LogInformation("   - Nome: {Nome} (ID: {Id})", funcionario.Nome, funcionario.Id);
+                        _logger.LogInformation("   - Agência: {Agencia} (ID: {AgenciaId})", funcionario.Agencia?.Nome, funcionario.AgenciaId);
+                        
+                        _logger.LogWarning("💡 SUGESTÃO: Vincule o FuncionarioId {FuncionarioId} ao usuário {Email} em ManageUsers", 
+                            funcionario.Id, user.Email);
+                        
+                        return funcionario;
+                    }
+                    else
+                    {
+                        _logger.LogWarning("❌ Nenhum funcionário encontrado com o email: {Email}", user.Email);
+                    }
+                }
+
+                _logger.LogError("❌ FALHA TOTAL: Nenhum funcionário vinculado ao usuário {Email}", user.Email);
+                _logger.LogInformation("=== FIM ObterFuncionarioLogado (SEM SUCESSO) ===");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "💥 ERRO CRÍTICO ao obter funcionário logado");
+                return null;
+            }
         }
 
         // ========== APIs PARA CONSUMO INTERNO (AJAX) ==========

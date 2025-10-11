@@ -52,6 +52,11 @@ namespace RentalTourismSystem.Models
         [Display(Name = "Valor da Diária")]
         public decimal ValorDiaria { get; set; }
 
+        [Column(TypeName = "decimal(10,2)")]
+        [Display(Name = "Valor de Mercado")]
+        [Range(0, 9999999.99, ErrorMessage = "Valor de mercado deve estar entre R$ 0,00 e R$ 9.999.999,99")]
+        public decimal? ValorMercado { get; set; }
+
         [Required(ErrorMessage = "A quilometragem é obrigatória")]
         [Range(0, int.MaxValue, ErrorMessage = "Quilometragem deve ser maior ou igual a zero")]
         [Display(Name = "Quilometragem")]

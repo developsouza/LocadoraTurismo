@@ -119,8 +119,8 @@ namespace RentalTourismSystem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
-        // ✅ CORRIGIDO: Bind agora inclui Combustivel e Cambio
-        public async Task<IActionResult> Create([Bind("Marca,Modelo,Ano,Placa,Cor,Combustivel,Cambio,ValorDiaria,Quilometragem,StatusCarroId,AgenciaId")] Veiculo veiculo)
+        // ✅ CORRIGIDO: Bind agora inclui Combustivel, Cambio e ValorMercado
+        public async Task<IActionResult> Create([Bind("Marca,Modelo,Ano,Placa,Cor,Combustivel,Cambio,ValorDiaria,ValorMercado,Quilometragem,StatusCarroId,AgenciaId")] Veiculo veiculo)
         {
             try
             {
@@ -211,8 +211,8 @@ namespace RentalTourismSystem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
-        // ✅ CORRIGIDO: Bind agora inclui Combustivel e Cambio
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Marca,Modelo,Ano,Placa,Cor,Combustivel,Cambio,ValorDiaria,Quilometragem,StatusCarroId,AgenciaId")] Veiculo veiculo)
+        // ✅ CORRIGIDO: Bind agora inclui Combustivel, Cambio e ValorMercado
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Marca,Modelo,Ano,Placa,Cor,Combustivel,Cambio,ValorDiaria,ValorMercado,Quilometragem,StatusCarroId,AgenciaId")] Veiculo veiculo)
         {
             if (id != veiculo.Id)
             {

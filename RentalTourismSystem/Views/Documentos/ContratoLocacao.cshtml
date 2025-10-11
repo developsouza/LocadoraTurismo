@@ -102,8 +102,7 @@
                     @Model.Locacao.Veiculo.Combustivel,
                     @Model.Locacao.Veiculo.Cambio,
                     placa <strong>@Model.Locacao.Veiculo.Placa</strong>,
-                    com quilometragem de <strong>@Model.Locacao.Veiculo.Quilometragem.ToString("N0") km</strong>,
-                    e com o valor de mercado aproximado em <strong>R$ @((Model.Locacao.Veiculo.ValorDiaria * 500).ToString("N2"))</strong>.
+                    com quilometragem de <strong>@Model.Locacao.Veiculo.Quilometragem.ToString("N0") km</strong>@(Model.Locacao.Veiculo.ValorMercado.HasValue ? $", e com o valor de mercado aproximado em R$ {Model.Locacao.Veiculo.ValorMercado.Value.ToString("N2")}" : "").
                 </p>
             </div>
             <p class="paragrafo">
@@ -383,4 +382,4 @@
             return numero.ToString();
         }
     }
-}
+}}
