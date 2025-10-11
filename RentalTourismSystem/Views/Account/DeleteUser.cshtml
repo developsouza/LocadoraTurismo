@@ -1,0 +1,192 @@
+@model RentalTourismSystem.Models.ApplicationUser
+@{
+    ViewData["Title"] = "Excluir Usuário";
+    var hasImpedimentos = ViewBag.Impedimentos != null && ((List<string>)ViewBag.Impedimentos).Any();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0 text-danger">
+        <i class="fas fa-user-times me-2"></i>Excluir Usuário
+    </h2>
+    <a asp-action="ManageUsers" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </a>
+</div>
+
+@if (hasImpedimentos)
+{
+    <div class="alert alert-warning" role="alert">
+        <h5 class="alert-heading">
+            <i class="fas fa-exclamation-triangle me-2"></i>Atenção!
+        </h5>
+        <p>Este usuário possui registros vinculados:</p>
+        <ul class="mb-0">
+            @foreach (var impedimento in (List<string>)ViewBag.Impedimentos)
+            {
+                <li>@impedimento</li>
+            }
+        </ul>
+        <hr />
+        <p class="mb-0">
+            <strong>Recomendação:</strong> Em vez de excluir, considere desativar o usuário.
+        </p>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-exclamation-circle me-2"></i>Confirmar Exclusão
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger" role="alert">
+                    <strong>Atenção!</strong> Esta ação não pode ser desfeita.
+                </div>
+
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Nome Completo:</dt>
+                    <dd class="col-sm-8">@Model.NomeCompleto</dd>
+
+                    <dt class="col-sm-4">Email:</dt>
+                    <dd class="col-sm-8">@Model.Email</dd>
+
+                    <dt class="col-sm-4">CPF:</dt>
+                    <dd class="col-sm-8">@(Model.Cpf ?? "Não informado")</dd>
+
+                    <dt class="col-sm-4">Cargo:</dt>
+                    <dd class="col-sm-8">@(Model.Cargo ?? "Não informado")</dd>
+
+                    <dt class="col-sm-4">Agência:</dt>
+                    <dd class="col-sm-8">@(Model.Agencia?.Nome ?? "Não vinculado")</dd>
+
+                    <dt class="col-sm-4">Permissão:</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge bg-info">@ViewBag.UserRole</span>
+                    </dd>
+
+                    <dt class="col-sm-4">Status:</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.Ativo)
+                        {
+                            <span class="badge bg-success">Ativo</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Inativo</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">Data Cadastro:</dt>
+                    <dd class="col-sm-8">@Model.DataCadastro.ToString("dd/MM/yyyy HH:mm")</dd>
+                </dl>
+
+                @if (hasImpedimentos)
+                {
+                    <div class="alert alert-info mt-3" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Nota:</strong> Ao excluir este usuário, os registros vinculados serão mantidos,
+                        mas ficarão sem referência ao usuário excluído.
+                    </div>
+                }
+
+                <form asp-action="DeleteUser" method="post" class="mt-4">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="d-flex justify-content-between gap-2">
+                        <a asp-action="ManageUsers" class="btn btn-secondary flex-fill">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger flex-fill"
+                                onclick="return confirm('Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita!')">
+                            <i class="fas fa-trash"></i> Confirmar Exclusão
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @if (!hasImpedimentos)
+        {
+            <div class="card shadow-sm mt-3">
+                <div class="card-body">
+                    <h6 class="text-success">
+                        <i class="fas fa-check-circle me-2"></i>Alternativa Recomendada
+                    </h6>
+                    <p class="mb-0">
+                        Em vez de excluir, você pode <strong>desativar</strong> o usuário.
+                        Isso mantém o histórico completo e permite reativar no futuro se necessário.
+                    </p>
+                    <form asp-action="ToggleUserStatus" method="post" class="mt-3">
+                        <input type="hidden" name="userId" value="@Model.Id" />
+                        @if (Model.Ativo)
+                        {
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-user-lock"></i> Desativar Usuário
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-user-check"></i> Ativar Usuário
+                            </button>
+                        }
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        dt {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        dd {
+            color: var(--text-primary);
+        }
+
+        .alert {
+            border: 1px solid var(--border-color);
+        }
+
+        .alert-danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--text-primary);
+            border-color: #dc3545;
+        }
+
+        .alert-warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--text-primary);
+            border-color: #ffc107;
+        }
+
+        .alert-info {
+            background-color: rgba(13, 202, 240, 0.1);
+            color: var(--text-primary);
+            border-color: #0dcaf0;
+        }
+
+        .border-danger {
+            border-color: #dc3545 !important;
+        }
+
+        .bg-danger {
+            background-color: #dc3545 !important;
+        }
+    </style>
+}

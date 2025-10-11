@@ -1,0 +1,178 @@
+@model RentalTourismSystem.ViewModels.EditUserViewModel
+@{
+    ViewData["Title"] = "Editar Usuário";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+        <i class="fas fa-user-edit me-2"></i>Editar Usuário
+    </h2>
+    <a asp-action="ManageUsers" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form asp-action="EditUser" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="NomeCompleto" class="form-label"></label>
+                            <input asp-for="NomeCompleto" class="form-control" />
+                            <span asp-validation-for="NomeCompleto" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" type="email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Cpf" class="form-label"></label>
+                            <input asp-for="Cpf" class="form-control" id="cpf" maxlength="14" />
+                            <span asp-validation-for="Cpf" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Cargo" class="form-label"></label>
+                            <input asp-for="Cargo" class="form-control" />
+                            <span asp-validation-for="Cargo" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="AgenciaId" class="form-label"></label>
+                            <select asp-for="AgenciaId" class="form-select" asp-items="ViewBag.AgenciaId">
+                                <option value="">Nenhuma agência</option>
+                            </select>
+                            <span asp-validation-for="AgenciaId" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Role" class="form-label"></label>
+                            <select asp-for="Role" class="form-select">
+                                <option value="Employee">Funcionário</option>
+                                <option value="Manager">Gerente</option>
+                                <option value="Admin">Administrador</option>
+                            </select>
+                            <span asp-validation-for="Role" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input asp-for="Ativo" class="form-check-input" type="checkbox" />
+                            <label asp-for="Ativo" class="form-check-label"></label>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <h5 class="mb-3">
+                        <i class="fas fa-key me-2"></i>Alterar Senha (Opcional)
+                    </h5>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="NewPassword" class="form-label"></label>
+                            <input asp-for="NewPassword" class="form-control" />
+                            <span asp-validation-for="NewPassword" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                Deixe em branco para manter a senha atual
+                            </small>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ConfirmPassword" class="form-control" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="ManageUsers" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+            // Máscara de CPF
+            $('#cpf').on('input', function() {
+                let value = $(this).val().replace(/\D/g, '');
+                if (value.length <= 11) {
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                }
+                $(this).val(value);
+            });
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+        }
+
+        .form-label {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .form-control,
+        .form-select {
+            background-color: var(--bg-surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            background-color: var(--bg-surface);
+            color: var(--text-primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.25);
+        }
+
+        .form-check-input {
+            background-color: var(--bg-surface);
+            border-color: var(--border-color);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+
+        hr {
+            border-color: var(--border-color);
+        }
+    </style>
+}
