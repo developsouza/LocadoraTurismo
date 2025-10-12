@@ -1,71 +1,71 @@
-# ?? Sistema de AutenticaÁ„o e Controle de Acesso - Guia Completo
+Ôªø# ?? Sistema de Autentica√ß√£o e Controle de Acesso - Guia Completo
 
-## ?? Õndice
-- [Vis„o Geral](#vis„o-geral)
-- [Tipos de Usu·rios](#tipos-de-usu·rios)
+## ?? √çndice
+- [Vis√£o Geral](#vis√£o-geral)
+- [Tipos de Usu√°rios](#tipos-de-usu√°rios)
 - [Login e Registro](#login-e-registro)
-- [Gerenciamento de Usu·rios](#gerenciamento-de-usu·rios)
-- [Permissıes por MÛdulo](#permissıes-por-mÛdulo)
-- [SeguranÁa](#seguranÁa)
-- [RecuperaÁ„o de Senha](#recuperaÁ„o-de-senha)
+- [Gerenciamento de Usu√°rios](#gerenciamento-de-usu√°rios)
+- [Permiss√µes por M√≥dulo](#permiss√µes-por-m√≥dulo)
+- [Seguran√ßa](#seguran√ßa)
+- [Recupera√ß√£o de Senha](#recupera√ß√£o-de-senha)
 
 ---
 
-## ?? Vis„o Geral
+## ?? Vis√£o Geral
 
-O sistema utiliza **ASP.NET Core Identity** para autenticaÁ„o e autorizaÁ„o baseada em roles (funÁıes), garantindo acesso seguro e controlado a todas as funcionalidades.
+O sistema utiliza **ASP.NET Core Identity** para autentica√ß√£o e autoriza√ß√£o baseada em roles (fun√ß√µes), garantindo acesso seguro e controlado a todas as funcionalidades.
 
-### ?? Recursos de SeguranÁa
+### ?? Recursos de Seguran√ßa
 
-? **AutenticaÁ„o Robusta**
+? **Autentica√ß√£o Robusta**
 - Login com email e senha
-- ValidaÁ„o de credenciais
-- Sess„o segura (8 horas)
-- ProteÁ„o contra ataques
+- Valida√ß√£o de credenciais
+- Sess√£o segura (8 horas)
+- Prote√ß√£o contra ataques
 
-? **AutorizaÁ„o Baseada em Roles**
-- 4 nÌveis de acesso
-- Permissıes granulares
-- Controle por mÛdulo
-- Hierarquia de privilÈgios
+? **Autoriza√ß√£o Baseada em Roles**
+- 4 n√≠veis de acesso
+- Permiss√µes granulares
+- Controle por m√≥dulo
+- Hierarquia de privil√©gios
 
-? **Gest„o de Usu·rios**
-- Cadastro de novos usu·rios
-- EdiÁ„o de informaÁıes
-- AlteraÁ„o de senha
+? **Gest√£o de Usu√°rios**
+- Cadastro de novos usu√°rios
+- Edi√ß√£o de informa√ß√µes
+- Altera√ß√£o de senha
 - Bloqueio e desbloqueio
 
 ---
 
-## ?? Tipos de Usu·rios
+## ?? Tipos de Usu√°rios
 
 ### ?? **Admin (Administrador)**
 
-**PrivilÈgios TOTAIS:**
+**Privil√©gios TOTAIS:**
 - ? Acesso completo ao sistema
-- ? Gerenciar todos os usu·rios
+- ? Gerenciar todos os usu√°rios
 - ? Criar, editar e excluir TUDO
-- ? Acessar relatÛrios gerenciais
-- ? ConfiguraÁıes do sistema
+- ? Acessar relat√≥rios gerenciais
+- ? Configura√ß√µes do sistema
 - ? Backup e restore
 - ? Logs e auditoria
 
-**Acesso aos mÛdulos:**
+**Acesso aos m√≥dulos:**
 ```
 ? Clientes (CRUD completo)
-? VeÌculos (CRUD completo)
-? LocaÁıes (CRUD completo)
-? ManutenÁıes (CRUD completo)
+? Ve√≠culos (CRUD completo)
+? Loca√ß√µes (CRUD completo)
+? Manuten√ß√µes (CRUD completo)
 ? Reservas (CRUD completo)
 ? Pacotes (CRUD completo)
-? Funcion·rios (CRUD completo)
-? AgÍncias (CRUD completo)
-? Usu·rios (CRUD completo)
-? RelatÛrios (todos)
-? Documentos (upload/exclus„o)
+? Funcion√°rios (CRUD completo)
+? Ag√™ncias (CRUD completo)
+? Usu√°rios (CRUD completo)
+? Relat√≥rios (todos)
+? Documentos (upload/exclus√£o)
 ```
 
-**Usu·rio padr„o:**
+**Usu√°rio padr√£o:**
 ```
 Email: admin@litoralsul.com.br
 Senha: Admin@123456
@@ -73,75 +73,75 @@ Senha: Admin@123456
 
 ### ?? **Manager (Gerente)**
 
-**PrivilÈgios GERENCIAIS:**
-- ? Gerenciar operaÁıes di·rias
+**Privil√©gios GERENCIAIS:**
+- ? Gerenciar opera√ß√µes di√°rias
 - ? Criar e editar registros principais
-- ? Aprovar locaÁıes e reservas
-- ? Acessar relatÛrios operacionais
-- ?? N√O gerencia usu·rios Admin
-- ?? N√O acessa configuraÁıes crÌticas
+- ? Aprovar loca√ß√µes e reservas
+- ? Acessar relat√≥rios operacionais
+- ?? N√ÉO gerencia usu√°rios Admin
+- ?? N√ÉO acessa configura√ß√µes cr√≠ticas
 
-**Acesso aos mÛdulos:**
+**Acesso aos m√≥dulos:**
 ```
 ? Clientes (CRUD completo)
-? VeÌculos (CRUD completo)
-? LocaÁıes (CRUD completo)
-? ManutenÁıes (CRUD completo)
+? Ve√≠culos (CRUD completo)
+? Loca√ß√µes (CRUD completo)
+? Manuten√ß√µes (CRUD completo)
 ? Reservas (CRUD completo)
 ? Pacotes (CRUD completo)
-? Funcion·rios (CRUD)
-? AgÍncias (CRUD)
-? Usu·rios (apenas visualizaÁ„o)
-? RelatÛrios (operacionais)
-? Documentos (upload/exclus„o)
+? Funcion√°rios (CRUD)
+? Ag√™ncias (CRUD)
+? Usu√°rios (apenas visualiza√ß√£o)
+? Relat√≥rios (operacionais)
+? Documentos (upload/exclus√£o)
 ```
 
-### ?? **Employee (Funcion·rio)**
+### ?? **Employee (Funcion√°rio)**
 
-**PrivilÈgios OPERACIONAIS:**
-- ? Criar locaÁıes e reservas
+**Privil√©gios OPERACIONAIS:**
+- ? Criar loca√ß√µes e reservas
 - ? Cadastrar clientes
 - ? Fazer vistorias
 - ? Upload de documentos
-- ?? N√O exclui registros
-- ?? N√O gerencia usu·rios
-- ?? RelatÛrios limitados
+- ?? N√ÉO exclui registros
+- ?? N√ÉO gerencia usu√°rios
+- ?? Relat√≥rios limitados
 
-**Acesso aos mÛdulos:**
+**Acesso aos m√≥dulos:**
 ```
 ? Clientes (criar/editar)
-??? VeÌculos (visualizaÁ„o)
-? LocaÁıes (criar/editar/finalizar)
-??? ManutenÁıes (visualizaÁ„o)
+??? Ve√≠culos (visualiza√ß√£o)
+? Loca√ß√µes (criar/editar/finalizar)
+??? Manuten√ß√µes (visualiza√ß√£o)
 ? Reservas (criar/editar)
-??? Pacotes (visualizaÁ„o)
-??? Funcion·rios (visualizaÁ„o)
-??? AgÍncias (visualizaÁ„o)
-? Usu·rios (sem acesso)
-??? RelatÛrios (b·sicos)
-? Documentos (upload, sem exclus„o)
+??? Pacotes (visualiza√ß√£o)
+??? Funcion√°rios (visualiza√ß√£o)
+??? Ag√™ncias (visualiza√ß√£o)
+? Usu√°rios (sem acesso)
+??? Relat√≥rios (b√°sicos)
+? Documentos (upload, sem exclus√£o)
 ```
 
-### ?? **User (Usu·rio B·sico)**
+### ?? **User (Usu√°rio B√°sico)**
 
-**PrivilÈgios LIMITADOS:**
-- ??? VisualizaÁ„o de informaÁıes
-- ??? Consultas b·sicas
-- ? Sem permissıes de ediÁ„o
-- ? Sem acesso a dados sensÌveis
+**Privil√©gios LIMITADOS:**
+- ??? Visualiza√ß√£o de informa√ß√µes
+- ??? Consultas b√°sicas
+- ? Sem permiss√µes de edi√ß√£o
+- ? Sem acesso a dados sens√≠veis
 
-**Acesso aos mÛdulos:**
+**Acesso aos m√≥dulos:**
 ```
-??? Clientes (visualizaÁ„o)
-??? VeÌculos (visualizaÁ„o)
-??? LocaÁıes (visualizaÁ„o)
-??? ManutenÁıes (visualizaÁ„o)
-??? Reservas (visualizaÁ„o)
-??? Pacotes (visualizaÁ„o)
-? Funcion·rios (sem acesso)
-? AgÍncias (sem acesso)
-? Usu·rios (sem acesso)
-? RelatÛrios (sem acesso)
+??? Clientes (visualiza√ß√£o)
+??? Ve√≠culos (visualiza√ß√£o)
+??? Loca√ß√µes (visualiza√ß√£o)
+??? Manuten√ß√µes (visualiza√ß√£o)
+??? Reservas (visualiza√ß√£o)
+??? Pacotes (visualiza√ß√£o)
+? Funcion√°rios (sem acesso)
+? Ag√™ncias (sem acesso)
+? Usu√°rios (sem acesso)
+? Relat√≥rios (sem acesso)
 ? Documentos (sem acesso)
 ```
 
@@ -153,7 +153,7 @@ Senha: Admin@123456
 
 **Acesso:** `/Account/Login`
 
-**Formul·rio:**
+**Formul√°rio:**
 ```
 ???????????????????????????????????
 ?   LITORAL SUL                   ?
@@ -173,49 +173,49 @@ Senha: Admin@123456
 ???????????????????????????????????
 ```
 
-### ? ValidaÁıes de Login
+### ? Valida√ß√µes de Login
 
 **Sistema valida:**
 1. **Email:**
-   - ? Formato v·lido
+   - ? Formato v√°lido
    - ? Cadastrado no sistema
    - ? Conta ativa
 
 2. **Senha:**
    - ? Senha correta
-   - ? Conta n„o bloqueada
+   - ? Conta n√£o bloqueada
    - ? Tentativas de login
 
-### ?? SeguranÁa do Login
+### ?? Seguran√ßa do Login
 
-**ProteÁıes implementadas:**
+**Prote√ß√µes implementadas:**
 
 1. **Bloqueio por Tentativas**
-   - M·ximo: 5 tentativas erradas
+   - M√°ximo: 5 tentativas erradas
    - Bloqueio: 5 minutos
-   - Reset autom·tico apÛs sucesso
+   - Reset autom√°tico ap√≥s sucesso
 
-2. **Sess„o Segura**
-   - DuraÁ„o: 8 horas
+2. **Sess√£o Segura**
+   - Dura√ß√£o: 8 horas
    - Cookie HttpOnly
-   - HTTPS obrigatÛrio (produÁ„o)
+   - HTTPS obrigat√≥rio (produ√ß√£o)
    - Anti-CSRF token
 
-3. **ValidaÁ„o de Senha**
-   - MÌnimo 6 caracteres
-   - Pelo menos 1 mai˙scula
-   - Pelo menos 1 min˙scula
-   - Pelo menos 1 n˙mero
+3. **Valida√ß√£o de Senha**
+   - M√≠nimo 6 caracteres
+   - Pelo menos 1 mai√∫scula
+   - Pelo menos 1 min√∫scula
+   - Pelo menos 1 n√∫mero
 
-### ?? Registro de Novo Usu·rio
+### ?? Registro de Novo Usu√°rio
 
 **Acesso:** `/Account/Register`
 
-> ?? **Importante:** Apenas Admin e Manager podem criar novos usu·rios!
+> ?? **Importante:** Apenas Admin e Manager podem criar novos usu√°rios!
 
-**Formul·rio:**
+**Formul√°rio:**
 ```
-CADASTRAR NOVO USU¡RIO
+CADASTRAR NOVO USU√ÅRIO
 
 Nome Completo:
 [_________________________________]
@@ -229,7 +229,7 @@ Senha:
 Confirmar Senha:
 [_________________________________]
 
-FunÁ„o (Role):
+Fun√ß√£o (Role):
 [ Selecione ? ]
   - Admin
   - Manager
@@ -239,25 +239,25 @@ FunÁ„o (Role):
 [    CADASTRAR    ]  [  CANCELAR  ]
 ```
 
-### ? ValidaÁıes de Registro
+### ? Valida√ß√µes de Registro
 
-**Campos obrigatÛrios:**
+**Campos obrigat√≥rios:**
 - ? Nome completo
-- ? Email v·lido e ˙nico
+- ? Email v√°lido e √∫nico
 - ? Senha forte
-- ? ConfirmaÁ„o de senha
-- ? FunÁ„o (role)
+- ? Confirma√ß√£o de senha
+- ? Fun√ß√£o (role)
 
 **Regras de senha:**
 ```
-? MÌnimo 6 caracteres
-? Pelo menos 1 letra mai˙scula
-? Pelo menos 1 letra min˙scula
-? Pelo menos 1 n˙mero
+? M√≠nimo 6 caracteres
+? Pelo menos 1 letra mai√∫scula
+? Pelo menos 1 letra min√∫scula
+? Pelo menos 1 n√∫mero
 ? Caracteres especiais: opcional
 ```
 
-**Exemplo de senha v·lida:**
+**Exemplo de senha v√°lida:**
 ```
 ? Admin@123456
 ? Manager2024
@@ -266,11 +266,11 @@ FunÁ„o (Role):
 
 ---
 
-## ????? Gerenciamento de Usu·rios
+## ????? Gerenciamento de Usu√°rios
 
 ### ?? Como Acessar
 
-**Menu ? AdministraÁ„o ? Gerenciar Usu·rios**
+**Menu ? Administra√ß√£o ? Gerenciar Usu√°rios**
 
 OU
 
@@ -278,15 +278,15 @@ OU
 
 > ?? **Acesso:** Apenas Admin e Manager
 
-### ?? Lista de Usu·rios
+### ?? Lista de Usu√°rios
 
-**VisualizaÁ„o:**
+**Visualiza√ß√£o:**
 ```
 ???????????????????????????????????????????????????
-?  GERENCIAR USU¡RIOS                    [+ Novo] ?
+?  GERENCIAR USU√ÅRIOS                    [+ Novo] ?
 ???????????????????????????????????????????????????
 ?                                                 ?
-?  ?? Jo„o Silva                                  ?
+?  ?? Jo√£o Silva                                  ?
 ?  ?? joao@litoralsul.com.br                     ?
 ?  ??? Role: Manager                              ?
 ?  ?? Cadastrado: 15/01/2024                     ?
@@ -305,15 +305,15 @@ OU
 ???????????????????????????????????????????????????
 ```
 
-### ?? Editar Usu·rio
+### ?? Editar Usu√°rio
 
-**Acesso:** Lista ? Bot„o "?? Editar"
+**Acesso:** Lista ? Bot√£o "?? Editar"
 
-**Campos edit·veis:**
+**Campos edit√°veis:**
 ```
-EDITAR USU¡RIO
+EDITAR USU√ÅRIO
 
-Nome: [Jo„o Silva                    ]
+Nome: [Jo√£o Silva                    ]
 Email: [joao@litoralsul.com.br      ]
 Role: [Manager ?]
 
@@ -322,14 +322,14 @@ Status: ( ) Ativo  ( ) Bloqueado
 [  SALVAR  ]  [  CANCELAR  ]
 ```
 
-**Permissıes para ediÁ„o:**
-- ? **Admin:** Pode editar TODOS os usu·rios
-- ?? **Manager:** Pode editar Employee e User (N√O Admin)
-- ? **Employee/User:** Sem permiss„o
+**Permiss√µes para edi√ß√£o:**
+- ? **Admin:** Pode editar TODOS os usu√°rios
+- ?? **Manager:** Pode editar Employee e User (N√ÉO Admin)
+- ? **Employee/User:** Sem permiss√£o
 
 ### ?? Alterar Senha
 
-**OpÁ„o 1 - PrÛprio Usu·rio:**
+**Op√ß√£o 1 - Pr√≥prio Usu√°rio:**
 ```
 Menu ? Perfil ? Alterar Senha
 
@@ -345,9 +345,9 @@ Confirmar Nova Senha:
 [  ALTERAR SENHA  ]
 ```
 
-**OpÁ„o 2 - Admin/Manager alterando:**
+**Op√ß√£o 2 - Admin/Manager alterando:**
 ```
-Gerenciar Usu·rios ? Editar ? Redefinir Senha
+Gerenciar Usu√°rios ? Editar ? Redefinir Senha
 
 Nova Senha:
 [_________________________________]
@@ -358,17 +358,17 @@ Confirmar Senha:
 [  REDEFINIR  ]
 ```
 
-### ?? Bloquear/Desbloquear Usu·rio
+### ?? Bloquear/Desbloquear Usu√°rio
 
 **Quando bloquear:**
-- Suspeita de acesso n„o autorizado
-- Funcion·rio afastado temporariamente
-- ViolaÁ„o de polÌtica de uso
-- SolicitaÁ„o de seguranÁa
+- Suspeita de acesso n√£o autorizado
+- Funcion√°rio afastado temporariamente
+- Viola√ß√£o de pol√≠tica de uso
+- Solicita√ß√£o de seguran√ßa
 
 **Como fazer:**
 ```
-Gerenciar Usu·rios ? Selecionar usu·rio ? ?? Bloquear
+Gerenciar Usu√°rios ? Selecionar usu√°rio ? ?? Bloquear
 
 Motivo do bloqueio:
 [_________________________________]
@@ -377,70 +377,70 @@ Motivo do bloqueio:
 ```
 
 **Efeitos:**
-- ? Usu·rio n„o consegue fazer login
+- ? Usu√°rio n√£o consegue fazer login
 - ?? Mensagem: "Conta bloqueada. Entre em contato com administrador"
 - ?? Bloqueio registrado em log
 
 **Para desbloquear:**
 ```
-Gerenciar Usu·rios ? Usu·rio bloqueado ? ?? Desbloquear
+Gerenciar Usu√°rios ? Usu√°rio bloqueado ? ?? Desbloquear
 
 [  DESBLOQUEAR  ]
 ```
 
-### ??? Excluir Usu·rio
+### ??? Excluir Usu√°rio
 
 **Regras:**
-- ? Pode excluir: Usu·rios sem vÌnculos
-- ? N√O pode excluir: Usu·rio logado
-- ? N√O pode excluir: Admin principal
-- ?? Manager n„o pode excluir Admin
+- ? Pode excluir: Usu√°rios sem v√≠nculos
+- ? N√ÉO pode excluir: Usu√°rio logado
+- ? N√ÉO pode excluir: Admin principal
+- ?? Manager n√£o pode excluir Admin
 
 **Como fazer:**
 ```
-Gerenciar Usu·rios ? Selecionar ? ??? Excluir
+Gerenciar Usu√°rios ? Selecionar ? ??? Excluir
 
-?? ATEN«√O!
-Esta aÁ„o n„o pode ser desfeita.
+?? ATEN√á√ÉO!
+Esta a√ß√£o n√£o pode ser desfeita.
 
-Deseja realmente excluir o usu·rio?
-Nome: Jo„o Silva
+Deseja realmente excluir o usu√°rio?
+Nome: Jo√£o Silva
 Email: joao@litoralsul.com.br
 
-[  CONFIRMAR EXCLUS√O  ]  [  CANCELAR  ]
+[  CONFIRMAR EXCLUS√ÉO  ]  [  CANCELAR  ]
 ```
 
 ---
 
-## ?? Permissıes por MÛdulo
+## ?? Permiss√µes por M√≥dulo
 
-### ?? Tabela Completa de Permissıes
+### ?? Tabela Completa de Permiss√µes
 
-| MÛdulo | Admin | Manager | Employee | User |
+| M√≥dulo | Admin | Manager | Employee | User |
 |--------|-------|---------|----------|------|
 | **Clientes** |  |  |  |  |
 | Visualizar | ? | ? | ? | ? |
 | Criar | ? | ? | ? | ? |
 | Editar | ? | ? | ? | ? |
 | Excluir | ? | ? | ? | ? |
-| **VeÌculos** |  |  |  |  |
+| **Ve√≠culos** |  |  |  |  |
 | Visualizar | ? | ? | ? | ? |
 | Criar | ? | ? | ? | ? |
 | Editar | ? | ? | ? | ? |
 | Excluir | ? | ? | ? | ? |
 | Alterar Status | ? | ? | ? | ? |
-| **LocaÁıes** |  |  |  |  |
+| **Loca√ß√µes** |  |  |  |  |
 | Visualizar | ? | ? | ? | ? |
 | Criar | ? | ? | ? | ? |
 | Editar | ? | ? | ? | ? |
 | Excluir | ? | ? | ? | ? |
 | Finalizar | ? | ? | ? | ? |
-| **ManutenÁıes** |  |  |  |  |
+| **Manuten√ß√µes** |  |  |  |  |
 | Visualizar | ? | ? | ? | ? |
 | Criar | ? | ? | ? | ? |
 | Editar | ? | ? | ? | ? |
 | Excluir | ? | ? | ? | ? |
-| RelatÛrios | ? | ? | ? | ? |
+| Relat√≥rios | ? | ? | ? | ? |
 | **Reservas** |  |  |  |  |
 | Visualizar | ? | ? | ? | ? |
 | Criar | ? | ? | ? | ? |
@@ -456,43 +456,43 @@ Email: joao@litoralsul.com.br
 | Upload | ? | ? | ? | ? |
 | Download | ? | ? | ? | ? |
 | Excluir | ? | ? | ? | ? |
-| **Funcion·rios** |  |  |  |  |
+| **Funcion√°rios** |  |  |  |  |
 | Visualizar | ? | ? | ? | ? |
 | Criar | ? | ? | ? | ? |
 | Editar | ? | ? | ? | ? |
 | Excluir | ? | ? | ? | ? |
-| **AgÍncias** |  |  |  |  |
+| **Ag√™ncias** |  |  |  |  |
 | Visualizar | ? | ? | ? | ? |
 | Criar | ? | ? | ? | ? |
 | Editar | ? | ? | ? | ? |
 | Excluir | ? | ? | ? | ? |
-| **Usu·rios** |  |  |  |  |
+| **Usu√°rios** |  |  |  |  |
 | Visualizar | ? | ? | ? | ? |
 | Criar | ? | ? | ? | ? |
 | Editar | ? | ?* | ? | ? |
 | Excluir | ? | ?* | ? | ? |
-| **RelatÛrios** |  |  |  |  |
+| **Relat√≥rios** |  |  |  |  |
 | Gerenciais | ? | ? | ? | ? |
 | Operacionais | ? | ? | ? | ? |
 | Financeiros | ? | ? | ? | ? |
 
-> \* Manager n„o pode editar/excluir Admin
+> \* Manager n√£o pode editar/excluir Admin
 
-### ?? P·gina de Acesso Negado
+### ?? P√°gina de Acesso Negado
 
-**Quando usu·rio tenta acessar sem permiss„o:**
+**Quando usu√°rio tenta acessar sem permiss√£o:**
 
 ```
 ???????????????????????????????????
 ?   ?? ACESSO NEGADO              ?
 ?                                 ?
-?   VocÍ n„o tem permiss„o        ?
-?   para acessar esta p·gina.     ?
+?   Voc√™ n√£o tem permiss√£o        ?
+?   para acessar esta p√°gina.     ?
 ?                                 ?
 ?   Entre em contato com o        ?
 ?   administrador do sistema.     ?
 ?                                 ?
-?   [  VOLTAR AO INÕCIO  ]        ?
+?   [  VOLTAR AO IN√çCIO  ]        ?
 ???????????????????????????????????
 ```
 
@@ -500,40 +500,40 @@ Email: joao@litoralsul.com.br
 
 ---
 
-## ?? SeguranÁa
+## ?? Seguran√ßa
 
-### ??? Recursos de SeguranÁa
+### ??? Recursos de Seguran√ßa
 
-#### 1?? **ProteÁ„o de Senha**
+#### 1?? **Prote√ß√£o de Senha**
 
 **Requisitos:**
 ```
-? MÌnimo 6 caracteres
-? Letra mai˙scula
-? Letra min˙scula
-? N˙mero
-? Hash bcrypt (n„o armazena texto puro)
+? M√≠nimo 6 caracteres
+? Letra mai√∫scula
+? Letra min√∫scula
+? N√∫mero
+? Hash bcrypt (n√£o armazena texto puro)
 ```
 
 **Exemplos:**
 ```
-? Admin@123456    (v·lida)
-? Manager2024     (v·lida)
-? Employee123     (v·lida)
+? Admin@123456    (v√°lida)
+? Manager2024     (v√°lida)
+? Employee123     (v√°lida)
 ? admin           (muito fraca)
 ? 123456          (sem letras)
-? senha           (sem n˙meros/mai˙scula)
+? senha           (sem n√∫meros/mai√∫scula)
 ```
 
 #### 2?? **Bloqueio de Conta**
 
-**ConfiguraÁ„o:**
-- M·ximo tentativas: 5
+**Configura√ß√£o:**
+- M√°ximo tentativas: 5
 - Tempo de bloqueio: 5 minutos
-- Reset apÛs sucesso: Sim
+- Reset ap√≥s sucesso: Sim
 - Permitido para novos: Sim
 
-**Cen·rio:**
+**Cen√°rio:**
 ```
 Tentativa 1: Senha errada ?
 Tentativa 2: Senha errada ?
@@ -543,31 +543,31 @@ Tentativa 5: Senha errada ?
 ? CONTA BLOQUEADA POR 5 MINUTOS
 ```
 
-#### 3?? **Sess„o Segura**
+#### 3?? **Sess√£o Segura**
 
-**ConfiguraÁıes:**
-- DuraÁ„o: 8 horas
+**Configura√ß√µes:**
+- Dura√ß√£o: 8 horas
 - Cookie: HttpOnly ?
 - SameSite: Lax ?
-- Secure: Sim (produÁ„o) ?
+- Secure: Sim (produ√ß√£o) ?
 - Sliding: Sim ?
 
-**RenovaÁ„o:**
-- Atividade = Renova sess„o
-- Inativo 8h = Logout autom·tico
+**Renova√ß√£o:**
+- Atividade = Renova sess√£o
+- Inativo 8h = Logout autom√°tico
 
-#### 4?? **ProteÁ„o CSRF**
+#### 4?? **Prote√ß√£o CSRF**
 
 **Anti-Forgery Token:**
 ```html
-<!-- Automaticamente incluÌdo em formul·rios -->
+<!-- Automaticamente inclu√≠do em formul√°rios -->
 <form method="post">
     @Html.AntiForgeryToken()
     ...
 </form>
 ```
 
-**Headers de seguranÁa:**
+**Headers de seguran√ßa:**
 ```
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
@@ -577,12 +577,12 @@ Strict-Transport-Security: max-age=31536000
 
 #### 5?? **Rate Limiting**
 
-**Limites por polÌtica:**
+**Limites por pol√≠tica:**
 
 | Recurso | Limite | Janela |
 |---------|--------|--------|
 | API Geral | 100 req | 1 min |
-| ValidaÁ„o CPF | 20 req | 1 min |
+| Valida√ß√£o CPF | 20 req | 1 min |
 | Dashboard | 300 req | 1 min |
 
 **Resposta ao exceder:**
@@ -590,7 +590,7 @@ Strict-Transport-Security: max-age=31536000
 HTTP 429 Too Many Requests
 
 {
-  "error": "Muitas requisiÁıes. Tente novamente em 60 segundos."
+  "error": "Muitas requisi√ß√µes. Tente novamente em 60 segundos."
 }
 ```
 
@@ -598,13 +598,13 @@ HTTP 429 Too Many Requests
 
 **Sistema registra:**
 - ? Todas as tentativas de login
-- ? CriaÁ„o/ediÁ„o de usu·rios
-- ? AlteraÁıes de permissıes
+- ? Cria√ß√£o/edi√ß√£o de usu√°rios
+- ? Altera√ß√µes de permiss√µes
 - ? Bloqueios de conta
 - ? Acessos negados
-- ? OperaÁıes crÌticas
+- ? Opera√ß√µes cr√≠ticas
 
-**LocalizaÁ„o dos logs:**
+**Localiza√ß√£o dos logs:**
 ```
 RentalTourismSystem/logs/rental-tourism-YYYY-MM-DD.txt
 ```
@@ -613,13 +613,13 @@ RentalTourismSystem/logs/rental-tourism-YYYY-MM-DD.txt
 ```
 2024-10-20 14:35:12.456 [INFO] Login bem-sucedido: admin@litoralsul.com.br
 2024-10-20 14:37:45.123 [WARN] Tentativa de login falha: funcionario@email.com
-2024-10-20 15:10:33.789 [INFO] Usu·rio criado: maria@litoralsul.com.br por admin@litoralsul.com.br
+2024-10-20 15:10:33.789 [INFO] Usu√°rio criado: maria@litoralsul.com.br por admin@litoralsul.com.br
 2024-10-20 16:22:15.456 [ERROR] Acesso negado: /Account/ManageUsers por user@email.com
 ```
 
 ---
 
-## ?? RecuperaÁ„o de Senha
+## ?? Recupera√ß√£o de Senha
 
 ### ?? Esqueci Minha Senha
 
@@ -632,7 +632,7 @@ RentalTourismSystem/logs/rental-tourism-YYYY-MM-DD.txt
 2. Informar email cadastrado:
    [_________________________________]
    
-   [  ENVIAR LINK DE RECUPERA«√O  ]
+   [  ENVIAR LINK DE RECUPERA√á√ÉO  ]
 
 3. Sistema envia email com link
 
@@ -648,7 +648,7 @@ RentalTourismSystem/logs/rental-tourism-YYYY-MM-DD.txt
    ? Fazer login com nova senha
 ```
 
-> ?? **Importante:** Link de recuperaÁ„o v·lido por 24 horas
+> ?? **Importante:** Link de recupera√ß√£o v√°lido por 24 horas
 
 ### ?? Alterar Senha (Logado)
 
@@ -669,10 +669,10 @@ Confirmar Nova Senha:
 [  ALTERAR SENHA  ]
 ```
 
-**ValidaÁıes:**
+**Valida√ß√µes:**
 - ? Senha atual correta
 - ? Nova senha atende requisitos
-- ? ConfirmaÁ„o coincide
+- ? Confirma√ß√£o coincide
 - ? Nova senha diferente da atual
 
 ---
@@ -682,22 +682,22 @@ Confirmar Nova Senha:
 ### Caso 1: Primeiro Acesso
 
 ```
-Sistema instalado, usar credenciais padr„o:
+Sistema instalado, usar credenciais padr√£o:
 
 Email: admin@litoralsul.com.br
 Senha: Admin@123456
 
 ? Fazer login
 ? TROCAR SENHA imediatamente
-? Criar outros usu·rios
+? Criar outros usu√°rios
 ```
 
-### Caso 2: Novo Funcion·rio
+### Caso 2: Novo Funcion√°rio
 
 ```
 Admin/Manager:
-1. Menu ? Gerenciar Usu·rios
-2. Clicar "+ Novo Usu·rio"
+1. Menu ? Gerenciar Usu√°rios
+2. Clicar "+ Novo Usu√°rio"
 3. Preencher:
    Nome: Maria Santos
    Email: maria@litoralsul.com.br
@@ -705,111 +705,111 @@ Admin/Manager:
    Role: Employee
 4. Salvar
 
-Funcion·rio:
+Funcion√°rio:
 1. Receber credenciais
 2. Fazer login
 3. Alterar senha no primeiro acesso
-4. ComeÁar a trabalhar
+4. Come√ßar a trabalhar
 ```
 
-### Caso 3: Bloqueio por SeguranÁa
+### Caso 3: Bloqueio por Seguran√ßa
 
 ```
-SituaÁ„o: Suspeita de acesso n„o autorizado
+Situa√ß√£o: Suspeita de acesso n√£o autorizado
 
 Admin:
-1. Gerenciar Usu·rios
-2. Localizar usu·rio suspeito
+1. Gerenciar Usu√°rios
+2. Localizar usu√°rio suspeito
 3. Clicar "?? Bloquear"
 4. Informar motivo: "Tentativa de acesso suspeita"
 5. Confirmar
 
 Resultado:
-? Usu·rio n„o consegue logar
+? Usu√°rio n√£o consegue logar
 ? Ver mensagem de bloqueio
 ? Deve entrar em contato com admin
 ```
 
-### Caso 4: Funcion·rio Saiu da Empresa
+### Caso 4: Funcion√°rio Saiu da Empresa
 
 ```
 Admin/Manager:
-1. Gerenciar Usu·rios
-2. Localizar ex-funcion·rio
-3. OpÁ„o 1: Bloquear (manter histÛrico)
+1. Gerenciar Usu√°rios
+2. Localizar ex-funcion√°rio
+3. Op√ß√£o 1: Bloquear (manter hist√≥rico)
    OU
-4. OpÁ„o 2: Excluir (se sem vÌnculos)
+4. Op√ß√£o 2: Excluir (se sem v√≠nculos)
 
 Recomendado: BLOQUEAR
-? MantÈm logs
-? MantÈm auditoria
-? Pode reativar se necess·rio
+? Mant√©m logs
+? Mant√©m auditoria
+? Pode reativar se necess√°rio
 ```
 
 ---
 
-## ?? SoluÁ„o de Problemas
+## ?? Solu√ß√£o de Problemas
 
 ### ? "Email ou senha incorretos"
-**SoluÁıes:**
+**Solu√ß√µes:**
 - Verificar caps lock
 - Confirmar email correto
-- Resetar senha se necess·rio
+- Resetar senha se necess√°rio
 - Contatar administrador
 
 ### ? "Conta bloqueada"
-**SoluÁıes:**
-- Aguardar 5 minutos (bloqueio autom·tico)
+**Solu√ß√µes:**
+- Aguardar 5 minutos (bloqueio autom√°tico)
 - Contatar administrador para desbloqueio manual
-- Verificar se foi bloqueado por seguranÁa
+- Verificar se foi bloqueado por seguran√ßa
 
-### ? "Sess„o expirada"
-**SoluÁıes:**
+### ? "Sess√£o expirada"
+**Solu√ß√µes:**
 - Fazer login novamente
-- Marcar "Lembrar-me" para sess„o mais longa
-- Verificar se n„o ultrapassou 8 horas de inatividade
+- Marcar "Lembrar-me" para sess√£o mais longa
+- Verificar se n√£o ultrapassou 8 horas de inatividade
 
 ### ? "Acesso negado"
-**SoluÁıes:**
-- Verificar se tem permiss„o para a aÁ„o
-- Contatar manager/admin para solicitar permiss„o
-- Confirmar se est· com a role correta
+**Solu√ß√µes:**
+- Verificar se tem permiss√£o para a a√ß√£o
+- Contatar manager/admin para solicitar permiss√£o
+- Confirmar se est√° com a role correta
 
 ---
 
-## ? Boas Pr·ticas
+## ? Boas Pr√°ticas
 
-### ?? SeguranÁa
+### ?? Seguran√ßa
 
-? **FaÁa:**
-- Trocar senha padr„o imediatamente
-- Usar senhas fortes e ˙nicas
+? **Fa√ßa:**
+- Trocar senha padr√£o imediatamente
+- Usar senhas fortes e √∫nicas
 - Fazer logout ao sair
-- N„o compartilhar credenciais
+- N√£o compartilhar credenciais
 - Reportar acessos suspeitos
 
 ? **Evite:**
 - Senhas fracas (123456, senha, etc.)
-- Mesma senha em v·rios sistemas
-- Deixar sess„o aberta em PC p˙blico
-- Anotar senha em local visÌvel
+- Mesma senha em v√°rios sistemas
+- Deixar sess√£o aberta em PC p√∫blico
+- Anotar senha em local vis√≠vel
 - Compartilhar conta com colegas
 
-### ?? Gest„o de Usu·rios
+### ?? Gest√£o de Usu√°rios
 
-? **FaÁa:**
-- Criar usu·rios com role apropriada
-- Revisar permissıes regularmente
-- Bloquear usu·rios inativos
-- Manter registro de alteraÁıes
+? **Fa√ßa:**
+- Criar usu√°rios com role apropriada
+- Revisar permiss√µes regularmente
+- Bloquear usu√°rios inativos
+- Manter registro de altera√ß√µes
 - Documentar motivos de bloqueio
 
 ? **Evite:**
-- Dar privilÈgios alÈm do necess·rio
+- Dar privil√©gios al√©m do necess√°rio
 - Criar Admin desnecessariamente
-- Deixar contas de ex-funcion·rios ativas
+- Deixar contas de ex-funcion√°rios ativas
 - Excluir sem analisar impacto
-- Ignorar alertas de seguranÁa
+- Ignorar alertas de seguran√ßa
 
 ---
 
@@ -820,25 +820,25 @@ Recomendado: BLOQUEAR
 - ?? Telefone: (13) 3XXX-XXXX
 - ?? Falar com administrador do sistema
 
-**Hor·rio de atendimento:**
-- Segunda a Sexta: 8h ‡s 18h
-- S·bado: 8h ‡s 12h
+**Hor√°rio de atendimento:**
+- Segunda a Sexta: 8h √†s 18h
+- S√°bado: 8h √†s 12h
 
 ---
 
 ## ?? Pronto para Usar!
 
-O sistema de autenticaÁ„o est· **100% configurado e seguro**.
+O sistema de autentica√ß√£o est√° **100% configurado e seguro**.
 
 **Primeiro acesso:**
-1. Usar credenciais padr„o do Admin
+1. Usar credenciais padr√£o do Admin
 2. Trocar senha imediatamente
-3. Criar demais usu·rios
-4. ComeÁar a operar!
+3. Criar demais usu√°rios
+4. Come√ßar a operar!
 
 ---
 
 **Desenvolvido para:** Litoral Sul Locadora e Turismo  
-**Vers„o:** 1.0  
+**Vers√£o:** 1.0  
 **Data:** Outubro/2025  
 **Tecnologia:** ASP.NET Core Identity 8.0

@@ -1,0 +1,144 @@
+@model List<RentalTourismSystem.Models.ViewModels.ResultadoBuscaDocumentacao>
+@{
+    ViewData["Title"] = "Buscar na Documentação";
+    var termoBusca = ViewBag.TermoBusca as string;
+}
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a asp-action="Index">
+                            <i class="fas fa-book me-1"></i>
+                            Documentação
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Busca</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Formulário de Busca -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <form asp-action="Buscar" method="get" class="d-flex gap-2">
+                        <div class="flex-grow-1">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" 
+                                       name="termo" 
+                                       value="@termoBusca"
+                                       class="form-control border-start-0 ps-0" 
+                                       placeholder="Buscar na documentação..."
+                                       autocomplete="off"
+                                       autofocus>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-search me-2"></i>
+                            Buscar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resultados -->
+    <div class="row">
+        <div class="col-12">
+            @if (Model?.Any() == true)
+            {
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light border-0">
+                        <h5 class="mb-0">
+                            <i class="fas fa-search me-2 text-primary"></i>
+                            @Model.Count resultado(s) encontrado(s) para "@termoBusca"
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            @foreach (var resultado in Model)
+                            {
+                                <a asp-action="Visualizar" 
+                                   asp-route-id="@resultado.DocumentoId" 
+                                   class="list-group-item list-group-item-action border-0 py-3 px-4">
+                                    <div class="d-flex w-100 justify-content-between align-items-start mb-2">
+                                        <h6 class="mb-1">
+                                            <i class="fas fa-file-alt text-primary me-2"></i>
+                                            @resultado.Titulo
+                                        </h6>
+                                        <small class="text-muted">@resultado.Categoria</small>
+                                    </div>
+                                    <p class="mb-1 text-muted">
+                                        @Html.Raw(resultado.TrechoDestacado)
+                                    </p>
+                                    <small class="text-primary">
+                                        <i class="fas fa-arrow-right me-1"></i>
+                                        Ver documento completo
+                                    </small>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (!string.IsNullOrWhiteSpace(termoBusca))
+            {
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <div class="mb-4">
+                            <i class="fas fa-search fa-4x text-muted opacity-50"></i>
+                        </div>
+                        <h5 class="text-muted mb-3">Nenhum resultado encontrado</h5>
+                        <p class="text-muted mb-4">
+                            Não encontramos documentos contendo "<strong>@termoBusca</strong>".
+                        </p>
+                        <div class="text-muted small">
+                            <p class="mb-2"><strong>Dicas de busca:</strong></p>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check-circle text-success me-2"></i>Tente termos mais simples</li>
+                                <li><i class="fas fa-check-circle text-success me-2"></i>Verifique a ortografia</li>
+                                <li><i class="fas fa-check-circle text-success me-2"></i>Use palavras-chave relevantes</li>
+                            </ul>
+                        </div>
+                        <a asp-action="Index" class="btn btn-primary mt-3">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Voltar para Documentação
+                        </a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <div class="mb-4">
+                            <i class="fas fa-search fa-4x text-muted opacity-50"></i>
+                        </div>
+                        <h5 class="text-muted mb-3">Digite um termo para buscar</h5>
+                        <p class="text-muted">
+                            Use o campo acima para buscar na documentação.
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    mark {
+        background-color: #fff3cd !important;
+        padding: 0.1em 0.3em;
+        border-radius: 3px;
+    }
+</style>

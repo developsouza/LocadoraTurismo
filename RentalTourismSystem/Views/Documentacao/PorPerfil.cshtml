@@ -1,0 +1,174 @@
+@model List<RentalTourismSystem.Models.ViewModels.DocumentoViewModel>
+@{
+    ViewData["Title"] = $"Documentação para {ViewBag.Perfil}";
+    var perfil = ViewBag.Perfil as string;
+    
+    var perfilInfo = perfil switch {
+        "Admin" => (icone: "fas fa-user-shield", cor: "danger", titulo: "Administradores"),
+        "Manager" => (icone: "fas fa-user-tie", cor: "warning", titulo: "Gerentes"),
+        "Employee" => (icone: "fas fa-user", cor: "info", titulo: "Funcionários"),
+        "Developer" => (icone: "fas fa-code", cor: "success", titulo: "Desenvolvedores"),
+        _ => (icone: "fas fa-user", cor: "primary", titulo: perfil)
+    };
+}
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a asp-action="Index">
+                            <i class="fas fa-book me-1"></i>
+                            Documentação
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">@perfilInfo.titulo</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm bg-@(perfilInfo.cor) bg-opacity-10">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-4">
+                            <div class="bg-@(perfilInfo.cor) bg-opacity-25 rounded-circle p-4">
+                                <i class="@(perfilInfo.icone) fa-3x text-@(perfilInfo.cor)"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h1 class="h2 mb-2">
+                                Documentação para @perfilInfo.titulo
+                            </h1>
+                            <p class="mb-0 text-muted">
+                                @Model.Count documento(s) sugerido(s) para este perfil
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documentos -->
+    @if (Model?.Any() == true)
+    {
+        var categorias = Model.GroupBy(d => d.Categoria).OrderBy(g => g.Key);
+
+        @foreach (var categoria in categorias)
+        {
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h5 class="mb-3">
+                        @categoria.Key
+                        <span class="badge bg-@(perfilInfo.cor) rounded-pill">@categoria.Count()</span>
+                    </h5>
+                </div>
+
+                @foreach (var doc in categoria)
+                {
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="card border-0 shadow-sm h-100 hover-lift">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="flex-shrink-0 me-3">
+                                        <div class="bg-@(perfilInfo.cor) bg-opacity-10 rounded p-3">
+                                            <i class="@doc.Icone fa-2x text-@(perfilInfo.cor)"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="card-title mb-1">@doc.Titulo</h6>
+                                        <p class="card-text text-muted small mb-0">@doc.Descricao</p>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-center text-muted small mb-3">
+                                    <i class="fas fa-clock me-2"></i>
+                                    <span>@doc.TempoLeitura min de leitura</span>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <a asp-action="Visualizar" asp-route-id="@doc.Id" 
+                                       class="btn btn-@(perfilInfo.cor) btn-sm flex-grow-1">
+                                        <i class="fas fa-book-open me-1"></i>
+                                        Ler Documento
+                                    </a>
+                                    <a asp-action="Download" asp-route-id="@doc.Id" 
+                                       class="btn btn-outline-secondary btn-sm"
+                                       title="Download">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- Ordem de Leitura Sugerida -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-@(perfilInfo.cor) bg-opacity-10">
+                        <h5 class="mb-0">
+                            <i class="fas fa-route me-2"></i>
+                            Ordem de Leitura Sugerida
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            @foreach (var doc in Model)
+                            {
+                                <li class="mb-2">
+                                    <a asp-action="Visualizar" asp-route-id="@doc.Id" class="text-decoration-none">
+                                        <strong>@doc.Titulo</strong>
+                                    </a>
+                                    <span class="text-muted">- @doc.TempoLeitura min</span>
+                                </li>
+                            }
+                        </ol>
+                        <hr>
+                        <div class="text-muted small">
+                            <strong>Tempo total estimado:</strong> @Model.Sum(d => d.TempoLeitura) minutos
+                            (~@(Math.Ceiling(Model.Sum(d => d.TempoLeitura) / 60.0)) hora(s))
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-file-alt fa-4x text-muted opacity-50 mb-4"></i>
+                        <h5 class="text-muted mb-3">Nenhum documento encontrado</h5>
+                        <p class="text-muted">Não há documentação específica para este perfil.</p>
+                        <a asp-action="Index" class="btn btn-primary mt-3">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Ver Toda Documentação
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .hover-lift {
+        transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+</style>

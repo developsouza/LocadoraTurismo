@@ -1,27 +1,27 @@
-# ?? ReferÍncia TÈcnica do Sistema - DocumentaÁ„o para Desenvolvedores
+Ôªø# ?? Refer√™ncia T√©cnica do Sistema - Documenta√ß√£o para Desenvolvedores
 
-## ?? Õndice
-- [Vis„o Geral TÈcnica](#vis„o-geral-tÈcnica)
+## ?? √çndice
+- [Vis√£o Geral T√©cnica](#vis√£o-geral-t√©cnica)
 - [Arquitetura](#arquitetura)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Modelos de Dados](#modelos-de-dados)
 - [APIs e Endpoints](#apis-e-endpoints)
-- [SeguranÁa](#seguranÁa)
-- [ConfiguraÁıes](#configuraÁıes)
+- [Seguran√ßa](#seguran√ßa)
+- [Configura√ß√µes](#configura√ß√µes)
 
 ---
 
-## ?? Vis„o Geral TÈcnica
+## ?? Vis√£o Geral T√©cnica
 
 ### ?? Sobre o Sistema
 
-**Nome:** Sistema Integrado de LocaÁ„o e Turismo  
+**Nome:** Sistema Integrado de Loca√ß√£o e Turismo  
 **Cliente:** Litoral Sul Locadora e Turismo  
 **Arquitetura:** ASP.NET Core 8.0 Razor Pages com MVC  
-**Padr„o:** Model-View-Controller + MVVM  
+**Padr√£o:** Model-View-Controller + MVVM  
 
-### ??? Stack TecnolÛgica
+### ??? Stack Tecnol√≥gica
 
 ```
 Frontend:
@@ -108,11 +108,11 @@ Response ? ViewModel ? Data
 ```
 
 **Componentes principais:**
-- Cards para exibiÁ„o de dados
-- Modals para aÁıes r·pidas
+- Cards para exibi√ß√£o de dados
+- Modals para a√ß√µes r√°pidas
 - Navbar responsivo
-- Forms com validaÁ„o
-- Tables com ordenaÁ„o
+- Forms com valida√ß√£o
+- Tables com ordena√ß√£o
 - Badges para status
 - Alerts para feedback
 
@@ -122,10 +122,10 @@ Response ? ViewModel ? Data
 ```javascript
 // Namespace global
 window.RentalTourismSystem = {
-    // M·scaras
+    // M√°scaras
     Masks: { ... },
     
-    // ValidaÁıes
+    // Valida√ß√µes
     Validation: { ... },
     
     // Utils
@@ -137,17 +137,17 @@ window.RentalTourismSystem = {
 ```
 
 **Recursos:**
-- M·scaras de CPF, CNPJ, telefone, placa
-- ValidaÁıes client-side
-- AJAX para operaÁıes assÌncronas
-- FormataÁ„o de valores
+- M√°scaras de CPF, CNPJ, telefone, placa
+- Valida√ß√µes client-side
+- AJAX para opera√ß√µes ass√≠ncronas
+- Formata√ß√£o de valores
 - Feedback visual
 
 ### ??? Backend
 
 #### **ASP.NET Core 8.0**
 
-**Program.cs - ConfiguraÁ„o:**
+**Program.cs - Configura√ß√£o:**
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
@@ -185,8 +185,8 @@ public class RentalTourismContext : IdentityDbContext<ApplicationUser>
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // ConfiguraÁıes de relacionamentos
-        // Õndices, restriÁıes, etc.
+        // Configura√ß√µes de relacionamentos
+        // √çndices, restri√ß√µes, etc.
     }
 }
 ```
@@ -207,7 +207,7 @@ dotnet ef database update PreviousMigration
 
 ## ?? Estrutura do Projeto
 
-### ??? OrganizaÁ„o de Pastas
+### ??? Organiza√ß√£o de Pastas
 
 ```
 RentalTourismSystem/
@@ -222,7 +222,7 @@ RentalTourismSystem/
 ?   ??? AccountController.cs
 ?   ??? ApiController.cs
 ?
-??? Models/                   # Modelos de domÌnio
+??? Models/                   # Modelos de dom√≠nio
 ?   ??? Cliente.cs
 ?   ??? Veiculo.cs
 ?   ??? Locacao.cs
@@ -250,7 +250,7 @@ RentalTourismSystem/
 ?   ??? ReservasViagens/
 ?   ??? Account/
 ?
-??? Services/                 # ServiÁos de aplicaÁ„o
+??? Services/                 # Servi√ßos de aplica√ß√£o
 ?   ??? ILocacaoService.cs
 ?   ??? LocacaoService.cs
 ?   ??? IVeiculoService.cs
@@ -277,7 +277,7 @@ RentalTourismSystem/
 ?   ??? ClienteExtensions.cs
 ?   ??? ReservaViagemExtensions.cs
 ?
-??? wwwroot/                  # Arquivos est·ticos
+??? wwwroot/                  # Arquivos est√°ticos
 ?   ??? css/
 ?   ??? js/
 ?   ?   ??? site.js          # JavaScript consolidado
@@ -289,7 +289,7 @@ RentalTourismSystem/
 ??? Migrations/               # Migrations EF
 ?   ??? Scripts/             # Scripts SQL manuais
 ?
-??? Docs/                     # DocumentaÁ„o
+??? Docs/                     # Documenta√ß√£o
 ?   ??? README.md
 ?   ??? CLIENTES_GUIA_COMPLETO.md
 ?   ??? VEICULOS_GUIA_COMPLETO.md
@@ -300,7 +300,7 @@ RentalTourismSystem/
 ?   ??? UPLOAD_DOCUMENTOS.md
 ?   ??? GUIA_INICIO_RAPIDO.md
 ?
-??? appsettings.json          # ConfiguraÁıes
+??? appsettings.json          # Configura√ß√µes
 ??? appsettings.Development.json
 ??? Program.cs                # Ponto de entrada
 ??? RentalTourismSystem.csproj
@@ -365,17 +365,17 @@ public class Cliente
     public DateTime? ValidadeCNH { get; set; }
     
     // Propriedades calculadas
-    public int Idade => /* c·lculo */;
-    public bool CNHValida => /* validaÁ„o */;
+    public int Idade => /* c√°lculo */;
+    public bool CNHValida => /* valida√ß√£o */;
     
-    // NavegaÁ„o
+    // Navega√ß√£o
     public virtual ICollection<Locacao> Locacoes { get; set; }
     public virtual ICollection<ReservaViagem> ReservasViagens { get; set; }
     public virtual ICollection<Documento> Documentos { get; set; }
 }
 ```
 
-#### **VeÌculo**
+#### **Ve√≠culo**
 ```csharp
 public class Veiculo
 {
@@ -401,13 +401,13 @@ public class Veiculo
     public int StatusCarroId { get; set; }
     public virtual StatusCarro StatusCarro { get; set; }
     
-    // NavegaÁ„o
+    // Navega√ß√£o
     public virtual ICollection<Locacao> Locacoes { get; set; }
     public virtual ICollection<ManutencaoVeiculo> Manutencoes { get; set; }
 }
 ```
 
-#### **LocaÁ„o**
+#### **Loca√ß√£o**
 ```csharp
 public class Locacao
 {
@@ -443,7 +443,7 @@ public class Locacao
 }
 ```
 
-#### **ManutenÁ„o**
+#### **Manuten√ß√£o**
 ```csharp
 public class ManutencaoVeiculo
 {
@@ -471,7 +471,7 @@ public class ManutencaoVeiculo
     public bool Preventiva { get; set; }
     public bool Urgente { get; set; }
     
-    // NavegaÁ„o
+    // Navega√ß√£o
     public virtual ICollection<ItemManutencao> Itens { get; set; }
 }
 ```
@@ -513,7 +513,7 @@ public class ApiController : ControllerBase
 #### **Versionamento de API**
 
 ```csharp
-// ConfiguraÁ„o em Program.cs
+// Configura√ß√£o em Program.cs
 builder.Services.AddApiVersioning(options =>
 {
     options.AssumeDefaultVersionWhenUnspecified = true;
@@ -563,9 +563,9 @@ async function validarCPF(cpf) {
         const data = await response.json();
         
         if (data.valido) {
-            console.log('CPF v·lido');
+            console.log('CPF v√°lido');
         } else {
-            console.log('CPF inv·lido:', data.mensagem);
+            console.log('CPF inv√°lido:', data.mensagem);
         }
     } catch (error) {
         console.error('Erro:', error);
@@ -575,11 +575,11 @@ async function validarCPF(cpf) {
 
 ---
 
-## ?? SeguranÁa
+## ?? Seguran√ßa
 
-### ??? AutenticaÁ„o - ASP.NET Core Identity
+### ??? Autentica√ß√£o - ASP.NET Core Identity
 
-#### **ConfiguraÁ„o**
+#### **Configura√ß√£o**
 
 ```csharp
 // Program.cs
@@ -595,14 +595,14 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.MaxFailedAccessAttempts = 5;
     
-    // Usu·rio
+    // Usu√°rio
     options.User.RequireUniqueEmail = true;
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<RentalTourismContext>();
 ```
 
-#### **AutorizaÁ„o por Roles**
+#### **Autoriza√ß√£o por Roles**
 
 ```csharp
 // Controller
@@ -619,7 +619,7 @@ public IActionResult Edit() { }
 }
 ```
 
-### ?? Headers de SeguranÁa
+### ?? Headers de Seguran√ßa
 
 ```csharp
 app.Use(async (context, next) =>
@@ -641,7 +641,7 @@ app.Use(async (context, next) =>
 ### ?? Anti-Forgery Token
 
 ```html
-<!-- Formul·rio -->
+<!-- Formul√°rio -->
 <form method="post">
     @Html.AntiForgeryToken()
     <!-- campos -->
@@ -672,12 +672,12 @@ Log.Logger = new LoggerConfiguration()
 // Uso em Controllers
 _logger.LogInformation("Cliente {ClienteId} criado por {Usuario}", cliente.Id, User.Identity.Name);
 _logger.LogWarning("Tentativa de acesso negado: {Action} por {Usuario}", action, User.Identity.Name);
-_logger.LogError(ex, "Erro ao processar locaÁ„o {LocacaoId}", id);
+_logger.LogError(ex, "Erro ao processar loca√ß√£o {LocacaoId}", id);
 ```
 
 ---
 
-## ?? ConfiguraÁıes
+## ?? Configura√ß√µes
 
 ### ?? appsettings.json
 
@@ -712,7 +712,7 @@ _logger.LogError(ex, "Erro ao processar locaÁ„o {LocacaoId}", id);
 }
 ```
 
-### ?? Vari·veis de Ambiente (ProduÁ„o)
+### ?? Vari√°veis de Ambiente (Produ√ß√£o)
 
 ```bash
 # Azure App Service
@@ -725,7 +725,7 @@ AppSettings__SmtpPassword=...
 
 ## ?? Deploy
 
-### ?? PublicaÁ„o
+### ?? Publica√ß√£o
 
 ```bash
 # Publicar para pasta
@@ -738,7 +738,7 @@ dotnet publish -c Release /p:PublishProfile=Azure
 Compress-Archive -Path ./publish/* -DestinationPath RentalTourism.zip
 ```
 
-### ??? Migrations em ProduÁ„o
+### ??? Migrations em Produ√ß√£o
 
 ```bash
 # Gerar script SQL
@@ -752,8 +752,8 @@ dotnet ef migrations script --output migration.sql
 
 - [ ] Atualizar connection string
 - [ ] Aplicar migrations
-- [ ] Configurar vari·veis de ambiente
-- [ ] Testar autenticaÁ„o
+- [ ] Configurar vari√°veis de ambiente
+- [ ] Testar autentica√ß√£o
 - [ ] Verificar upload de arquivos
 - [ ] Configurar HTTPS
 - [ ] Ativar logging
@@ -764,7 +764,7 @@ dotnet ef migrations script --output migration.sql
 
 ## ?? Testes
 
-### ?? Testes Unit·rios (Futuro)
+### ?? Testes Unit√°rios (Futuro)
 
 ```csharp
 [Fact]
@@ -776,11 +776,11 @@ public void Cliente_IdadeMinimaValidacao()
     };
     
     Assert.True(cliente.Idade < 21);
-    // Deve falhar na validaÁ„o
+    // Deve falhar na valida√ß√£o
 }
 ```
 
-### ?? Testes de IntegraÁ„o (Futuro)
+### ?? Testes de Integra√ß√£o (Futuro)
 
 ```csharp
 [Fact]
@@ -803,7 +803,7 @@ public async Task CriarLocacao_ComSucesso()
 
 ## ?? Recursos Adicionais
 
-### ?? DocumentaÁ„o Externa
+### ?? Documenta√ß√£o Externa
 
 - [ASP.NET Core Docs](https://docs.microsoft.com/aspnet/core)
 - [Entity Framework Core](https://docs.microsoft.com/ef/core)
@@ -821,6 +821,6 @@ public async Task CriarLocacao_ComSucesso()
 ---
 
 **Desenvolvido para:** Litoral Sul Locadora e Turismo  
-**Vers„o:** 1.0  
+**Vers√£o:** 1.0  
 **Framework:** ASP.NET Core 8.0  
-**⁄ltima AtualizaÁ„o:** Outubro/2025
+**√öltima Atualiza√ß√£o:** Outubro/2025

@@ -1,40 +1,40 @@
-# ?? Sistema de Reservas de Viagem - Guia Completo
+Ôªø# ?? Sistema de Reservas de Viagem - Guia Completo
 
-## ?? Õndice
-- [Vis„o Geral](#vis„o-geral)
+## ?? √çndice
+- [Vis√£o Geral](#vis√£o-geral)
 - [Pacotes de Viagem](#pacotes-de-viagem)
 - [Criar Reserva](#criar-reserva)
 - [Gerenciar Reservas](#gerenciar-reservas)
-- [ServiÁos Adicionais](#serviÁos-adicionais)
+- [Servi√ßos Adicionais](#servi√ßos-adicionais)
 - [Status e Workflow](#status-e-workflow)
-- [RelatÛrios](#relatÛrios)
-- [Permissıes](#permissıes)
+- [Relat√≥rios](#relat√≥rios)
+- [Permiss√µes](#permiss√µes)
 
 ---
 
-## ?? Vis„o Geral
+## ?? Vis√£o Geral
 
-O sistema de reservas de viagem gerencia pacotes turÌsticos, permitindo que clientes reservem viagens completas com serviÁos adicionais opcionais.
+O sistema de reservas de viagem gerencia pacotes tur√≠sticos, permitindo que clientes reservem viagens completas com servi√ßos adicionais opcionais.
 
 ### ?? Funcionalidades Principais
 
-? **Gest„o de Pacotes**
+? **Gest√£o de Pacotes**
 - Cadastro de destinos e roteiros
-- DefiniÁ„o de preÁos e duraÁ„o
+- Defini√ß√£o de pre√ßos e dura√ß√£o
 - Controle de disponibilidade
-- AtivaÁ„o/desativaÁ„o de pacotes
+- Ativa√ß√£o/desativa√ß√£o de pacotes
 
 ? **Reservas Completas**
-- SeleÁ„o de pacote e cliente
-- DefiniÁ„o de data e quantidade de pessoas
-- C·lculo autom·tico de valores
-- AdiÁ„o de serviÁos extras
+- Sele√ß√£o de pacote e cliente
+- Defini√ß√£o de data e quantidade de pessoas
+- C√°lculo autom√°tico de valores
+- Adi√ß√£o de servi√ßos extras
 
 ? **Controle de Status**
 - Pendente ? Confirmada ? Realizada
 - Cancelamento de reservas
-- HistÛrico completo
-- Alertas e notificaÁıes
+- Hist√≥rico completo
+- Alertas e notifica√ß√µes
 
 ---
 
@@ -52,17 +52,17 @@ OU
 
 **Pacotes ? ? Novo Pacote**
 
-#### ?? Formul·rio de Cadastro
+#### ?? Formul√°rio de Cadastro
 
-| Campo | Formato | ValidaÁ„o | Exemplo |
+| Campo | Formato | Valida√ß√£o | Exemplo |
 |-------|---------|-----------|---------|
-| **Nome do Pacote** | Texto (m·x. 100 caracteres) | ObrigatÛrio | Praias do Litoral Sul |
-| **DescriÁ„o** | Texto (m·x. 1000 caracteres) | ObrigatÛrio | Tour completo pelas praias... |
-| **Destino** | Texto (m·x. 100 caracteres) | ObrigatÛrio | Guaruj·, SP |
-| **DuraÁ„o** | N˙mero | ObrigatÛrio | 3 |
-| **Unidade de Tempo** | SeleÁ„o | ObrigatÛrio | dias / horas |
-| **PreÁo por Pessoa** | Decimal (R$) | ObrigatÛrio | R$ 850,00 |
-| **Ativo** | Checkbox | Padr„o: Sim | ? Ativo |
+| **Nome do Pacote** | Texto (m√°x. 100 caracteres) | Obrigat√≥rio | Praias do Litoral Sul |
+| **Descri√ß√£o** | Texto (m√°x. 1000 caracteres) | Obrigat√≥rio | Tour completo pelas praias... |
+| **Destino** | Texto (m√°x. 100 caracteres) | Obrigat√≥rio | Guaruj√°, SP |
+| **Dura√ß√£o** | N√∫mero | Obrigat√≥rio | 3 |
+| **Unidade de Tempo** | Sele√ß√£o | Obrigat√≥rio | dias / horas |
+| **Pre√ßo por Pessoa** | Decimal (R$) | Obrigat√≥rio | R$ 850,00 |
+| **Ativo** | Checkbox | Padr√£o: Sim | ? Ativo |
 
 ### ?? Exemplo - Cadastro de Pacote
 
@@ -70,36 +70,36 @@ OU
 NOVO PACOTE DE VIAGEM
 
 Nome: Litoral Norte Completo
-DescriÁ„o: 
-  "ConheÁa as melhores praias do Litoral Norte de SP. 
-   Inclui transporte, guia turÌstico e almoÁo.
+Descri√ß√£o: 
+  "Conhe√ßa as melhores praias do Litoral Norte de SP. 
+   Inclui transporte, guia tur√≠stico e almo√ßo.
    Visita a Ubatuba, Caraguatatuba e Ilhabela."
 
 Destino: Litoral Norte - SP
-DuraÁ„o: 2 dias
+Dura√ß√£o: 2 dias
 Unidade: dias
 
-PreÁo: R$ 650,00 por pessoa
+Pre√ßo: R$ 650,00 por pessoa
 
-?? Ativo (disponÌvel para venda)
+?? Ativo (dispon√≠vel para venda)
 
 [Salvar Pacote]
 ```
 
-### ?? InformaÁıes do Pacote
+### ?? Informa√ß√µes do Pacote
 
 **Card do Pacote:**
 ```
 ?? Litoral Norte Completo
 ?????????????????????????????
 ?? Destino: Litoral Norte - SP
-?? DuraÁ„o: 2 dias
+?? Dura√ß√£o: 2 dias
 ?? R$ 650,00 por pessoa
 
-?? EstatÌsticas:
+?? Estat√≠sticas:
    Reservas: 25
    Receita: R$ 48.750,00
-   ⁄ltima reserva: h· 3 dias
+   √öltima reserva: h√° 3 dias
 
 ? ATIVO
 
@@ -110,35 +110,35 @@ PreÁo: R$ 650,00 por pessoa
 
 **Pacotes ? ?? Editar**
 
-**Campos edit·veis:**
-- ? Nome e descriÁ„o
+**Campos edit√°veis:**
+- ? Nome e descri√ß√£o
 - ? Destino
-- ? DuraÁ„o e unidade
-- ? PreÁo por pessoa
+- ? Dura√ß√£o e unidade
+- ? Pre√ßo por pessoa
 - ? Status (Ativo/Inativo)
 
-> ?? **Importante:** AlteraÁıes no preÁo N√O afetam reservas j· confirmadas!
+> ?? **Importante:** Altera√ß√µes no pre√ßo N√ÉO afetam reservas j√° confirmadas!
 
 ### ?? Ativar/Desativar Pacote
 
 **Por que desativar?**
 - Pacote fora de temporada
-- Destino temporariamente indisponÌvel
-- ManutenÁ„o de informaÁıes
+- Destino temporariamente indispon√≠vel
+- Manuten√ß√£o de informa√ß√µes
 - Pacote sendo reformulado
 
 **Efeitos:**
-- ? N„o aparece para novas reservas
-- ? Reservas existentes n„o s„o afetadas
-- ? HistÛrico mantido
+- ? N√£o aparece para novas reservas
+- ? Reservas existentes n√£o s√£o afetadas
+- ? Hist√≥rico mantido
 
 ### ??? Excluir Pacote
 
 **Regras:**
 - ? Pode excluir: Pacote SEM reservas
-- ? N√O pode excluir: Pacote COM reservas
+- ? N√ÉO pode excluir: Pacote COM reservas
 
-> ?? **Dica:** Use "Desativar" ao invÈs de excluir pacotes com histÛrico
+> ?? **Dica:** Use "Desativar" ao inv√©s de excluir pacotes com hist√≥rico
 
 ---
 
@@ -146,54 +146,54 @@ PreÁo: R$ 650,00 por pessoa
 
 ### ?? Como Acessar
 
-**OpÁ„o 1 - Menu:**
+**Op√ß√£o 1 - Menu:**
 ```
 Menu ? Turismo ? Reservas ? ? Nova Reserva
 ```
 
-**OpÁ„o 2 - A partir do Cliente:**
+**Op√ß√£o 2 - A partir do Cliente:**
 ```
 Clientes ? Detalhes ? ?? Nova Reserva
 ```
 
-**OpÁ„o 3 - A partir do Pacote:**
+**Op√ß√£o 3 - A partir do Pacote:**
 ```
 Pacotes ? Detalhes ? ? Reservar
 ```
 
 **URL direta:** `/ReservasViagens/Create`
 
-### ?? Formul·rio de Reserva
+### ?? Formul√°rio de Reserva
 
-#### 1?? **SeleÁ„o - Quem e O que**
+#### 1?? **Sele√ß√£o - Quem e O que**
 
-| Campo | DescriÁ„o | ValidaÁ„o |
+| Campo | Descri√ß√£o | Valida√ß√£o |
 |-------|-----------|-----------|
-| **Cliente** | Quem vai viajar | ObrigatÛrio, cadastrado |
-| **Pacote de Viagem** | Destino escolhido | ObrigatÛrio, ativo |
+| **Cliente** | Quem vai viajar | Obrigat√≥rio, cadastrado |
+| **Pacote de Viagem** | Destino escolhido | Obrigat√≥rio, ativo |
 
 #### 2?? **Quando e Quantos**
 
-| Campo | Formato | ValidaÁ„o | Exemplo |
+| Campo | Formato | Valida√ß√£o | Exemplo |
 |-------|---------|-----------|---------|
-| **Data da Viagem** | dd/MM/yyyy | ObrigatÛrio, data futura | 25/12/2024 |
-| **Quantidade de Pessoas** | N˙mero | ObrigatÛrio (1-50) | 4 pessoas |
+| **Data da Viagem** | dd/MM/yyyy | Obrigat√≥rio, data futura | 25/12/2024 |
+| **Quantidade de Pessoas** | N√∫mero | Obrigat√≥rio (1-50) | 4 pessoas |
 
 #### 3?? **Valores**
 
-| Campo | C·lculo | Exemplo |
+| Campo | C√°lculo | Exemplo |
 |-------|---------|---------|
-| **PreÁo por Pessoa** | Do pacote | R$ 650,00 |
+| **Pre√ßo por Pessoa** | Do pacote | R$ 650,00 |
 | **Quantidade** | Informado | 4 pessoas |
-| **Valor Total** | PreÁo ◊ Quantidade | R$ 2.600,00 |
+| **Valor Total** | Pre√ßo √ó Quantidade | R$ 2.600,00 |
 
-> ?? **C·lculo Autom·tico:** Sistema calcula valor total
+> ?? **C√°lculo Autom√°tico:** Sistema calcula valor total
 
 #### 4?? **Complementos**
 
-| Campo | DescriÁ„o | Exemplo |
+| Campo | Descri√ß√£o | Exemplo |
 |-------|-----------|---------|
-| **ObservaÁıes** | InformaÁıes adicionais (opcional) | "Cliente solicitou hotel 5 estrelas" |
+| **Observa√ß√µes** | Informa√ß√µes adicionais (opcional) | "Cliente solicitou hotel 5 estrelas" |
 
 ### ?? Passo a Passo - Criar Reserva
 
@@ -203,15 +203,15 @@ Pacotes ? Detalhes ? ? Reservar
 1. ACESSE: Reservas ? Nova Reserva
 
 2. SELECIONE CLIENTE:
-   Cliente: Jo„o Santos
+   Cliente: Jo√£o Santos
    CPF: 123.456.789-00
    ? Cadastro completo
 
 3. SELECIONE PACOTE:
    Pacote: Litoral Norte Completo
    Destino: Litoral Norte - SP
-   DuraÁ„o: 2 dias
-   PreÁo: R$ 650,00/pessoa
+   Dura√ß√£o: 2 dias
+   Pre√ßo: R$ 650,00/pessoa
    ? Pacote ativo
 
 4. DEFINA DATA E QUANTIDADE:
@@ -219,10 +219,10 @@ Pacotes ? Detalhes ? ? Reservar
    Quantidade: 4 pessoas
    
    ?? Sistema calcula:
-   ? 4 ◊ R$ 650,00 = R$ 2.600,00
+   ? 4 √ó R$ 650,00 = R$ 2.600,00
 
-5. OBSERVA«’ES:
-   "Cliente preferencial, famÌlia completa"
+5. OBSERVA√á√ïES:
+   "Cliente preferencial, fam√≠lia completa"
 
 6. CLIQUE: "Criar Reserva"
 
@@ -231,10 +231,10 @@ Pacotes ? Detalhes ? ? Reservar
    ? Status: Pendente
    ? Valor: R$ 2.600,00
    
-   PrÛximo: Adicionar serviÁos extras (opcional)
+   Pr√≥ximo: Adicionar servi√ßos extras (opcional)
 ```
 
-### ? ValidaÁıes Autom·ticas
+### ? Valida√ß√µes Autom√°ticas
 
 Sistema valida:
 
@@ -244,66 +244,66 @@ Sistema valida:
 
 2. **Pacote:**
    - ? Status ativo
-   - ? DisponÌvel
+   - ? Dispon√≠vel
 
 3. **Data:**
    - ? Data futura
-   - ? Formato v·lido
+   - ? Formato v√°lido
 
 4. **Quantidade:**
    - ? Entre 1 e 50 pessoas
-   - ? N˙mero inteiro positivo
+   - ? N√∫mero inteiro positivo
 
 5. **Valores:**
    - ? Valor total > 0
-   - ? C·lculo correto
+   - ? C√°lculo correto
 
 ---
 
-## ?? ServiÁos Adicionais
+## ?? Servi√ßos Adicionais
 
-### ?? O que s„o?
+### ?? O que s√£o?
 
-ServiÁos extras que podem ser adicionados ‡ reserva:
+Servi√ßos extras que podem ser adicionados √† reserva:
 - ?? Hospedagem premium
-- ??? RefeiÁıes especiais
-- ?? Ingressos para atraÁıes
+- ??? Refei√ß√µes especiais
+- ?? Ingressos para atra√ß√µes
 - ?? Transporte privativo
-- ?? FotÛgrafo profissional
+- ?? Fot√≥grafo profissional
 - ?? Equipamentos especiais
 
 ### ? Como Adicionar
 
-**OpÁ„o 1 - Durante a CriaÁ„o:**
+**Op√ß√£o 1 - Durante a Cria√ß√£o:**
 ```
-ApÛs criar reserva ? "Adicionar ServiÁos"
-```
-
-**OpÁ„o 2 - Depois:**
-```
-Reservas ? Detalhes ? ? Adicionar ServiÁo
+Ap√≥s criar reserva ? "Adicionar Servi√ßos"
 ```
 
-### ?? Cadastrar ServiÁo Adicional
+**Op√ß√£o 2 - Depois:**
+```
+Reservas ? Detalhes ? ? Adicionar Servi√ßo
+```
 
-| Campo | DescriÁ„o | Exemplo |
+### ?? Cadastrar Servi√ßo Adicional
+
+| Campo | Descri√ß√£o | Exemplo |
 |-------|-----------|---------|
-| **Nome** | DescriÁ„o do serviÁo | "Hospedagem Hotel 5 Estrelas" |
-| **DescriÁ„o** | Detalhes | "2 di·rias no Hotel Paradiso" |
-| **PreÁo** | Valor do serviÁo | R$ 800,00 |
+| **Nome** | Descri√ß√£o do servi√ßo | "Hospedagem Hotel 5 Estrelas" |
+| **Descri√ß√£o** | Detalhes | "2 di√°rias no Hotel Paradiso" |
+| **Pre√ßo** | Valor do servi√ßo | R$ 800,00 |
 
 ### ?? Exemplo
 
 ```
-ADICIONAR SERVI«O ADICIONAL
+ADICIONAR SERVI√áO ADICIONAL
 
 Reserva: #12345
-Cliente: Jo„o Santos
+Cliente: Jo√£o Santos
 Pacote: Litoral Norte Completo
 
-ServiÁo: Hospedagem Premium
-DescriÁ„o: Hotel 5 estrelas, vista mar, cafÈ da manh„
-PreÁo: R$ 800,00
+Servi√ßo: Hospedagem Premium
+Descri√ß√£o: Hotel 5 estrelas, vista mar, caf√© da manh√£
+Pre√ßo: R$ 800,00
 
 [Adicionar]
 
@@ -314,25 +314,25 @@ Pacote base: R$ 2.600,00
 TOTAL: R$ 3.400,00
 ```
 
-### ?? Gerenciar ServiÁos
+### ?? Gerenciar Servi√ßos
 
 **Visualizar:**
 ```
-Reservas ? Detalhes ? SeÁ„o "ServiÁos Adicionais"
+Reservas ? Detalhes ? Se√ß√£o "Servi√ßos Adicionais"
 
-?? ServiÁos Contratados:
+?? Servi√ßos Contratados:
 1. Hospedagem Premium - R$ 800,00
 2. Passeio de Barco - R$ 350,00
 3. Jantar Especial - R$ 250,00
 
-Total ServiÁos: R$ 1.400,00
+Total Servi√ßos: R$ 1.400,00
 Total Geral: R$ 4.000,00
 ```
 
 **Editar:**
-- ?? Alterar descriÁ„o
-- ?? Ajustar preÁo
-- ??? Remover serviÁo
+- ?? Alterar descri√ß√£o
+- ?? Ajustar pre√ßo
+- ??? Remover servi√ßo
 
 ---
 
@@ -344,12 +344,12 @@ Total Geral: R$ 4.000,00
 
 ### ?? Filtros e Buscas
 
-**Filtros disponÌveis:**
+**Filtros dispon√≠veis:**
 
-| Filtro | OpÁıes |
+| Filtro | Op√ß√µes |
 |--------|--------|
 | **Status** | Pendente, Confirmada, Realizada, Cancelada |
-| **PerÌodo** | Data da viagem |
+| **Per√≠odo** | Data da viagem |
 | **Cliente** | Nome ou CPF |
 | **Pacote** | Destino |
 | **Data Reserva** | Quando foi reservado |
@@ -359,11 +359,11 @@ Total Geral: R$ 4.000,00
 ```
 ?? Reserva #12345
 ?????????????????????????????
-?? Cliente: Jo„o Santos
+?? Cliente: Jo√£o Santos
 ?? Pacote: Litoral Norte Completo
 ?? Viagem: 25/12/2024
 ?? 4 pessoas
-?? R$ 3.400,00 (com serviÁos)
+?? R$ 3.400,00 (com servi√ßos)
 
 ?? Status: CONFIRMADA
 ??? Faltam 15 dias
@@ -373,31 +373,31 @@ Total Geral: R$ 4.000,00
 
 ### ?? Indicadores de Status
 
-| Status | Cor | DescriÁ„o |
+| Status | Cor | Descri√ß√£o |
 |--------|-----|-----------|
-| **Pendente** | ?? Amarelo | Aguardando confirmaÁ„o |
+| **Pendente** | ?? Amarelo | Aguardando confirma√ß√£o |
 | **Confirmada** | ?? Verde | Reserva confirmada e paga |
-| **Realizada** | ?? Azul | Viagem j· aconteceu |
+| **Realizada** | ?? Azul | Viagem j√° aconteceu |
 | **Cancelada** | ?? Vermelho | Reserva cancelada |
 
 ### ?? Detalhes da Reserva
 
 **Reservas ? Detalhes**
 
-**InformaÁıes exibidas:**
+**Informa√ß√µes exibidas:**
 
 ```
 DETALHES DA RESERVA #12345
 
-?? INFORMA«’ES GERAIS
+?? INFORMA√á√ïES GERAIS
 ?????????????????????????????
 Data da Reserva: 10/12/2024
 Status Atual: Confirmada
-Dias atÈ a viagem: 15
+Dias at√© a viagem: 15
 
 ?? CLIENTE
 ?????????????????????????????
-Nome: Jo„o Santos
+Nome: Jo√£o Santos
 CPF: 123.456.789-00
 Telefone: (13) 98765-4321
 Email: joao@email.com
@@ -406,7 +406,7 @@ Email: joao@email.com
 ?????????????????????????????
 Pacote: Litoral Norte Completo
 Destino: Litoral Norte - SP
-DuraÁ„o: 2 dias
+Dura√ß√£o: 2 dias
 Data da Viagem: 25/12/2024
 
 ?? PARTICIPANTES
@@ -415,25 +415,25 @@ Quantidade: 4 pessoas
 Valor por pessoa: R$ 650,00
 Subtotal: R$ 2.600,00
 
-?? SERVI«OS ADICIONAIS
+?? SERVI√áOS ADICIONAIS
 ?????????????????????????????
 1. Hospedagem Premium: R$ 800,00
 2. Passeio de Barco: R$ 350,00
 
-Total ServiÁos: R$ 1.150,00
+Total Servi√ßos: R$ 1.150,00
 
 ?? RESUMO FINANCEIRO
 ?????????????????????????????
 Pacote base: R$ 2.600,00
-ServiÁos: R$ 1.150,00
+Servi√ßos: R$ 1.150,00
 ????????????????????????????????
 TOTAL: R$ 3.750,00
 
 Status Pagamento: ? Pago
 
-?? OBSERVA«’ES
+?? OBSERVA√á√ïES
 ?????????????????????????????
-Cliente preferencial, famÌlia completa.
+Cliente preferencial, fam√≠lia completa.
 Solicitou quarto com vista para o mar.
 ```
 
@@ -441,16 +441,16 @@ Solicitou quarto com vista para o mar.
 
 **Quando permitido:**
 - ? Status: Pendente
-- ? Viagem futura (n„o iniciada)
+- ? Viagem futura (n√£o iniciada)
 - ? Mais de 2 dias antes da viagem
 
-**Campos edit·veis:**
+**Campos edit√°veis:**
 - Data da viagem
 - Quantidade de pessoas
-- ObservaÁıes
-- Adicionar/remover serviÁos
+- Observa√ß√µes
+- Adicionar/remover servi√ßos
 
-**N√O edit·vel:**
+**N√ÉO edit√°vel:**
 - Cliente (criar nova reserva)
 - Pacote (criar nova reserva)
 
@@ -462,23 +462,23 @@ Solicitou quarto com vista para o mar.
 Pode cancelar quando:
 ? Status: Pendente ou Confirmada
 ? Viagem futura
-? MÌnimo 2 dias antes da viagem
+? M√≠nimo 2 dias antes da viagem
 
-N„o pode cancelar:
-? Viagem j· realizada
+N√£o pode cancelar:
+? Viagem j√° realizada
 ? Menos de 2 dias para viagem
-? J· cancelada
+? J√° cancelada
 ```
 
 **Processo:**
 ```
 1. Reservas ? Detalhes
 2. Clicar em "? Cancelar Reserva"
-3. Confirmar aÁ„o
+3. Confirmar a√ß√£o
 4. Sistema:
    - Altera status para "Cancelada"
    - Registra data de cancelamento
-   - MantÈm histÛrico
+   - Mant√©m hist√≥rico
    - Libera vaga do pacote
 ```
 
@@ -489,9 +489,9 @@ N„o pode cancelar:
 ### ?? Ciclo de Vida da Reserva
 
 ```
-1. CRIA«√O
+1. CRIA√á√ÉO
    ?
-2. PENDENTE (aguardando confirmaÁ„o)
+2. PENDENTE (aguardando confirma√ß√£o)
    ?
 3. CONFIRMADA (pagamento confirmado)
    ?
@@ -507,59 +507,59 @@ OU
 #### 1?? **PENDENTE** ??
 
 **Quando:**
-- Reserva recÈm-criada
-- Aguardando confirmaÁ„o de pagamento
+- Reserva rec√©m-criada
+- Aguardando confirma√ß√£o de pagamento
 
-**AÁıes possÌveis:**
-- ? Confirmar (apÛs pagamento)
+**A√ß√µes poss√≠veis:**
+- ? Confirmar (ap√≥s pagamento)
 - ? Editar
 - ? Cancelar
-- ? Adicionar serviÁos
+- ? Adicionar servi√ßos
 
 **Sistema alerta se:**
-- Pendente h· mais de 7 dias
+- Pendente h√° mais de 7 dias
 - Faltam menos de 7 dias para viagem
 
 #### 2?? **CONFIRMADA** ??
 
 **Quando:**
 - Pagamento confirmado
-- Cliente confirmou presenÁa
+- Cliente confirmou presen√ßa
 
-**AÁıes possÌveis:**
-- ? Adicionar serviÁos
+**A√ß√µes poss√≠veis:**
+- ? Adicionar servi√ßos
 - ? Editar (limitado)
-- ? Cancelar (com condiÁıes)
+- ? Cancelar (com condi√ß√µes)
 
 **Sistema alerta:**
 - 7 dias antes: "Viagem se aproxima"
 - 3 dias antes: "Confirmar preparativos"
-- 1 dia antes: "Viagem amanh„!"
+- 1 dia antes: "Viagem amanh√£!"
 
 #### 3?? **REALIZADA** ??
 
 **Quando:**
 - Data da viagem passou
-- Viagem foi concluÌda
+- Viagem foi conclu√≠da
 
-**CaracterÌsticas:**
-- ?? N„o edit·vel
-- ?? Entra nas estatÌsticas
-- ? PossÌvel avaliar (futuro)
+**Caracter√≠sticas:**
+- ?? N√£o edit√°vel
+- ?? Entra nas estat√≠sticas
+- ? Poss√≠vel avaliar (futuro)
 
 #### 4?? **CANCELADA** ??
 
 **Quando:**
 - Cliente cancelou
 - Motivos operacionais
-- N„o confirmado a tempo
+- N√£o confirmado a tempo
 
-**CaracterÌsticas:**
-- ?? N„o edit·vel
+**Caracter√≠sticas:**
+- ?? N√£o edit√°vel
 - ?? Motivo registrado
-- ?? N„o conta em receita
+- ?? N√£o conta em receita
 
-### ?? MudanÁas de Status
+### ?? Mudan√ßas de Status
 
 **Manual:**
 ```
@@ -570,31 +570,31 @@ Novo status: Confirmada
 
 Motivo: Pagamento confirmado via PIX
 
-[Confirmar AlteraÁ„o]
+[Confirmar Altera√ß√£o]
 ```
 
-**Autom·tico:**
+**Autom√°tico:**
 - ?? Viagem passou ? Status vira "Realizada"
 - ? Timeout ? Pendente por muito tempo ? Alerta
 
 ---
 
-## ?? RelatÛrios
+## ?? Relat√≥rios
 
 ### ?? Como Acessar
 
-**Menu ? RelatÛrios ? Reservas de Viagem**
+**Menu ? Relat√≥rios ? Reservas de Viagem**
 
-### ?? Tipos de RelatÛrios
+### ?? Tipos de Relat√≥rios
 
-#### 1?? **Reservas por PerÌodo**
+#### 1?? **Reservas por Per√≠odo**
 
 ```
-RELAT”RIO: Reservas - Dezembro/2024
+RELAT√ìRIO: Reservas - Dezembro/2024
 
 Total Reservas: 35
 Receita Total: R$ 91.000,00
-Ticket MÈdio: R$ 2.600,00
+Ticket M√©dio: R$ 2.600,00
 
 Por Status:
 ? Confirmadas: 28 (80%)
@@ -603,7 +603,7 @@ Por Status:
 
 Detalhamento:
 Data Viagem | Cliente       | Pacote          | Pessoas | Valor
-25/12/2024  | Jo„o Santos  | Litoral Norte   | 4       | R$ 3.400,00
+25/12/2024  | Jo√£o Santos  | Litoral Norte   | 4       | R$ 3.400,00
 26/12/2024  | Maria Silva  | Praias do Sul   | 2       | R$ 1.700,00
 ...
 ```
@@ -620,126 +620,126 @@ Trilhas e Cachoeiras | 32       | 112     | R$ 89.600,00
 Serra da Mantiqueira | 28       | 84      | R$ 67.200,00
 ```
 
-#### 3?? **Receita por MÍs**
+#### 3?? **Receita por M√™s**
 
 ```
-MÍs          | Reservas | Receita      | Crescimento
+M√™s          | Reservas | Receita      | Crescimento
 Janeiro      | 42       | R$ 105.000   | -
 Fevereiro    | 38       | R$ 95.000    | -9.5%
-MarÁo        | 45       | R$ 112.500   | +18.4%
+Mar√ßo        | 45       | R$ 112.500   | +18.4%
 ...
 Dezembro     | 52       | R$ 130.000   | +15.6%
 
 Total Ano: R$ 1.248.000
-MÈdia Mensal: R$ 104.000
+M√©dia Mensal: R$ 104.000
 ```
 
-#### 4?? **An·lise de Clientes**
+#### 4?? **An√°lise de Clientes**
 
 ```
 Clientes Frequentes
 
-Cliente          | Reservas | Valor Total | ⁄ltima Viagem
-Jo„o Santos      | 8        | R$ 24.000   | 15/12/2024
+Cliente          | Reservas | Valor Total | √öltima Viagem
+Jo√£o Santos      | 8        | R$ 24.000   | 15/12/2024
 Maria Silva      | 6        | R$ 18.500   | 10/12/2024
 Ana Costa        | 5        | R$ 15.000   | 05/12/2024
 
-Novos Clientes: 45 (mÍs atual)
+Novos Clientes: 45 (m√™s atual)
 Taxa Recompra: 35%
 ```
 
-### ?? Filtros DisponÌveis
+### ?? Filtros Dispon√≠veis
 
-**Todos os relatÛrios:**
-- ?? PerÌodo (data viagem ou reserva)
+**Todos os relat√≥rios:**
+- ?? Per√≠odo (data viagem ou reserva)
 - ?? Status da reserva
-- ?? Cliente especÌfico
-- ?? Pacote especÌfico
+- ?? Cliente espec√≠fico
+- ?? Pacote espec√≠fico
 - ?? Quantidade de pessoas
 
-### ?? ExportaÁ„o
+### ?? Exporta√ß√£o
 
 **Formatos:**
 - ?? Excel (.xlsx)
 - ?? PDF
 - ?? CSV
-- ??? Impress„o
+- ??? Impress√£o
 
 ---
 
-## ?? Permissıes de Acesso
+## ?? Permiss√µes de Acesso
 
-### ??? **VisualizaÁ„o**
-**Quem pode:** Todos os usu·rios autenticados
+### ??? **Visualiza√ß√£o**
+**Quem pode:** Todos os usu√°rios autenticados
 - Ver lista de reservas
 - Ver detalhes de reserva
 - Consultar pacotes
-- Ver relatÛrios b·sicos
+- Ver relat√≥rios b√°sicos
 
-### ?? **CriaÁ„o e EdiÁ„o**
+### ?? **Cria√ß√£o e Edi√ß√£o**
 **Quem pode:** Admin, Manager, Employee
 - Criar nova reserva
 - Editar reserva (antes da viagem)
-- Adicionar serviÁos
+- Adicionar servi√ßos
 - Confirmar pagamento
 - Alterar status
 
-### ??? **Cancelamento e Exclus„o**
+### ??? **Cancelamento e Exclus√£o**
 **Quem pode:** Admin, Manager
 - Cancelar reserva
 - Excluir pacote SEM reservas
 - Ajustar valores
 - Aplicar descontos
 
-### ?? **Gest„o de Pacotes**
+### ?? **Gest√£o de Pacotes**
 **Quem pode:** Admin, Manager
 - Criar pacotes
 - Editar pacotes
 - Ativar/desativar
-- Definir preÁos
+- Definir pre√ßos
 
 ---
 
-## ? Boas Pr·ticas
+## ? Boas Pr√°ticas
 
 ### ?? Pacotes
 
-? **FaÁa:**
-- DescriÁ„o clara e detalhada
-- PreÁos competitivos e justos
-- Atualizar informaÁıes regularmente
+? **Fa√ßa:**
+- Descri√ß√£o clara e detalhada
+- Pre√ßos competitivos e justos
+- Atualizar informa√ß√µes regularmente
 - Desativar pacotes fora de temporada
-- Manter histÛrico de reservas
+- Manter hist√≥rico de reservas
 
 ? **Evite:**
-- DescriÁıes vagas
-- PreÁos desatualizados
+- Descri√ß√µes vagas
+- Pre√ßos desatualizados
 - Excluir pacotes com reservas
 - Deixar inativos sem motivo
 
 ### ?? Reservas
 
-? **FaÁa:**
+? **Fa√ßa:**
 - Confirmar dados do cliente
 - Validar data da viagem
-- Adicionar observaÁıes relevantes
+- Adicionar observa√ß√µes relevantes
 - Confirmar pagamento antes de confirmar reserva
 - Manter cliente informado
 
 ? **Evite:**
 - Reservar para data passada
 - Confirmar sem pagamento
-- Ignorar observaÁıes do cliente
+- Ignorar observa√ß√µes do cliente
 - Deixar pendente por muito tempo
-- Esquecer de adicionar serviÁos solicitados
+- Esquecer de adicionar servi√ßos solicitados
 
 ### ?? Status
 
-? **FaÁa:**
+? **Fa√ßa:**
 - Atualizar status prontamente
 - Registrar motivo de cancelamento
-- Confirmar apÛs pagamento
-- Marcar como realizada apÛs viagem
+- Confirmar ap√≥s pagamento
+- Marcar como realizada ap√≥s viagem
 
 ? **Evite:**
 - Status desatualizado
@@ -761,24 +761,24 @@ Pessoas: 2
 
 Processo:
 1. Criar reserva
-2. Calcular: 2 ◊ R$ 850 = R$ 1.700
+2. Calcular: 2 √ó R$ 850 = R$ 1.700
 3. Status: Pendente
 4. Cliente paga
 5. Confirmar reserva
 6. Aguardar data da viagem
-7. ApÛs 01/01 ? Status: Realizada
+7. Ap√≥s 01/01 ? Status: Realizada
 ```
 
-### Caso 2: Reserva com ServiÁos
+### Caso 2: Reserva com Servi√ßos
 
 ```
-Cliente: Jo„o Santos
+Cliente: Jo√£o Santos
 Pacote: Litoral Norte (R$ 650/pessoa)
 Data: 25/12/2024
 Pessoas: 4
 Base: R$ 2.600
 
-ServiÁos:
+Servi√ßos:
 + Hospedagem: R$ 800
 + Passeio de Barco: R$ 350
 
@@ -786,7 +786,7 @@ Total: R$ 3.750
 
 Processo:
 1. Criar reserva base
-2. Adicionar serviÁos
+2. Adicionar servi√ßos
 3. Recalcular total
 4. Confirmar pagamento
 5. Status: Confirmada
@@ -805,8 +805,8 @@ Cliente solicitou cancelamento
 ? Pode cancelar (mais de 2 dias)
 
 Processo:
-1. Verificar polÌtica de cancelamento
-2. Calcular reembolso (se aplic·vel)
+1. Verificar pol√≠tica de cancelamento
+2. Calcular reembolso (se aplic√°vel)
 3. Cancelar reserva
 4. Registrar motivo
 5. Processar reembolso
@@ -815,27 +815,27 @@ Processo:
 
 ---
 
-## ?? SoluÁ„o de Problemas
+## ?? Solu√ß√£o de Problemas
 
 ### ? "Data da viagem deve ser futura"
-**SoluÁ„o:** Selecionar data posterior a hoje
+**Solu√ß√£o:** Selecionar data posterior a hoje
 
-### ? "Pacote n„o est· ativo"
-**SoluÁ„o:** 
+### ? "Pacote n√£o est√° ativo"
+**Solu√ß√£o:** 
 - Ativar pacote primeiro
 - Ou escolher outro pacote ativo
 
-### ? "N„o È possÌvel cancelar"
-**SoluÁ„o:**
-- Viagem muito prÛxima (< 2 dias)
-- Ou viagem j· realizada
-- PolÌtica n„o permite
+### ? "N√£o √© poss√≠vel cancelar"
+**Solu√ß√£o:**
+- Viagem muito pr√≥xima (< 2 dias)
+- Ou viagem j√° realizada
+- Pol√≠tica n√£o permite
 
-### ? "Quantidade inv·lida"
-**SoluÁ„o:**
-- MÌnimo: 1 pessoa
-- M·ximo: 50 pessoas
-- Usar n˙mero inteiro
+### ? "Quantidade inv√°lida"
+**Solu√ß√£o:**
+- M√≠nimo: 1 pessoa
+- M√°ximo: 50 pessoas
+- Usar n√∫mero inteiro
 
 ---
 
@@ -859,15 +859,15 @@ Ctrl + P     ? Imprimir
 
 ## ?? Pronto para Usar!
 
-O sistema de reservas est· **100% operacional**.
+O sistema de reservas est√° **100% operacional**.
 
 **Acesse:** Menu ? Turismo ? Reservas
 
 ---
 
 **Desenvolvido para:** Litoral Sul Locadora e Turismo  
-**Vers„o:** 1.0  
+**Vers√£o:** 1.0  
 **Data:** Outubro/2025  
-**DocumentaÁ„o relacionada:** 
-- [Gest„o de Clientes](CLIENTES_GUIA_COMPLETO.md)
-- [Sistema de LocaÁıes](LOCACOES_GUIA_COMPLETO.md)
+**Documenta√ß√£o relacionada:** 
+- [Gest√£o de Clientes](CLIENTES_GUIA_COMPLETO.md)
+- [Sistema de Loca√ß√µes](LOCACOES_GUIA_COMPLETO.md)

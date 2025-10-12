@@ -1,385 +1,385 @@
-# ?? Sistema de LocaÁıes de VeÌculos - Guia Completo
+Ôªø# ?? Sistema de Loca√ß√µes de Ve√≠culos - Guia Completo
 
-## ?? Õndice
-- [Vis„o Geral](#vis„o-geral)
-- [Criar Nova LocaÁ„o](#criar-nova-locaÁ„o)
-- [Processo de LocaÁ„o](#processo-de-locaÁ„o)
-- [DevoluÁ„o de VeÌculo](#devoluÁ„o-de-veÌculo)
+## ?? √çndice
+- [Vis√£o Geral](#vis√£o-geral)
+- [Criar Nova Loca√ß√£o](#criar-nova-loca√ß√£o)
+- [Processo de Loca√ß√£o](#processo-de-loca√ß√£o)
+- [Devolu√ß√£o de Ve√≠culo](#devolu√ß√£o-de-ve√≠culo)
 - [Documentos e Contratos](#documentos-e-contratos)
 - [Vistoria](#vistoria)
-- [Gest„o de LocaÁıes](#gest„o-de-locaÁıes)
-- [RelatÛrios](#relatÛrios)
-- [Permissıes](#permissıes)
+- [Gest√£o de Loca√ß√µes](#gest√£o-de-loca√ß√µes)
+- [Relat√≥rios](#relat√≥rios)
+- [Permiss√µes](#permiss√µes)
 
 ---
 
-## ?? Vis„o Geral
+## ?? Vis√£o Geral
 
-O sistema de locaÁıes gerencia todo o processo de aluguel de veÌculos, desde a reserva atÈ a devoluÁ„o, incluindo contratos, vistorias e pagamentos.
+O sistema de loca√ß√µes gerencia todo o processo de aluguel de ve√≠culos, desde a reserva at√© a devolu√ß√£o, incluindo contratos, vistorias e pagamentos.
 
 ### ?? Funcionalidades Principais
 
-? **Processo Completo de LocaÁ„o**
-- SeleÁ„o de cliente e veÌculo
-- DefiniÁ„o de perÌodo de locaÁ„o
-- C·lculo autom·tico de valores
-- GeraÁ„o de contrato
-- Vistoria de retirada e devoluÁ„o
+? **Processo Completo de Loca√ß√£o**
+- Sele√ß√£o de cliente e ve√≠culo
+- Defini√ß√£o de per√≠odo de loca√ß√£o
+- C√°lculo autom√°tico de valores
+- Gera√ß√£o de contrato
+- Vistoria de retirada e devolu√ß√£o
 - Registro de quilometragem
 
 ? **Controle Financeiro**
-- C·lculo de di·rias
-- Valores de cauÁ„o
+- C√°lculo de di√°rias
+- Valores de cau√ß√£o
 - Extras e adicionais
 - Multas por atraso
-- HistÛrico de pagamentos
+- Hist√≥rico de pagamentos
 
-? **DocumentaÁ„o**
-- Contrato de locaÁ„o (PDF)
+? **Documenta√ß√£o**
+- Contrato de loca√ß√£o (PDF)
 - Laudo de vistoria (PDF)
-- Registro fotogr·fico
-- HistÛrico completo
+- Registro fotogr√°fico
+- Hist√≥rico completo
 
 ---
 
-## ?? Criar Nova LocaÁ„o
+## ?? Criar Nova Loca√ß√£o
 
 ### ?? Como Acessar
 
-**OpÁ„o 1 - Menu Lateral:**
+**Op√ß√£o 1 - Menu Lateral:**
 ```
-Menu ? LocaÁ„o ? LocaÁıes ? ? Nova LocaÁ„o
-```
-
-**OpÁ„o 2 - A partir do Cliente:**
-```
-Clientes ? Detalhes do Cliente ? ?? Nova LocaÁ„o
+Menu ? Loca√ß√£o ? Loca√ß√µes ? ? Nova Loca√ß√£o
 ```
 
-**OpÁ„o 3 - A partir do VeÌculo:**
+**Op√ß√£o 2 - A partir do Cliente:**
 ```
-VeÌculos ? Detalhes do VeÌculo ? ? Nova LocaÁ„o
-(apenas se veÌculo disponÌvel)
+Clientes ? Detalhes do Cliente ? ?? Nova Loca√ß√£o
+```
+
+**Op√ß√£o 3 - A partir do Ve√≠culo:**
+```
+Ve√≠culos ? Detalhes do Ve√≠culo ? ? Nova Loca√ß√£o
+(apenas se ve√≠culo dispon√≠vel)
 ```
 
 **URL direta:** `/Locacoes/Create`
 
-### ?? PrÈ-requisitos
+### ?? Pr√©-requisitos
 
-Antes de criar locaÁ„o, certifique-se que:
+Antes de criar loca√ß√£o, certifique-se que:
 
 #### ? **Cliente**
 - [x] Cliente cadastrado no sistema
-- [x] CPF v·lido
+- [x] CPF v√°lido
 - [x] Email e telefone atualizados
-- [x] **CNH V¡LIDA** (n„o vencida)
-- [x] Idade mÌnima 21 anos
+- [x] **CNH V√ÅLIDA** (n√£o vencida)
+- [x] Idade m√≠nima 21 anos
 - [x] Documentos enviados (CNH, RG, CPF)
 
-#### ? **VeÌculo**
-- [x] VeÌculo cadastrado
-- [x] Status = "DisponÌvel"
-- [x] Sem manutenÁ„o pendente
+#### ? **Ve√≠culo**
+- [x] Ve√≠culo cadastrado
+- [x] Status = "Dispon√≠vel"
+- [x] Sem manuten√ß√£o pendente
 - [x] Documentos em dia (CRLV, Seguro)
-- [x] DisponÌvel no perÌodo desejado
+- [x] Dispon√≠vel no per√≠odo desejado
 
 #### ? **Sistema**
-- [x] AgÍncia definida
-- [x] Funcion·rio respons·vel
-- [x] PerÌodo de locaÁ„o v·lido
+- [x] Ag√™ncia definida
+- [x] Funcion√°rio respons√°vel
+- [x] Per√≠odo de loca√ß√£o v√°lido
 
-### ?? Formul·rio de LocaÁ„o
+### ?? Formul√°rio de Loca√ß√£o
 
-#### 1?? **SeleÁ„o - Quem e O que**
+#### 1?? **Sele√ß√£o - Quem e O que**
 
-| Campo | DescriÁ„o | ValidaÁ„o |
+| Campo | Descri√ß√£o | Valida√ß√£o |
 |-------|-----------|-----------|
-| **Cliente** | Selecione o cliente | ObrigatÛrio, CNH v·lida |
-| **VeÌculo** | Selecione o veÌculo | ObrigatÛrio, disponÌvel |
-| **Funcion·rio** | Respons·vel pela locaÁ„o | ObrigatÛrio |
-| **AgÍncia** | Local de retirada/devoluÁ„o | ObrigatÛrio |
+| **Cliente** | Selecione o cliente | Obrigat√≥rio, CNH v√°lida |
+| **Ve√≠culo** | Selecione o ve√≠culo | Obrigat√≥rio, dispon√≠vel |
+| **Funcion√°rio** | Respons√°vel pela loca√ß√£o | Obrigat√≥rio |
+| **Ag√™ncia** | Local de retirada/devolu√ß√£o | Obrigat√≥rio |
 
-#### 2?? **PerÌodo - Quando**
+#### 2?? **Per√≠odo - Quando**
 
-| Campo | Formato | ValidaÁ„o | Exemplo |
+| Campo | Formato | Valida√ß√£o | Exemplo |
 |-------|---------|-----------|---------|
-| **Data de Retirada** | dd/MM/yyyy HH:mm | ObrigatÛrio, data futura ou hoje | 15/12/2024 10:00 |
-| **Data de DevoluÁ„o** | dd/MM/yyyy HH:mm | ObrigatÛrio, apÛs retirada | 20/12/2024 18:00 |
+| **Data de Retirada** | dd/MM/yyyy HH:mm | Obrigat√≥rio, data futura ou hoje | 15/12/2024 10:00 |
+| **Data de Devolu√ß√£o** | dd/MM/yyyy HH:mm | Obrigat√≥rio, ap√≥s retirada | 20/12/2024 18:00 |
 
-> ?? **Sistema calcula automaticamente:** Quantidade de di·rias
+> ?? **Sistema calcula automaticamente:** Quantidade de di√°rias
 
 #### 3?? **Quilometragem**
 
-| Campo | DescriÁ„o | ValidaÁ„o | Exemplo |
+| Campo | Descri√ß√£o | Valida√ß√£o | Exemplo |
 |-------|-----------|-----------|---------|
-| **KM na Retirada** | Quilometragem atual do veÌculo | ObrigatÛrio, ? 0 | 45.000 km |
-| **KM na DevoluÁ„o** | Preenchido na devoluÁ„o | Autom·tico | - |
+| **KM na Retirada** | Quilometragem atual do ve√≠culo | Obrigat√≥rio, ? 0 | 45.000 km |
+| **KM na Devolu√ß√£o** | Preenchido na devolu√ß√£o | Autom√°tico | - |
 
-> ?? **Autom·tico:** Sistema preenche com KM atual do veÌculo
+> ?? **Autom√°tico:** Sistema preenche com KM atual do ve√≠culo
 
 #### 4?? **Valores - Quanto**
 
-| Campo | C·lculo | Exemplo |
+| Campo | C√°lculo | Exemplo |
 |-------|---------|---------|
-| **Valor da Di·ria** | Do cadastro do veÌculo | R$ 150,00 |
-| **Quantidade de Di·rias** | Calculado automaticamente | 5 di·rias |
-| **Valor Total** | Di·ria ◊ Quantidade | R$ 750,00 |
+| **Valor da Di√°ria** | Do cadastro do ve√≠culo | R$ 150,00 |
+| **Quantidade de Di√°rias** | Calculado automaticamente | 5 di√°rias |
+| **Valor Total** | Di√°ria √ó Quantidade | R$ 750,00 |
 
-> ?? **C·lculo Autom·tico:** Sistema calcula baseado no perÌodo
+> ?? **C√°lculo Autom√°tico:** Sistema calcula baseado no per√≠odo
 
-#### 5?? **ObservaÁıes**
+#### 5?? **Observa√ß√µes**
 
-| Campo | DescriÁ„o | Exemplo |
+| Campo | Descri√ß√£o | Exemplo |
 |-------|-----------|---------|
-| **ObservaÁıes** | InformaÁıes adicionais (opcional) | "Cliente solicitou seguro adicional" |
+| **Observa√ß√µes** | Informa√ß√µes adicionais (opcional) | "Cliente solicitou seguro adicional" |
 
-### ?? Passo a Passo - Criar LocaÁ„o
+### ?? Passo a Passo - Criar Loca√ß√£o
 
-**Exemplo pr·tico:**
+**Exemplo pr√°tico:**
 
 ```
-1. ACESSE: LocaÁıes ? Nova LocaÁ„o
+1. ACESSE: Loca√ß√µes ? Nova Loca√ß√£o
 
 2. SELECIONE CLIENTE:
    Cliente: Maria da Silva
    CPF: 987.654.321-00
-   ? CNH v·lida atÈ: 10/08/2028
+   ? CNH v√°lida at√©: 10/08/2028
 
-3. SELECIONE VEÕCULO:
-   VeÌculo: Gol 1.0 Flex - ABC1D23
-   ? DisponÌvel
-   Di·ria: R$ 150,00
+3. SELECIONE VE√çCULO:
+   Ve√≠culo: Gol 1.0 Flex - ABC1D23
+   ? Dispon√≠vel
+   Di√°ria: R$ 150,00
 
-4. DEFINA RESPONS¡VEIS:
-   Funcion·rio: Jo„o Atendente
-   AgÍncia: AgÍncia Centro
+4. DEFINA RESPONS√ÅVEIS:
+   Funcion√°rio: Jo√£o Atendente
+   Ag√™ncia: Ag√™ncia Centro
 
-5. DEFINA PERÕODO:
+5. DEFINA PER√çODO:
    Retirada: 15/12/2024 10:00
-   DevoluÁ„o: 20/12/2024 18:00
+   Devolu√ß√£o: 20/12/2024 18:00
    
    ?? Sistema calcula:
-   ? 5 di·rias completas
+   ? 5 di√°rias completas
    ? Valor Total: R$ 750,00
 
 6. QUILOMETRAGEM:
-   KM Retirada: 45.000 (do veÌculo)
+   KM Retirada: 45.000 (do ve√≠culo)
 
-7. OBSERVA«’ES:
+7. OBSERVA√á√ïES:
    "Cliente preferencial, 5% desconto aplicado"
 
-8. CLIQUE: "Criar LocaÁ„o"
+8. CLIQUE: "Criar Loca√ß√£o"
 
 9. RESULTADO:
-   ? LocaÁ„o criada com sucesso!
-   ? VeÌculo alterado para status "Locado"
+   ? Loca√ß√£o criada com sucesso!
+   ? Ve√≠culo alterado para status "Locado"
    ? Contrato gerado
-   ? PrÛximo: Fazer vistoria
+   ? Pr√≥ximo: Fazer vistoria
 ```
 
-### ? ValidaÁıes Autom·ticas
+### ? Valida√ß√µes Autom√°ticas
 
 Sistema valida automaticamente:
 
 1. **Cliente:**
-   - ? CNH v·lida (n„o vencida)
-   - ? Idade mÌnima 21 anos
+   - ? CNH v√°lida (n√£o vencida)
+   - ? Idade m√≠nima 21 anos
    - ? Cadastro completo
 
-2. **VeÌculo:**
-   - ? Status "DisponÌvel"
-   - ? Sem locaÁ„o no perÌodo
+2. **Ve√≠culo:**
+   - ? Status "Dispon√≠vel"
+   - ? Sem loca√ß√£o no per√≠odo
    - ? Documentos em dia
 
-3. **PerÌodo:**
-   - ? Data devoluÁ„o apÛs retirada
-   - ? MÌnimo 1 di·ria
-   - ? PerÌodo disponÌvel
+3. **Per√≠odo:**
+   - ? Data devolu√ß√£o ap√≥s retirada
+   - ? M√≠nimo 1 di√°ria
+   - ? Per√≠odo dispon√≠vel
 
 4. **Valores:**
    - ? Valor total > 0
-   - ? C·lculo correto de di·rias
-   - ? Sem inconsistÍncias
+   - ? C√°lculo correto de di√°rias
+   - ? Sem inconsist√™ncias
 
 ---
 
-## ?? Processo de LocaÁ„o
+## ?? Processo de Loca√ß√£o
 
 ### ?? Fluxo Completo
 
 ```
 1. RESERVA/AGENDAMENTO
    ?
-2. CRIA«√O DA LOCA«√O
+2. CRIA√á√ÉO DA LOCA√á√ÉO
    ?
 3. VISTORIA DE RETIRADA
    ?
-4. GERA«√O DO CONTRATO
+4. GERA√á√ÉO DO CONTRATO
    ?
-5. RETIRADA DO VEÕCULO
+5. RETIRADA DO VE√çCULO
    ?
-6. PERÕODO DE LOCA«√O
+6. PER√çODO DE LOCA√á√ÉO
    ?
-7. DEVOLU«√O DO VEÕCULO
+7. DEVOLU√á√ÉO DO VE√çCULO
    ?
-8. VISTORIA DE DEVOLU«√O
+8. VISTORIA DE DEVOLU√á√ÉO
    ?
-9. C¡LCULO FINAL
+9. C√ÅLCULO FINAL
    ?
-10. FINALIZA«√O
+10. FINALIZA√á√ÉO
 ```
 
-### 1?? CriaÁ„o da LocaÁ„o
+### 1?? Cria√ß√£o da Loca√ß√£o
 
 **Status:** Criada
-**AÁıes:**
-- [x] Preencher formul·rio
+**A√ß√µes:**
+- [x] Preencher formul√°rio
 - [x] Validar dados
-- [x] Salvar locaÁ„o
-- [x] Alterar status do veÌculo para "Locado"
+- [x] Salvar loca√ß√£o
+- [x] Alterar status do ve√≠culo para "Locado"
 
-**PrÛximo:** Vistoria de Retirada
+**Pr√≥ximo:** Vistoria de Retirada
 
 ### 2?? Vistoria de Retirada
 
-**Objetivo:** Registrar estado do veÌculo antes da entrega
+**Objetivo:** Registrar estado do ve√≠culo antes da entrega
 
 **Como fazer:**
 ```
-LocaÁıes ? Detalhes da LocaÁ„o ? ?? Vistoria de Retirada
+Loca√ß√µes ? Detalhes da Loca√ß√£o ? ?? Vistoria de Retirada
 ```
 
 **Itens a verificar:**
-- ? Lataria (arranhıes, amassados)
+- ? Lataria (arranh√µes, amassados)
 - ? Vidros (trincas, quebras)
 - ? Pneus (estado, calibragem)
-- ? Documentos no veÌculo
-- ? CombustÌvel (nÌvel)
-- ? AcessÛrios (macaco, estepe, extintor)
+- ? Documentos no ve√≠culo
+- ? Combust√≠vel (n√≠vel)
+- ? Acess√≥rios (macaco, estepe, extintor)
 - ? Interior (bancos, painel)
 - ? Limpeza geral
 
-**Registro fotogr·fico:**
+**Registro fotogr√°fico:**
 - ?? Frente
 - ?? Traseira
 - ?? Laterais
 - ?? Painel
-- ?? Detalhes especÌficos
+- ?? Detalhes espec√≠ficos
 
-### 3?? GeraÁ„o do Contrato
+### 3?? Gera√ß√£o do Contrato
 
-**Autom·tico apÛs salvar locaÁ„o**
+**Autom√°tico ap√≥s salvar loca√ß√£o**
 
 ```
-LocaÁıes ? Detalhes ? ?? Gerar Contrato
+Loca√ß√µes ? Detalhes ? ?? Gerar Contrato
 ```
 
 **Contrato inclui:**
 - ? Dados do cliente
-- ? Dados do veÌculo
-- ? PerÌodo da locaÁ„o
-- ? Valores e condiÁıes
+- ? Dados do ve√≠culo
+- ? Per√≠odo da loca√ß√£o
+- ? Valores e condi√ß√µes
 - ? Responsabilidades
-- ? Termos e condiÁıes
+- ? Termos e condi√ß√µes
 - ? Assinaturas
 
-**Formato:** PDF para impress„o
+**Formato:** PDF para impress√£o
 
-### 4?? Retirada do VeÌculo
+### 4?? Retirada do Ve√≠culo
 
 **Checklist final:**
 - [x] Contrato assinado
 - [x] Vistoria aprovada
-- [x] Pagamento confirmado (ou cauÁ„o)
+- [x] Pagamento confirmado (ou cau√ß√£o)
 - [x] Cliente com CNH e documentos
-- [x] VeÌculo limpo e abastecido
+- [x] Ve√≠culo limpo e abastecido
 
 **Cliente recebe:**
-- ?? CÛpia do contrato
+- ?? C√≥pia do contrato
 - ?? Laudo de vistoria
-- ?? Chaves do veÌculo
-- ?? Contato de emergÍncia
+- ?? Chaves do ve√≠culo
+- ?? Contato de emerg√™ncia
 
-### 5?? PerÌodo de LocaÁ„o
+### 5?? Per√≠odo de Loca√ß√£o
 
 **Sistema monitora:**
 - ? Dias restantes
-- ?? Data prevista de devoluÁ„o
-- ?? Status do veÌculo (Locado)
+- ?? Data prevista de devolu√ß√£o
+- ?? Status do ve√≠culo (Locado)
 - ?? Alertas de vencimento
 
 **Cliente pode:**
-- ?? Solicitar extens„o
+- ?? Solicitar extens√£o
 - ?? Reportar problemas
-- ?? Informar localizaÁ„o (futuro)
+- ?? Informar localiza√ß√£o (futuro)
 
 ---
 
-## ?? DevoluÁ„o de VeÌculo
+## ?? Devolu√ß√£o de Ve√≠culo
 
-### ?? Como Registrar DevoluÁ„o
+### ?? Como Registrar Devolu√ß√£o
 
-**LocaÁıes ? Detalhes da LocaÁ„o ? ?? Registrar DevoluÁ„o**
+**Loca√ß√µes ? Detalhes da Loca√ß√£o ? ?? Registrar Devolu√ß√£o**
 
-### ?? Processo de DevoluÁ„o
+### ?? Processo de Devolu√ß√£o
 
-#### 1?? **RecepÁ„o do VeÌculo**
+#### 1?? **Recep√ß√£o do Ve√≠culo**
 
 **Verificar:**
-- ? VeÌculo retornou na data prevista
+- ? Ve√≠culo retornou na data prevista
 - ? Cliente trouxe documentos
 - ? Chaves entregues
 
 #### 2?? **Registrar Quilometragem**
 
 ```
-KM na DevoluÁ„o: 45.850 km
+KM na Devolu√ß√£o: 45.850 km
 
 ?? Sistema calcula:
    KM Retirada: 45.000 km
-   KM DevoluÁ„o: 45.850 km
+   KM Devolu√ß√£o: 45.850 km
    KM Rodados: 850 km
-   MÈdia: 170 km/dia
+   M√©dia: 170 km/dia
 ```
 
-> ?? **Autom·tico:** Sistema atualiza KM do veÌculo
+> ?? **Autom√°tico:** Sistema atualiza KM do ve√≠culo
 
-#### 3?? **Vistoria de DevoluÁ„o**
+#### 3?? **Vistoria de Devolu√ß√£o**
 
 **Comparar com vistoria de retirada:**
 
 ```
-LocaÁıes ? Detalhes ? ?? Vistoria de DevoluÁ„o
+Loca√ß√µes ? Detalhes ? ?? Vistoria de Devolu√ß√£o
 ```
 
 **Verificar:**
 - ? Novos danos?
-- ? Estado de conservaÁ„o
+- ? Estado de conserva√ß√£o
 - ? Limpeza
-- ? CombustÌvel (mesmo nÌvel)
-- ? AcessÛrios completos
+- ? Combust√≠vel (mesmo n√≠vel)
+- ? Acess√≥rios completos
 
 **Registrar:**
 - ?? Estado geral: Bom / Regular / Ruim
-- ?? ObservaÁıes de danos
+- ?? Observa√ß√µes de danos
 - ?? Fotos de novos danos
-- ?? C·lculo de multas (se aplic·vel)
+- ?? C√°lculo de multas (se aplic√°vel)
 
-#### 4?? **C·lculo Final**
+#### 4?? **C√°lculo Final**
 
 **Sistema calcula automaticamente:**
 
 ```
-?? C¡LCULO DE VALORES:
+?? C√ÅLCULO DE VALORES:
 
-Valor Inicial: R$ 750,00 (5 di·rias)
+Valor Inicial: R$ 750,00 (5 di√°rias)
 
 + Dias extras (se houver):
-  Atraso: 2 dias ◊ R$ 150,00 = R$ 300,00
+  Atraso: 2 dias √ó R$ 150,00 = R$ 300,00
 
 + Multas (se houver):
   Dano no para-choque: R$ 350,00
-  Falta de combustÌvel: R$ 80,00
+  Falta de combust√≠vel: R$ 80,00
 
 - Descontos (se houver):
   Cliente fidelidade: -R$ 50,00
@@ -389,48 +389,48 @@ Valor Inicial: R$ 750,00 (5 di·rias)
 Status: Aguardando Pagamento
 ```
 
-#### 5?? **FinalizaÁ„o**
+#### 5?? **Finaliza√ß√£o**
 
-**ApÛs confirmaÁ„o de pagamento:**
+**Ap√≥s confirma√ß√£o de pagamento:**
 
 ```
 1. Marcar pagamento como recebido
-2. Alterar status veÌculo:
+2. Alterar status ve√≠culo:
    De: "Locado"
-   Para: "DisponÌvel" (ou "ManutenÁ„o" se necess·rio)
+   Para: "Dispon√≠vel" (ou "Manuten√ß√£o" se necess√°rio)
 3. Gerar recibo final
 4. Enviar comprovante ao cliente
-5. Arquivar documentaÁ„o
+5. Arquivar documenta√ß√£o
 ```
 
-### ? SituaÁıes Especiais
+### ? Situa√ß√µes Especiais
 
-#### **DevoluÁ„o Antecipada**
+#### **Devolu√ß√£o Antecipada**
 
 **Cliente devolveu antes do prazo:**
 
 ```
-LocaÁ„o: 5 di·rias (R$ 750,00)
-Devolveu: apÛs 3 di·rias
+Loca√ß√£o: 5 di√°rias (R$ 750,00)
+Devolveu: ap√≥s 3 di√°rias
 
-OpÁıes:
+Op√ß√µes:
 1. Cobrar valor proporcional (3 dias)
 2. Cobrar valor total (depende do contrato)
-3. Gerar crÈdito para prÛxima locaÁ„o
+3. Gerar cr√©dito para pr√≥xima loca√ß√£o
 
-? Definir polÌtica comercial
+? Definir pol√≠tica comercial
 ```
 
-#### **DevoluÁ„o Atrasada**
+#### **Devolu√ß√£o Atrasada**
 
-**Cliente atrasou devoluÁ„o:**
+**Cliente atrasou devolu√ß√£o:**
 
 ```
 Previsto: 20/12/2024 18:00
 Devolveu: 22/12/2024 10:00
 Atraso: 2 dias
 
-C·lculo:
+C√°lculo:
 Base (5 dias): R$ 750,00
 Dias extras (2 dias): R$ 300,00
 Multa por atraso: R$ 100,00
@@ -440,100 +440,100 @@ Total: R$ 1.150,00
 ?? Sistema alerta atraso automaticamente
 ```
 
-#### **VeÌculo com Danos**
+#### **Ve√≠culo com Danos**
 
-**Danos identificados na devoluÁ„o:**
+**Danos identificados na devolu√ß√£o:**
 
 ```
 1. Documentar com fotos
 2. Descrever danos detalhadamente
 3. Calcular custo de reparo:
-   - OrÁamento oficial
-   - Tabela de referÍncia
-4. Adicionar ‡ conta do cliente
-5. Programar manutenÁ„o
-6. Acionar seguro (se aplic·vel)
+   - Or√ßamento oficial
+   - Tabela de refer√™ncia
+4. Adicionar √† conta do cliente
+5. Programar manuten√ß√£o
+6. Acionar seguro (se aplic√°vel)
 
-PrÛximo: VeÌculo vai para "ManutenÁ„o"
+Pr√≥ximo: Ve√≠culo vai para "Manuten√ß√£o"
 ```
 
 ---
 
 ## ?? Documentos e Contratos
 
-### ?? GeraÁ„o de Documentos
+### ?? Gera√ß√£o de Documentos
 
-#### 1?? **Contrato de LocaÁ„o**
+#### 1?? **Contrato de Loca√ß√£o**
 
 **Acesso:**
 ```
-LocaÁıes ? Detalhes ? ?? Gerar Contrato
+Loca√ß√µes ? Detalhes ? ?? Gerar Contrato
 ```
 
-**Conte˙do:**
+**Conte√∫do:**
 ```
-CONTRATO DE LOCA«√O DE VEÕCULO
+CONTRATO DE LOCA√á√ÉO DE VE√çCULO
 
 LOCADOR: Litoral Sul Locadora e Turismo
 CNPJ: XX.XXX.XXX/XXXX-XX
 
-LOCAT¡RIO: [Nome do Cliente]
+LOCAT√ÅRIO: [Nome do Cliente]
 CPF: [CPF do Cliente]
-CNH: [N˙mero da CNH]
+CNH: [N√∫mero da CNH]
 
-VEÕCULO:
+VE√çCULO:
 Marca/Modelo: [Marca] [Modelo]
 Placa: [Placa]
 Ano: [Ano]
 Cor: [Cor]
 
-PERÕODO:
+PER√çODO:
 Retirada: [Data/Hora]
-DevoluÁ„o Prevista: [Data/Hora]
+Devolu√ß√£o Prevista: [Data/Hora]
 
 VALORES:
-Di·ria: R$ [Valor]
-Quantidade: [X] di·rias
+Di√°ria: R$ [Valor]
+Quantidade: [X] di√°rias
 Total: R$ [Valor Total]
 
-CONDI«’ES:
+CONDI√á√ïES:
 - Quilometragem livre / limitada
-- Seguro incluÌdo / n„o incluÌdo
+- Seguro inclu√≠do / n√£o inclu√≠do
 - Franquia: R$ [Valor]
-- Motorista adicional: Sim / N„o
+- Motorista adicional: Sim / N√£o
 
 RESPONSABILIDADES:
-[Cl·usulas do contrato]
+[Cl√°usulas do contrato]
 
 ASSINATURAS:
 _________________________
 Locador
 
 _________________________
-Locat·rio
+Locat√°rio
 
 Data: [Data]
 ```
 
-**Formato:** PDF para impress„o
+**Formato:** PDF para impress√£o
 
 #### 2?? **Laudo de Vistoria**
 
 **Vistoria de Retirada:**
 ```
-LocaÁıes ? Detalhes ? ?? Vistoria de Retirada
+Loca√ß√µes ? Detalhes ? ?? Vistoria de Retirada
 ```
 
-**Vistoria de DevoluÁ„o:**
+**Vistoria de Devolu√ß√£o:**
 ```
-LocaÁıes ? Detalhes ? ?? Vistoria de DevoluÁ„o
+Loca√ß√µes ? Detalhes ? ?? Vistoria de Devolu√ß√£o
 ```
 
-**Conte˙do:**
+**Conte√∫do:**
 ```
-LAUDO DE VISTORIA - [RETIRADA/DEVOLU«√O]
+LAUDO DE VISTORIA - [RETIRADA/DEVOLU√á√ÉO]
 
-VeÌculo: [Marca Modelo - Placa]
+Ve√≠culo: [Marca Modelo - Placa]
 Cliente: [Nome]
 Data: [Data/Hora]
 KM: [Quilometragem]
@@ -542,8 +542,8 @@ CHECKLIST:
 
 Carroceria:
 [ ] Sem avarias
-[ ] Arranhıes: [LocalizaÁ„o]
-[ ] Amassados: [LocalizaÁ„o]
+[ ] Arranh√µes: [Localiza√ß√£o]
+[ ] Amassados: [Localiza√ß√£o]
 
 Vidros:
 [ ] Perfeitos
@@ -551,21 +551,21 @@ Vidros:
 
 Pneus:
 [ ] Bom estado
-[ ] Desgaste: [NÌvel]
+[ ] Desgaste: [N√≠vel]
 [ ] Calibragem: OK
 
 Interior:
 [ ] Limpo
 [ ] Conservado
-[ ] Danos: [DescriÁ„o]
+[ ] Danos: [Descri√ß√£o]
 
-CombustÌvel: [NÌvel]
-AcessÛrios: [Todos presentes]
+Combust√≠vel: [N√≠vel]
+Acess√≥rios: [Todos presentes]
 
 FOTOS:
 [Imagens anexas]
 
-OBSERVA«’ES:
+OBSERVA√á√ïES:
 [Detalhes adicionais]
 
 _________________________
@@ -579,51 +579,51 @@ Cliente
 
 ### ?? Envio de Documentos
 
-**OpÁıes:**
+**Op√ß√µes:**
 - ?? Email para cliente
 - ?? WhatsApp (futuro)
 - ?? Download direto
-- ??? Impress„o
+- ??? Impress√£o
 
 ---
 
-## ?? Gest„o de LocaÁıes
+## ?? Gest√£o de Loca√ß√µes
 
-### ?? Lista de LocaÁıes
+### ?? Lista de Loca√ß√µes
 
-**Menu ? LocaÁ„o ? LocaÁıes ? Ver Todas**
+**Menu ? Loca√ß√£o ? Loca√ß√µes ? Ver Todas**
 
 ### ?? Filtros e Buscas
 
-**Filtros disponÌveis:**
+**Filtros dispon√≠veis:**
 
-| Filtro | OpÁıes |
+| Filtro | Op√ß√µes |
 |--------|--------|
 | **Status** | Ativa, Finalizada, Atrasada, Cancelada |
-| **PerÌodo** | Data inÌcio/fim |
+| **Per√≠odo** | Data in√≠cio/fim |
 | **Cliente** | Nome ou CPF |
-| **VeÌculo** | Modelo ou Placa |
-| **AgÍncia** | AgÍncia especÌfica |
-| **Funcion·rio** | Respons·vel |
+| **Ve√≠culo** | Modelo ou Placa |
+| **Ag√™ncia** | Ag√™ncia espec√≠fica |
+| **Funcion√°rio** | Respons√°vel |
 
-**Busca r·pida:**
+**Busca r√°pida:**
 - Por cliente (nome/CPF)
-- Por veÌculo (modelo/placa)
-- Por n˙mero de locaÁ„o
+- Por ve√≠culo (modelo/placa)
+- Por n√∫mero de loca√ß√£o
 
-### ?? VisualizaÁ„o
+### ?? Visualiza√ß√£o
 
-#### **Card de LocaÁ„o:**
+#### **Card de Loca√ß√£o:**
 ```
-?? LocaÁ„o #12345
+?? Loca√ß√£o #12345
 ?????????????????????????????
 ?? Cliente: Maria da Silva
-?? VeÌculo: Gol 1.0 - ABC1234
+?? Ve√≠culo: Gol 1.0 - ABC1234
 ?? 15/12 a 20/12/2024 (5 dias)
 ?? R$ 750,00
 ?? Status: ATIVA
 
-?? DevoluÁ„o em: 3 dias
+?? Devolu√ß√£o em: 3 dias
 
 [Detalhes] [Vistoria] [Contrato]
 ```
@@ -632,57 +632,57 @@ Cliente
 
 | Status | Cor | Significado |
 |--------|-----|-------------|
-| **Ativa** | ?? Verde | LocaÁ„o em andamento |
-| **Atrasada** | ?? Vermelho | Passou data de devoluÁ„o |
-| **Finalizada** | ?? Azul | ConcluÌda normalmente |
+| **Ativa** | ?? Verde | Loca√ß√£o em andamento |
+| **Atrasada** | ?? Vermelho | Passou data de devolu√ß√£o |
+| **Finalizada** | ?? Azul | Conclu√≠da normalmente |
 | **Cancelada** | ? Cinza | Cancelada antes da retirada |
 
 ### ?? Alertas
 
 **Sistema alerta:**
-- ?? LocaÁ„o atrasada (passou data devoluÁ„o)
-- ?? DevoluÁ„o hoje
-- ?? DevoluÁ„o em 1-2 dias
+- ?? Loca√ß√£o atrasada (passou data devolu√ß√£o)
+- ?? Devolu√ß√£o hoje
+- ?? Devolu√ß√£o em 1-2 dias
 - ?? Vistoria pendente
 - ?? Pagamento pendente
 
 ---
 
-## ?? RelatÛrios
+## ?? Relat√≥rios
 
 ### ?? Como Acessar
 
-**Menu ? RelatÛrios ? LocaÁıes**
+**Menu ? Relat√≥rios ? Loca√ß√µes**
 
-### ?? Tipos de RelatÛrios
+### ?? Tipos de Relat√≥rios
 
-#### 1?? **LocaÁıes por PerÌodo**
+#### 1?? **Loca√ß√µes por Per√≠odo**
 
 ```
-RELAT”RIO: LocaÁıes - Dezembro/2024
+RELAT√ìRIO: Loca√ß√µes - Dezembro/2024
 
-Total de LocaÁıes: 45
+Total de Loca√ß√µes: 45
 Receita Total: R$ 67.500,00
-Ticket MÈdio: R$ 1.500,00
+Ticket M√©dio: R$ 1.500,00
 
 Detalhamento:
-Data       | Cliente        | VeÌculo      | Valor
+Data       | Cliente        | Ve√≠culo      | Valor
 15/12/2024 | Maria Silva   | Gol ABC1234  | R$ 750,00
-16/12/2024 | Jo„o Santos   | HB20 DEF567  | R$ 900,00
+16/12/2024 | Jo√£o Santos   | HB20 DEF567  | R$ 900,00
 ...
 ```
 
 **Filtros:**
-- ?? Data inÌcio/fim
-- ?? AgÍncia
+- ?? Data in√≠cio/fim
+- ?? Ag√™ncia
 - ?? Cliente
-- ?? VeÌculo
+- ?? Ve√≠culo
 - ?? Status
 
-#### 2?? **Receita por VeÌculo**
+#### 2?? **Receita por Ve√≠culo**
 
 ```
-VeÌculo          | LocaÁıes | Dias | Receita
+Ve√≠culo          | Loca√ß√µes | Dias | Receita
 Gol ABC1234      | 12       | 85   | R$ 12.750,00
 HB20 DEF5678     | 9        | 67   | R$ 10.050,00
 Onix GHI9012     | 8        | 54   | R$ 8.100,00
@@ -691,210 +691,210 @@ Onix GHI9012     | 8        | 54   | R$ 8.100,00
 #### 3?? **Clientes Frequentes**
 
 ```
-Cliente          | LocaÁıes | Valor Total | ⁄ltima LocaÁ„o
+Cliente          | Loca√ß√µes | Valor Total | √öltima Loca√ß√£o
 Maria Silva      | 15       | R$ 22.500   | 15/12/2024
-Jo„o Santos      | 12       | R$ 18.000   | 10/12/2024
+Jo√£o Santos      | 12       | R$ 18.000   | 10/12/2024
 Ana Costa        | 8        | R$ 12.000   | 05/12/2024
 ```
 
-#### 4?? **LocaÁıes Ativas**
+#### 4?? **Loca√ß√µes Ativas**
 
 ```
-LOCA«’ES ATIVAS - Hoje: 20/12/2024
+LOCA√á√ïES ATIVAS - Hoje: 20/12/2024
 
-Total Ativas: 7 veÌculos locados
+Total Ativas: 7 ve√≠culos locados
 
-Cliente     | VeÌculo     | DevoluÁ„o   | Status
+Cliente     | Ve√≠culo     | Devolu√ß√£o   | Status
 Maria       | Gol ABC     | Hoje 18:00  | ?? Devolve hoje
-Jo„o        | HB20 DEF    | 22/12       | ?? No prazo
+Jo√£o        | HB20 DEF    | 22/12       | ?? No prazo
 Ana         | Onix GHI    | 18/12       | ?? ATRASADA!
 ```
 
-### ?? ExportaÁ„o
+### ?? Exporta√ß√£o
 
 **Formatos:**
 - ?? Excel (.xlsx)
 - ?? PDF
 - ?? CSV
-- ??? Impress„o
+- ??? Impress√£o
 
 ---
 
-## ?? Permissıes de Acesso
+## ?? Permiss√µes de Acesso
 
-### ??? **VisualizaÁ„o**
-**Quem pode:** Todos os usu·rios autenticados
-- Ver lista de locaÁıes
-- Ver detalhes de locaÁ„o
+### ??? **Visualiza√ß√£o**
+**Quem pode:** Todos os usu√°rios autenticados
+- Ver lista de loca√ß√µes
+- Ver detalhes de loca√ß√£o
 - Visualizar contratos
-- Consultar histÛrico
+- Consultar hist√≥rico
 
-### ?? **CriaÁ„o e EdiÁ„o**
+### ?? **Cria√ß√£o e Edi√ß√£o**
 **Quem pode:** Admin, Manager, Employee
-- Criar nova locaÁ„o
-- Editar locaÁ„o (antes da retirada)
-- Registrar devoluÁ„o
+- Criar nova loca√ß√£o
+- Editar loca√ß√£o (antes da retirada)
+- Registrar devolu√ß√£o
 - Fazer vistoria
 - Gerar contratos
 
 ### ??? **Cancelamento**
 **Quem pode:** Admin, Manager
-- Cancelar locaÁ„o (antes da retirada)
+- Cancelar loca√ß√£o (antes da retirada)
 - Ajustar valores
 - Aplicar descontos
 
-> ?? **Importante:** LocaÁıes em andamento ou finalizadas N√O podem ser excluÌdas!
+> ?? **Importante:** Loca√ß√µes em andamento ou finalizadas N√ÉO podem ser exclu√≠das!
 
 ---
 
-## ? Boas Pr·ticas
+## ? Boas Pr√°ticas
 
-### ?? Ao Criar LocaÁ„o
+### ?? Ao Criar Loca√ß√£o
 
-? **FaÁa:**
-- Verificar CNH do cliente (v·lida)
-- Confirmar disponibilidade do veÌculo
-- Validar perÌodo de locaÁ„o
+? **Fa√ßa:**
+- Verificar CNH do cliente (v√°lida)
+- Confirmar disponibilidade do ve√≠culo
+- Validar per√≠odo de loca√ß√£o
 - Fazer vistoria completa
 - Gerar contrato antes da entrega
-- Registrar fotos do veÌculo
+- Registrar fotos do ve√≠culo
 
 ? **Evite:**
 - Criar sem verificar CNH
-- Locar veÌculo em manutenÁ„o
+- Locar ve√≠culo em manuten√ß√£o
 - Pular etapa de vistoria
 - Entregar sem contrato assinado
-- N„o registrar danos existentes
+- N√£o registrar danos existentes
 
-### ?? Durante a LocaÁ„o
+### ?? Durante a Loca√ß√£o
 
-? **FaÁa:**
-- Monitorar data de devoluÁ„o
+? **Fa√ßa:**
+- Monitorar data de devolu√ß√£o
 - Manter contato com cliente (se atraso)
 - Verificar alertas do sistema
-- Estar pronto para devoluÁ„o
+- Estar pronto para devolu√ß√£o
 
 ? **Evite:**
 - Ignorar atrasos
-- N„o avisar cliente sobre vencimento
+- N√£o avisar cliente sobre vencimento
 - Descuidar do acompanhamento
 
-### ?? Na DevoluÁ„o
+### ?? Na Devolu√ß√£o
 
-? **FaÁa:**
+? **Fa√ßa:**
 - Vistoria completa e detalhada
 - Registrar quilometragem correta
 - Documentar TODOS os danos (novos)
 - Calcular valores corretamente
 - Confirmar pagamento antes de liberar
-- Alterar status do veÌculo
+- Alterar status do ve√≠culo
 
 ? **Evite:**
 - Vistoria superficial
 - Ignorar pequenos danos
 - Liberar sem pagamento
 - Esquecer de atualizar status
-- N„o documentar problemas
+- N√£o documentar problemas
 
 ---
 
 ## ?? Casos de Uso
 
-### Caso 1: LocaÁ„o Simples
+### Caso 1: Loca√ß√£o Simples
 
-**Cen·rio:** Cliente retira carro para fim de semana
+**Cen√°rio:** Cliente retira carro para fim de semana
 
 ```
-1. Cliente: Maria Silva (CNH v·lida)
-2. VeÌculo: Gol ABC1234 (DisponÌvel)
-3. PerÌodo: 15/12 a 17/12 (3 dias)
+1. Cliente: Maria Silva (CNH v√°lida)
+2. Ve√≠culo: Gol ABC1234 (Dispon√≠vel)
+3. Per√≠odo: 15/12 a 17/12 (3 dias)
 4. Valor: R$ 450,00
 
 Processo:
-? Criar locaÁ„o
+? Criar loca√ß√£o
 ? Vistoria de retirada (OK)
 ? Gerar contrato
-? Cliente retira veÌculo
-? Aguardar devoluÁ„o (17/12)
+? Cliente retira ve√≠culo
+? Aguardar devolu√ß√£o (17/12)
 ? Cliente devolve no prazo
-? Vistoria devoluÁ„o (OK)
+? Vistoria devolu√ß√£o (OK)
 ? Confirmar pagamento
-? Finalizar locaÁ„o
+? Finalizar loca√ß√£o
 ```
 
-### Caso 2: LocaÁ„o com Atraso
+### Caso 2: Loca√ß√£o com Atraso
 
-**Cen·rio:** Cliente atrasa devoluÁ„o
+**Cen√°rio:** Cliente atrasa devolu√ß√£o
 
 ```
 Previsto: 20/12/2024
 Devolveu: 22/12/2024 (2 dias atraso)
 
-C·lculo:
+C√°lculo:
 5 dias originais: R$ 750,00
 2 dias extras: R$ 300,00
 Multa atraso: R$ 100,00
 Total: R$ 1.150,00
 
-AÁıes:
+A√ß√µes:
 1. Sistema alerta atraso automaticamente
 2. Contatar cliente
-3. Registrar devoluÁ„o
+3. Registrar devolu√ß√£o
 4. Calcular valores extras
 5. Confirmar pagamento total
 6. Finalizar
 ```
 
-### Caso 3: VeÌculo com Danos
+### Caso 3: Ve√≠culo com Danos
 
-**Cen·rio:** Cliente devolveu com dano
+**Cen√°rio:** Cliente devolveu com dano
 
 ```
-Vistoria DevoluÁ„o:
-?? Dano identificado: Arranh„o na lateral
+Vistoria Devolu√ß√£o:
+?? Dano identificado: Arranh√£o na lateral
 
 Procedimento:
 1. Documentar com fotos
 2. Descrever dano detalhadamente
-3. Fazer orÁamento de reparo
-4. Adicionar custo ‡ conta:
-   LocaÁ„o: R$ 750,00
+3. Fazer or√ßamento de reparo
+4. Adicionar custo √† conta:
+   Loca√ß√£o: R$ 750,00
    Reparo: R$ 350,00
    Total: R$ 1.100,00
 5. Negociar com cliente
 6. Confirmar pagamento
 7. Programar reparo
-8. VeÌculo ? Status "ManutenÁ„o"
+8. Ve√≠culo ? Status "Manuten√ß√£o"
 ```
 
 ---
 
-## ?? SoluÁ„o de Problemas
+## ?? Solu√ß√£o de Problemas
 
 ### ? "CNH do cliente vencida"
-**SoluÁ„o:** 
-- N„o permitir locaÁ„o
+**Solu√ß√£o:** 
+- N√£o permitir loca√ß√£o
 - Solicitar CNH atualizada
 - Atualizar cadastro do cliente
 
-### ? "VeÌculo indisponÌvel"
-**SoluÁ„o:**
-- Verificar status do veÌculo
-- Consultar outras locaÁıes no perÌodo
-- Sugerir veÌculo similar
+### ? "Ve√≠culo indispon√≠vel"
+**Solu√ß√£o:**
+- Verificar status do ve√≠culo
+- Consultar outras loca√ß√µes no per√≠odo
+- Sugerir ve√≠culo similar
 
 ### ? "Erro ao gerar contrato"
-**SoluÁ„o:**
+**Solu√ß√£o:**
 - Verificar dados completos
 - Confirmar template do contrato
 - Tentar novamente
 
-### ? "Cliente n„o devolveu"
-**SoluÁ„o:**
+### ? "Cliente n√£o devolveu"
+**Solu√ß√£o:**
 - Contatar cliente imediatamente
-- Verificar localizaÁ„o (se disponÌvel)
-- Acionar seguradora (se necess·rio)
-- PolÌcia (casos extremos)
+- Verificar localiza√ß√£o (se dispon√≠vel)
+- Acionar seguradora (se necess√°rio)
+- Pol√≠cia (casos extremos)
 
 ---
 
@@ -902,15 +902,15 @@ Procedimento:
 
 ### ?? Teclado
 ```
-Ctrl + N     ? Nova locaÁ„o
-Ctrl + F     ? Buscar locaÁ„o
+Ctrl + N     ? Nova loca√ß√£o
+Ctrl + F     ? Buscar loca√ß√£o
 Ctrl + P     ? Imprimir contrato
 ```
 
 ### ?? URLs
 ```
-/Locacoes/Index          ? Todas as locaÁıes
-/Locacoes/Create         ? Nova locaÁ„o
+/Locacoes/Index          ? Todas as loca√ß√µes
+/Locacoes/Create         ? Nova loca√ß√£o
 /Locacoes/Details/{id}   ? Detalhes
 ```
 
@@ -918,16 +918,16 @@ Ctrl + P     ? Imprimir contrato
 
 ## ?? Pronto para Usar!
 
-O sistema de locaÁıes est· **100% operacional**.
+O sistema de loca√ß√µes est√° **100% operacional**.
 
-**Acesse:** Menu ? LocaÁ„o ? LocaÁıes
+**Acesse:** Menu ? Loca√ß√£o ? Loca√ß√µes
 
 ---
 
 **Desenvolvido para:** Litoral Sul Locadora e Turismo  
-**Vers„o:** 1.0  
+**Vers√£o:** 1.0  
 **Data:** Outubro/2025  
-**DocumentaÁ„o relacionada:** 
-- [Gest„o de Clientes](CLIENTES_GUIA_COMPLETO.md)
-- [Gest„o de VeÌculos](VEICULOS_GUIA_COMPLETO.md)
-- [Sistema de ManutenÁıes](MANUTENCAO_GUIA_ACESSO.md)
+**Documenta√ß√£o relacionada:** 
+- [Gest√£o de Clientes](CLIENTES_GUIA_COMPLETO.md)
+- [Gest√£o de Ve√≠culos](VEICULOS_GUIA_COMPLETO.md)
+- [Sistema de Manuten√ß√µes](MANUTENCAO_GUIA_ACESSO.md)

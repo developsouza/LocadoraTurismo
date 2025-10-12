@@ -1,49 +1,49 @@
-# Funcionalidade de Upload de Documentos
+Ôªø# Funcionalidade de Upload de Documentos
 
-## ?? DescriÁ„o
+## ?? Descri√ß√£o
 
-Sistema completo de upload e gerenciamento de documentos para clientes, veÌculos e funcion·rios no RentalTourismSystem.
+Sistema completo de upload e gerenciamento de documentos para clientes, ve√≠culos e funcion√°rios no RentalTourismSystem.
 
 ## ? Recursos Implementados
 
 ### 1. **Upload de Documentos**
 - ? Suporte para PDF e imagens (JPG, JPEG, PNG, GIF, BMP)
 - ? Limite de tamanho: 10MB por arquivo
-- ? ValidaÁ„o de tipo e tamanho de arquivo
+- ? Valida√ß√£o de tipo e tamanho de arquivo
 - ? Preview de imagens antes do upload
 - ? Armazenamento organizado por tipo de entidade (clientes/veiculos)
-- ? GeraÁ„o de nomes ˙nicos para evitar conflitos
+- ? Gera√ß√£o de nomes √∫nicos para evitar conflitos
 
 ### 2. **Gerenciamento de Documentos**
 - ? Listagem de documentos enviados
-- ? VisualizaÁ„o de imagens inline
+- ? Visualiza√ß√£o de imagens inline
 - ? Download de documentos
-- ? Exclus„o de documentos (Admin/Manager)
-- ? Metadados: nome, tipo, tamanho, data de upload, usu·rio
+- ? Exclus√£o de documentos (Admin/Manager)
+- ? Metadados: nome, tipo, tamanho, data de upload, usu√°rio
 
 ### 3. **Tipos de Documentos Suportados**
 
 #### **Clientes:**
-- CNH (Carteira Nacional de HabilitaÁ„o)
+- CNH (Carteira Nacional de Habilita√ß√£o)
 - RG (Registro Geral)
 - CPF
-- Comprovante de ResidÍncia
+- Comprovante de Resid√™ncia
 - Foto de Perfil
 - Outros
 
-#### **VeÌculos:**
-- CRLV (Certificado de Registro e Licenciamento do VeÌculo)
+#### **Ve√≠culos:**
+- CRLV (Certificado de Registro e Licenciamento do Ve√≠culo)
 - Nota Fiscal
-- ApÛlice de Seguro
+- Ap√≥lice de Seguro
 - Comprovante de IPVA
-- Fotos do VeÌculo
+- Fotos do Ve√≠culo
 - Outros
 
-#### **Funcion·rios:**
+#### **Funcion√°rios:**
 - CNH
 - RG
 - CPF
-- Comprovante de ResidÍncia
+- Comprovante de Resid√™ncia
 - Contrato de Trabalho
 - Carteira de Trabalho
 - Foto de Perfil
@@ -72,37 +72,37 @@ Certifique-se de que a pasta existe:
 RentalTourismSystem\wwwroot\uploads\
 ```
 
-A pasta ser· criada automaticamente pelo FileService se n„o existir.
+A pasta ser√° criada automaticamente pelo FileService se n√£o existir.
 
 ### Passo 3: Acessar a Funcionalidade
 
 #### **Para Clientes:**
 1. Acesse `Clientes > Detalhes do Cliente`
-2. Clique no bot„o "?? Documentos"
+2. Clique no bot√£o "?? Documentos"
 3. Selecione o tipo de documento
 4. Escolha o arquivo
-5. Adicione uma descriÁ„o (opcional)
+5. Adicione uma descri√ß√£o (opcional)
 6. Clique em "Enviar Documento"
 
-#### **Para VeÌculos:**
-1. Acesse `VeÌculos > Detalhes do VeÌculo`
-2. Clique no bot„o "?? Documentos"
+#### **Para Ve√≠culos:**
+1. Acesse `Ve√≠culos > Detalhes do Ve√≠culo`
+2. Clique no bot√£o "?? Documentos"
 3. Selecione o tipo de documento
 4. Escolha o arquivo
-5. Adicione uma descriÁ„o (opcional)
+5. Adicione uma descri√ß√£o (opcional)
 6. Clique em "Enviar Documento"
 
-## ?? Permissıes
+## ?? Permiss√µes
 
 ### Upload de Documentos
 - **Clientes:** Admin, Manager, Employee
-- **VeÌculos:** Admin, Manager
+- **Ve√≠culos:** Admin, Manager
 
-### VisualizaÁ„o/Download
+### Visualiza√ß√£o/Download
 - **Todos:** Admin, Manager
-- **RestriÁ„o:** VerificaÁ„o adicional pode ser implementada para limitar acesso
+- **Restri√ß√£o:** Verifica√ß√£o adicional pode ser implementada para limitar acesso
 
-### Exclus„o
+### Exclus√£o
 - **Apenas:** Admin, Manager
 
 ## ?? Estrutura de Arquivos
@@ -114,30 +114,30 @@ RentalTourismSystem/
 ??? Models/
 ?   ??? Documento.cs                            # Model do documento
 ??? Services/
-?   ??? IFileService.cs                         # Interface do serviÁo
-?   ??? FileService.cs                          # ImplementaÁ„o do serviÁo
+?   ??? IFileService.cs                         # Interface do servi√ßo
+?   ??? FileService.cs                          # Implementa√ß√£o do servi√ßo
 ??? Views/
 ?   ??? DocumentosUpload/
 ?       ??? UploadCliente.cshtml                # View para clientes
-?       ??? UploadVeiculo.cshtml                # View para veÌculos
+?       ??? UploadVeiculo.cshtml                # View para ve√≠culos
 ??? Data/
 ?   ??? RentalTourismContext.cs                 # DbContext atualizado
 ??? Migrations/
 ?   ??? Scripts/
-?       ??? AdicionarTabelaDocumentos.sql       # Script de criaÁ„o
+?       ??? AdicionarTabelaDocumentos.sql       # Script de cria√ß√£o
 ??? wwwroot/
     ??? uploads/                                 # Pasta de armazenamento
         ??? clientes/
         ?   ??? 1/                              # Documentos do cliente ID 1
         ?   ??? 2/                              # Documentos do cliente ID 2
         ??? veiculos/
-            ??? 1/                              # Documentos do veÌculo ID 1
-            ??? 2/                              # Documentos do veÌculo ID 2
+            ??? 1/                              # Documentos do ve√≠culo ID 1
+            ??? 2/                              # Documentos do ve√≠culo ID 2
 ```
 
-## ?? ConfiguraÁ„o TÈcnica
+## ?? Configura√ß√£o T√©cnica
 
-### ServiÁo Registrado em Program.cs
+### Servi√ßo Registrado em Program.cs
 ```csharp
 builder.Services.AddScoped<IFileService, FileService>();
 ```
@@ -150,7 +150,7 @@ Documento (1) -> (*) Funcionario  [CASCADE DELETE]
 Documento (1) -> (*) ApplicationUser  [SET NULL]
 ```
 
-### Õndices Criados
+### √çndices Criados
 - `IX_Documentos_DataUpload`
 - `IX_Documentos_TipoDocumento`
 - `IX_Documentos_ClienteId`
@@ -159,73 +159,73 @@ Documento (1) -> (*) ApplicationUser  [SET NULL]
 
 ## ?? Campos da Tabela Documentos
 
-| Campo | Tipo | DescriÁ„o |
+| Campo | Tipo | Descri√ß√£o |
 |-------|------|-----------|
-| Id | INT | Chave prim·ria |
+| Id | INT | Chave prim√°ria |
 | NomeArquivo | NVARCHAR(200) | Nome original do arquivo |
 | CaminhoArquivo | NVARCHAR(500) | Caminho relativo do arquivo |
 | TipoDocumento | NVARCHAR(50) | Tipo do documento (CNH, RG, etc) |
 | ContentType | NVARCHAR(100) | MIME type do arquivo |
 | TamanhoBytes | BIGINT | Tamanho do arquivo em bytes |
-| Descricao | NVARCHAR(500) | DescriÁ„o opcional |
+| Descricao | NVARCHAR(500) | Descri√ß√£o opcional |
 | DataUpload | DATETIME2 | Data e hora do upload |
-| UsuarioUpload | NVARCHAR(100) | Usu·rio que fez o upload |
+| UsuarioUpload | NVARCHAR(100) | Usu√°rio que fez o upload |
 | ClienteId | INT (nullable) | FK para Cliente |
-| VeiculoId | INT (nullable) | FK para VeÌculo |
-| FuncionarioId | INT (nullable) | FK para Funcion·rio |
+| VeiculoId | INT (nullable) | FK para Ve√≠culo |
+| FuncionarioId | INT (nullable) | FK para Funcion√°rio |
 | ApplicationUserId | NVARCHAR(450) (nullable) | FK para ApplicationUser |
 
 ## ?? Recursos da Interface
 
 ### Preview de Arquivos
 - ? Preview de imagens antes do upload
-- ? Õcone para PDFs
+- ? √çcone para PDFs
 
 ### Lista de Documentos
-- ? Cards com informaÁıes completas
-- ? Õcones diferenciados por tipo
-- ? InformaÁıes de tamanho formatadas
+- ? Cards com informa√ß√µes completas
+- ? √çcones diferenciados por tipo
+- ? Informa√ß√µes de tamanho formatadas
 - ? Data e hora do upload
-- ? Nome do usu·rio que fez o upload
+- ? Nome do usu√°rio que fez o upload
 
-### AÁıes DisponÌveis
+### A√ß√µes Dispon√≠veis
 - ??? Visualizar (imagens)
 - ?? Baixar (todos os tipos)
 - ??? Excluir (Admin/Manager)
 
-## ?? SeguranÁa
+## ?? Seguran√ßa
 
-1. **ValidaÁ„o de Arquivo:**
-   - Extensıes permitidas controladas
-   - Tamanho m·ximo definido
-   - ValidaÁ„o de MIME type
+1. **Valida√ß√£o de Arquivo:**
+   - Extens√µes permitidas controladas
+   - Tamanho m√°ximo definido
+   - Valida√ß√£o de MIME type
 
 2. **Armazenamento Seguro:**
-   - Nomes de arquivo ˙nicos (GUID)
-   - OrganizaÁ„o por pastas
+   - Nomes de arquivo √∫nicos (GUID)
+   - Organiza√ß√£o por pastas
    - Fora do acesso direto via URL
 
 3. **Controle de Acesso:**
-   - VerificaÁ„o de autenticaÁ„o
-   - VerificaÁ„o de autorizaÁ„o por role
-   - Logs de todas as operaÁıes
+   - Verifica√ß√£o de autentica√ß√£o
+   - Verifica√ß√£o de autoriza√ß√£o por role
+   - Logs de todas as opera√ß√µes
 
 ## ?? Logs
 
-Todas as operaÁıes s„o logadas:
+Todas as opera√ß√µes s√£o logadas:
 - Upload de documentos
 - Download de documentos
-- Exclus„o de documentos
-- Tentativas de acesso n„o autorizado
-- Erros durante operaÁıes
+- Exclus√£o de documentos
+- Tentativas de acesso n√£o autorizado
+- Erros durante opera√ß√µes
 
 ## ?? Tratamento de Erros
 
-- ? ValidaÁ„o de entrada
-- ? Mensagens de erro amig·veis
+- ? Valida√ß√£o de entrada
+- ? Mensagens de erro amig√°veis
 - ? Logs detalhados para debugging
 - ? Rollback em caso de falha
-- ? Feedback visual para o usu·rio
+- ? Feedback visual para o usu√°rio
 
 ## ?? Extensibilidade
 
@@ -246,7 +246,7 @@ public static List<string> ObterTiposCliente()
 
 ### Para adicionar upload para outra entidade:
 
-1. Adicione propriedade de navegaÁ„o no Model:
+1. Adicione propriedade de navega√ß√£o no Model:
 ```csharp
 public virtual ICollection<Documento> Documentos { get; set; }
 ```
@@ -264,41 +264,41 @@ modelBuilder.Entity<Documento>()
 
 ## ?? Melhorias Futuras
 
-- [ ] Suporte para m˙ltiplos uploads simult‚neos
-- [ ] Compress„o autom·tica de imagens
+- [ ] Suporte para m√∫ltiplos uploads simult√¢neos
+- [ ] Compress√£o autom√°tica de imagens
 - [ ] Visualizador de PDF integrado
-- [ ] DetecÁ„o autom·tica de tipo de documento via OCR
+- [ ] Detec√ß√£o autom√°tica de tipo de documento via OCR
 - [ ] Versionamento de documentos
 - [ ] Assinatura digital de documentos
-- [ ] NotificaÁıes de documentos vencidos
-- [ ] IntegraÁ„o com armazenamento em nuvem (Azure Blob, AWS S3)
-- [ ] Thumbnail autom·tico para imagens
-- [ ] Busca por conte˙do de documentos
+- [ ] Notifica√ß√µes de documentos vencidos
+- [ ] Integra√ß√£o com armazenamento em nuvem (Azure Blob, AWS S3)
+- [ ] Thumbnail autom√°tico para imagens
+- [ ] Busca por conte√∫do de documentos
 
 ## ?? Troubleshooting
 
-### Erro: "Pasta n„o encontrada"
-**SoluÁ„o:** Certifique-se que a pasta `wwwroot/uploads` existe e tem permissıes de escrita.
+### Erro: "Pasta n√£o encontrada"
+**Solu√ß√£o:** Certifique-se que a pasta `wwwroot/uploads` existe e tem permiss√µes de escrita.
 
 ### Erro: "Arquivo muito grande"
-**SoluÁ„o:** Aumente o limite em `FileService.cs` (padr„o: 10MB)
+**Solu√ß√£o:** Aumente o limite em `FileService.cs` (padr√£o: 10MB)
 
-### Erro: "Tipo de arquivo n„o permitido"
-**SoluÁ„o:** Adicione a extens„o no array `_extensoesPermitidasTodas`
+### Erro: "Tipo de arquivo n√£o permitido"
+**Solu√ß√£o:** Adicione a extens√£o no array `_extensoesPermitidasTodas`
 
-### Erro: "Documento n„o encontrado"
-**SoluÁ„o:** Verifique se o arquivo fÌsico existe e o caminho est· correto no banco
+### Erro: "Documento n√£o encontrado"
+**Solu√ß√£o:** Verifique se o arquivo f√≠sico existe e o caminho est√° correto no banco
 
-## ?? LicenÁa
+## ?? Licen√ßa
 
-Este mÛdulo faz parte do RentalTourismSystem e segue a mesma licenÁa do projeto principal.
+Este m√≥dulo faz parte do RentalTourismSystem e segue a mesma licen√ßa do projeto principal.
 
 ## ?? Contribuidores
 
-Desenvolvido como parte do sistema de locaÁ„o e turismo integrado.
+Desenvolvido como parte do sistema de loca√ß√£o e turismo integrado.
 
 ---
 
-**Vers„o:** 1.0.0  
+**Vers√£o:** 1.0.0  
 **Data:** Outubro 2025  
-**Status:** ? ProduÁ„o
+**Status:** ? Produ√ß√£o

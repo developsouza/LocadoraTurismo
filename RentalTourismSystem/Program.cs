@@ -221,6 +221,7 @@ builder.Services.AddScoped<ILocacaoService, LocacaoService>();
 builder.Services.AddScoped<IVeiculoService, VeiculoService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IDocumentacaoService, DocumentacaoService>();
 builder.Services.AddHostedService<NotificationBackgroundService>();
 
 // ===== CONFIGURAÇÃO DE CACHE =====

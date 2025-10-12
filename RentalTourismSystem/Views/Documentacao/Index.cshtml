@@ -1,0 +1,221 @@
+@model RentalTourismSystem.Models.ViewModels.ListaDocumentosViewModel
+@{
+    ViewData["Title"] = "?? Central de Documentação";
+}
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm bg-gradient-primary text-white">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="h2 mb-2">
+                                <i class="fas fa-book-reader me-2"></i>
+                                Central de Documentação
+                            </h1>
+                            <p class="mb-0 opacity-90">
+                                Guias completos, tutoriais e referências técnicas do Sistema Litoral Sul
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <div class="d-flex flex-column gap-1">
+                                <small class="opacity-75">
+                                    <i class="fas fa-file-alt me-1"></i>
+                                    @Model.Documentos.Count documento(s) disponível(is)
+                                </small>
+                                <small class="opacity-75">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Tempo total de leitura: @Model.Documentos.Sum(d => d.TempoLeitura) min
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Busca -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <form asp-action="Buscar" method="get" class="d-flex gap-2">
+                        <div class="flex-grow-1">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" 
+                                       name="termo" 
+                                       class="form-control border-start-0 ps-0" 
+                                       placeholder="Buscar na documentação..."
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-search me-2"></i>
+                            Buscar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Atalhos Rápidos -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h5 class="mb-3">
+                <i class="fas fa-rocket text-primary me-2"></i>
+                Atalhos Rápidos
+            </h5>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a asp-action="GuiaRapido" class="card border-0 shadow-sm h-100 text-decoration-none hover-lift">
+                <div class="card-body text-center">
+                    <div class="text-primary mb-3">
+                        <i class="fas fa-rocket fa-3x"></i>
+                    </div>
+                    <h6 class="card-title">Guia de Início Rápido</h6>
+                    <p class="card-text text-muted small mb-0">15 min para estar operacional</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a asp-action="PorPerfil" asp-route-perfil="Admin" class="card border-0 shadow-sm h-100 text-decoration-none hover-lift">
+                <div class="card-body text-center">
+                    <div class="text-danger mb-3">
+                        <i class="fas fa-user-shield fa-3x"></i>
+                    </div>
+                    <h6 class="card-title">Para Administradores</h6>
+                    <p class="card-text text-muted small mb-0">Documentação específica</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a asp-action="PorPerfil" asp-route-perfil="Manager" class="card border-0 shadow-sm h-100 text-decoration-none hover-lift">
+                <div class="card-body text-center">
+                    <div class="text-warning mb-3">
+                        <i class="fas fa-user-tie fa-3x"></i>
+                    </div>
+                    <h6 class="card-title">Para Gerentes</h6>
+                    <p class="card-text text-muted small mb-0">Guias de gestão</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a asp-action="ReferenciaTecnica" class="card border-0 shadow-sm h-100 text-decoration-none hover-lift">
+                <div class="card-body text-center">
+                    <div class="text-success mb-3">
+                        <i class="fas fa-code fa-3x"></i>
+                    </div>
+                    <h6 class="card-title">Referência Técnica</h6>
+                    <p class="card-text text-muted small mb-0">Para desenvolvedores</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Documentos por Categoria -->
+    @foreach (var categoria in Model.DocumentosPorCategoria.OrderBy(c => c.Key))
+    {
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5 class="mb-3">
+                    @categoria.Key
+                    <span class="badge bg-primary rounded-pill">@categoria.Value.Count</span>
+                </h5>
+            </div>
+
+            @foreach (var doc in categoria.Value)
+            {
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <div class="card border-0 shadow-sm h-100 hover-lift">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="bg-primary bg-opacity-10 rounded p-3">
+                                        <i class="@doc.Icone fa-2x text-primary"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title mb-1">@doc.Titulo</h6>
+                                    <p class="card-text text-muted small mb-0">@doc.Descricao</p>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center text-muted small mb-3">
+                                <i class="fas fa-clock me-2"></i>
+                                <span>@doc.TempoLeitura min de leitura</span>
+                                @if (doc.UltimaAtualizacao.HasValue)
+                                {
+                                    <span class="ms-auto">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        @doc.UltimaAtualizacao.Value.ToString("dd/MM/yyyy")
+                                    </span>
+                                }
+                            </div>
+
+                            @if (doc.PerfisSugeridos.Any())
+                            {
+                                <div class="mb-3">
+                                    <small class="text-muted d-block mb-1">Perfis sugeridos:</small>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        @foreach (var perfil in doc.PerfisSugeridos)
+                                        {
+                                            <span class="badge bg-secondary bg-opacity-25 text-dark">
+                                                @perfil
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="d-flex gap-2">
+                                <a asp-action="Visualizar" asp-route-id="@doc.Id" 
+                                   class="btn btn-primary btn-sm flex-grow-1">
+                                    <i class="fas fa-book-open me-1"></i>
+                                    Ler Documento
+                                </a>
+                                <a asp-action="Download" asp-route-id="@doc.Id" 
+                                   class="btn btn-outline-secondary btn-sm"
+                                   title="Download">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, var(--bs-primary) 0%, #0056b3 100%);
+    }
+
+    .hover-lift {
+        transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Adicionar efeitos visuais
+        document.querySelectorAll('.hover-lift').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transition = 'all 0.3s ease';
+            });
+        });
+    </script>
+}

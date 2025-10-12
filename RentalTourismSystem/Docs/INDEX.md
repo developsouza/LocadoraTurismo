@@ -1,135 +1,135 @@
-# ?? DocumentaÁ„o Completa - Sistema Litoral Sul
+Ôªø# ?? Documenta√ß√£o Completa - Sistema Litoral Sul
 
-## ?? Õndice Master da DocumentaÁ„o
+## ?? √çndice Master da Documenta√ß√£o
 
-Bem-vindo ‡ documentaÁ„o completa do **Sistema Integrado de LocaÁ„o de VeÌculos e Turismo** da Litoral Sul.
+Bem-vindo √† documenta√ß√£o completa do **Sistema Integrado de Loca√ß√£o de Ve√≠culos e Turismo** da Litoral Sul.
 
 ---
 
-## ?? Documentos DisponÌveis
+## ?? Documentos Dispon√≠veis
 
-### ?? 1. GUIA DE INÕCIO R¡PIDO
+### ?? 1. GUIA DE IN√çCIO R√ÅPIDO
 **Arquivo:** [GUIA_INICIO_RAPIDO.md](GUIA_INICIO_RAPIDO.md)
 
 **15 minutos para estar operacional!**
 
-?? Conte˙do:
+?? Conte√∫do:
 - ? Primeiro acesso e login
-- ? Trocar senha padr„o
-- ? Criar usu·rios da equipe
-- ? Configurar agÍncia
-- ? Cadastrar primeiro veÌculo
+- ? Trocar senha padr√£o
+- ? Criar usu√°rios da equipe
+- ? Configurar ag√™ncia
+- ? Cadastrar primeiro ve√≠culo
 - ? Cadastrar primeiro cliente
-- ? Fazer primeira locaÁ„o
-- ? Checklist de operaÁ„o di·ria
+- ? Fazer primeira loca√ß√£o
+- ? Checklist de opera√ß√£o di√°ria
 - ? Metas semanais
 
-**?? Comece por aqui se È seu primeiro acesso!**
+**?? Comece por aqui se √© seu primeiro acesso!**
 
 ---
 
 ### ?? 2. README PRINCIPAL
 **Arquivo:** [README.md](README.md)
 
-**Õndice geral de toda documentaÁ„o**
+**√çndice geral de toda documenta√ß√£o**
 
-?? Conte˙do:
-- ?? Vis„o geral de todos os guias
-- ?? Guias r·pidos por perfil de usu·rio
-- ?? Busca r·pida por funcionalidade
-- ?? SoluÁ„o de problemas comuns
-- ?? Checklist de inÌcio
+?? Conte√∫do:
+- ?? Vis√£o geral de todos os guias
+- ?? Guias r√°pidos por perfil de usu√°rio
+- ?? Busca r√°pida por funcionalidade
+- ?? Solu√ß√£o de problemas comuns
+- ?? Checklist de in√≠cio
 - ?? Dicas gerais
 
-**?? Use como central de navegaÁ„o!**
+**?? Use como central de navega√ß√£o!**
 
 ---
 
-### ?? 3. AUTENTICA«√O E SEGURAN«A
+### ?? 3. AUTENTICA√á√ÉO E SEGURAN√áA
 **Arquivo:** [AUTENTICACAO_GUIA_COMPLETO.md](AUTENTICACAO_GUIA_COMPLETO.md)
 
-**Controle de acesso e permissıes**
+**Controle de acesso e permiss√µes**
 
-?? Conte˙do:
-- ?? Tipos de usu·rios (Admin, Manager, Employee, User)
+?? Conte√∫do:
+- ?? Tipos de usu√°rios (Admin, Manager, Employee, User)
 - ?? Login e registro
-- ?? AlteraÁ„o e recuperaÁ„o de senha
-- ????? Gerenciamento de usu·rios
-- ?? Permissıes por mÛdulo
-- ??? Recursos de seguranÁa
-- ?? Matriz completa de permissıes
+- ?? Altera√ß√£o e recupera√ß√£o de senha
+- ????? Gerenciamento de usu√°rios
+- ?? Permiss√µes por m√≥dulo
+- ??? Recursos de seguran√ßa
+- ?? Matriz completa de permiss√µes
 
 **?? Essencial para administradores!**
 
 ---
 
-### ?? 4. GEST√O DE CLIENTES
+### ?? 4. GEST√ÉO DE CLIENTES
 **Arquivo:** [CLIENTES_GUIA_COMPLETO.md](CLIENTES_GUIA_COMPLETO.md)
 
 **Cadastro e gerenciamento de clientes**
 
-?? Conte˙do:
+?? Conte√∫do:
 - ?? Cadastro completo de clientes
-- ? ValidaÁ„o de CPF e CNH
-- ?? Consulta e filtros avanÁados
-- ?? EdiÁ„o e atualizaÁ„o
+- ? Valida√ß√£o de CPF e CNH
+- ?? Consulta e filtros avan√ßados
+- ?? Edi√ß√£o e atualiza√ß√£o
 - ?? Upload de documentos (CNH, RG, CPF)
-- ?? HistÛrico e relatÛrios
-- ?? Casos de uso pr·ticos
+- ?? Hist√≥rico e relat√≥rios
+- ?? Casos de uso pr√°ticos
 
 **?? Fundamental para atendentes!**
 
 ---
 
-### ?? 5. GEST√O DE VEÕCULOS
+### ?? 5. GEST√ÉO DE VE√çCULOS
 **Arquivo:** [VEICULOS_GUIA_COMPLETO.md](VEICULOS_GUIA_COMPLETO.md)
 
 **Controle completo da frota**
 
-?? Conte˙do:
-- ?? Cadastro de veÌculos
+?? Conte√∫do:
+- ?? Cadastro de ve√≠culos
 - ?? Gerenciamento de status
-- ?? IntegraÁ„o com manutenÁıes
-- ?? VerificaÁ„o de disponibilidade
+- ?? Integra√ß√£o com manuten√ß√µes
+- ?? Verifica√ß√£o de disponibilidade
 - ?? Upload de documentos (CRLV, Seguro, IPVA)
-- ?? RelatÛrios de frota
-- ?? Boas pr·ticas
+- ?? Relat√≥rios de frota
+- ?? Boas pr√°ticas
 
 **?? Essencial para gestores de frota!**
 
 ---
 
-### ?? 6. SISTEMA DE LOCA«’ES
+### ?? 6. SISTEMA DE LOCA√á√ïES
 **Arquivo:** [LOCACOES_GUIA_COMPLETO.md](LOCACOES_GUIA_COMPLETO.md)
 
-**Processo completo de locaÁ„o**
+**Processo completo de loca√ß√£o**
 
-?? Conte˙do:
-- ? Criar nova locaÁ„o
-- ?? Processo completo (retirada ? devoluÁ„o)
-- ?? Vistoria de veÌculos
-- ?? GeraÁ„o de contratos
-- ?? C·lculo de valores e multas
-- ? FinalizaÁ„o e pagamento
-- ?? RelatÛrios de locaÁıes
+?? Conte√∫do:
+- ? Criar nova loca√ß√£o
+- ?? Processo completo (retirada ? devolu√ß√£o)
+- ?? Vistoria de ve√≠culos
+- ?? Gera√ß√£o de contratos
+- ?? C√°lculo de valores e multas
+- ? Finaliza√ß√£o e pagamento
+- ?? Relat√≥rios de loca√ß√µes
 
 **?? Principal ferramenta operacional!**
 
 ---
 
-### ?? 7. SISTEMA DE MANUTEN«’ES
+### ?? 7. SISTEMA DE MANUTEN√á√ïES
 **Arquivo:** [MANUTENCAO_GUIA_ACESSO.md](MANUTENCAO_GUIA_ACESSO.md)
 
-**Controle de manutenÁıes e custos**
+**Controle de manuten√ß√µes e custos**
 
-?? Conte˙do:
-- ?? Nova manutenÁ„o (preventiva/corretiva)
-- ??? 17 tipos de manutenÁ„o
-- ?? Controle de custos (peÁas + m„o de obra)
-- ?? HistÛrico por veÌculo
-- ?? RelatÛrios de custos
-- ?? Gest„o de itens e serviÁos
-- ?? IntegraÁ„o com veÌculos
+?? Conte√∫do:
+- ?? Nova manuten√ß√£o (preventiva/corretiva)
+- ??? 17 tipos de manuten√ß√£o
+- ?? Controle de custos (pe√ßas + m√£o de obra)
+- ?? Hist√≥rico por ve√≠culo
+- ?? Relat√≥rios de custos
+- ?? Gest√£o de itens e servi√ßos
+- ?? Integra√ß√£o com ve√≠culos
 
 **?? Crucial para controle de custos!**
 
@@ -138,15 +138,15 @@ Bem-vindo ‡ documentaÁ„o completa do **Sistema Integrado de LocaÁ„o de VeÌculos 
 ### ?? 8. RESERVAS DE VIAGEM
 **Arquivo:** [RESERVAS_VIAGEM_GUIA_COMPLETO.md](RESERVAS_VIAGEM_GUIA_COMPLETO.md)
 
-**Gest„o de turismo e pacotes**
+**Gest√£o de turismo e pacotes**
 
-?? Conte˙do:
+?? Conte√∫do:
 - ?? Cadastro de pacotes de viagem
 - ?? Criar reservas de turismo
-- ?? ServiÁos adicionais
+- ?? Servi√ßos adicionais
 - ?? Controle de status (Pendente ? Confirmada ? Realizada)
-- ?? RelatÛrios de vendas
-- ??? Gest„o de destinos
+- ?? Relat√≥rios de vendas
+- ??? Gest√£o de destinos
 
 **?? Para agentes de viagem!**
 
@@ -155,33 +155,33 @@ Bem-vindo ‡ documentaÁ„o completa do **Sistema Integrado de LocaÁ„o de VeÌculos 
 ### ?? 9. UPLOAD DE DOCUMENTOS
 **Arquivo:** [UPLOAD_DOCUMENTOS.md](UPLOAD_DOCUMENTOS.md)
 
-**Sistema de gest„o documental**
+**Sistema de gest√£o documental**
 
-?? Conte˙do:
+?? Conte√∫do:
 - ?? Tipos de documentos suportados
-- ?? Upload para clientes, veÌculos e funcion·rios
-- ??? OrganizaÁ„o e armazenamento
-- ?? SeguranÁa de arquivos
-- ??? Download e visualizaÁ„o
+- ?? Upload para clientes, ve√≠culos e funcion√°rios
+- ??? Organiza√ß√£o e armazenamento
+- ?? Seguran√ßa de arquivos
+- ??? Download e visualiza√ß√£o
 - ??? Gerenciamento de documentos
 
 **?? Importante para conformidade!**
 
 ---
 
-### ?? 10. REFER NCIA T…CNICA
+### ?? 10. REFER√äNCIA T√âCNICA
 **Arquivo:** [REFERENCIA_TECNICA.md](REFERENCIA_TECNICA.md)
 
-**DocumentaÁ„o para desenvolvedores**
+**Documenta√ß√£o para desenvolvedores**
 
-?? Conte˙do:
+?? Conte√∫do:
 - ??? Arquitetura do sistema
-- ?? Stack tecnolÛgica
+- ?? Stack tecnol√≥gica
 - ?? Estrutura do projeto
 - ??? Modelos de dados
 - ?? APIs e endpoints
-- ?? ImplementaÁıes de seguranÁa
-- ?? ConfiguraÁıes
+- ?? Implementa√ß√µes de seguran√ßa
+- ?? Configura√ß√µes
 - ?? Deploy
 
 **?? Essencial para desenvolvedores!**
@@ -193,13 +193,13 @@ Bem-vindo ‡ documentaÁ„o completa do **Sistema Integrado de LocaÁ„o de VeÌculos 
 
 **Diagramas e processos visuais**
 
-?? Conte˙do:
-- ?? Fluxograma de locaÁ„o completa
-- ?? Fluxograma de manutenÁ„o
+?? Conte√∫do:
+- ?? Fluxograma de loca√ß√£o completa
+- ?? Fluxograma de manuten√ß√£o
 - ?? Fluxo de reserva de viagem
-- ??? Diagrama de navegaÁ„o do menu
+- ??? Diagrama de navega√ß√£o do menu
 - ?? Status e estados visuais
-- ?? Hierarquia de permissıes
+- ?? Hierarquia de permiss√µes
 - ?? Layouts responsivos
 - ?? Paleta de cores
 
@@ -232,7 +232,7 @@ Bem-vindo ‡ documentaÁ„o completa do **Sistema Integrado de LocaÁ„o de VeÌculos 
 **Ordem de leitura recomendada:**
 
 1. ? [GUIA_INICIO_RAPIDO.md](GUIA_INICIO_RAPIDO.md) - 15 min
-2. ? [AUTENTICACAO_GUIA_COMPLETO.md](AUTENTICACAO_GUIA_COMPLETO.md) - SeÁ„o de permissıes - 15 min
+2. ? [AUTENTICACAO_GUIA_COMPLETO.md](AUTENTICACAO_GUIA_COMPLETO.md) - Se√ß√£o de permiss√µes - 15 min
 3. ? [VEICULOS_GUIA_COMPLETO.md](VEICULOS_GUIA_COMPLETO.md) - 25 min
 4. ? [LOCACOES_GUIA_COMPLETO.md](LOCACOES_GUIA_COMPLETO.md) - 30 min
 5. ? [MANUTENCAO_GUIA_ACESSO.md](MANUTENCAO_GUIA_ACESSO.md) - 20 min
@@ -244,7 +244,7 @@ Bem-vindo ‡ documentaÁ„o completa do **Sistema Integrado de LocaÁ„o de VeÌculos 
 
 ---
 
-### ????? **FUNCION¡RIO (EMPLOYEE)**
+### ????? **FUNCION√ÅRIO (EMPLOYEE)**
 
 **Ordem de leitura recomendada:**
 
@@ -264,85 +264,85 @@ Bem-vindo ‡ documentaÁ„o completa do **Sistema Integrado de LocaÁ„o de VeÌculos 
 
 **Ordem de leitura recomendada:**
 
-1. ? [README.md](README.md) - Vis„o geral - 10 min
+1. ? [README.md](README.md) - Vis√£o geral - 10 min
 2. ? [REFERENCIA_TECNICA.md](REFERENCIA_TECNICA.md) - 45 min
-3. ? [AUTENTICACAO_GUIA_COMPLETO.md](AUTENTICACAO_GUIA_COMPLETO.md) - SeguranÁa - 15 min
+3. ? [AUTENTICACAO_GUIA_COMPLETO.md](AUTENTICACAO_GUIA_COMPLETO.md) - Seguran√ßa - 15 min
 4. ? [GUIA_VISUAL_FLUXOGRAMAS.md](GUIA_VISUAL_FLUXOGRAMAS.md) - Arquitetura - 15 min
 5. ? Demais guias conforme necessidade
 
-**Tempo total:** ~1h30min (b·sico)
+**Tempo total:** ~1h30min (b√°sico)
 
 ---
 
-## ?? Busca R·pida por TÛpico
+## ?? Busca R√°pida por T√≥pico
 
-### ?? **AutenticaÁ„o e SeguranÁa**
+### ?? **Autentica√ß√£o e Seguran√ßa**
 - Login ? [AUTENTICACAO_GUIA_COMPLETO.md#login-e-registro](AUTENTICACAO_GUIA_COMPLETO.md)
-- Criar usu·rio ? [AUTENTICACAO_GUIA_COMPLETO.md#registro-de-novo-usu·rio](AUTENTICACAO_GUIA_COMPLETO.md)
+- Criar usu√°rio ? [AUTENTICACAO_GUIA_COMPLETO.md#registro-de-novo-usu√°rio](AUTENTICACAO_GUIA_COMPLETO.md)
 - Trocar senha ? [AUTENTICACAO_GUIA_COMPLETO.md#alterar-senha-logado](AUTENTICACAO_GUIA_COMPLETO.md)
-- Permissıes ? [AUTENTICACAO_GUIA_COMPLETO.md#permissıes-por-mÛdulo](AUTENTICACAO_GUIA_COMPLETO.md)
+- Permiss√µes ? [AUTENTICACAO_GUIA_COMPLETO.md#permiss√µes-por-m√≥dulo](AUTENTICACAO_GUIA_COMPLETO.md)
 
 ### ?? **Clientes**
 - Cadastrar ? [CLIENTES_GUIA_COMPLETO.md#cadastro-de-clientes](CLIENTES_GUIA_COMPLETO.md)
-- Validar CNH ? [CLIENTES_GUIA_COMPLETO.md#validaÁıes-autom·ticas](CLIENTES_GUIA_COMPLETO.md)
+- Validar CNH ? [CLIENTES_GUIA_COMPLETO.md#valida√ß√µes-autom√°ticas](CLIENTES_GUIA_COMPLETO.md)
 - Upload documentos ? [CLIENTES_GUIA_COMPLETO.md#documentos-do-cliente](CLIENTES_GUIA_COMPLETO.md)
-- HistÛrico ? [CLIENTES_GUIA_COMPLETO.md#histÛrico-e-relatÛrios](CLIENTES_GUIA_COMPLETO.md)
+- Hist√≥rico ? [CLIENTES_GUIA_COMPLETO.md#hist√≥rico-e-relat√≥rios](CLIENTES_GUIA_COMPLETO.md)
 
-### ?? **VeÌculos**
-- Cadastrar ? [VEICULOS_GUIA_COMPLETO.md#cadastro-de-veÌculos](VEICULOS_GUIA_COMPLETO.md)
+### ?? **Ve√≠culos**
+- Cadastrar ? [VEICULOS_GUIA_COMPLETO.md#cadastro-de-ve√≠culos](VEICULOS_GUIA_COMPLETO.md)
 - Status ? [VEICULOS_GUIA_COMPLETO.md#gerenciamento-de-status](VEICULOS_GUIA_COMPLETO.md)
 - Disponibilidade ? [VEICULOS_GUIA_COMPLETO.md#disponibilidade](VEICULOS_GUIA_COMPLETO.md)
-- ManutenÁıes ? [VEICULOS_GUIA_COMPLETO.md#manutenÁıes](VEICULOS_GUIA_COMPLETO.md)
+- Manuten√ß√µes ? [VEICULOS_GUIA_COMPLETO.md#manuten√ß√µes](VEICULOS_GUIA_COMPLETO.md)
 
-### ?? **LocaÁıes**
-- Criar ? [LOCACOES_GUIA_COMPLETO.md#criar-nova-locaÁ„o](LOCACOES_GUIA_COMPLETO.md)
-- Processo ? [LOCACOES_GUIA_COMPLETO.md#processo-de-locaÁ„o](LOCACOES_GUIA_COMPLETO.md)
+### ?? **Loca√ß√µes**
+- Criar ? [LOCACOES_GUIA_COMPLETO.md#criar-nova-loca√ß√£o](LOCACOES_GUIA_COMPLETO.md)
+- Processo ? [LOCACOES_GUIA_COMPLETO.md#processo-de-loca√ß√£o](LOCACOES_GUIA_COMPLETO.md)
 - Vistoria ? [LOCACOES_GUIA_COMPLETO.md#vistoria](LOCACOES_GUIA_COMPLETO.md)
-- DevoluÁ„o ? [LOCACOES_GUIA_COMPLETO.md#devoluÁ„o-de-veÌculo](LOCACOES_GUIA_COMPLETO.md)
+- Devolu√ß√£o ? [LOCACOES_GUIA_COMPLETO.md#devolu√ß√£o-de-ve√≠culo](LOCACOES_GUIA_COMPLETO.md)
 
-### ?? **ManutenÁıes**
-- Nova manutenÁ„o ? [MANUTENCAO_GUIA_ACESSO.md](MANUTENCAO_GUIA_ACESSO.md)
-- Tipos ? [MANUTENCAO_GUIA_ACESSO.md#tipos-de-manutenÁ„o](MANUTENCAO_GUIA_ACESSO.md)
-- RelatÛrios ? [MANUTENCAO_GUIA_ACESSO.md#relatÛrios](MANUTENCAO_GUIA_ACESSO.md)
+### ?? **Manuten√ß√µes**
+- Nova manuten√ß√£o ? [MANUTENCAO_GUIA_ACESSO.md](MANUTENCAO_GUIA_ACESSO.md)
+- Tipos ? [MANUTENCAO_GUIA_ACESSO.md#tipos-de-manuten√ß√£o](MANUTENCAO_GUIA_ACESSO.md)
+- Relat√≥rios ? [MANUTENCAO_GUIA_ACESSO.md#relat√≥rios](MANUTENCAO_GUIA_ACESSO.md)
 
 ### ?? **Reservas de Viagem**
 - Pacotes ? [RESERVAS_VIAGEM_GUIA_COMPLETO.md#pacotes-de-viagem](RESERVAS_VIAGEM_GUIA_COMPLETO.md)
 - Criar reserva ? [RESERVAS_VIAGEM_GUIA_COMPLETO.md#criar-reserva](RESERVAS_VIAGEM_GUIA_COMPLETO.md)
-- ServiÁos adicionais ? [RESERVAS_VIAGEM_GUIA_COMPLETO.md#serviÁos-adicionais](RESERVAS_VIAGEM_GUIA_COMPLETO.md)
+- Servi√ßos adicionais ? [RESERVAS_VIAGEM_GUIA_COMPLETO.md#servi√ßos-adicionais](RESERVAS_VIAGEM_GUIA_COMPLETO.md)
 
 ### ?? **Documentos**
 - Upload ? [UPLOAD_DOCUMENTOS.md#como-fazer-upload](UPLOAD_DOCUMENTOS.md)
 - Tipos ? [UPLOAD_DOCUMENTOS.md#tipos-de-documentos](UPLOAD_DOCUMENTOS.md)
-- Visualizar ? [UPLOAD_DOCUMENTOS.md#visualizaÁ„o](UPLOAD_DOCUMENTOS.md)
+- Visualizar ? [UPLOAD_DOCUMENTOS.md#visualiza√ß√£o](UPLOAD_DOCUMENTOS.md)
 
 ---
 
-## ?? EstatÌsticas da DocumentaÁ„o
+## ?? Estat√≠sticas da Documenta√ß√£o
 
 ### ?? Resumo
 
 - **Total de documentos:** 11 arquivos
-- **P·ginas estimadas:** ~250 p·ginas
+- **P√°ginas estimadas:** ~250 p√°ginas
 - **Tempo de leitura total:** ~8 horas
-- **Idioma:** PortuguÍs (BR)
+- **Idioma:** Portugu√™s (BR)
 - **Formato:** Markdown (.md)
-- **⁄ltima atualizaÁ„o:** Outubro/2025
+- **√öltima atualiza√ß√£o:** Outubro/2025
 
 ### ?? Categorias
 
-| Categoria | Documentos | P·ginas |
+| Categoria | Documentos | P√°ginas |
 |-----------|------------|---------|
-| ?? InÌcio R·pido | 2 | ~40 |
-| ?? Gest„o | 4 | ~120 |
-| ?? TÈcnico | 2 | ~60 |
+| ?? In√≠cio R√°pido | 2 | ~40 |
+| ?? Gest√£o | 4 | ~120 |
+| ?? T√©cnico | 2 | ~60 |
 | ?? Visual | 1 | ~30 |
-| ?? Õndices | 2 | ~20 |
+| ?? √çndices | 2 | ~20 |
 
 ### ?? Cobertura
 
-- ? **100%** dos mÛdulos documentados
+- ? **100%** dos m√≥dulos documentados
 - ? **100%** dos processos mapeados
-- ? **100%** das permissıes explicadas
+- ? **100%** das permiss√µes explicadas
 - ? **100%** dos casos de uso cobertos
 
 ---
@@ -351,73 +351,73 @@ Bem-vindo ‡ documentaÁ„o completa do **Sistema Integrado de LocaÁ„o de VeÌculos 
 
 ### ?? Contato
 
-**Para d˙vidas sobre a documentaÁ„o:**
+**Para d√∫vidas sobre a documenta√ß√£o:**
 - Email: documentacao@litoralsul.com.br
 - Telefone: (13) 3XXX-XXXX
 
-**Para suporte tÈcnico:**
+**Para suporte t√©cnico:**
 - Email: suporte@litoralsul.com.br
 - WhatsApp: (13) 9XXXX-XXXX
 
-### ?? Hor·rio de Atendimento
+### ?? Hor√°rio de Atendimento
 
-- Segunda a Sexta: 8h ‡s 18h
-- S·bado: 8h ‡s 12h
+- Segunda a Sexta: 8h √†s 18h
+- S√°bado: 8h √†s 12h
 - Domingo: Fechado
 
 ### ?? Recursos Adicionais
 
-- ?? VÌdeos tutoriais (em breve)
+- ?? V√≠deos tutoriais (em breve)
 - ?? FAQ online (em breve)
 - ?? Chat de suporte (em breve)
 - ?? Wiki do sistema (em breve)
 
 ---
 
-## ?? AtualizaÁıes
+## ?? Atualiza√ß√µes
 
-### ?? Vers„o 1.0 - Outubro/2025
+### ?? Vers√£o 1.0 - Outubro/2025
 
 **Novidades:**
-- ? DocumentaÁ„o completa criada
-- ? 11 guias disponÌveis
-- ? Cobertura de 100% dos mÛdulos
+- ? Documenta√ß√£o completa criada
+- ? 11 guias dispon√≠veis
+- ? Cobertura de 100% dos m√≥dulos
 - ? Fluxogramas e diagramas
-- ? Guias por perfil de usu·rio
-- ? ReferÍncia tÈcnica completa
+- ? Guias por perfil de usu√°rio
+- ? Refer√™ncia t√©cnica completa
 
-**PrÛximas atualizaÁıes:**
-- ?? Tutoriais em vÌdeo
+**Pr√≥ximas atualiza√ß√µes:**
+- ?? Tutoriais em v√≠deo
 - ?? Modo interativo
-- ?? Vers„o web da documentaÁ„o
-- ?? App de documentaÁ„o mobile
+- ?? Vers√£o web da documenta√ß√£o
+- ?? App de documenta√ß√£o mobile
 
 ---
 
-## ?? Como Usar Esta DocumentaÁ„o
+## ?? Como Usar Esta Documenta√ß√£o
 
 ### 1?? **Primeiro Acesso**
 ```
 1. Leia: GUIA_INICIO_RAPIDO.md
-2. FaÁa login no sistema
+2. Fa√ßa login no sistema
 3. Pratique os primeiros passos
 4. Explore o sistema
 ```
 
-### 2?? **Aprendizado por MÛdulo**
+### 2?? **Aprendizado por M√≥dulo**
 ```
-1. Escolha o mÛdulo de interesse
-2. Leia o guia especÌfico
+1. Escolha o m√≥dulo de interesse
+2. Leia o guia espec√≠fico
 3. Pratique no sistema
-4. Consulte quando necess·rio
+4. Consulte quando necess√°rio
 ```
 
-### 3?? **Consulta R·pida**
+### 3?? **Consulta R√°pida**
 ```
-1. Use este Ìndice (INDEX.md)
-2. Localize o tÛpico
-3. V· direto ao conte˙do
-4. Marque para referÍncia futura
+1. Use este √≠ndice (INDEX.md)
+2. Localize o t√≥pico
+3. V√° direto ao conte√∫do
+4. Marque para refer√™ncia futura
 ```
 
 ### 4?? **Desenvolvimento**
@@ -432,83 +432,83 @@ Bem-vindo ‡ documentaÁ„o completa do **Sistema Integrado de LocaÁ„o de VeÌculos 
 
 ## ? Checklist de Leitura
 
-### ?? Para Novos Usu·rios
+### ?? Para Novos Usu√°rios
 
 - [ ] Ler GUIA_INICIO_RAPIDO.md
 - [ ] Fazer primeiro login
-- [ ] Trocar senha padr„o
+- [ ] Trocar senha padr√£o
 - [ ] Ler guia do seu perfil (Admin/Manager/Employee)
-- [ ] Ler mÛdulos que vai usar
+- [ ] Ler m√≥dulos que vai usar
 - [ ] Praticar processos principais
 - [ ] Marcar documentos importantes
-- [ ] Anotar d˙vidas para perguntar
+- [ ] Anotar d√∫vidas para perguntar
 
 ### ?? Para Treinamento de Equipe
 
-- [ ] Preparar material de apresentaÁ„o
+- [ ] Preparar material de apresenta√ß√£o
 - [ ] Definir ordem de leitura
-- [ ] Agendar sessıes pr·ticas
-- [ ] Criar exercÌcios
+- [ ] Agendar sess√µes pr√°ticas
+- [ ] Criar exerc√≠cios
 - [ ] Fazer acompanhamento
-- [ ] Tirar d˙vidas
+- [ ] Tirar d√∫vidas
 - [ ] Avaliar aprendizado
 - [ ] Dar feedback
 
 ---
 
-## ?? Objetivos da DocumentaÁ„o
+## ?? Objetivos da Documenta√ß√£o
 
-### ? AlcanÁados
+### ? Alcan√ßados
 
 1. **Facilitar aprendizado**
    - ? Guias passo a passo
-   - ? Exemplos pr·ticos
+   - ? Exemplos pr√°ticos
    - ? Casos de uso reais
 
 2. **Reduzir suporte**
    - ? FAQ completo
    - ? Troubleshooting
-   - ? SoluÁıes de problemas comuns
+   - ? Solu√ß√µes de problemas comuns
 
 3. **Padronizar processos**
    - ? Fluxogramas claros
-   - ? Boas pr·ticas
+   - ? Boas pr√°ticas
    - ? Checklists
 
-4. **Facilitar manutenÁ„o**
-   - ? DocumentaÁ„o tÈcnica
+4. **Facilitar manuten√ß√£o**
+   - ? Documenta√ß√£o t√©cnica
    - ? Arquitetura explicada
-   - ? CÛdigo documentado
+   - ? C√≥digo documentado
 
 ---
 
-## ?? Qualidade da DocumentaÁ„o
+## ?? Qualidade da Documenta√ß√£o
 
-### ? CaracterÌsticas
+### ? Caracter√≠sticas
 
 - ? **Clara:** Linguagem simples e direta
 - ? **Completa:** Cobre 100% das funcionalidades
-- ? **Pr·tica:** Exemplos e casos reais
+- ? **Pr√°tica:** Exemplos e casos reais
 - ? **Visual:** Diagramas e fluxogramas
-- ? **Atualizada:** Vers„o atual do sistema
-- ? **AcessÌvel:** Formato markdown padr„o
-- ? **Organizada:** Estrutura lÛgica
+- ? **Atualizada:** Vers√£o atual do sistema
+- ? **Acess√≠vel:** Formato markdown padr√£o
+- ? **Organizada:** Estrutura l√≥gica
 
-### ?? MÈtricas
+### ?? M√©tricas
 
-- **Cobertura:** 100% dos mÛdulos
+- **Cobertura:** 100% dos m√≥dulos
 - **Exemplos:** 50+ casos de uso
 - **Diagramas:** 15+ fluxogramas
-- **P·ginas:** ~250 p·ginas
+- **P√°ginas:** ~250 p√°ginas
 - **Tempo leitura:** ~8 horas total
 
 ---
 
-## ?? Conclus„o
+## ?? Conclus√£o
 
-VocÍ tem em m„os a **documentaÁ„o mais completa** do sistema!
+Voc√™ tem em m√£os a **documenta√ß√£o mais completa** do sistema!
 
-### ?? PrÛximos Passos
+### ?? Pr√≥ximos Passos
 
 1. **Escolha seu ponto de partida:**
    - Novo? ? [GUIA_INICIO_RAPIDO.md](GUIA_INICIO_RAPIDO.md)
@@ -518,7 +518,7 @@ VocÍ tem em m„os a **documentaÁ„o mais completa** do sistema!
 
 2. **Explore o sistema**
 3. **Pratique os processos**
-4. **Consulte quando necess·rio**
+4. **Consulte quando necess√°rio**
 5. **Compartilhe com a equipe**
 
 ---
@@ -528,8 +528,8 @@ VocÍ tem em m„os a **documentaÁ„o mais completa** do sistema!
 ---
 
 **Sistema:** Litoral Sul Locadora e Turismo  
-**Vers„o da DocumentaÁ„o:** 1.0  
-**⁄ltima AtualizaÁ„o:** Outubro/2025  
+**Vers√£o da Documenta√ß√£o:** 1.0  
+**√öltima Atualiza√ß√£o:** Outubro/2025  
 **Formato:** Markdown (.md)  
 **Total de Arquivos:** 11 documentos  
 **Status:** ? Completo e Atualizado

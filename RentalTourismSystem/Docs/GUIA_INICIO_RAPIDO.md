@@ -1,17 +1,17 @@
-# ?? Guia de Início Rápido - Sistema Litoral Sul
+ï»¿# ?? Guia de InÃ­cio RÃ¡pido - Sistema Litoral Sul
 
-## ? 15 Minutos para Começar!
+## ? 15 Minutos para ComeÃ§ar!
 
 Este guia vai te colocar operacional no sistema em **15 minutos**.
 
 ---
 
-## ?? Pré-requisitos
+## ?? PrÃ©-requisitos
 
-Antes de começar, certifique-se que:
-- ? Sistema está instalado e rodando
+Antes de comeÃ§ar, certifique-se que:
+- ? Sistema estÃ¡ instalado e rodando
 - ? Banco de dados configurado
-- ? Você tem as credenciais de acesso
+- ? VocÃª tem as credenciais de acesso
 
 ---
 
@@ -20,7 +20,7 @@ Antes de começar, certifique-se que:
 ### 1.1 Fazer Login
 
 1. Acesse o sistema pelo navegador
-2. Use as credenciais padrão:
+2. Use as credenciais padrÃ£o:
    ```
    Email: admin@litoralsul.com.br
    Senha: Admin@123456
@@ -37,19 +37,19 @@ Antes de começar, certifique-se que:
 5. Clicar "Salvar"
 ```
 
-? **Pronto!** Você está logado com segurança.
+? **Pronto!** VocÃª estÃ¡ logado com seguranÃ§a.
 
 ---
 
-## ?? Passo 2: Criar Usuários da Equipe (3 min)
+## ?? Passo 2: Criar UsuÃ¡rios da Equipe (3 min)
 
 ### 2.1 Criar um Gerente
 
 ```
-1. Menu ? Administração ? Gerenciar Usuários
-2. Clicar "+ Novo Usuário"
+1. Menu ? AdministraÃ§Ã£o ? Gerenciar UsuÃ¡rios
+2. Clicar "+ Novo UsuÃ¡rio"
 3. Preencher:
-   Nome: João Silva
+   Nome: JoÃ£o Silva
    Email: joao@litoralsul.com.br
    Senha: Manager2024
    Role: Manager
@@ -59,7 +59,7 @@ Antes de começar, certifique-se que:
 ### 2.2 Criar um Atendente
 
 ```
-1. Clicar "+ Novo Usuário"
+1. Clicar "+ Novo UsuÃ¡rio"
 2. Preencher:
    Nome: Maria Santos
    Email: maria@litoralsul.com.br
@@ -68,31 +68,31 @@ Antes de começar, certifique-se que:
 3. Salvar
 ```
 
-? **Pronto!** Equipe básica criada.
+? **Pronto!** Equipe bÃ¡sica criada.
 
 ---
 
-## ?? Passo 3: Configurar Agência (2 min)
+## ?? Passo 3: Configurar AgÃªncia (2 min)
 
 ```
-1. Menu ? Configurações ? Agências
-2. Verificar se existe "Agência Centro" (criada automaticamente)
-3. Editar se necessário:
-   Nome: Agência Centro
-   Endereço: Av. Principal, 123
+1. Menu ? ConfiguraÃ§Ãµes ? AgÃªncias
+2. Verificar se existe "AgÃªncia Centro" (criada automaticamente)
+3. Editar se necessÃ¡rio:
+   Nome: AgÃªncia Centro
+   EndereÃ§o: Av. Principal, 123
    Telefone: (13) 3333-4444
    Email: centro@litoralsul.com.br
 4. Salvar
 ```
 
-? **Pronto!** Agência configurada.
+? **Pronto!** AgÃªncia configurada.
 
 ---
 
-## ?? Passo 4: Cadastrar Primeiro Veículo (3 min)
+## ?? Passo 4: Cadastrar Primeiro VeÃ­culo (3 min)
 
 ```
-1. Menu ? Locação ? Veículos ? + Novo Veículo
+1. Menu ? LocaÃ§Ã£o ? VeÃ­culos ? + Novo VeÃ­culo
 
 2. Preencher:
    Marca: Volkswagen
@@ -100,32 +100,32 @@ Antes de começar, certifique-se que:
    Ano: 2023
    Placa: ABC1D23
    Cor: Branco
-   Combustível: Flex
-   Câmbio: Manual
+   CombustÃ­vel: Flex
+   CÃ¢mbio: Manual
    Quilometragem: 15000
-   Valor Diária: 150,00
-   Agência: Agência Centro
-   Status: Disponível
+   Valor DiÃ¡ria: 150,00
+   AgÃªncia: AgÃªncia Centro
+   Status: DisponÃ­vel
 
 3. Salvar
 ```
 
-? **Pronto!** Primeiro veículo cadastrado.
+? **Pronto!** Primeiro veÃ­culo cadastrado.
 
 ---
 
 ## ?? Passo 5: Cadastrar Primeiro Cliente (3 min)
 
 ```
-1. Menu ? Locação ? Clientes ? + Novo Cliente
+1. Menu ? LocaÃ§Ã£o ? Clientes ? + Novo Cliente
 
 2. Preencher:
-   Nome: José da Silva
+   Nome: JosÃ© da Silva
    CPF: 123.456.789-00
    Telefone: (13) 99999-8888
    Email: jose@email.com
    Data Nascimento: 15/03/1985
-   Endereço: Rua das Flores, 456
+   EndereÃ§o: Rua das Flores, 456
    
    CNH: 12345678900
    Validade CNH: 31/12/2027
@@ -138,98 +138,98 @@ Antes de começar, certifique-se que:
 
 ---
 
-## ?? Passo 6: Fazer Primeira Locação (2 min)
+## ?? Passo 6: Fazer Primeira LocaÃ§Ã£o (2 min)
 
 ```
-1. Menu ? Locação ? Locações ? + Nova Locação
+1. Menu ? LocaÃ§Ã£o ? LocaÃ§Ãµes ? + Nova LocaÃ§Ã£o
 
 2. Preencher:
-   Cliente: José da Silva
-   Veículo: Gol 1.0 - ABC1D23
-   Funcionário: [Seu usuário]
-   Agência: Agência Centro
+   Cliente: JosÃ© da Silva
+   VeÃ­culo: Gol 1.0 - ABC1D23
+   FuncionÃ¡rio: [Seu usuÃ¡rio]
+   AgÃªncia: AgÃªncia Centro
    
    Data Retirada: [Hoje 10:00]
-   Data Devolução: [Amanhã 10:00]
+   Data DevoluÃ§Ã£o: [AmanhÃ£ 10:00]
    
-   KM Retirada: 15000 (automático)
+   KM Retirada: 15000 (automÃ¡tico)
    
 3. Verificar valor calculado: R$ 150,00
 4. Salvar
 ```
 
-? **Pronto!** Primeira locação criada!
+? **Pronto!** Primeira locaÃ§Ã£o criada!
 
 ---
 
-## ?? Parabéns! Sistema Operacional
+## ?? ParabÃ©ns! Sistema Operacional
 
-Você completou a configuração básica em **15 minutos**!
+VocÃª completou a configuraÃ§Ã£o bÃ¡sica em **15 minutos**!
 
-### ?? O que você fez:
+### ?? O que vocÃª fez:
 
 - ? Login seguro realizado
 - ? Senha alterada
 - ? Equipe criada (Manager + Employee)
-- ? Agência configurada
-- ? Primeiro veículo cadastrado
+- ? AgÃªncia configurada
+- ? Primeiro veÃ­culo cadastrado
 - ? Primeiro cliente cadastrado
-- ? Primeira locação realizada
+- ? Primeira locaÃ§Ã£o realizada
 
 ---
 
-## ?? Próximos Passos
+## ?? PrÃ³ximos Passos
 
-### Nível 1: Operação Básica (1-2 horas)
+### NÃ­vel 1: OperaÃ§Ã£o BÃ¡sica (1-2 horas)
 
 **1. Completar cadastros:**
-- [ ] Cadastrar toda a frota de veículos
+- [ ] Cadastrar toda a frota de veÃ­culos
 - [ ] Cadastrar clientes existentes
 - [ ] Fazer upload de documentos
 
 **2. Testar processos:**
 - [ ] Fazer vistoria de retirada
-- [ ] Gerar contrato de locação
-- [ ] Registrar devolução de veículo
+- [ ] Gerar contrato de locaÃ§Ã£o
+- [ ] Registrar devoluÃ§Ã£o de veÃ­culo
 
-**3. Explorar relatórios:**
-- [ ] Veículos mais alugados
-- [ ] Receita do período
+**3. Explorar relatÃ³rios:**
+- [ ] VeÃ­culos mais alugados
+- [ ] Receita do perÃ­odo
 - [ ] Clientes frequentes
 
-### Nível 2: Recursos Avançados (2-4 horas)
+### NÃ­vel 2: Recursos AvanÃ§ados (2-4 horas)
 
-**1. Manutenções:**
-- [ ] Cadastrar primeira manutenção
-- [ ] Ver histórico de manutenções
-- [ ] Gerar relatório de custos
+**1. ManutenÃ§Ãµes:**
+- [ ] Cadastrar primeira manutenÃ§Ã£o
+- [ ] Ver histÃ³rico de manutenÃ§Ãµes
+- [ ] Gerar relatÃ³rio de custos
 
 **2. Turismo:**
 - [ ] Criar pacote de viagem
 - [ ] Fazer reserva de viagem
-- [ ] Adicionar serviços extras
+- [ ] Adicionar serviÃ§os extras
 
-**3. Documentação:**
+**3. DocumentaÃ§Ã£o:**
 - [ ] Upload CNH dos clientes
-- [ ] Upload CRLV dos veículos
+- [ ] Upload CRLV dos veÃ­culos
 - [ ] Organizar documentos por tipo
 
-### Nível 3: Gestão Completa (1 semana)
+### NÃ­vel 3: GestÃ£o Completa (1 semana)
 
 **1. Otimizar processos:**
 - [ ] Definir fluxo de trabalho da equipe
 - [ ] Configurar alertas de vencimento
-- [ ] Estabelecer rotinas de manutenção
+- [ ] Estabelecer rotinas de manutenÃ§Ã£o
 
-**2. Análise e relatórios:**
-- [ ] Estudar padrões de locação
-- [ ] Analisar custos de manutenção
-- [ ] Identificar veículos mais rentáveis
+**2. AnÃ¡lise e relatÃ³rios:**
+- [ ] Estudar padrÃµes de locaÃ§Ã£o
+- [ ] Analisar custos de manutenÃ§Ã£o
+- [ ] Identificar veÃ­culos mais rentÃ¡veis
 
 **3. Melhorias:**
-- [ ] Ajustar valores de diária
-- [ ] Otimizar distribuição de veículos
-- [ ] Criar promoções sazonais
+- [ ] Ajustar valores de diÃ¡ria
+- [ ] Otimizar distribuiÃ§Ã£o de veÃ­culos
+- [ ] Criar promoÃ§Ãµes sazonais
 
 ---
 
@@ -237,37 +237,37 @@ Você completou a configuração básica em **15 minutos**!
 
 ### ?? Guias Completos
 
-Para se aprofundar em cada módulo:
+Para se aprofundar em cada mÃ³dulo:
 
-1. **[Gestão de Clientes](CLIENTES_GUIA_COMPLETO.md)**
+1. **[GestÃ£o de Clientes](CLIENTES_GUIA_COMPLETO.md)**
    - Cadastro detalhado
-   - Validações e regras
-   - Documentação
+   - ValidaÃ§Ãµes e regras
+   - DocumentaÃ§Ã£o
 
-2. **[Gestão de Veículos](VEICULOS_GUIA_COMPLETO.md)**
+2. **[GestÃ£o de VeÃ­culos](VEICULOS_GUIA_COMPLETO.md)**
    - Controle da frota
    - Status e disponibilidade
-   - Manutenções
+   - ManutenÃ§Ãµes
 
-3. **[Sistema de Locações](LOCACOES_GUIA_COMPLETO.md)**
+3. **[Sistema de LocaÃ§Ãµes](LOCACOES_GUIA_COMPLETO.md)**
    - Processo completo
    - Contratos e vistorias
-   - Devolução e cálculos
+   - DevoluÃ§Ã£o e cÃ¡lculos
 
-4. **[Sistema de Manutenções](MANUTENCAO_GUIA_ACESSO.md)**
+4. **[Sistema de ManutenÃ§Ãµes](MANUTENCAO_GUIA_ACESSO.md)**
    - Preventivas e corretivas
    - Controle de custos
-   - Relatórios
+   - RelatÃ³rios
 
 5. **[Reservas de Viagem](RESERVAS_VIAGEM_GUIA_COMPLETO.md)**
-   - Pacotes turísticos
-   - Serviços adicionais
-   - Gestão de reservas
+   - Pacotes turÃ­sticos
+   - ServiÃ§os adicionais
+   - GestÃ£o de reservas
 
-6. **[Autenticação](AUTENTICACAO_GUIA_COMPLETO.md)**
-   - Usuários e permissões
-   - Segurança
-   - Gestão de acesso
+6. **[AutenticaÃ§Ã£o](AUTENTICACAO_GUIA_COMPLETO.md)**
+   - UsuÃ¡rios e permissÃµes
+   - SeguranÃ§a
+   - GestÃ£o de acesso
 
 ---
 
@@ -277,28 +277,28 @@ Para se aprofundar em cada módulo:
 
 ```
 Ctrl + K     ? Busca global
-Ctrl + S     ? Salvar formulário
+Ctrl + S     ? Salvar formulÃ¡rio
 Esc          ? Fechar modal
-F5           ? Atualizar página
+F5           ? Atualizar pÃ¡gina
 ```
 
-### ?? Buscas Rápidas
+### ?? Buscas RÃ¡pidas
 
 **Clientes:**
 - Digite CPF ou nome na busca
 - Exemplo: "123.456" ou "Silva"
 
-**Veículos:**
+**VeÃ­culos:**
 - Digite placa ou modelo
 - Exemplo: "ABC" ou "Gol"
 
-**Locações:**
-- Filtre por período ou cliente
+**LocaÃ§Ãµes:**
+- Filtre por perÃ­odo ou cliente
 - Use filtros combinados
 
 ### ?? Interface Mobile
 
-**O sistema é responsivo!**
+**O sistema Ã© responsivo!**
 - ? Funciona em tablets
 - ? Funciona em smartphones
 - ? Menu adaptativo
@@ -308,123 +308,123 @@ F5           ? Atualizar página
 
 ## ?? Problemas Comuns
 
-### ? "Não consigo fazer login"
+### ? "NÃ£o consigo fazer login"
 
-**Soluções:**
+**SoluÃ§Ãµes:**
 1. Verificar caps lock
 2. Usar email completo
-3. Resetar senha se necessário
+3. Resetar senha se necessÃ¡rio
 4. Limpar cache do navegador
 
-### ? "Veículo não aparece disponível"
+### ? "VeÃ­culo nÃ£o aparece disponÃ­vel"
 
 **Verificar:**
-1. Status do veículo = "Disponível"
-2. Sem locação no período
-3. Sem manutenção agendada
-4. Atualizar página (F5)
+1. Status do veÃ­culo = "DisponÃ­vel"
+2. Sem locaÃ§Ã£o no perÃ­odo
+3. Sem manutenÃ§Ã£o agendada
+4. Atualizar pÃ¡gina (F5)
 
 ### ? "Cliente com CNH vencida"
 
-**Solução:**
+**SoluÃ§Ã£o:**
 1. Solicitar CNH atualizada
 2. Editar cadastro do cliente
-3. Atualizar número e validade
+3. Atualizar nÃºmero e validade
 4. Fazer upload da nova CNH
 
 ### ? "Erro ao salvar"
 
 **Verificar:**
-1. Todos campos obrigatórios preenchidos
+1. Todos campos obrigatÃ³rios preenchidos
 2. Formatos corretos (CPF, placa, etc.)
 3. Valores dentro do range permitido
-4. Conexão com internet
+4. ConexÃ£o com internet
 
 ---
 
-## ?? Checklist Diário de Operação
+## ?? Checklist DiÃ¡rio de OperaÃ§Ã£o
 
-### ?? Início do Dia
+### ?? InÃ­cio do Dia
 
 - [ ] Fazer login
-- [ ] Verificar locações do dia
+- [ ] Verificar locaÃ§Ãµes do dia
 - [ ] Confirmar retiradas agendadas
-- [ ] Verificar devoluções previstas
+- [ ] Verificar devoluÃ§Ãµes previstas
 - [ ] Checar alertas pendentes
 
 ### ?? Durante o Dia
 
-- [ ] Registrar novas locações
+- [ ] Registrar novas locaÃ§Ãµes
 - [ ] Fazer vistorias de retirada
-- [ ] Processar devoluções
-- [ ] Fazer vistorias de devolução
+- [ ] Processar devoluÃ§Ãµes
+- [ ] Fazer vistorias de devoluÃ§Ã£o
 - [ ] Upload de documentos novos
 
 ### ?? Fim do Dia
 
-- [ ] Finalizar devoluções do dia
+- [ ] Finalizar devoluÃ§Ãµes do dia
 - [ ] Verificar pagamentos pendentes
-- [ ] Atualizar status dos veículos
-- [ ] Revisar alertas não tratados
-- [ ] Fazer backup (se necessário)
+- [ ] Atualizar status dos veÃ­culos
+- [ ] Revisar alertas nÃ£o tratados
+- [ ] Fazer backup (se necessÃ¡rio)
 
 ---
 
 ## ?? Metas Semanais
 
-### Semana 1: Adaptação
+### Semana 1: AdaptaÃ§Ã£o
 - [ ] Conhecer todas as telas
 - [ ] Testar todos os processos
 - [ ] Ler guias principais
-- [ ] Cadastrar dados básicos
+- [ ] Cadastrar dados bÃ¡sicos
 
-### Semana 2: Operação
-- [ ] Processar locações reais
-- [ ] Gerenciar devoluções
+### Semana 2: OperaÃ§Ã£o
+- [ ] Processar locaÃ§Ãµes reais
+- [ ] Gerenciar devoluÃ§Ãµes
 - [ ] Fazer upload de documentos
-- [ ] Gerar primeiros relatórios
+- [ ] Gerar primeiros relatÃ³rios
 
-### Semana 3: Otimização
+### Semana 3: OtimizaÃ§Ã£o
 - [ ] Identificar gargalos
 - [ ] Ajustar processos
 - [ ] Treinar equipe
 - [ ] Implementar melhorias
 
-### Semana 4: Domínio
-- [ ] Usar recursos avançados
-- [ ] Analisar relatórios gerenciais
-- [ ] Planejar estratégias
+### Semana 4: DomÃ­nio
+- [ ] Usar recursos avanÃ§ados
+- [ ] Analisar relatÃ³rios gerenciais
+- [ ] Planejar estratÃ©gias
 - [ ] Explorar novas funcionalidades
 
 ---
 
-## ?? Certificação de Competência
+## ?? CertificaÃ§Ã£o de CompetÃªncia
 
-### ? Nível Básico
+### ? NÃ­vel BÃ¡sico
 
-Você domina o básico quando consegue:
-- [x] Fazer login e navegação
+VocÃª domina o bÃ¡sico quando consegue:
+- [x] Fazer login e navegaÃ§Ã£o
 - [x] Cadastrar clientes
-- [x] Cadastrar veículos
-- [x] Criar locações simples
+- [x] Cadastrar veÃ­culos
+- [x] Criar locaÃ§Ãµes simples
 - [x] Gerar contratos
 
-### ? Nível Intermediário
+### ? NÃ­vel IntermediÃ¡rio
 
-Você está no nível intermediário quando:
-- [ ] Gerencia todo processo de locação
+VocÃª estÃ¡ no nÃ­vel intermediÃ¡rio quando:
+- [ ] Gerencia todo processo de locaÃ§Ã£o
 - [ ] Faz vistorias completas
-- [ ] Processa devoluções com cálculos
+- [ ] Processa devoluÃ§Ãµes com cÃ¡lculos
 - [ ] Gerencia documentos
-- [ ] Usa filtros e relatórios
+- [ ] Usa filtros e relatÃ³rios
 
-### ? Nível Avançado
+### ? NÃ­vel AvanÃ§ado
 
-Você é expert quando:
-- [ ] Gerencia manutenções
-- [ ] Analisa relatórios gerenciais
+VocÃª Ã© expert quando:
+- [ ] Gerencia manutenÃ§Ãµes
+- [ ] Analisa relatÃ³rios gerenciais
 - [ ] Otimiza processos
-- [ ] Treina outros usuários
+- [ ] Treina outros usuÃ¡rios
 - [ ] Resolve problemas complexos
 
 ---
@@ -433,30 +433,30 @@ Você é expert quando:
 
 ### ?? Precisa de Ajuda?
 
-**Durante o horário comercial:**
+**Durante o horÃ¡rio comercial:**
 - ?? Email: suporte@litoralsul.com.br
 - ?? WhatsApp: (13) 9XXXX-XXXX
 - ?? Telefone: (13) 3XXX-XXXX
 
-**Fora do horário:**
-- ?? Consulte os guias de documentação
+**Fora do horÃ¡rio:**
+- ?? Consulte os guias de documentaÃ§Ã£o
 - ?? Use a busca no sistema
-- ?? Anote dúvidas para perguntar depois
+- ?? Anote dÃºvidas para perguntar depois
 
 **Recursos Online:**
-- ?? [Documentação Completa](README.md)
-- ?? Vídeos tutoriais (em breve)
+- ?? [DocumentaÃ§Ã£o Completa](README.md)
+- ?? VÃ­deos tutoriais (em breve)
 - ?? FAQ (perguntas frequentes)
 
 ---
 
-## ?? Você está Pronto!
+## ?? VocÃª estÃ¡ Pronto!
 
-Agora você tem todas as ferramentas para usar o sistema com eficiência.
+Agora vocÃª tem todas as ferramentas para usar o sistema com eficiÃªncia.
 
 ### ?? Lembre-se:
 
-1. **Pratique**: Quanto mais usar, mais fácil fica
+1. **Pratique**: Quanto mais usar, mais fÃ¡cil fica
 2. **Explore**: Teste todas as funcionalidades
 3. **Documente**: Anote seus processos
 4. **Compartilhe**: Ensine sua equipe
@@ -469,5 +469,5 @@ Agora você tem todas as ferramentas para usar o sistema com eficiência.
 ---
 
 **Sistema:** Litoral Sul Locadora e Turismo  
-**Versão:** 1.0  
-**Última Atualização:** Outubro/2025
+**VersÃ£o:** 1.0  
+**Ãšltima AtualizaÃ§Ã£o:** Outubro/2025

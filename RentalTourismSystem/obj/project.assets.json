@@ -261,6 +261,19 @@
           }
         }
       },
+      "Markdig/0.42.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Markdig.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Markdig.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Microsoft.AspNetCore.Cryptography.Internal/8.0.20": {
         "type": "package",
         "compile": {
@@ -2763,6 +2776,29 @@
         "lib/net8.0/KubernetesClient.pdb",
         "lib/net8.0/KubernetesClient.xml",
         "logo.png"
+      ]
+    },
+    "Markdig/0.42.0": {
+      "sha512": "tINdftVfbTujqfPXrQOSl9/6XCS2Y4Zwz+i7UPBgxRNnDtI1CjyQ5UA/5sKoSOmfECyWkTztY/vbcc/u1DA8nA==",
+      "type": "package",
+      "path": "markdig/0.42.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net462/Markdig.dll",
+        "lib/net462/Markdig.xml",
+        "lib/net8.0/Markdig.dll",
+        "lib/net8.0/Markdig.xml",
+        "lib/net9.0/Markdig.dll",
+        "lib/net9.0/Markdig.xml",
+        "lib/netstandard2.0/Markdig.dll",
+        "lib/netstandard2.0/Markdig.xml",
+        "lib/netstandard2.1/Markdig.dll",
+        "lib/netstandard2.1/Markdig.xml",
+        "markdig.0.42.0.nupkg.sha512",
+        "markdig.nuspec",
+        "markdig.png",
+        "readme.md"
       ]
     },
     "Microsoft.AspNetCore.Cryptography.Internal/8.0.20": {
@@ -6623,6 +6659,7 @@
       "Asp.Versioning.Mvc.ApiExplorer >= 8.1.0",
       "AspNetCore.HealthChecks.UI >= 9.0.0",
       "AspNetCore.HealthChecks.UI.InMemory.Storage >= 9.0.0",
+      "Markdig >= 0.42.0",
       "Microsoft.AspNetCore.Diagnostics.HealthChecks >= 2.2.0",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 8.0.20",
       "Microsoft.AspNetCore.Identity.UI >= 8.0.20",
@@ -6700,6 +6737,10 @@
           "AspNetCore.HealthChecks.UI.InMemory.Storage": {
             "target": "Package",
             "version": "[9.0.0, )"
+          },
+          "Markdig": {
+            "target": "Package",
+            "version": "[0.42.0, )"
           },
           "Microsoft.AspNetCore.Diagnostics.HealthChecks": {
             "target": "Package",

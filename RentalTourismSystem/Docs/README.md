@@ -1,83 +1,83 @@
-# ?? DocumentaÁ„o do Sistema - Õndice Geral
+Ôªø# ?? Documenta√ß√£o do Sistema - √çndice Geral
 
 ## ?? Bem-vindo ao Sistema Litoral Sul
 
-Este È o Ìndice completo da documentaÁ„o do **Sistema Integrado de LocaÁ„o de VeÌculos e Turismo** da Litoral Sul.
+Este √© o √≠ndice completo da documenta√ß√£o do **Sistema Integrado de Loca√ß√£o de Ve√≠culos e Turismo** da Litoral Sul.
 
 ---
 
-## ?? Guias DisponÌveis
+## ?? Guias Dispon√≠veis
 
-### ?? 1. AutenticaÁ„o e SeguranÁa
+### ?? 1. Autentica√ß√£o e Seguran√ßa
 **[AUTENTICACAO_GUIA_COMPLETO.md](AUTENTICACAO_GUIA_COMPLETO.md)**
 
 Aprenda sobre:
-- Login e registro de usu·rios
-- Tipos de usu·rios (Admin, Manager, Employee, User)
-- Permissıes e controle de acesso
-- SeguranÁa e proteÁ„o de dados
-- RecuperaÁ„o de senha
-- Gerenciamento de usu·rios
+- Login e registro de usu√°rios
+- Tipos de usu√°rios (Admin, Manager, Employee, User)
+- Permiss√µes e controle de acesso
+- Seguran√ßa e prote√ß√£o de dados
+- Recupera√ß√£o de senha
+- Gerenciamento de usu√°rios
 
-**Ideal para:** Administradores e novos usu·rios
+**Ideal para:** Administradores e novos usu√°rios
 
 ---
 
-### ?? 2. Gest„o de Clientes
+### ?? 2. Gest√£o de Clientes
 **[CLIENTES_GUIA_COMPLETO.md](CLIENTES_GUIA_COMPLETO.md)**
 
 Aprenda sobre:
 - Cadastro completo de clientes
-- ValidaÁ„o de CPF e CNH
+- Valida√ß√£o de CPF e CNH
 - Upload de documentos (CNH, RG, CPF)
-- Consulta e filtros avanÁados
-- HistÛrico de locaÁıes e reservas
-- Boas pr·ticas de cadastro
+- Consulta e filtros avan√ßados
+- Hist√≥rico de loca√ß√µes e reservas
+- Boas pr√°ticas de cadastro
 
-**Ideal para:** Atendentes, Managers e Funcion·rios
+**Ideal para:** Atendentes, Managers e Funcion√°rios
 
 ---
 
-### ?? 3. Gest„o de VeÌculos
+### ?? 3. Gest√£o de Ve√≠culos
 **[VEICULOS_GUIA_COMPLETO.md](VEICULOS_GUIA_COMPLETO.md)**
 
 Aprenda sobre:
 - Cadastro da frota
-- Controle de status (DisponÌvel, Locado, ManutenÁ„o)
-- VerificaÁ„o de disponibilidade
+- Controle de status (Dispon√≠vel, Locado, Manuten√ß√£o)
+- Verifica√ß√£o de disponibilidade
 - Upload de documentos (CRLV, Seguro, IPVA)
-- HistÛrico de locaÁıes
-- IntegraÁ„o com manutenÁıes
+- Hist√≥rico de loca√ß√µes
+- Integra√ß√£o com manuten√ß√µes
 
 **Ideal para:** Gestores de frota, Managers
 
 ---
 
-### ?? 4. Sistema de LocaÁıes
+### ?? 4. Sistema de Loca√ß√µes
 **[LOCACOES_GUIA_COMPLETO.md](LOCACOES_GUIA_COMPLETO.md)**
 
 Aprenda sobre:
-- Criar nova locaÁ„o
-- Processo completo (retirada ? devoluÁ„o)
-- Vistoria de veÌculos
-- GeraÁ„o de contratos
-- C·lculo de valores e multas
-- FinalizaÁ„o e pagamento
+- Criar nova loca√ß√£o
+- Processo completo (retirada ? devolu√ß√£o)
+- Vistoria de ve√≠culos
+- Gera√ß√£o de contratos
+- C√°lculo de valores e multas
+- Finaliza√ß√£o e pagamento
 
-**Ideal para:** Atendentes e Funcion·rios operacionais
+**Ideal para:** Atendentes e Funcion√°rios operacionais
 
 ---
 
-### ?? 5. Sistema de ManutenÁıes
+### ?? 5. Sistema de Manuten√ß√µes
 **[MANUTENCAO_GUIA_ACESSO.md](MANUTENCAO_GUIA_ACESSO.md)**
 
 Aprenda sobre:
-- Cadastro de manutenÁıes preventivas e corretivas
-- Tipos de manutenÁ„o (17 categorias)
-- Controle de custos (peÁas + m„o de obra)
-- HistÛrico por veÌculo
-- RelatÛrios de manutenÁ„o
-- Gest„o de itens e serviÁos
+- Cadastro de manuten√ß√µes preventivas e corretivas
+- Tipos de manuten√ß√£o (17 categorias)
+- Controle de custos (pe√ßas + m√£o de obra)
+- Hist√≥rico por ve√≠culo
+- Relat√≥rios de manuten√ß√£o
+- Gest√£o de itens e servi√ßos
 
 **Ideal para:** Gestores de frota, Managers
 
@@ -89,10 +89,10 @@ Aprenda sobre:
 Aprenda sobre:
 - Cadastro de pacotes de viagem
 - Criar reservas de turismo
-- ServiÁos adicionais
+- Servi√ßos adicionais
 - Controle de status (Pendente, Confirmada, Realizada)
-- RelatÛrios de vendas
-- Gest„o de destinos
+- Relat√≥rios de vendas
+- Gest√£o de destinos
 
 **Ideal para:** Agentes de viagem, Vendedores
 
@@ -103,151 +103,151 @@ Aprenda sobre:
 
 Aprenda sobre:
 - Tipos de documentos suportados
-- Upload para clientes, veÌculos e funcion·rios
-- OrganizaÁ„o e armazenamento
-- SeguranÁa de arquivos
-- Download e visualizaÁ„o
+- Upload para clientes, ve√≠culos e funcion√°rios
+- Organiza√ß√£o e armazenamento
+- Seguran√ßa de arquivos
+- Download e visualiza√ß√£o
 - Gerenciamento de documentos
 
-**Ideal para:** Todos os usu·rios que fazem uploads
+**Ideal para:** Todos os usu√°rios que fazem uploads
 
 ---
 
-## ?? Guias R·pidos por Perfil
+## ?? Guias R√°pidos por Perfil
 
 ### ????? **Administrador (Admin)**
 Leia primeiro:
-1. ? [AutenticaÁ„o e SeguranÁa](AUTENTICACAO_GUIA_COMPLETO.md)
-2. ? [Gest„o de Clientes](CLIENTES_GUIA_COMPLETO.md)
-3. ? [Gest„o de VeÌculos](VEICULOS_GUIA_COMPLETO.md)
-4. ? [Sistema de ManutenÁıes](MANUTENCAO_GUIA_ACESSO.md)
+1. ? [Autentica√ß√£o e Seguran√ßa](AUTENTICACAO_GUIA_COMPLETO.md)
+2. ? [Gest√£o de Clientes](CLIENTES_GUIA_COMPLETO.md)
+3. ? [Gest√£o de Ve√≠culos](VEICULOS_GUIA_COMPLETO.md)
+4. ? [Sistema de Manuten√ß√µes](MANUTENCAO_GUIA_ACESSO.md)
 5. ? [Upload de Documentos](UPLOAD_DOCUMENTOS.md)
 
-**VocÍ tem acesso total!**
+**Voc√™ tem acesso total!**
 
 ---
 
 ### ?? **Gerente (Manager)**
 Leia primeiro:
-1. ? [AutenticaÁ„o e SeguranÁa](AUTENTICACAO_GUIA_COMPLETO.md) - SeÁ„o de permissıes
-2. ? [Gest„o de VeÌculos](VEICULOS_GUIA_COMPLETO.md) - Controle da frota
-3. ? [Sistema de ManutenÁıes](MANUTENCAO_GUIA_ACESSO.md) - Custos e planejamento
-4. ? [Sistema de LocaÁıes](LOCACOES_GUIA_COMPLETO.md) - Processo operacional
+1. ? [Autentica√ß√£o e Seguran√ßa](AUTENTICACAO_GUIA_COMPLETO.md) - Se√ß√£o de permiss√µes
+2. ? [Gest√£o de Ve√≠culos](VEICULOS_GUIA_COMPLETO.md) - Controle da frota
+3. ? [Sistema de Manuten√ß√µes](MANUTENCAO_GUIA_ACESSO.md) - Custos e planejamento
+4. ? [Sistema de Loca√ß√µes](LOCACOES_GUIA_COMPLETO.md) - Processo operacional
 
-**Foco em gest„o operacional!**
+**Foco em gest√£o operacional!**
 
 ---
 
-### ????? **Funcion·rio (Employee)**
+### ????? **Funcion√°rio (Employee)**
 Leia primeiro:
-1. ? [AutenticaÁ„o e SeguranÁa](AUTENTICACAO_GUIA_COMPLETO.md) - Como fazer login
-2. ? [Gest„o de Clientes](CLIENTES_GUIA_COMPLETO.md) - Cadastro de clientes
-3. ? [Sistema de LocaÁıes](LOCACOES_GUIA_COMPLETO.md) - Processo completo
+1. ? [Autentica√ß√£o e Seguran√ßa](AUTENTICACAO_GUIA_COMPLETO.md) - Como fazer login
+2. ? [Gest√£o de Clientes](CLIENTES_GUIA_COMPLETO.md) - Cadastro de clientes
+3. ? [Sistema de Loca√ß√µes](LOCACOES_GUIA_COMPLETO.md) - Processo completo
 4. ? [Reservas de Viagem](RESERVAS_VIAGEM_GUIA_COMPLETO.md) - Vender pacotes
 
 **Foco no atendimento ao cliente!**
 
 ---
 
-### ?? **Usu·rio B·sico (User)**
+### ?? **Usu√°rio B√°sico (User)**
 Leia primeiro:
-1. ? [AutenticaÁ„o e SeguranÁa](AUTENTICACAO_GUIA_COMPLETO.md) - Como acessar
-2. ? [Gest„o de Clientes](CLIENTES_GUIA_COMPLETO.md) - Consultas
-3. ? [Gest„o de VeÌculos](VEICULOS_GUIA_COMPLETO.md) - VisualizaÁ„o
+1. ? [Autentica√ß√£o e Seguran√ßa](AUTENTICACAO_GUIA_COMPLETO.md) - Como acessar
+2. ? [Gest√£o de Clientes](CLIENTES_GUIA_COMPLETO.md) - Consultas
+3. ? [Gest√£o de Ve√≠culos](VEICULOS_GUIA_COMPLETO.md) - Visualiza√ß√£o
 
 **Acesso de consulta!**
 
 ---
 
-## ?? Busca R·pida por Funcionalidade
+## ?? Busca R√°pida por Funcionalidade
 
 ### ?? **Cadastros**
 - [Cadastrar Cliente](CLIENTES_GUIA_COMPLETO.md#cadastro-de-clientes)
-- [Cadastrar VeÌculo](VEICULOS_GUIA_COMPLETO.md#cadastro-de-veÌculos)
+- [Cadastrar Ve√≠culo](VEICULOS_GUIA_COMPLETO.md#cadastro-de-ve√≠culos)
 - [Cadastrar Pacote de Viagem](RESERVAS_VIAGEM_GUIA_COMPLETO.md#pacotes-de-viagem)
-- [Cadastrar Usu·rio](AUTENTICACAO_GUIA_COMPLETO.md#registro-de-novo-usu·rio)
+- [Cadastrar Usu√°rio](AUTENTICACAO_GUIA_COMPLETO.md#registro-de-novo-usu√°rio)
 
 ### ?? **Processos**
-- [Processo de LocaÁ„o](LOCACOES_GUIA_COMPLETO.md#processo-de-locaÁ„o)
-- [DevoluÁ„o de VeÌculo](LOCACOES_GUIA_COMPLETO.md#devoluÁ„o-de-veÌculo)
+- [Processo de Loca√ß√£o](LOCACOES_GUIA_COMPLETO.md#processo-de-loca√ß√£o)
+- [Devolu√ß√£o de Ve√≠culo](LOCACOES_GUIA_COMPLETO.md#devolu√ß√£o-de-ve√≠culo)
 - [Criar Reserva de Viagem](RESERVAS_VIAGEM_GUIA_COMPLETO.md#criar-reserva)
-- [Registrar ManutenÁ„o](MANUTENCAO_GUIA_ACESSO.md)
+- [Registrar Manuten√ß√£o](MANUTENCAO_GUIA_ACESSO.md)
 
 ### ?? **Documentos**
 - [Upload de Documentos de Cliente](UPLOAD_DOCUMENTOS.md#para-clientes)
-- [Upload de Documentos de VeÌculo](UPLOAD_DOCUMENTOS.md#para-veÌculos)
-- [Gerar Contrato de LocaÁ„o](LOCACOES_GUIA_COMPLETO.md#documentos-e-contratos)
+- [Upload de Documentos de Ve√≠culo](UPLOAD_DOCUMENTOS.md#para-ve√≠culos)
+- [Gerar Contrato de Loca√ß√£o](LOCACOES_GUIA_COMPLETO.md#documentos-e-contratos)
 - [Laudo de Vistoria](LOCACOES_GUIA_COMPLETO.md#vistoria)
 
-### ?? **RelatÛrios**
-- [RelatÛrios de LocaÁıes](LOCACOES_GUIA_COMPLETO.md#relatÛrios)
-- [RelatÛrios de ManutenÁ„o](MANUTENCAO_GUIA_ACESSO.md#relatÛrios)
-- [RelatÛrios de Reservas](RESERVAS_VIAGEM_GUIA_COMPLETO.md#relatÛrios)
-- [VeÌculos Mais Alugados](VEICULOS_GUIA_COMPLETO.md#relatÛrios)
+### ?? **Relat√≥rios**
+- [Relat√≥rios de Loca√ß√µes](LOCACOES_GUIA_COMPLETO.md#relat√≥rios)
+- [Relat√≥rios de Manuten√ß√£o](MANUTENCAO_GUIA_ACESSO.md#relat√≥rios)
+- [Relat√≥rios de Reservas](RESERVAS_VIAGEM_GUIA_COMPLETO.md#relat√≥rios)
+- [Ve√≠culos Mais Alugados](VEICULOS_GUIA_COMPLETO.md#relat√≥rios)
 
-### ?? **ManutenÁ„o**
-- [Nova ManutenÁ„o](MANUTENCAO_GUIA_ACESSO.md#nova-manutenÁ„o)
-- [HistÛrico por VeÌculo](MANUTENCAO_GUIA_ACESSO.md#histÛrico-de-manutenÁıes)
-- [RelatÛrio de Custos](MANUTENCAO_GUIA_ACESSO.md#relatÛrio-de-custos)
+### ?? **Manuten√ß√£o**
+- [Nova Manuten√ß√£o](MANUTENCAO_GUIA_ACESSO.md#nova-manuten√ß√£o)
+- [Hist√≥rico por Ve√≠culo](MANUTENCAO_GUIA_ACESSO.md#hist√≥rico-de-manuten√ß√µes)
+- [Relat√≥rio de Custos](MANUTENCAO_GUIA_ACESSO.md#relat√≥rio-de-custos)
 - [Adicionar Itens](MANUTENCAO_GUIA_ACESSO.md#adicionar-itens)
 
-### ?? **SeguranÁa**
+### ?? **Seguran√ßa**
 - [Fazer Login](AUTENTICACAO_GUIA_COMPLETO.md#login-e-registro)
 - [Trocar Senha](AUTENTICACAO_GUIA_COMPLETO.md#alterar-senha-logado)
-- [Recuperar Senha](AUTENTICACAO_GUIA_COMPLETO.md#recuperaÁ„o-de-senha)
-- [Gerenciar Usu·rios](AUTENTICACAO_GUIA_COMPLETO.md#gerenciamento-de-usu·rios)
+- [Recuperar Senha](AUTENTICACAO_GUIA_COMPLETO.md#recupera√ß√£o-de-senha)
+- [Gerenciar Usu√°rios](AUTENTICACAO_GUIA_COMPLETO.md#gerenciamento-de-usu√°rios)
 
 ---
 
-## ?? SoluÁ„o R·pida de Problemas
+## ?? Solu√ß√£o R√°pida de Problemas
 
 ### ? Problemas Comuns
 
-**1. N„o consigo fazer login**
-? Ver: [AutenticaÁ„o - SoluÁ„o de Problemas](AUTENTICACAO_GUIA_COMPLETO.md#soluÁ„o-de-problemas)
+**1. N√£o consigo fazer login**
+? Ver: [Autentica√ß√£o - Solu√ß√£o de Problemas](AUTENTICACAO_GUIA_COMPLETO.md#solu√ß√£o-de-problemas)
 
-**2. CNH do cliente est· vencida**
-? Ver: [Clientes - ValidaÁ„o CNH](CLIENTES_GUIA_COMPLETO.md#validaÁıes-autom·ticas)
+**2. CNH do cliente est√° vencida**
+? Ver: [Clientes - Valida√ß√£o CNH](CLIENTES_GUIA_COMPLETO.md#valida√ß√µes-autom√°ticas)
 
-**3. VeÌculo n„o est· disponÌvel**
-? Ver: [VeÌculos - Disponibilidade](VEICULOS_GUIA_COMPLETO.md#disponibilidade)
+**3. Ve√≠culo n√£o est√° dispon√≠vel**
+? Ver: [Ve√≠culos - Disponibilidade](VEICULOS_GUIA_COMPLETO.md#disponibilidade)
 
 **4. Erro ao fazer upload de documento**
 ? Ver: [Upload - Troubleshooting](UPLOAD_DOCUMENTOS.md#troubleshooting)
 
-**5. N„o consigo cancelar reserva**
+**5. N√£o consigo cancelar reserva**
 ? Ver: [Reservas - Cancelamento](RESERVAS_VIAGEM_GUIA_COMPLETO.md#cancelar-reserva)
 
-**6. VeÌculo n„o pode ser excluÌdo**
-? Ver: [VeÌculos - Regras de Exclus„o](VEICULOS_GUIA_COMPLETO.md#excluir-veÌculo)
+**6. Ve√≠culo n√£o pode ser exclu√≠do**
+? Ver: [Ve√≠culos - Regras de Exclus√£o](VEICULOS_GUIA_COMPLETO.md#excluir-ve√≠culo)
 
 ---
 
-## ?? Checklist de InÌcio
+## ?? Checklist de In√≠cio
 
-### ?? Primeira UtilizaÁ„o do Sistema
+### ?? Primeira Utiliza√ß√£o do Sistema
 
 - [ ] **1. Fazer primeiro login**
-  - Usu·rio: admin@litoralsul.com.br
+  - Usu√°rio: admin@litoralsul.com.br
   - Senha: Admin@123456
   
-- [ ] **2. Trocar senha padr„o**
+- [ ] **2. Trocar senha padr√£o**
   - Menu ? Perfil ? Alterar Senha
   
-- [ ] **3. Criar usu·rios do time**
+- [ ] **3. Criar usu√°rios do time**
   - Manager (gerente)
   - Employee (atendentes)
   
-- [ ] **4. Cadastrar agÍncias**
-  - AgÍncia principal
+- [ ] **4. Cadastrar ag√™ncias**
+  - Ag√™ncia principal
   - Filiais (se houver)
   
-- [ ] **5. Cadastrar funcion·rios**
+- [ ] **5. Cadastrar funcion√°rios**
   - Dados completos
-  - Vincular usu·rio
+  - Vincular usu√°rio
   
 - [ ] **6. Cadastrar frota**
-  - Todos os veÌculos
+  - Todos os ve√≠culos
   - Upload de documentos
   
 - [ ] **7. Cadastrar clientes existentes**
@@ -255,42 +255,42 @@ Leia primeiro:
   - Validar CNH
   
 - [ ] **8. Criar pacotes de viagem**
-  - Destinos disponÌveis
-  - PreÁos e condiÁıes
+  - Destinos dispon√≠veis
+  - Pre√ßos e condi√ß√µes
   
-- [ ] **9. Testar processo de locaÁ„o**
-  - Do inÌcio ao fim
+- [ ] **9. Testar processo de loca√ß√£o**
+  - Do in√≠cio ao fim
   - Gerar contrato
   
-- [ ] **10. Configurar manutenÁıes preventivas**
+- [ ] **10. Configurar manuten√ß√µes preventivas**
   - Definir quilometragens
-  - Agendar revisıes
+  - Agendar revis√µes
 
 ---
 
 ## ?? Dicas Gerais
 
-### ? Boas Pr·ticas
+### ? Boas Pr√°ticas
 
-1. **Mantenha documentaÁ„o atualizada**
+1. **Mantenha documenta√ß√£o atualizada**
    - Upload de documentos regularmente
    - Renovar CNH, CRLV, Seguros
 
 2. **Use filtros e buscas**
-   - Encontre informaÁıes rapidamente
-   - Aproveite os filtros avanÁados
+   - Encontre informa√ß√µes rapidamente
+   - Aproveite os filtros avan√ßados
 
-3. **FaÁa backup regular**
-   - Exportar relatÛrios importantes
-   - Salvar documentos crÌticos
+3. **Fa√ßa backup regular**
+   - Exportar relat√≥rios importantes
+   - Salvar documentos cr√≠ticos
 
 4. **Acompanhe alertas**
    - CNH vencendo
-   - ManutenÁıes pendentes
+   - Manuten√ß√µes pendentes
    - Documentos a vencer
 
 5. **Consulte os guias**
-   - Quando tiver d˙vidas
+   - Quando tiver d√∫vidas
    - Antes de processos importantes
    - Para conhecer novos recursos
 
@@ -300,42 +300,42 @@ Leia primeiro:
 
 ### ?? Precisa de Ajuda?
 
-**DocumentaÁ„o:**
-- ?? Consulte os guias especÌficos
-- ?? Use a busca r·pida acima
+**Documenta√ß√£o:**
+- ?? Consulte os guias espec√≠ficos
+- ?? Use a busca r√°pida acima
 - ? Veja os checklists
 
-**Suporte TÈcnico:**
+**Suporte T√©cnico:**
 - ?? Email: suporte@litoralsul.com.br
 - ?? Telefone: (13) 3XXX-XXXX
 - ?? Chat interno (em breve)
 
-**Hor·rio de Atendimento:**
-- Segunda a Sexta: 8h ‡s 18h
-- S·bado: 8h ‡s 12h
+**Hor√°rio de Atendimento:**
+- Segunda a Sexta: 8h √†s 18h
+- S√°bado: 8h √†s 12h
 
 ---
 
-## ?? AtualizaÁıes
+## ?? Atualiza√ß√µes
 
-### ?? HistÛrico de Versıes
+### ?? Hist√≥rico de Vers√µes
 
-**Vers„o 1.0 - Outubro/2025**
-- ? Sistema de LocaÁıes completo
+**Vers√£o 1.0 - Outubro/2025**
+- ? Sistema de Loca√ß√µes completo
 - ? Sistema de Reservas de Viagem
-- ? Sistema de ManutenÁıes
+- ? Sistema de Manuten√ß√µes
 - ? Upload de Documentos
-- ? AutenticaÁ„o e Permissıes
-- ? RelatÛrios Gerenciais
-- ? DocumentaÁ„o Completa
+- ? Autentica√ß√£o e Permiss√µes
+- ? Relat√≥rios Gerenciais
+- ? Documenta√ß√£o Completa
 
-**PrÛximas Funcionalidades:**
+**Pr√≥ximas Funcionalidades:**
 - ?? App Mobile
-- ?? NotificaÁıes Push
-- ?? Dashboard avanÁado
-- ?? AutomaÁıes
+- ?? Notifica√ß√µes Push
+- ?? Dashboard avan√ßado
+- ?? Automa√ß√µes
 - ?? Email marketing
-- ? AvaliaÁıes de clientes
+- ? Avalia√ß√µes de clientes
 
 ---
 
@@ -343,16 +343,16 @@ Leia primeiro:
 
 Escolha o guia apropriado para seu perfil e comece a explorar o sistema:
 
-- **Novo no sistema?** ? [AutenticaÁ„o e SeguranÁa](AUTENTICACAO_GUIA_COMPLETO.md)
-- **Atendente?** ? [Gest„o de Clientes](CLIENTES_GUIA_COMPLETO.md)
-- **Gestor de frota?** ? [Gest„o de VeÌculos](VEICULOS_GUIA_COMPLETO.md)
+- **Novo no sistema?** ? [Autentica√ß√£o e Seguran√ßa](AUTENTICACAO_GUIA_COMPLETO.md)
+- **Atendente?** ? [Gest√£o de Clientes](CLIENTES_GUIA_COMPLETO.md)
+- **Gestor de frota?** ? [Gest√£o de Ve√≠culos](VEICULOS_GUIA_COMPLETO.md)
 - **Vendedor de turismo?** ? [Reservas de Viagem](RESERVAS_VIAGEM_GUIA_COMPLETO.md)
 
 ---
 
 **Sistema desenvolvido para:** Litoral Sul Locadora e Turismo  
-**Vers„o da DocumentaÁ„o:** 1.0  
-**⁄ltima AtualizaÁ„o:** Outubro/2025  
+**Vers√£o da Documenta√ß√£o:** 1.0  
+**√öltima Atualiza√ß√£o:** Outubro/2025  
 **Tecnologia:** ASP.NET Core 8.0 + Razor Pages
 
 ---

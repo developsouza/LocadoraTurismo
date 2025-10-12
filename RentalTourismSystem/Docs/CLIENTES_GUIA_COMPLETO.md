@@ -1,110 +1,110 @@
-# ?? Sistema de Gest„o de Clientes - Guia Completo
+Ôªø# ?? Sistema de Gest√£o de Clientes - Guia Completo
 
-## ?? Õndice
-- [Vis„o Geral](#vis„o-geral)
+## ?? √çndice
+- [Vis√£o Geral](#vis√£o-geral)
 - [Cadastro de Clientes](#cadastro-de-clientes)
 - [Consulta e Filtros](#consulta-e-filtros)
-- [EdiÁ„o e AtualizaÁ„o](#ediÁ„o-e-atualizaÁ„o)
+- [Edi√ß√£o e Atualiza√ß√£o](#edi√ß√£o-e-atualiza√ß√£o)
 - [Documentos do Cliente](#documentos-do-cliente)
-- [HistÛrico e RelatÛrios](#histÛrico-e-relatÛrios)
-- [Permissıes](#permissıes)
-- [Boas Pr·ticas](#boas-pr·ticas)
+- [Hist√≥rico e Relat√≥rios](#hist√≥rico-e-relat√≥rios)
+- [Permiss√µes](#permiss√µes)
+- [Boas Pr√°ticas](#boas-pr√°ticas)
 
 ---
 
-## ?? Vis„o Geral
+## ?? Vis√£o Geral
 
-O mÛdulo de gest„o de clientes È o coraÁ„o do sistema, permitindo o cadastro completo e gerenciamento de dados dos clientes da locadora e agÍncia de turismo.
+O m√≥dulo de gest√£o de clientes √© o cora√ß√£o do sistema, permitindo o cadastro completo e gerenciamento de dados dos clientes da locadora e ag√™ncia de turismo.
 
 ### ?? Funcionalidades Principais
 
 ? **Cadastro Completo**
 - Dados pessoais (nome, CPF, telefone, email)
-- EndereÁo e CEP
-- Data de nascimento com validaÁ„o de idade
-- Estado civil e profiss„o
-- DocumentaÁ„o (CNH com validade)
+- Endere√ßo e CEP
+- Data de nascimento com valida√ß√£o de idade
+- Estado civil e profiss√£o
+- Documenta√ß√£o (CNH com validade)
 
 ? **Gerenciamento**
-- VisualizaÁ„o de todos os clientes
-- Busca e filtros avanÁados
-- EdiÁ„o de informaÁıes
+- Visualiza√ß√£o de todos os clientes
+- Busca e filtros avan√ßados
+- Edi√ß√£o de informa√ß√µes
 - Upload de documentos
-- HistÛrico de locaÁıes e reservas
+- Hist√≥rico de loca√ß√µes e reservas
 
-? **IntegraÁ„o**
-- VinculaÁ„o com locaÁıes de veÌculos
-- VinculaÁ„o com reservas de viagem
+? **Integra√ß√£o**
+- Vincula√ß√£o com loca√ß√µes de ve√≠culos
+- Vincula√ß√£o com reservas de viagem
 - Upload de documentos (CNH, RG, CPF, etc.)
-- GeraÁ„o de relatÛrios
+- Gera√ß√£o de relat√≥rios
 
 ---
 
 ## ?? Cadastro de Clientes
 
 ### ?? Como Acessar
-**Menu Lateral ? LocaÁ„o ? Clientes ? ? Novo Cliente**
+**Menu Lateral ? Loca√ß√£o ? Clientes ? ? Novo Cliente**
 
 OU
 
 **URL direta:** `/Clientes/Create`
 
-### ?? Campos ObrigatÛrios
+### ?? Campos Obrigat√≥rios
 
 #### 1?? **Dados Pessoais**
-| Campo | Formato | ValidaÁ„o | Exemplo |
+| Campo | Formato | Valida√ß√£o | Exemplo |
 |-------|---------|-----------|---------|
-| **Nome Completo** | Texto (m·x. 100 caracteres) | ObrigatÛrio | Jo„o Silva Santos |
-| **CPF** | 000.000.000-00 | ObrigatÛrio, validaÁ„o de CPF | 123.456.789-00 |
-| **Telefone** | (00) 00000-0000 | ObrigatÛrio | (13) 98765-4321 |
-| **Email** | email@dominio.com | ObrigatÛrio, formato v·lido | joao@email.com |
-| **Data de Nascimento** | dd/MM/yyyy | ObrigatÛrio, entre 21 e 100 anos | 15/03/1990 |
+| **Nome Completo** | Texto (m√°x. 100 caracteres) | Obrigat√≥rio | Jo√£o Silva Santos |
+| **CPF** | 000.000.000-00 | Obrigat√≥rio, valida√ß√£o de CPF | 123.456.789-00 |
+| **Telefone** | (00) 00000-0000 | Obrigat√≥rio | (13) 98765-4321 |
+| **Email** | email@dominio.com | Obrigat√≥rio, formato v√°lido | joao@email.com |
+| **Data de Nascimento** | dd/MM/yyyy | Obrigat√≥rio, entre 21 e 100 anos | 15/03/1990 |
 
-#### 2?? **EndereÁo**
-| Campo | Formato | ValidaÁ„o | Exemplo |
+#### 2?? **Endere√ßo**
+| Campo | Formato | Valida√ß√£o | Exemplo |
 |-------|---------|-----------|---------|
-| **EndereÁo Completo** | Texto (m·x. 200 caracteres) | ObrigatÛrio | Rua das Flores, 123, Centro |
+| **Endere√ßo Completo** | Texto (m√°x. 200 caracteres) | Obrigat√≥rio | Rua das Flores, 123, Centro |
 | **CEP** | 00000-000 | Opcional | 11700-000 |
 
-#### 3?? **InformaÁıes Complementares**
-| Campo | Formato | ValidaÁ„o | Exemplo |
+#### 3?? **Informa√ß√µes Complementares**
+| Campo | Formato | Valida√ß√£o | Exemplo |
 |-------|---------|-----------|---------|
-| **Estado Civil** | SeleÁ„o | Opcional | Casado, Solteiro, etc. |
-| **Profiss„o** | Texto (m·x. 100 caracteres) | Opcional | Engenheiro Civil |
+| **Estado Civil** | Sele√ß√£o | Opcional | Casado, Solteiro, etc. |
+| **Profiss√£o** | Texto (m√°x. 100 caracteres) | Opcional | Engenheiro Civil |
 
-#### 4?? **DocumentaÁ„o (CNH)**
-| Campo | Formato | ValidaÁ„o | Exemplo |
+#### 4?? **Documenta√ß√£o (CNH)**
+| Campo | Formato | Valida√ß√£o | Exemplo |
 |-------|---------|-----------|---------|
-| **N˙mero da CNH** | Texto (m·x. 20 caracteres) | Opcional* | 12345678900 |
-| **Validade da CNH** | dd/MM/yyyy | ObrigatÛrio se CNH informada | 15/12/2027 |
-| **Categoria CNH** | Texto (m·x. 5 caracteres) | Opcional | B, AB, etc. |
+| **N√∫mero da CNH** | Texto (m√°x. 20 caracteres) | Opcional* | 12345678900 |
+| **Validade da CNH** | dd/MM/yyyy | Obrigat√≥rio se CNH informada | 15/12/2027 |
+| **Categoria CNH** | Texto (m√°x. 5 caracteres) | Opcional | B, AB, etc. |
 
-> ?? **Importante:** Se informar n˙mero da CNH, a validade torna-se obrigatÛria e deve ser uma data futura!
+> ?? **Importante:** Se informar n√∫mero da CNH, a validade torna-se obrigat√≥ria e deve ser uma data futura!
 
-### ?? ValidaÁıes Autom·ticas
+### ?? Valida√ß√µes Autom√°ticas
 
 #### ? **CPF**
-- ValidaÁ„o de dÌgitos verificadores
-- N„o permite CPF com todos os n˙meros iguais
-- Aceita formato com ou sem pontuaÁ„o
+- Valida√ß√£o de d√≠gitos verificadores
+- N√£o permite CPF com todos os n√∫meros iguais
+- Aceita formato com ou sem pontua√ß√£o
 
 #### ? **Idade**
-- MÌnima: 21 anos
-- M·xima: 100 anos
-- C·lculo autom·tico da idade atual
+- M√≠nima: 21 anos
+- M√°xima: 100 anos
+- C√°lculo autom√°tico da idade atual
 
 #### ? **CNH**
 - Validade deve ser data futura
-- Se informar CNH, validade È obrigatÛria
-- Indica visualmente CNH v·lida/vencida
+- Se informar CNH, validade √© obrigat√≥ria
+- Indica visualmente CNH v√°lida/vencida
 
 #### ? **Email**
-- Formato v·lido (exemplo@dominio.com)
-- ⁄nico no sistema
+- Formato v√°lido (exemplo@dominio.com)
+- √önico no sistema
 
 ### ?? Passo a Passo - Cadastro
 
-1. **Acesse o formul·rio de cadastro**
+1. **Acesse o formul√°rio de cadastro**
    - Menu ? Clientes ? Novo Cliente
 
 2. **Preencha os dados pessoais**
@@ -116,21 +116,21 @@ OU
    Data de Nascimento: 20/05/1985
    ```
 
-3. **Preencha o endereÁo**
+3. **Preencha o endere√ßo**
    ```
-   EndereÁo: Av. Atl‚ntica, 456, Jardim Praiano
+   Endere√ßo: Av. Atl√¢ntica, 456, Jardim Praiano
    CEP: 11700-123
    ```
 
-4. **InformaÁıes complementares (opcional)**
+4. **Informa√ß√µes complementares (opcional)**
    ```
    Estado Civil: Solteira
-   Profiss„o: MÈdica
+   Profiss√£o: M√©dica
    ```
 
-5. **DocumentaÁ„o (opcional)**
+5. **Documenta√ß√£o (opcional)**
    ```
-   N˙mero CNH: 98765432100
+   N√∫mero CNH: 98765432100
    Validade CNH: 10/08/2028
    Categoria: AB
    ```
@@ -145,13 +145,13 @@ OU
 ## ?? Consulta e Filtros
 
 ### ?? Como Acessar
-**Menu Lateral ? LocaÁ„o ? Clientes**
+**Menu Lateral ? Loca√ß√£o ? Clientes**
 
 OU
 
 **URL direta:** `/Clientes/Index`
 
-### ?? Busca R·pida
+### ?? Busca R√°pida
 
 **Campo de busca no topo da lista:**
 - Busca por nome
@@ -162,78 +162,78 @@ OU
 **Como usar:**
 ```
 Digite: "Silva" ? Encontra todos os clientes com "Silva" no nome
-Digite: "123.456" ? Encontra cliente com CPF contendo esses n˙meros
-Digite: "maria@" ? Encontra emails comeÁando com "maria@"
+Digite: "123.456" ? Encontra cliente com CPF contendo esses n√∫meros
+Digite: "maria@" ? Encontra emails come√ßando com "maria@"
 ```
 
-### ?? InformaÁıes Exibidas na Lista
+### ?? Informa√ß√µes Exibidas na Lista
 
 Cada cliente na lista mostra:
 
-| InformaÁ„o | DescriÁ„o | Exemplo |
+| Informa√ß√£o | Descri√ß√£o | Exemplo |
 |------------|-----------|---------|
 | **Nome** | Nome completo | Maria da Silva |
 | **CPF** | CPF formatado | 987.654.321-00 |
 | **Email** | Email de contato | maria@email.com |
 | **Telefone** | Telefone formatado | (13) 99876-5432 |
 | **Idade** | Calculada automaticamente | 38 anos |
-| **CNH Status** | ? V·lida / ?? Vencida / ? Sem CNH | ? V·lida atÈ 2028 |
-| **Total LocaÁıes** | Quantidade de locaÁıes | 5 locaÁıes |
+| **CNH Status** | ? V√°lida / ?? Vencida / ? Sem CNH | ? V√°lida at√© 2028 |
+| **Total Loca√ß√µes** | Quantidade de loca√ß√µes | 5 loca√ß√µes |
 | **Total Reservas** | Quantidade de reservas | 3 reservas |
 
 ### ?? Indicadores Visuais
 
 #### **Status da CNH**
-- ?? **Verde:** CNH v·lida
+- ?? **Verde:** CNH v√°lida
 - ?? **Amarelo:** CNH vence em menos de 30 dias
 - ?? **Vermelho:** CNH vencida
 - ? **Cinza:** Sem CNH cadastrada
 
 #### **Atividade do Cliente**
-- ?? **Badge azul:** Cliente com locaÁıes ativas
+- ?? **Badge azul:** Cliente com loca√ß√µes ativas
 - ?? **Badge roxo:** Cliente com reservas futuras
-- ?? **Badge verde:** Cliente ativo (locaÁıes + reservas)
+- ?? **Badge verde:** Cliente ativo (loca√ß√µes + reservas)
 - ? **Sem badge:** Cliente sem atividades recentes
 
 ---
 
-## ?? EdiÁ„o e AtualizaÁ„o
+## ?? Edi√ß√£o e Atualiza√ß√£o
 
 ### ?? Como Acessar
 
-**OpÁ„o 1 - Pela Lista:**
-- Clientes ? Bot„o "?? Editar" ao lado do cliente
+**Op√ß√£o 1 - Pela Lista:**
+- Clientes ? Bot√£o "?? Editar" ao lado do cliente
 
-**OpÁ„o 2 - Pelos Detalhes:**
-- Clientes ? Detalhes ? Bot„o "Editar"
+**Op√ß√£o 2 - Pelos Detalhes:**
+- Clientes ? Detalhes ? Bot√£o "Editar"
 
-### ?? Campos Edit·veis
+### ?? Campos Edit√°veis
 
 **? Permitido Editar:**
 - Nome completo
 - Telefone
 - Email
-- EndereÁo e CEP
-- Estado civil e profiss„o
-- CNH (n˙mero, validade, categoria)
+- Endere√ßo e CEP
+- Estado civil e profiss√£o
+- CNH (n√∫mero, validade, categoria)
 
-**?? N„o Edit·vel:**
-- CPF (identificador ˙nico)
-- Data de nascimento (para manter histÛrico)
-- Data de cadastro (registro histÛrico)
+**?? N√£o Edit√°vel:**
+- CPF (identificador √∫nico)
+- Data de nascimento (para manter hist√≥rico)
+- Data de cadastro (registro hist√≥rico)
 
-### ?? ValidaÁıes na EdiÁ„o
+### ?? Valida√ß√µes na Edi√ß√£o
 
-1. **Email ˙nico:** N„o pode usar email j· cadastrado por outro cliente
-2. **CNH v·lida:** Se alterar CNH, a nova validade deve ser futura
-3. **Idade:** N„o pode alterar data de nascimento para fora do range (21-100 anos)
-4. **Telefone:** Deve manter formato v·lido
+1. **Email √∫nico:** N√£o pode usar email j√° cadastrado por outro cliente
+2. **CNH v√°lida:** Se alterar CNH, a nova validade deve ser futura
+3. **Idade:** N√£o pode alterar data de nascimento para fora do range (21-100 anos)
+4. **Telefone:** Deve manter formato v√°lido
 
-### ?? Exemplo de AtualizaÁ„o
+### ?? Exemplo de Atualiza√ß√£o
 
-**Cen·rio:** Atualizar telefone e CNH do cliente
+**Cen√°rio:** Atualizar telefone e CNH do cliente
 
-1. Acesse a ediÁ„o do cliente
+1. Acesse a edi√ß√£o do cliente
 2. Altere o telefone:
    ```
    De: (13) 99876-5432
@@ -241,19 +241,19 @@ Cada cliente na lista mostra:
    ```
 3. Atualize a CNH:
    ```
-   N˙mero CNH: 11111111111 (novo documento)
+   N√∫mero CNH: 11111111111 (novo documento)
    Validade CNH: 20/01/2030 (nova validade)
    Categoria: AB
    ```
-4. Clique em "Salvar AlteraÁıes"
-5. Sistema valida e confirma a atualizaÁ„o
+4. Clique em "Salvar Altera√ß√µes"
+5. Sistema valida e confirma a atualiza√ß√£o
 
 ---
 
 ## ?? Documentos do Cliente
 
 ### ?? Como Acessar
-**Clientes ? Detalhes do Cliente ? Bot„o "?? Documentos"**
+**Clientes ? Detalhes do Cliente ? Bot√£o "?? Documentos"**
 
 OU
 
@@ -261,55 +261,55 @@ OU
 
 ### ?? Tipos de Documentos Suportados
 
-| Tipo | DescriÁ„o | Formato |
+| Tipo | Descri√ß√£o | Formato |
 |------|-----------|---------|
-| **CNH** | Carteira Nacional de HabilitaÁ„o | PDF, Imagem |
+| **CNH** | Carteira Nacional de Habilita√ß√£o | PDF, Imagem |
 | **RG** | Registro Geral | PDF, Imagem |
-| **CPF** | Cadastro de Pessoa FÌsica | PDF, Imagem |
-| **Comprovante ResidÍncia** | Conta de luz, ·gua, etc. | PDF, Imagem |
+| **CPF** | Cadastro de Pessoa F√≠sica | PDF, Imagem |
+| **Comprovante Resid√™ncia** | Conta de luz, √°gua, etc. | PDF, Imagem |
 | **Foto de Perfil** | Foto 3x4 | Imagem |
 | **Outros** | Documentos diversos | PDF, Imagem |
 
 ### ?? Como Fazer Upload
 
-1. **Acesse a ·rea de documentos do cliente**
+1. **Acesse a √°rea de documentos do cliente**
 2. **Selecione o tipo de documento** (dropdown)
 3. **Clique em "Escolher arquivo"**
 4. **Selecione o arquivo do seu computador**
    - Formatos: PDF, JPG, JPEG, PNG, GIF, BMP
-   - Tamanho m·ximo: 10MB
-5. **Adicione uma descriÁ„o** (opcional)
+   - Tamanho m√°ximo: 10MB
+5. **Adicione uma descri√ß√£o** (opcional)
 6. **Clique em "Enviar Documento"**
 
-### ??? VisualizaÁ„o de Documentos
+### ??? Visualiza√ß√£o de Documentos
 
 **Lista de documentos mostra:**
 - ?? Nome do arquivo
 - ??? Tipo do documento
 - ?? Tamanho do arquivo
 - ?? Data de upload
-- ?? Usu·rio que fez upload
-- ?? DescriÁ„o (se houver)
+- ?? Usu√°rio que fez upload
+- ?? Descri√ß√£o (se houver)
 
-**AÁıes disponÌveis:**
+**A√ß√µes dispon√≠veis:**
 - ??? **Visualizar** (para imagens)
 - ?? **Baixar** (todos os tipos)
 - ??? **Excluir** (Admin/Manager)
 
-### ?? DocumentaÁ„o Completa
+### ?? Documenta√ß√£o Completa
 
-Para informaÁıes detalhadas sobre upload de documentos, consulte:
+Para informa√ß√µes detalhadas sobre upload de documentos, consulte:
 ?? **[UPLOAD_DOCUMENTOS.md](UPLOAD_DOCUMENTOS.md)**
 
 ---
 
-## ?? HistÛrico e RelatÛrios
+## ?? Hist√≥rico e Relat√≥rios
 
-### ?? VisualizaÁ„o de Detalhes
+### ?? Visualiza√ß√£o de Detalhes
 
 **Clientes ? Detalhes do Cliente**
 
-### ?? InformaÁıes DisponÌveis
+### ?? Informa√ß√µes Dispon√≠veis
 
 #### 1?? **Resumo do Cliente**
 ```
@@ -326,25 +326,25 @@ Cadastrado em: 15/01/2024
 CNH: 98765432100
 Categoria: AB
 Validade: 10/08/2028
-Status: ? V·lida (vence em 1.250 dias)
+Status: ? V√°lida (vence em 1.250 dias)
 ```
 
-#### 3?? **EstatÌsticas**
+#### 3?? **Estat√≠sticas**
 ```
-?? Total de LocaÁıes: 5
+?? Total de Loca√ß√µes: 5
 ?? Total de Reservas: 3
 ?? Valor Total Gasto: R$ 8.450,00
-?? Ticket MÈdio: R$ 1.056,25
+?? Ticket M√©dio: R$ 1.056,25
 ```
 
-#### 4?? **HistÛrico de LocaÁıes**
-- Lista das ˙ltimas locaÁıes
-- VeÌculo locado
-- PerÌodo da locaÁ„o
+#### 4?? **Hist√≥rico de Loca√ß√µes**
+- Lista das √∫ltimas loca√ß√µes
+- Ve√≠culo locado
+- Per√≠odo da loca√ß√£o
 - Valor pago
-- Status da locaÁ„o
+- Status da loca√ß√£o
 
-#### 5?? **HistÛrico de Reservas**
+#### 5?? **Hist√≥rico de Reservas**
 - Lista das reservas de viagem
 - Pacote contratado
 - Data da viagem
@@ -352,13 +352,13 @@ Status: ? V·lida (vence em 1.250 dias)
 - Valor total
 - Status da reserva
 
-### ?? AÁıes R·pidas
+### ?? A√ß√µes R√°pidas
 
 **Painel lateral direito:**
 
 ```
-?? Nova LocaÁ„o
-   ? Criar locaÁ„o para este cliente
+?? Nova Loca√ß√£o
+   ? Criar loca√ß√£o para este cliente
 
 ?? Nova Reserva
    ? Criar reserva de viagem
@@ -367,56 +367,56 @@ Status: ? V·lida (vence em 1.250 dias)
    ? Gerenciar documentos do cliente
 
 ?? Editar
-   ? Editar informaÁıes do cliente
+   ? Editar informa√ß√µes do cliente
 
 ?? Enviar Email
-   ? Enviar comunicaÁ„o (futuro)
+   ? Enviar comunica√ß√£o (futuro)
 ```
 
 ---
 
-## ?? Permissıes de Acesso
+## ?? Permiss√µes de Acesso
 
-### ??? **VisualizaÁ„o**
-**Quem pode:** Todos os usu·rios autenticados
+### ??? **Visualiza√ß√£o**
+**Quem pode:** Todos os usu√°rios autenticados
 - Ver lista de clientes
 - Ver detalhes do cliente
-- Ver histÛrico de locaÁıes/reservas
+- Ver hist√≥rico de loca√ß√µes/reservas
 - Consultar documentos
 
-### ?? **CriaÁ„o e EdiÁ„o**
+### ?? **Cria√ß√£o e Edi√ß√£o**
 **Quem pode:** Admin, Manager, Employee
 - Cadastrar novos clientes
-- Editar informaÁıes de clientes
+- Editar informa√ß√µes de clientes
 - Fazer upload de documentos
 
-### ??? **Exclus„o**
+### ??? **Exclus√£o**
 **Quem pode:** Admin, Manager
-- Excluir clientes SEM vinculaÁıes
+- Excluir clientes SEM vincula√ß√µes
 - Excluir documentos de clientes
 
-> ?? **Importante:** Clientes com locaÁıes ou reservas N√O podem ser excluÌdos!
+> ?? **Importante:** Clientes com loca√ß√µes ou reservas N√ÉO podem ser exclu√≠dos!
 
-### ?? Regras de NegÛcio
+### ?? Regras de Neg√≥cio
 
-#### **N„o È possÌvel excluir cliente se:**
-1. Possui locaÁıes cadastradas (ativas ou finalizadas)
+#### **N√£o √© poss√≠vel excluir cliente se:**
+1. Possui loca√ß√µes cadastradas (ativas ou finalizadas)
 2. Possui reservas de viagem (confirmadas ou pendentes)
 3. Possui documentos anexados
 
 #### **Para excluir um cliente:**
-1. Verificar se n„o h· vinculaÁıes
+1. Verificar se n√£o h√° vincula√ß√µes
 2. Excluir documentos (se houver)
-3. Ent„o excluir o cliente
+3. Ent√£o excluir o cliente
 
 ---
 
-## ? Boas Pr·ticas
+## ? Boas Pr√°ticas
 
 ### ?? Cadastro
 
-? **FaÁa:**
-- Sempre preencher todos os campos obrigatÛrios
+? **Fa√ßa:**
+- Sempre preencher todos os campos obrigat√≥rios
 - Validar CPF antes de salvar
 - Confirmar dados de contato (telefone/email)
 - Verificar validade da CNH antes de aceitar
@@ -424,62 +424,62 @@ Status: ? V·lida (vence em 1.250 dias)
 - Manter dados atualizados
 
 ? **Evite:**
-- Cadastrar clientes sem CNH v·lida para locaÁıes
+- Cadastrar clientes sem CNH v√°lida para loca√ß√µes
 - Usar telefones/emails incorretos
 - Duplicar cadastros (verificar CPF antes)
 - Deixar campos importantes em branco
 - Cadastrar menores de 21 anos
 
-### ?? DocumentaÁ„o
+### ?? Documenta√ß√£o
 
-? **FaÁa:**
-- Upload de CNH, RG e CPF sempre que possÌvel
+? **Fa√ßa:**
+- Upload de CNH, RG e CPF sempre que poss√≠vel
 - Verificar qualidade da imagem/PDF
-- Adicionar descriÁ„o aos documentos
+- Adicionar descri√ß√£o aos documentos
 - Manter documentos atualizados (CNH renovada)
 - Organizar por tipo de documento
 
 ? **Evite:**
 - Arquivos muito grandes (>10MB)
-- Imagens ilegÌveis ou de baixa qualidade
+- Imagens ileg√≠veis ou de baixa qualidade
 - Documentos vencidos
 - Misturar tipos de documentos
 
 ### ?? Consultas
 
-? **FaÁa:**
+? **Fa√ßa:**
 - Usar busca para encontrar clientes rapidamente
-- Verificar CNH antes de criar locaÁ„o
-- Consultar histÛrico do cliente
-- Verificar inadimplÍncia (futuro)
+- Verificar CNH antes de criar loca√ß√£o
+- Consultar hist√≥rico do cliente
+- Verificar inadimpl√™ncia (futuro)
 - Manter contato atualizado
 
 ? **Evite:**
-- Criar locaÁ„o para cliente com CNH vencida
+- Criar loca√ß√£o para cliente com CNH vencida
 - Ignorar alertas do sistema
-- N„o verificar histÛrico de problemas
+- N√£o verificar hist√≥rico de problemas
 
-### ?? ManutenÁ„o
+### ?? Manuten√ß√£o
 
-? **FaÁa:**
-- Atualizar dados quando cliente informar mudanÁas
+? **Fa√ßa:**
+- Atualizar dados quando cliente informar mudan√ßas
 - Renovar CNH quando cliente trouxer nova
 - Limpar cadastros duplicados
 - Revisar dados periodicamente
-- Manter documentaÁ„o completa
+- Manter documenta√ß√£o completa
 
 ? **Evite:**
 - Deixar dados desatualizados
 - Manter CNH vencida no cadastro
-- Ignorar solicitaÁıes de atualizaÁ„o
-- Acumular documentos desnecess·rios
+- Ignorar solicita√ß√µes de atualiza√ß√£o
+- Acumular documentos desnecess√°rios
 
 ---
 
 ## ?? Casos de Uso Comuns
 
 ### Caso 1: Cliente sem CNH
-**SituaÁ„o:** Cliente quer fazer reserva de viagem (n„o precisa de CNH)
+**Situa√ß√£o:** Cliente quer fazer reserva de viagem (n√£o precisa de CNH)
 
 ```
 ? Permitido:
@@ -487,86 +487,86 @@ Status: ? V·lida (vence em 1.250 dias)
 - Criar reserva de viagem
 - Fazer upload de RG e CPF
 
-? N„o Permitido:
-- Criar locaÁ„o de veÌculo (requer CNH v·lida)
+? N√£o Permitido:
+- Criar loca√ß√£o de ve√≠culo (requer CNH v√°lida)
 ```
 
 ### Caso 2: CNH Vencida
-**SituaÁ„o:** Cliente com CNH vencida no sistema
+**Situa√ß√£o:** Cliente com CNH vencida no sistema
 
 ```
 ?? Sistema alerta: CNH VENCIDA
 
-AÁıes:
+A√ß√µes:
 1. Solicitar nova CNH ao cliente
 2. Fazer upload da nova CNH (documento)
-3. Atualizar n˙mero e validade no cadastro
-4. ApÛs atualizaÁ„o, liberar para locaÁ„o
+3. Atualizar n√∫mero e validade no cadastro
+4. Ap√≥s atualiza√ß√£o, liberar para loca√ß√£o
 ```
 
-### Caso 3: AtualizaÁ„o de Dados
-**SituaÁ„o:** Cliente mudou de endereÁo e telefone
+### Caso 3: Atualiza√ß√£o de Dados
+**Situa√ß√£o:** Cliente mudou de endere√ßo e telefone
 
 ```
 Passos:
 1. Clientes ? Buscar cliente
 2. Clicar em "Editar"
-3. Atualizar endereÁo e telefone
-4. Salvar alteraÁıes
-5. Sistema registra histÛrico de alteraÁ„o
+3. Atualizar endere√ßo e telefone
+4. Salvar altera√ß√µes
+5. Sistema registra hist√≥rico de altera√ß√£o
 ```
 
 ### Caso 4: Cliente Frequente
-**SituaÁ„o:** Ver histÛrico completo de cliente antigo
+**Situa√ß√£o:** Ver hist√≥rico completo de cliente antigo
 
 ```
 1. Clientes ? Detalhes do cliente
-2. Ver estatÌsticas:
+2. Ver estat√≠sticas:
    - Total gasto: R$ 15.000
-   - LocaÁıes: 12
+   - Loca√ß√µes: 12
    - Reservas: 8
-3. Analisar padrıes de consumo
-4. Oferecer promoÁıes personalizadas (futuro)
+3. Analisar padr√µes de consumo
+4. Oferecer promo√ß√µes personalizadas (futuro)
 ```
 
 ---
 
-## ?? SoluÁ„o de Problemas
+## ?? Solu√ß√£o de Problemas
 
-### ? Erro: "CPF j· cadastrado"
-**Causa:** J· existe cliente com este CPF
-**SoluÁ„o:** 
+### ? Erro: "CPF j√° cadastrado"
+**Causa:** J√° existe cliente com este CPF
+**Solu√ß√£o:** 
 - Buscar cliente existente
 - Atualizar dados do cliente existente
-- N„o criar duplicata
+- N√£o criar duplicata
 
 ### ? Erro: "CNH vencida"
-**Causa:** Data de validade da CNH È anterior ‡ data atual
-**SoluÁ„o:**
+**Causa:** Data de validade da CNH √© anterior √† data atual
+**Solu√ß√£o:**
 - Solicitar CNH atualizada ao cliente
 - Atualizar dados no sistema
 - Fazer upload da nova CNH
 
-### ? Erro: "Idade inv·lida"
+### ? Erro: "Idade inv√°lida"
 **Causa:** Cliente tem menos de 21 ou mais de 100 anos
-**SoluÁ„o:**
+**Solu√ß√£o:**
 - Verificar data de nascimento
-- Clientes menores de 21 n„o podem ser cadastrados
+- Clientes menores de 21 n√£o podem ser cadastrados
 - Confirmar data correta
 
-### ? Erro: "Email inv·lido"
+### ? Erro: "Email inv√°lido"
 **Causa:** Formato de email incorreto
-**SoluÁ„o:**
+**Solu√ß√£o:**
 - Verificar formato: exemplo@dominio.com
 - Confirmar email com cliente
-- Usar email v·lido e ativo
+- Usar email v√°lido e ativo
 
-### ? Erro: "N„o È possÌvel excluir"
-**Causa:** Cliente possui locaÁıes ou reservas
-**SoluÁ„o:**
-- Cliente com histÛrico n„o pode ser excluÌdo
+### ? Erro: "N√£o √© poss√≠vel excluir"
+**Causa:** Cliente possui loca√ß√µes ou reservas
+**Solu√ß√£o:**
+- Cliente com hist√≥rico n√£o pode ser exclu√≠do
 - Apenas inativar (futuro)
-- Manter registro histÛrico
+- Manter registro hist√≥rico
 
 ---
 
@@ -576,11 +576,11 @@ Passos:
 ```
 Ctrl + K     ? Busca global (buscar cliente)
 Ctrl + N     ? Novo cliente (em breve)
-Ctrl + S     ? Salvar (nos formul·rios)
+Ctrl + S     ? Salvar (nos formul√°rios)
 Esc          ? Cancelar/Fechar modal
 ```
 
-### ?? Links R·pidos
+### ?? Links R√°pidos
 ```
 /Clientes/Index          ? Lista de clientes
 /Clientes/Create         ? Novo cliente
@@ -591,61 +591,61 @@ Esc          ? Cancelar/Fechar modal
 ### ?? Dicas Profissionais
 
 1. **Organize por Status de CNH**
-   - Filtre clientes com CNH prÛxima ao vencimento
+   - Filtre clientes com CNH pr√≥xima ao vencimento
    - Entre em contato proativamente
 
-2. **Use HistÛrico para Upsell**
-   - Clientes frequentes merecem benefÌcios
+2. **Use Hist√≥rico para Upsell**
+   - Clientes frequentes merecem benef√≠cios
    - Oferece pacotes premium
 
-3. **Mantenha DocumentaÁ„o Completa**
+3. **Mantenha Documenta√ß√£o Completa**
    - Reduz problemas legais
    - Agiliza processos
 
 4. **Atualize Contatos Regularmente**
    - Email e telefone atualizados
-   - Facilita comunicaÁ„o
+   - Facilita comunica√ß√£o
 
 ---
 
 ## ?? Suporte
 
-### ? D˙vidas Frequentes
+### ? D√∫vidas Frequentes
 
 **P: Posso cadastrar cliente menor de 21 anos?**
-R: N„o. A idade mÌnima È 21 anos para locaÁıes.
+R: N√£o. A idade m√≠nima √© 21 anos para loca√ß√µes.
 
-**P: CNH È obrigatÛria para todos os clientes?**
-R: N„o. Apenas para clientes que v„o alugar veÌculos.
+**P: CNH √© obrigat√≥ria para todos os clientes?**
+R: N√£o. Apenas para clientes que v√£o alugar ve√≠culos.
 
-**P: Posso usar o mesmo email para v·rios clientes?**
-R: N„o. Cada cliente deve ter email ˙nico.
+**P: Posso usar o mesmo email para v√°rios clientes?**
+R: N√£o. Cada cliente deve ter email √∫nico.
 
-**P: Como faÁo backup dos documentos?**
-R: Os documentos s„o salvos no servidor. Consulte o administrador.
+**P: Como fa√ßo backup dos documentos?**
+R: Os documentos s√£o salvos no servidor. Consulte o administrador.
 
-**P: Posso recuperar cliente excluÌdo?**
-R: N„o. Exclusıes s„o permanentes. Por isso a restriÁ„o.
+**P: Posso recuperar cliente exclu√≠do?**
+R: N√£o. Exclus√µes s√£o permanentes. Por isso a restri√ß√£o.
 
 ---
 
 ## ?? Pronto para Usar!
 
-O sistema de gest„o de clientes est· **100% operacional**.
+O sistema de gest√£o de clientes est√° **100% operacional**.
 
-**PrÛximos passos:**
+**Pr√≥ximos passos:**
 1. Cadastre seus primeiros clientes
-2. FaÁa upload dos documentos
-3. Crie locaÁıes e reservas
-4. Acompanhe o histÛrico
+2. Fa√ßa upload dos documentos
+3. Crie loca√ß√µes e reservas
+4. Acompanhe o hist√≥rico
 
-**Acesse:** Menu ? LocaÁ„o ? Clientes
+**Acesse:** Menu ? Loca√ß√£o ? Clientes
 
 ---
 
 **Desenvolvido para:** Litoral Sul Locadora e Turismo  
-**Vers„o:** 1.0  
+**Vers√£o:** 1.0  
 **Data:** Outubro/2025  
-**DocumentaÁ„o relacionada:** 
+**Documenta√ß√£o relacionada:** 
 - [Upload de Documentos](UPLOAD_DOCUMENTOS.md)
-- [Sistema de ManutenÁıes](MANUTENCAO_GUIA_ACESSO.md)
+- [Sistema de Manuten√ß√µes](MANUTENCAO_GUIA_ACESSO.md)
