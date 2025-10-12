@@ -1,6 +1,11 @@
 ﻿@model IEnumerable<RentalTourismSystem.Models.Locacao>
 @{
     ViewData["Title"] = "Relatório de Locações por Período";
+
+    // PROTEÇÕES CONTRA NULL
+    var listaLocacoes = Model ?? Enumerable.Empty<RentalTourismSystem.Models.Locacao>();
+    var dataInicio = ViewBag.DataInicio != null ? ((DateTime)ViewBag.DataInicio).ToString("yyyy-MM-dd") : "";
+    var dataFim = ViewBag.DataFim != null ? ((DateTime)ViewBag.DataFim).ToString("yyyy-MM-dd") : "";
 }
 
 <div class="row mb-4">
@@ -28,11 +33,11 @@
         <form method="get" class="row g-3">
             <div class="col-md-4">
                 <label for="dataInicio" class="form-label">Data Início</label>
-                <input type="date" class="form-control" id="dataInicio" name="dataInicio" value="@ViewBag.DataInicio">
+                <input type="date" class="form-control" id="dataInicio" name="dataInicio" value="@dataInicio">
             </div>
             <div class="col-md-4">
                 <label for="dataFim" class="form-label">Data Fim</label>
-                <input type="date" class="form-control" id="dataFim" name="dataFim" value="@ViewBag.DataFim">
+                <input type="date" class="form-control" id="dataFim" name="dataFim" value="@dataFim">
             </div>
             <div class="col-md-4 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary me-2">
@@ -51,7 +56,7 @@
     <div class="col-md-3">
         <div class="card bg-primary text-white">
             <div class="card-body text-center">
-                <h4>@Model.Count()</h4>
+                <h4>@listaLocacoes.Count()</h4>
                 <small>Total de Locações</small>
             </div>
         </div>
@@ -59,7 +64,7 @@
     <div class="col-md-3">
         <div class="card bg-success text-white">
             <div class="card-body text-center">
-                <h4>@ViewBag.TotalReceita.ToString("C")</h4>
+                <h4>@(((decimal?)ViewBag.TotalReceita ?? 0).ToString("C"))</h4>
                 <small>Receita Total</small>
             </div>
         </div>
@@ -67,7 +72,7 @@
     <div class="col-md-3">
         <div class="card bg-info text-white">
             <div class="card-body text-center">
-                <h4>@(Model.Any() ? (ViewBag.TotalReceita / Model.Count()).ToString("C") : "R$ 0,00")</h4>
+                <h4>@(listaLocacoes.Any() ? (((decimal?)ViewBag.TotalReceita ?? 0) / listaLocacoes.Count()).ToString("C") : "R$ 0,00")</h4>
                 <small>Ticket Médio</small>
             </div>
         </div>
@@ -75,7 +80,7 @@
     <div class="col-md-3">
         <div class="card bg-warning text-white">
             <div class="card-body text-center">
-                <h4>@Model.Count(l => l.DataDevolucaoReal == null)</h4>
+                <h4>@listaLocacoes.Count(l => l.DataDevolucaoReal == null)</h4>
                 <small>Locações Ativas</small>
             </div>
         </div>
@@ -90,7 +95,7 @@
         </h5>
     </div>
     <div class="card-body">
-        @if (Model.Any())
+        @if (listaLocacoes.Any())
         {
             <div class="table-responsive">
                 <table class="table table-hover" id="tabelaLocacoes">
@@ -107,17 +112,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var locacao in Model)
+                        @foreach (var locacao in listaLocacoes)
                         {
                             <tr>
                                 <td>@locacao.DataRetirada.ToString("dd/MM/yyyy")</td>
                                 <td>
-                                    <strong>@locacao.Cliente.Nome</strong><br>
-                                    <small class="text-muted">@locacao.Cliente.Telefone</small>
+                                    <strong>@(locacao.Cliente?.Nome ?? "N/A")</strong><br>
+                                    <small class="text-muted">@(locacao.Cliente?.Telefone ?? "")</small>
                                 </td>
                                 <td>
-                                    <strong>@locacao.Veiculo.Marca @locacao.Veiculo.Modelo</strong><br>
-                                    <small class="text-muted">@locacao.Veiculo.Placa</small>
+                                    <strong>@(locacao.Veiculo?.Marca ?? "N/A") @(locacao.Veiculo?.Modelo ?? "")</strong><br>
+                                    <small class="text-muted">@(locacao.Veiculo?.Placa ?? "")</small>
                                 </td>
                                 <td>
                                     @locacao.DataRetirada.ToString("dd/MM") até @locacao.DataDevolucao.ToString("dd/MM")<br>
@@ -142,15 +147,15 @@
                                     }
                                 </td>
                                 <td class="text-success fw-bold">@locacao.ValorTotal.ToString("C")</td>
-                                <td>@locacao.Funcionario.Nome</td>
-                                <td>@locacao.Agencia.Nome</td>
+                                <td>@(locacao.Funcionario?.Nome ?? "N/A")</td>
+                                <td>@(locacao.Agencia?.Nome ?? "N/A")</td>
                             </tr>
                         }
                     </tbody>
                     <tfoot class="table-light">
                         <tr>
                             <th colspan="5" class="text-end">Total:</th>
-                            <th class="text-success">@ViewBag.TotalReceita.ToString("C")</th>
+                            <th class="text-success">@(((decimal?)ViewBag.TotalReceita ?? 0).ToString("C"))</th>
                             <th colspan="2"></th>
                         </tr>
                     </tfoot>

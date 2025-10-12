@@ -293,6 +293,8 @@
 
     <script>
         $(document).ready(function() {
+            const anoAtual = new Date().getFullYear();
+
             // Formatação automática de placa
             $('#placaInput').on('input', function() {
                 let val = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
@@ -303,51 +305,210 @@
                 }
 
                 this.value = val;
+                validarPlaca();
             });
 
             // Definir ano atual como padrão
-            const anoAtual = new Date().getFullYear();
             if (!$('#Ano').val()) {
                 $('#Ano').val(anoAtual);
             }
 
-            // Validações em tempo real
-            $('#ValorDiaria').on('change', function() {
-                const valor = parseFloat($(this).val());
-                if (valor > 0 && valor < 50) {
-                    $('#valor-validation-feedback').html('<small class="text-warning"><i class="fas fa-exclamation-triangle"></i> Valor baixo para mercado</small>');
-                } else if (valor >= 50 && valor <= 500) {
-                    $('#valor-validation-feedback').html('<small class="text-success"><i class="fas fa-check-circle"></i> Valor adequado</small>');
-                } else if (valor > 500) {
-                    $('#valor-validation-feedback').html('<small class="text-info"><i class="fas fa-info-circle"></i> Valor premium</small>');
-                }
-            });
+            // Validações em tempo real para atualizar o card
+            $('#placaInput').on('input blur', validarPlaca);
+            $('#ValorDiaria').on('input change', validarValor);
+            $('#Quilometragem, #Ano').on('input change', validarQuilometragem);
+            $('#Ano').on('change', validarAno);
 
-            // Validação de idade vs quilometragem
-            $('#Ano, #Quilometragem').on('change', function() {
-                const ano = parseInt($('#Ano').val());
-                const km = parseInt($('#Quilometragem').val());
-
-                if (ano && km) {
-                    const idade = anoAtual - ano;
-                    const kmEsperado = idade * 15000;
-
-                    if (idade === 0 && km <= 100) {
-                        $('#km-validation-feedback').html('<small class="text-success"><i class="fas fa-check"></i> Veículo novo</small>');
-                    } else if (km > kmEsperado * 2) {
-                        $('#km-validation-feedback').html('<small class="text-warning"><i class="fas fa-exclamation-triangle"></i> Quilometragem alta</small>');
-                    } else {
-                        $('#km-validation-feedback').html('<small class="text-success"><i class="fas fa-check"></i> Quilometragem coerente</small>');
-                    }
-                }
-            });
+            // Inicializar validações
+            validarPlaca();
+            validarValor();
+            validarQuilometragem();
+            validarAno();
         });
+
+        // ===== FUNÇÕES DE VALIDAÇÃO EM TEMPO REAL =====
+        
+        function validarPlaca() {
+            const placa = $('#placaInput').val().replace(/[^A-Z0-9]/g, '');
+            const $statusPlaca = $('#status-placa');
+            
+            if (!placa) {
+                $statusPlaca.html('<i class="fas fa-circle text-muted me-2"></i><span>Validação de placa</span>');
+                $('#placa-validation-feedback').html('');
+                return;
+            }
+            
+            // Regex para formato antigo (ABC1234) ou Mercosul (ABC1D23)
+            const formatoAntigo = /^[A-Z]{3}[0-9]{4}$/;
+            const formatoMercosul = /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/;
+            
+            if (formatoAntigo.test(placa) || formatoMercosul.test(placa)) {
+                $statusPlaca.html('<i class="fas fa-check-circle text-success me-2"></i><span>Placa válida</span>');
+                $('#placa-validation-feedback').html('<small class="text-success"><i class="fas fa-check"></i> Formato válido</small>');
+            } else if (placa.length < 7) {
+                $statusPlaca.html('<i class="fas fa-circle text-warning me-2"></i><span>Placa incompleta</span>');
+                $('#placa-validation-feedback').html('<small class="text-muted"><i class="fas fa-info-circle"></i> Continue digitando...</small>');
+            } else {
+                $statusPlaca.html('<i class="fas fa-times-circle text-danger me-2"></i><span>Placa inválida</span>');
+                $('#placa-validation-feedback').html('<small class="text-danger"><i class="fas fa-times"></i> Formato inválido</small>');
+            }
+        }
+
+        function validarValor() {
+            const valor = parseFloat($('#ValorDiaria').val()) || 0;
+            const $statusValor = $('#status-valor');
+            
+            if (valor === 0) {
+                $statusValor.html('<i class="fas fa-circle text-muted me-2"></i><span>Valor da diária</span>');
+                $('#valor-validation-feedback').html('');
+                return;
+            }
+            
+            if (valor > 0 && valor < 50) {
+                $statusValor.html('<i class="fas fa-exclamation-triangle text-warning me-2"></i><span>Valor baixo</span>');
+                $('#valor-validation-feedback').html('<small class="text-warning"><i class="fas fa-exclamation-triangle"></i> Valor baixo para mercado</small>');
+            } else if (valor >= 50 && valor <= 500) {
+                $statusValor.html('<i class="fas fa-check-circle text-success me-2"></i><span>Valor adequado</span>');
+                $('#valor-validation-feedback').html('<small class="text-success"><i class="fas fa-check-circle"></i> Valor adequado</small>');
+            } else if (valor > 500) {
+                $statusValor.html('<i class="fas fa-star text-info me-2"></i><span>Valor premium</span>');
+                $('#valor-validation-feedback').html('<small class="text-info"><i class="fas fa-info-circle"></i> Valor premium</small>');
+            }
+        }
+
+        function validarQuilometragem() {
+            const ano = parseInt($('#Ano').val()) || 0;
+            const km = parseInt($('#Quilometragem').val()) || 0;
+            const $statusKm = $('#status-km');
+            const anoAtual = new Date().getFullYear();
+            
+            if (!ano || !km) {
+                $statusKm.html('<i class="fas fa-circle text-muted me-2"></i><span>Quilometragem coerente</span>');
+                $('#km-validation-feedback').html('');
+                return;
+            }
+
+            const idade = anoAtual - ano;
+            const kmEsperado = idade * 15000;
+
+            if (idade === 0 && km <= 100) {
+                $statusKm.html('<i class="fas fa-check-circle text-success me-2"></i><span>Veículo novo</span>');
+                $('#km-validation-feedback').html('<small class="text-success"><i class="fas fa-check"></i> Veículo novo</small>');
+            } else if (km > kmEsperado * 2) {
+                $statusKm.html('<i class="fas fa-exclamation-triangle text-warning me-2"></i><span>KM alta</span>');
+                $('#km-validation-feedback').html('<small class="text-warning"><i class="fas fa-exclamation-triangle"></i> Quilometragem alta para o ano</small>');
+            } else if (km > kmEsperado * 0.5 && km <= kmEsperado * 2) {
+                $statusKm.html('<i class="fas fa-check-circle text-success me-2"></i><span>KM coerente</span>');
+                $('#km-validation-feedback').html('<small class="text-success"><i class="fas fa-check"></i> Quilometragem coerente</small>');
+            } else {
+                $statusKm.html('<i class="fas fa-info-circle text-info me-2"></i><span>KM baixa</span>');
+                $('#km-validation-feedback').html('<small class="text-info"><i class="fas fa-info-circle"></i> Quilometragem baixa para o ano</small>');
+            }
+        }
+
+        function validarAno() {
+            const ano = parseInt($('#Ano').val()) || 0;
+            const $statusAno = $('#status-ano');
+            const anoAtual = new Date().getFullYear();
+            
+            if (!ano) {
+                $statusAno.html('<i class="fas fa-circle text-muted me-2"></i><span>Ano válido</span>');
+                $('#ano-info').html('');
+                return;
+            }
+            
+            if (ano < 1990) {
+                $statusAno.html('<i class="fas fa-exclamation-triangle text-warning me-2"></i><span>Ano muito antigo</span>');
+                $('#ano-info').html('<small class="text-warning"><i class="fas fa-exclamation-triangle"></i> Veículo muito antigo</small>');
+            } else if (ano > anoAtual + 1) {
+                $statusAno.html('<i class="fas fa-times-circle text-danger me-2"></i><span>Ano inválido</span>');
+                $('#ano-info').html('<small class="text-danger"><i class="fas fa-times"></i> Ano futuro inválido</small>');
+            } else if (ano === anoAtual || ano === anoAtual + 1) {
+                $statusAno.html('<i class="fas fa-star text-success me-2"></i><span>Veículo novo</span>');
+                $('#ano-info').html('<small class="text-success"><i class="fas fa-star"></i> Veículo novo/zero km</small>');
+            } else {
+                $statusAno.html('<i class="fas fa-check-circle text-success me-2"></i><span>Ano válido</span>');
+                const idade = anoAtual - ano;
+                $('#ano-info').html(`<small class="text-info"><i class="fas fa-info-circle"></i> ${idade} ano(s) de uso</small>`);
+            }
+        }
+
+        // ===== CALCULADORA DE VALOR =====
+        
+        function sugerirValor() {
+            const categoria = $('#categoriaVeiculo').val();
+            const $valorSugerido = $('#valorSugerido');
+            
+            const valores = {
+                'economico': 80,
+                'compacto': 120,
+                'intermediario': 180,
+                'executivo': 280,
+                'suv': 350,
+                'luxo': 600,
+                'pickup': 400
+            };
+            
+            if (!categoria) {
+                $valorSugerido.text('R$ 0,00');
+                return;
+            }
+            
+            const valor = valores[categoria] || 0;
+            $valorSugerido.text('R$ ' + valor.toFixed(2).replace('.', ','));
+        }
+
+        function aplicarValorSugerido() {
+            const categoria = $('#categoriaVeiculo').val();
+            
+            if (!categoria) {
+                alert('⚠️ Selecione uma categoria primeiro!');
+                return;
+            }
+            
+            const valores = {
+                'economico': 80,
+                'compacto': 120,
+                'intermediario': 180,
+                'executivo': 280,
+                'suv': 350,
+                'luxo': 600,
+                'pickup': 400
+            };
+            
+            const valor = valores[categoria] || 0;
+            $('#ValorDiaria').val(valor.toFixed(2));
+            
+            // Trigger change para atualizar validação
+            $('#ValorDiaria').trigger('change');
+            
+            // Feedback visual
+            const $btn = event.target;
+            const originalText = $btn.innerHTML;
+            $btn.innerHTML = '<i class="fas fa-check me-1"></i>Aplicado!';
+            $btn.disabled = true;
+            
+            setTimeout(() => {
+                $btn.innerHTML = originalText;
+                $btn.disabled = false;
+            }, 2000);
+        }
 
         function limparFormulario() {
             if (confirm('Tem certeza que deseja limpar o formulário?')) {
                 document.getElementById('formNovoVeiculo').reset();
                 $('#Ano').val(new Date().getFullYear());
-                $('.text-danger, .text-warning, .text-success, .text-info').html('');
+                
+                // Resetar validações
+                $('#placa-validation-feedback, #valor-validation-feedback, #km-validation-feedback, #ano-info').html('');
+                $('#status-placa, #status-valor, #status-km, #status-ano').each(function() {
+                    const texto = $(this).find('span').text();
+                    $(this).html('<i class="fas fa-circle text-muted me-2"></i><span>' + texto + '</span>');
+                });
+                
+                // Resetar calculadora
+                $('#categoriaVeiculo').val('');
+                $('#valorSugerido').text('R$ 0,00');
             }
         }
     </script>
@@ -357,5 +518,19 @@
     .required::after {
         content: " *";
         color: red;
+    }
+    
+    .validation-item {
+        transition: all 0.3s ease;
+    }
+    
+    .validation-item i.fa-check-circle {
+        animation: pulse 0.5s ease;
+    }
+    
+    @@keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
     }
 </style>

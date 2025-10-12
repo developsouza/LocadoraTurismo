@@ -277,39 +277,38 @@ namespace RentalTourismSystem.Controllers
         }
 
         // GET: Relatórios/VeiculosMaisAlugados
-        public async Task<IActionResult> VeiculosMaisAlugados(DateTime? dataInicio, DateTime? dataFim)
+        public async Task<IActionResult> VeiculosMaisAlugados()
         {
             try
             {
-                // Definir período padrão (último ano)
-                dataInicio ??= DateTime.Now.AddYears(-1);
-                dataFim ??= DateTime.Now;
+                _logger.LogInformation("Relatório de veículos mais alugados acessado por {User}", User.Identity?.Name);
 
-                _logger.LogInformation("Relatório de veículos mais alugados acessado por {User} - Período: {DataInicio} a {DataFim}",
-                    User.Identity?.Name, dataInicio?.ToString("dd/MM/yyyy"), dataFim?.ToString("dd/MM/yyyy"));
-
-                var veiculosEstatisticas = await _context.Veiculos
+                // ✅ Buscar todos os veículos com Include primeiro
+                var todosVeiculos = await _context.Veiculos
                     .Include(v => v.StatusCarro)
                     .Include(v => v.Agencia)
-                    .Include(v => v.Locacoes.Where(l => l.DataRetirada >= dataInicio && l.DataRetirada <= dataFim))
+                    .Include(v => v.Locacoes)
                         .ThenInclude(l => l.Cliente)
+                    .ToListAsync();
+
+                // ✅ Processar em memória
+                var veiculosEstatisticas = todosVeiculos
                     .Select(v => new
                     {
                         Veiculo = v,
-                        TotalLocacoes = v.Locacoes.Count(),
-                        ReceitaTotal = v.Locacoes.Sum(l => l.ValorTotal),
-                        MediaDiasLocacao = v.Locacoes.Any(l => l.DataDevolucaoReal != null) ?
+                        Agencia = v.Agencia?.Nome ?? "N/A",
+                        TotalLocacoes = v.Locacoes.Count,
+                        ReceitaTotal = v.Locacoes.Sum(l => (decimal?)l.ValorTotal) ?? 0,
+                        MediaDiasAlugado = v.Locacoes.Any(l => l.DataDevolucaoReal != null) ?
                             v.Locacoes.Where(l => l.DataDevolucaoReal != null)
                                      .Average(l => (double?)(l.DataDevolucaoReal!.Value - l.DataRetirada).TotalDays) ?? 0 : 0,
                         UltimaLocacao = v.Locacoes.Any() ? v.Locacoes.Max(l => l.DataRetirada) : (DateTime?)null,
+                        StatusAtual = v.StatusCarro?.Status ?? "N/A",
                         ClientesUnicos = v.Locacoes.Select(l => l.ClienteId).Distinct().Count()
                     })
                     .OrderByDescending(v => v.TotalLocacoes)
                     .ThenByDescending(v => v.ReceitaTotal)
-                    .ToListAsync();
-
-                ViewBag.DataInicio = dataInicio;
-                ViewBag.DataFim = dataFim;
+                    .ToList();
 
                 return View(veiculosEstatisticas);
             }
