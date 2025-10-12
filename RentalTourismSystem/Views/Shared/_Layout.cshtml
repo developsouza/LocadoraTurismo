@@ -126,6 +126,27 @@
                                         </a>
                                     </div>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link nav-dropdown" href="#manutencaoSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="false">
+                                        <i class="fas fa-tools"></i>
+                                        <span class="nav-link-text">Manutenções</span>
+                                        <i class="fas fa-chevron-right nav-dropdown-arrow"></i>
+                                    </a>
+                                    <div class="nav-submenu collapse" id="manutencaoSubmenu">
+                                        <a class="nav-link" asp-controller="Manutencoes" asp-action="Index">
+                                            <span class="nav-link-text">Ver Todas</span>
+                                        </a>
+                                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                        {
+                                            <a class="nav-link" asp-controller="Manutencoes" asp-action="Create">
+                                                <span class="nav-link-text">Nova Manutenção</span>
+                                            </a>
+                                            <a class="nav-link" asp-controller="Manutencoes" asp-action="Relatorio">
+                                                <span class="nav-link-text">Relatório de Custos</span>
+                                            </a>
+                                        }
+                                    </div>
+                                </li>
                             </ul>
                         </div>
                     }

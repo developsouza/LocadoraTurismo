@@ -467,8 +467,18 @@
                         </button>
                     }
                     
+                    <a asp-controller="Manutencoes" asp-action="HistoricoVeiculo" asp-route-id="@Model.Id" 
+                       class="btn btn-outline-warning">
+                        <i class="fas fa-history me-1"></i>Histórico de Manutenções
+                    </a>
+                    
                     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                     {
+                        <a asp-controller="Manutencoes" asp-action="Create" asp-route-veiculoId="@Model.Id" 
+                           class="btn btn-outline-info">
+                            <i class="fas fa-tools me-1"></i>Nova Manutenção
+                        </a>
+                        
                         <button type="button" class="btn btn-outline-warning" onclick="alterarStatusModal(@Model.Id)">
                             <i class="fas fa-exchange-alt me-1"></i>Alterar Status
                         </button>

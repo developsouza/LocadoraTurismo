@@ -1,0 +1,99 @@
+@model RentalTourismSystem.Models.ItemManutencao
+
+@{
+    ViewData["Title"] = "Excluir Item";
+    var manutencao = ViewBag.Manutencao as RentalTourismSystem.Models.ManutencaoVeiculo;
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2 class="text-danger"><i class="fas fa-trash"></i> Excluir Item da Manutenção</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Manutencoes" asp-action="Index">Manutenções</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Manutencoes" asp-action="Details" asp-route-id="@manutencao.Id">Manutenção #@manutencao.Id</a></li>
+                    <li class="breadcrumb-item active">Excluir Item</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Informações da Manutenção -->
+    <div class="alert alert-info">
+        <strong><i class="fas fa-info-circle"></i> Manutenção:</strong>
+        @manutencao.TipoManutencao?.Nome - @manutencao.Veiculo?.Marca @manutencao.Veiculo?.Modelo (@manutencao.Veiculo?.Placa)
+    </div>
+
+    <div class="alert alert-danger">
+        <h4><i class="fas fa-exclamation-triangle"></i> Atenção!</h4>
+        <p>Você tem certeza que deseja excluir este item? Esta ação não pode ser desfeita.</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0"><i class="fas fa-cog"></i> Dados do Item</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Tipo:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Tipo == "Peça")
+                    {
+                        <span class="badge badge-primary">@Model.Tipo</span>
+                    }
+                    else if (Model.Tipo == "Serviço")
+                    {
+                        <span class="badge badge-success">@Model.Tipo</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-secondary">@Model.Tipo</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Descrição:</dt>
+                <dd class="col-sm-9"><strong>@Model.Descricao</strong></dd>
+
+                @if (!string.IsNullOrEmpty(Model.CodigoPeca))
+                {
+                    <dt class="col-sm-3">Código da Peça:</dt>
+                    <dd class="col-sm-9">@Model.CodigoPeca</dd>
+                }
+
+                <dt class="col-sm-3">Quantidade:</dt>
+                <dd class="col-sm-9">@Model.Quantidade</dd>
+
+                <dt class="col-sm-3">Valor Unitário:</dt>
+                <dd class="col-sm-9">@Model.ValorUnitario.ToString("C")</dd>
+
+                <dt class="col-sm-3">Valor Total:</dt>
+                <dd class="col-sm-9"><strong class="text-danger">@Model.ValorTotal.ToString("C")</strong></dd>
+
+                @if (!string.IsNullOrEmpty(Model.Fornecedor))
+                {
+                    <dt class="col-sm-3">Fornecedor:</dt>
+                    <dd class="col-sm-9">@Model.Fornecedor</dd>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Observacoes))
+                {
+                    <dt class="col-sm-3">Observações:</dt>
+                    <dd class="col-sm-9">@Model.Observacoes</dd>
+                }
+            </dl>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-trash"></i> Confirmar Exclusão
+            </button>
+            <a asp-controller="Manutencoes" asp-action="Details" asp-route-id="@manutencao.Id" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancelar
+            </a>
+        </form>
+    </div>
+</div>

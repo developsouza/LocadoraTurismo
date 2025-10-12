@@ -232,6 +232,12 @@
                                            data-bs-toggle="tooltip">
                                             <i class="fas fa-edit"></i>
                                         </a>
+                                        
+                                        <a asp-controller="Manutencoes" asp-action="HistoricoVeiculo" asp-route-id="@veiculo.Id"
+                                           class="btn btn-outline-info" title="Manutenções"
+                                           data-bs-toggle="tooltip">
+                                            <i class="fas fa-tools"></i>
+                                        </a>
                                     }
                                     @if (veiculo.StatusCarro.Status == "Disponível")
                                     {

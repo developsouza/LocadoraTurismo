@@ -35,6 +35,9 @@ namespace RentalTourismSystem.Models
         [Required]
         public DateTime DataAdmissao { get; set; }
 
+        [Display(Name = "Ativo")]
+        public bool Ativo { get; set; } = true;
+
         [Required]
         public int AgenciaId { get; set; }
         public virtual Agencia Agencia { get; set; }

@@ -1,0 +1,389 @@
+@model RentalTourismSystem.Models.ManutencaoVeiculo
+
+@{
+    ViewData["Title"] = "Detalhes da Manutenção";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2><i class="fas fa-tools"></i> Detalhes da Manutenção</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-action="Index">Manutenções</a></li>
+                    <li class="breadcrumb-item active">Detalhes</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Informações Principais -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Informações da Manutenção</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-5">Veículo:</dt>
+                                <dd class="col-sm-7">
+                                    <strong>@Model.Veiculo?.Marca @Model.Veiculo?.Modelo</strong><br />
+                                    <small>Placa: @Model.Veiculo?.Placa</small><br />
+                                    <a asp-controller="Veiculos" asp-action="Details" asp-route-id="@Model.VeiculoId" class="btn btn-sm btn-outline-primary mt-1">
+                                        <i class="fas fa-car"></i> Ver Veículo
+                                    </a>
+                                </dd>
+
+                                <dt class="col-sm-5">Tipo:</dt>
+                                <dd class="col-sm-7">@Model.TipoManutencao?.Nome</dd>
+
+                                <dt class="col-sm-5">Status:</dt>
+                                <dd class="col-sm-7">
+                                    @if (Model.StatusManutencao?.Status == "Agendada")
+                                    {
+                                        <span class="badge badge-warning badge-lg">@Model.StatusManutencao?.Status</span>
+                                    }
+                                    else if (Model.StatusManutencao?.Status == "Em Andamento")
+                                    {
+                                        <span class="badge badge-info badge-lg">@Model.StatusManutencao?.Status</span>
+                                    }
+                                    else if (Model.StatusManutencao?.Status == "Concluída")
+                                    {
+                                        <span class="badge badge-success badge-lg">@Model.StatusManutencao?.Status</span>
+                                    }
+                                    else if (Model.StatusManutencao?.Status == "Cancelada")
+                                    {
+                                        <span class="badge badge-danger badge-lg">@Model.StatusManutencao?.Status</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-secondary badge-lg">@Model.StatusManutencao?.Status</span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-5">Descrição:</dt>
+                                <dd class="col-sm-7">@Model.Descricao</dd>
+                            </dl>
+                        </div>
+
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-5">Data Agendada:</dt>
+                                <dd class="col-sm-7">
+                                    @Model.DataAgendada.ToString("dd/MM/yyyy HH:mm")<br />
+                                    @if (Model.DiasAteAgendamento > 0)
+                                    {
+                                        <small class="text-muted">Em @Model.DiasAteAgendamento dia(s)</small>
+                                    }
+                                    else if (Model.DiasAteAgendamento == 0)
+                                    {
+                                        <small class="text-warning"><strong>Hoje</strong></small>
+                                    }
+                                    else if (!Model.DataInicio.HasValue)
+                                    {
+                                        <small class="text-danger"><strong>Atrasada</strong></small>
+                                    }
+                                </dd>
+
+                                @if (Model.DataInicio.HasValue)
+                                {
+                                    <dt class="col-sm-5">Data Início:</dt>
+                                    <dd class="col-sm-7">@Model.DataInicio.Value.ToString("dd/MM/yyyy HH:mm")</dd>
+                                }
+
+                                @if (Model.DataConclusao.HasValue)
+                                {
+                                    <dt class="col-sm-5">Data Conclusão:</dt>
+                                    <dd class="col-sm-7">@Model.DataConclusao.Value.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                                    @if (Model.DuracaoHoras.HasValue)
+                                    {
+                                        <dt class="col-sm-5">Duração:</dt>
+                                        <dd class="col-sm-7">@Model.DuracaoHoras.Value.ToString("N1") horas</dd>
+                                    }
+                                }
+
+                                <dt class="col-sm-5">Responsável:</dt>
+                                <dd class="col-sm-7">@(Model.Funcionario?.Nome ?? "Não atribuído")</dd>
+
+                                <dt class="col-sm-5">Cadastrada em:</dt>
+                                <dd class="col-sm-7">@Model.DataCadastro.ToString("dd/MM/yyyy HH:mm")</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Observacoes))
+                    {
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <strong>Observações:</strong>
+                                <p class="mt-2">@Model.Observacoes</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Itens da Manutenção -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-list"></i> Itens e Serviços</h5>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <a asp-controller="ItensManutencao" asp-action="Create" asp-route-manutencaoId="@Model.Id" class="btn btn-sm btn-light">
+                            <i class="fas fa-plus"></i> Adicionar Item
+                        </a>
+                    }
+                </div>
+                <div class="card-body">
+                    @if (Model.Itens.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>Descrição</th>
+                                        <th>Quantidade</th>
+                                        <th>Valor Unit.</th>
+                                        <th>Valor Total</th>
+                                        <th>Fornecedor</th>
+                                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                        {
+                                            <th>Ações</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Itens)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (item.Tipo == "Peça")
+                                                {
+                                                    <span class="badge badge-primary">@item.Tipo</span>
+                                                }
+                                                else if (item.Tipo == "Serviço")
+                                                {
+                                                    <span class="badge badge-success">@item.Tipo</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-secondary">@item.Tipo</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @item.Descricao
+                                                @if (!string.IsNullOrEmpty(item.CodigoPeca))
+                                                {
+                                                    <br /><small class="text-muted">Cód: @item.CodigoPeca</small>
+                                                }
+                                            </td>
+                                            <td>@item.Quantidade</td>
+                                            <td>@item.ValorUnitario.ToString("C")</td>
+                                            <td><strong>@item.ValorTotal.ToString("C")</strong></td>
+                                            <td>@(item.Fornecedor ?? "-")</td>
+                                            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                            {
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <a asp-controller="ItensManutencao" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning" title="Editar">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <a asp-controller="ItensManutencao" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" title="Excluir">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr class="font-weight-bold">
+                                        <td colspan="4" class="text-right">Total dos Itens:</td>
+                                        <td colspan="@(User.IsInRole("Admin") || User.IsInRole("Manager") ? 3 : 2)">
+                                            <strong>@Model.Itens.Sum(i => i.ValorTotal).ToString("C")</strong>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Nenhum item adicionado a esta manutenção.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Painel Lateral -->
+        <div class="col-md-4">
+            <!-- Custos -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-money-bill-wave"></i> Custos</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        @if (Model.Custo.HasValue)
+                        {
+                            <dt class="col-sm-7">Custo Geral:</dt>
+                            <dd class="col-sm-5 text-right">@Model.Custo.Value.ToString("C")</dd>
+                        }
+
+                        @if (Model.CustoPecas.HasValue)
+                        {
+                            <dt class="col-sm-7">Peças:</dt>
+                            <dd class="col-sm-5 text-right">@Model.CustoPecas.Value.ToString("C")</dd>
+                        }
+
+                        @if (Model.CustoMaoObra.HasValue)
+                        {
+                            <dt class="col-sm-7">Mão de Obra:</dt>
+                            <dd class="col-sm-5 text-right">@Model.CustoMaoObra.Value.ToString("C")</dd>
+                        }
+
+                        <dt class="col-sm-7"><strong>Total:</strong></dt>
+                        <dd class="col-sm-5 text-right"><strong class="text-success">@Model.CustoTotal.ToString("C")</strong></dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Quilometragem -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-tachometer-alt"></i> Quilometragem</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-7">Atual:</dt>
+                        <dd class="col-sm-5 text-right">@Model.QuilometragemAtual.ToString("N0") km</dd>
+
+                        @if (Model.ProximaQuilometragem.HasValue)
+                        {
+                            <dt class="col-sm-7">Próxima:</dt>
+                            <dd class="col-sm-5 text-right">@Model.ProximaQuilometragem.Value.ToString("N0") km</dd>
+
+                            <dt class="col-sm-7">Faltam:</dt>
+                            <dd class="col-sm-5 text-right">@((Model.ProximaQuilometragem.Value - Model.QuilometragemAtual).ToString("N0")) km</dd>
+                        }
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Oficina -->
+            @if (!string.IsNullOrEmpty(Model.Oficina))
+            {
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-warehouse"></i> Oficina</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0">@Model.Oficina</p>
+                        @if (!string.IsNullOrEmpty(Model.NotaFiscal))
+                        {
+                            <hr />
+                            <small><strong>Nota Fiscal:</strong> @Model.NotaFiscal</small>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Garantia -->
+            @if (Model.GarantiaDias.HasValue)
+            {
+                <div class="card mb-4">
+                    <div class="card-header @(Model.EmGarantia ? "bg-success text-white" : "")">
+                        <h5 class="mb-0"><i class="fas fa-certificate"></i> Garantia</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-6">Prazo:</dt>
+                            <dd class="col-sm-6 text-right">@Model.GarantiaDias dias</dd>
+
+                            @if (Model.EmGarantia)
+                            {
+                                <dt class="col-sm-6">Status:</dt>
+                                <dd class="col-sm-6 text-right"><span class="badge badge-success">Em Garantia</span></dd>
+
+                                @if (Model.DiasRestantesGarantia.HasValue)
+                                {
+                                    <dt class="col-sm-6">Restam:</dt>
+                                    <dd class="col-sm-6 text-right">@Model.DiasRestantesGarantia dias</dd>
+                                }
+                            }
+                            else
+                            {
+                                <dt class="col-sm-6">Status:</dt>
+                                <dd class="col-sm-6 text-right"><span class="badge badge-secondary">Expirada</span></dd>
+                            }
+                        </dl>
+                    </div>
+                </div>
+            }
+
+            <!-- Marcadores -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-tags"></i> Marcadores</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Preventiva)
+                    {
+                        <span class="badge badge-primary badge-lg mb-2"><i class="fas fa-shield-alt"></i> Manutenção Preventiva</span><br />
+                    }
+                    @if (Model.Urgente)
+                    {
+                        <span class="badge badge-danger badge-lg mb-2"><i class="fas fa-exclamation-triangle"></i> Urgente</span><br />
+                    }
+                    @if (!Model.Preventiva && !Model.Urgente)
+                    {
+                        <small class="text-muted">Nenhum marcador</small>
+                    }
+                </div>
+            </div>
+
+            <!-- Ações -->
+            <div class="card">
+                <div class="card-body">
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-block mb-2">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                    }
+                    
+                    <a asp-action="HistoricoVeiculo" asp-route-id="@Model.VeiculoId" class="btn btn-info btn-block mb-2">
+                        <i class="fas fa-history"></i> Histórico do Veículo
+                    </a>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-block mb-2">
+                            <i class="fas fa-trash"></i> Excluir
+                        </a>
+                    }
+
+                    <a asp-action="Index" class="btn btn-secondary btn-block">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .badge-lg {
+        font-size: 1rem;
+        padding: 0.5rem 0.75rem;
+    }
+</style>

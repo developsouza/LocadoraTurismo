@@ -22,6 +22,12 @@ namespace RentalTourismSystem.Data
         public DbSet<ServicoAdicional> ServicosAdicionais { get; set; }
         public DbSet<Notificacao> Notificacoes { get; set; }
         public DbSet<Documento> Documentos { get; set; }
+        
+        // ========== MANUTENÇÃO VEICULAR ==========
+        public DbSet<TipoManutencao> TiposManutencao { get; set; }
+        public DbSet<StatusManutencao> StatusManutencoes { get; set; }
+        public DbSet<ManutencaoVeiculo> ManutencoesVeiculos { get; set; }
+        public DbSet<ItemManutencao> ItensManutencao { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -123,6 +129,50 @@ namespace RentalTourismSystem.Data
                     .OnDelete(DeleteBehavior.SetNull);
             });
 
+            // ========== CONFIGURAÇÕES DE MANUTENÇÃO ==========
+            modelBuilder.Entity<ManutencaoVeiculo>()
+                .HasOne(m => m.Veiculo)
+                .WithMany()
+                .HasForeignKey(m => m.VeiculoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ManutencaoVeiculo>()
+                .HasOne(m => m.TipoManutencao)
+                .WithMany(t => t.Manutencoes)
+                .HasForeignKey(m => m.TipoManutencaoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ManutencaoVeiculo>()
+                .HasOne(m => m.StatusManutencao)
+                .WithMany(s => s.Manutencoes)
+                .HasForeignKey(m => m.StatusManutencaoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ManutencaoVeiculo>()
+                .HasOne(m => m.Funcionario)
+                .WithMany()
+                .HasForeignKey(m => m.FuncionarioId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<ItemManutencao>()
+                .HasOne(i => i.ManutencaoVeiculo)
+                .WithMany(m => m.Itens)
+                .HasForeignKey(i => i.ManutencaoVeiculoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Índices para Manutenção
+            modelBuilder.Entity<ManutencaoVeiculo>()
+                .HasIndex(m => m.DataAgendada);
+
+            modelBuilder.Entity<ManutencaoVeiculo>()
+                .HasIndex(m => m.DataConclusao);
+
+            modelBuilder.Entity<ManutencaoVeiculo>()
+                .HasIndex(m => m.StatusManutencaoId);
+
+            modelBuilder.Entity<ManutencaoVeiculo>()
+                .HasIndex(m => m.VeiculoId);
+
             // ========== CONFIGURAÇÕES DE ÍNDICES ÚNICOS ==========
 
             // Cliente - CPF (atualizado para maiúsculo)
@@ -206,6 +256,26 @@ namespace RentalTourismSystem.Data
                 .HasColumnType("decimal(10,2)")
                 .HasPrecision(10, 2);
 
+            modelBuilder.Entity<ManutencaoVeiculo>()
+                .Property(m => m.Custo)
+                .HasColumnType("decimal(10,2)")
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<ManutencaoVeiculo>()
+                .Property(m => m.CustoPecas)
+                .HasColumnType("decimal(10,2)")
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<ManutencaoVeiculo>()
+                .Property(m => m.CustoMaoObra)
+                .HasColumnType("decimal(10,2)")
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<ItemManutencao>()
+                .Property(i => i.ValorUnitario)
+                .HasColumnType("decimal(10,2)")
+                .HasPrecision(10, 2);
+
             // ========== CONFIGURAÇÃO DE NOTIFICAÇÕES ==========
             modelBuilder.Entity<Notificacao>(entity =>
             {
@@ -251,6 +321,35 @@ namespace RentalTourismSystem.Data
                 new StatusReservaViagem { Id = 2, Status = "Confirmada" },
                 new StatusReservaViagem { Id = 3, Status = "Cancelada" },
                 new StatusReservaViagem { Id = 4, Status = "Realizada" }
+            );
+
+            // ========== SEED DATA - MANUTENÇÃO ==========
+            modelBuilder.Entity<StatusManutencao>().HasData(
+                new StatusManutencao { Id = 1, Status = "Agendada", Descricao = "Manutenção agendada, aguardando início" },
+                new StatusManutencao { Id = 2, Status = "Em Andamento", Descricao = "Manutenção em execução" },
+                new StatusManutencao { Id = 3, Status = "Concluída", Descricao = "Manutenção concluída com sucesso" },
+                new StatusManutencao { Id = 4, Status = "Cancelada", Descricao = "Manutenção cancelada" },
+                new StatusManutencao { Id = 5, Status = "Pendente Aprovação", Descricao = "Aguardando aprovação de orçamento" }
+            );
+
+            modelBuilder.Entity<TipoManutencao>().HasData(
+                new TipoManutencao { Id = 1, Nome = "Troca de Óleo", Descricao = "Troca de óleo do motor e filtro", Ativo = true },
+                new TipoManutencao { Id = 2, Nome = "Revisão Periódica", Descricao = "Revisão programada conforme manual", Ativo = true },
+                new TipoManutencao { Id = 3, Nome = "Troca de Pneus", Descricao = "Substituição de pneus", Ativo = true },
+                new TipoManutencao { Id = 4, Nome = "Alinhamento e Balanceamento", Descricao = "Serviço de alinhamento e balanceamento", Ativo = true },
+                new TipoManutencao { Id = 5, Nome = "Freios", Descricao = "Manutenção do sistema de freios", Ativo = true },
+                new TipoManutencao { Id = 6, Nome = "Suspensão", Descricao = "Manutenção do sistema de suspensão", Ativo = true },
+                new TipoManutencao { Id = 7, Nome = "Ar Condicionado", Descricao = "Manutenção do sistema de climatização", Ativo = true },
+                new TipoManutencao { Id = 8, Nome = "Bateria", Descricao = "Troca ou manutenção da bateria", Ativo = true },
+                new TipoManutencao { Id = 9, Nome = "Sistema Elétrico", Descricao = "Reparos no sistema elétrico", Ativo = true },
+                new TipoManutencao { Id = 10, Nome = "Motor", Descricao = "Reparos no motor", Ativo = true },
+                new TipoManutencao { Id = 11, Nome = "Câmbio", Descricao = "Manutenção do sistema de transmissão", Ativo = true },
+                new TipoManutencao { Id = 12, Nome = "Funilaria", Descricao = "Reparos de lataria e funilaria", Ativo = true },
+                new TipoManutencao { Id = 13, Nome = "Pintura", Descricao = "Serviços de pintura", Ativo = true },
+                new TipoManutencao { Id = 14, Nome = "Vidros", Descricao = "Troca ou reparo de vidros", Ativo = true },
+                new TipoManutencao { Id = 15, Nome = "Limpeza Completa", Descricao = "Limpeza interna e externa detalhada", Ativo = true },
+                new TipoManutencao { Id = 16, Nome = "Inspeção Veicular", Descricao = "Inspeção veicular obrigatória", Ativo = true },
+                new TipoManutencao { Id = 17, Nome = "Outros", Descricao = "Outras manutenções não especificadas", Ativo = true }
             );
 
             // Agência Central (atualizada com novos campos)

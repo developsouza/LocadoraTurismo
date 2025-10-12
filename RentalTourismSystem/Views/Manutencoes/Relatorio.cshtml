@@ -1,0 +1,333 @@
+@model IEnumerable<RentalTourismSystem.Models.ManutencaoVeiculo>
+
+@{
+    ViewData["Title"] = "Relatório de Manutenções";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2><i class="fas fa-chart-bar"></i> Relatório de Manutenções</h2>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fas fa-filter"></i> Filtros do Relatório</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Relatorio" method="get">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Data Início</label>
+                            <input type="date" name="dataInicio" class="form-control" value="@ViewBag.DataInicio" required />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Data Fim</label>
+                            <input type="date" name="dataFim" class="form-control" value="@ViewBag.DataFim" required />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Veículo</label>
+                            <select name="veiculoId" class="form-control" asp-items="ViewBag.VeiculoIdFiltro">
+                                <option value="">Todos os veículos</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Tipo</label>
+                            <select name="tipoId" class="form-control" asp-items="ViewBag.TipoIdFiltro">
+                                <option value="">Todos os tipos</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Estatísticas Resumidas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h2><i class="fas fa-tools"></i></h2>
+                    <h4>@ViewBag.TotalManutencoes</h4>
+                    <p class="mb-0">Total de Manutenções</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body text-center">
+                    <h2><i class="fas fa-dollar-sign"></i></h2>
+                    <h4>@ViewBag.CustoTotal.ToString("C")</h4>
+                    <p class="mb-0">Custo Total</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h2><i class="fas fa-chart-line"></i></h2>
+                    <h4>@ViewBag.MediaCusto.ToString("C")</h4>
+                    <p class="mb-0">Custo Médio</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <h2><i class="fas fa-shield-alt"></i></h2>
+                    <h4>@ViewBag.ManutencoesPreventivas</h4>
+                    <p class="mb-0">Preventivas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detalhamento de Custos -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-cog"></i> Peças</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h3>@ViewBag.TotalPecas.ToString("C")</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-user-hard-hat"></i> Mão de Obra</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h3>@ViewBag.TotalMaoObra.ToString("C")</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Urgentes</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h3>@ViewBag.ManutencoesUrgentes</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manutenções por Tipo -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="fas fa-chart-pie"></i> Manutenções por Tipo</h5>
+        </div>
+        <div class="card-body">
+            @if (ViewBag.ManutencoesPorTipo != null && ((IEnumerable<dynamic>)ViewBag.ManutencoesPorTipo).Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Tipo de Manutenção</th>
+                                <th class="text-center">Quantidade</th>
+                                <th class="text-right">Custo Total</th>
+                                <th class="text-right">% do Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in ViewBag.ManutencoesPorTipo)
+                            {
+                                var percentual = ViewBag.CustoTotal > 0 ? (item.Custo / ViewBag.CustoTotal * 100) : 0;
+                                <tr>
+                                    <td><strong>@item.Tipo</strong></td>
+                                    <td class="text-center">@item.Quantidade</td>
+                                    <td class="text-right">@item.Custo.ToString("C")</td>
+                                    <td class="text-right">@percentual.ToString("N2")%</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="font-weight-bold">
+                            <tr class="bg-light">
+                                <td>Total</td>
+                                <td class="text-center">@ViewBag.TotalManutencoes</td>
+                                <td class="text-right">@ViewBag.CustoTotal.ToString("C")</td>
+                                <td class="text-right">100%</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">Nenhum dado disponível para o período selecionado.</div>
+            }
+        </div>
+    </div>
+
+    <!-- Manutenções por Veículo -->
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0"><i class="fas fa-car"></i> Custos por Veículo</h5>
+        </div>
+        <div class="card-body">
+            @if (ViewBag.ManutencoesPorVeiculo != null && ((IEnumerable<dynamic>)ViewBag.ManutencoesPorVeiculo).Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Veículo</th>
+                                <th class="text-center">Quantidade</th>
+                                <th class="text-right">Custo Total</th>
+                                <th class="text-right">Custo Médio</th>
+                                <th class="text-right">% do Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in ViewBag.ManutencoesPorVeiculo)
+                            {
+                                var percentual = ViewBag.CustoTotal > 0 ? (item.Custo / ViewBag.CustoTotal * 100) : 0;
+                                var custoMedio = item.Quantidade > 0 ? (item.Custo / item.Quantidade) : 0;
+                                <tr>
+                                    <td>
+                                        <strong>@item.Descricao</strong>
+                                        <a asp-action="HistoricoVeiculo" asp-route-id="@item.VeiculoId" class="btn btn-sm btn-outline-info ml-2">
+                                            <i class="fas fa-history"></i> Ver Histórico
+                                        </a>
+                                    </td>
+                                    <td class="text-center">@item.Quantidade</td>
+                                    <td class="text-right">@item.Custo.ToString("C")</td>
+                                    <td class="text-right">@custoMedio.ToString("C")</td>
+                                    <td class="text-right">@percentual.ToString("N2")%</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">Nenhum dado disponível para o período selecionado.</div>
+            }
+        </div>
+    </div>
+
+    <!-- Lista Detalhada de Manutenções -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-list"></i> Detalhamento de Manutenções</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Data</th>
+                                <th>Veículo</th>
+                                <th>Tipo</th>
+                                <th>Status</th>
+                                <th>Descrição</th>
+                                <th class="text-right">Custo</th>
+                                <th>Marcadores</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.OrderByDescending(m => m.DataAgendada))
+                            {
+                                <tr>
+                                    <td>@item.DataAgendada.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.Veiculo?.Marca @item.Veiculo?.Modelo<br /><small>@item.Veiculo?.Placa</small></td>
+                                    <td>@item.TipoManutencao?.Nome</td>
+                                    <td>
+                                        @if (item.StatusManutencao?.Status == "Concluída")
+                                        {
+                                            <span class="badge badge-success">@item.StatusManutencao?.Status</span>
+                                        }
+                                        else if (item.StatusManutencao?.Status == "Em Andamento")
+                                        {
+                                            <span class="badge badge-info">@item.StatusManutencao?.Status</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-secondary">@item.StatusManutencao?.Status</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.Descricao.Length > 40)
+                                        {
+                                            @item.Descricao.Substring(0, 40)<text>...</text>
+                                        }
+                                        else
+                                        {
+                                            @item.Descricao
+                                        }
+                                    </td>
+                                    <td class="text-right"><strong>@item.CustoTotal.ToString("C")</strong></td>
+                                    <td>
+                                        @if (item.Preventiva)
+                                        {
+                                            <span class="badge badge-primary" title="Preventiva"><i class="fas fa-shield-alt"></i></span>
+                                        }
+                                        @if (item.Urgente)
+                                        {
+                                            <span class="badge badge-danger" title="Urgente"><i class="fas fa-exclamation-triangle"></i></span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Nenhuma manutenção encontrada para o período selecionado.
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button onclick="window.print()" class="btn btn-primary">
+            <i class="fas fa-print"></i> Imprimir Relatório
+        </button>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+}
+
+<style>
+    @@media print {
+        .btn, .card-header, nav {
+            display: none !important;
+        }
+        .card {
+            border: 1px solid #000 !important;
+            page-break-inside: avoid;
+        }
+    }
+</style>
