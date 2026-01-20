@@ -1,14 +1,14 @@
-﻿# ?? Documentação do Sistema - Índice Geral
+﻿# 📚 Documentação do Sistema - Índice Geral
 
-## ?? Bem-vindo ao Sistema Litoral Sul
+## 📚 Bem-vindo ao Sistema Litoral Sul
 
 Este é o índice completo da documentação do **Sistema Integrado de Locação de Veículos e Turismo** da Litoral Sul.
 
 ---
 
-## ?? Guias Disponíveis
+## 📚 Guias Disponíveis
 
-### ?? 1. Autenticação e Segurança
+### 📚 1. Autenticação e Segurança
 **[AUTENTICACAO_GUIA_COMPLETO.md](AUTENTICACAO_GUIA_COMPLETO.md)**
 
 Aprenda sobre:
@@ -23,7 +23,7 @@ Aprenda sobre:
 
 ---
 
-### ?? 2. Gestão de Clientes
+### 📚 2. Gestão de Clientes
 **[CLIENTES_GUIA_COMPLETO.md](CLIENTES_GUIA_COMPLETO.md)**
 
 Aprenda sobre:
@@ -38,7 +38,7 @@ Aprenda sobre:
 
 ---
 
-### ?? 3. Gestão de Veículos
+### 📚 3. Gestão de Veículos
 **[VEICULOS_GUIA_COMPLETO.md](VEICULOS_GUIA_COMPLETO.md)**
 
 Aprenda sobre:
@@ -53,12 +53,12 @@ Aprenda sobre:
 
 ---
 
-### ?? 4. Sistema de Locações
+### 📚 4. Sistema de Locações
 **[LOCACOES_GUIA_COMPLETO.md](LOCACOES_GUIA_COMPLETO.md)**
 
 Aprenda sobre:
 - Criar nova locação
-- Processo completo (retirada ? devolução)
+- Processo completo (retirada ✅ devolução)
 - Vistoria de veículos
 - Geração de contratos
 - Cálculo de valores e multas
@@ -68,7 +68,7 @@ Aprenda sobre:
 
 ---
 
-### ?? 5. Sistema de Manutenções
+### 📚 5. Sistema de Manutenções
 **[MANUTENCAO_GUIA_ACESSO.md](MANUTENCAO_GUIA_ACESSO.md)**
 
 Aprenda sobre:
@@ -83,7 +83,7 @@ Aprenda sobre:
 
 ---
 
-### ?? 6. Reservas de Viagem
+### 📚 6. Reservas de Viagem
 **[RESERVAS_VIAGEM_GUIA_COMPLETO.md](RESERVAS_VIAGEM_GUIA_COMPLETO.md)**
 
 Aprenda sobre:
@@ -98,7 +98,7 @@ Aprenda sobre:
 
 ---
 
-### ?? 7. Upload de Documentos
+### 📚 7. Upload de Documentos
 **[UPLOAD_DOCUMENTOS.md](UPLOAD_DOCUMENTOS.md)**
 
 Aprenda sobre:
@@ -113,85 +113,85 @@ Aprenda sobre:
 
 ---
 
-## ?? Guias Rápidos por Perfil
+## 📚 Guias Rápidos por Perfil
 
-### ????? **Administrador (Admin)**
+### 📚📚✅ **Administrador (Admin)**
 Leia primeiro:
-1. ? [Autenticação e Segurança](AUTENTICACAO_GUIA_COMPLETO.md)
-2. ? [Gestão de Clientes](CLIENTES_GUIA_COMPLETO.md)
-3. ? [Gestão de Veículos](VEICULOS_GUIA_COMPLETO.md)
-4. ? [Sistema de Manutenções](MANUTENCAO_GUIA_ACESSO.md)
-5. ? [Upload de Documentos](UPLOAD_DOCUMENTOS.md)
+1. ✅ [Autenticação e Segurança](AUTENTICACAO_GUIA_COMPLETO.md)
+2. ✅ [Gestão de Clientes](CLIENTES_GUIA_COMPLETO.md)
+3. ✅ [Gestão de Veículos](VEICULOS_GUIA_COMPLETO.md)
+4. ✅ [Sistema de Manutenções](MANUTENCAO_GUIA_ACESSO.md)
+5. ✅ [Upload de Documentos](UPLOAD_DOCUMENTOS.md)
 
 **Você tem acesso total!**
 
 ---
 
-### ?? **Gerente (Manager)**
+### 📚 **Gerente (Manager)**
 Leia primeiro:
-1. ? [Autenticação e Segurança](AUTENTICACAO_GUIA_COMPLETO.md) - Seção de permissões
-2. ? [Gestão de Veículos](VEICULOS_GUIA_COMPLETO.md) - Controle da frota
-3. ? [Sistema de Manutenções](MANUTENCAO_GUIA_ACESSO.md) - Custos e planejamento
-4. ? [Sistema de Locações](LOCACOES_GUIA_COMPLETO.md) - Processo operacional
+1. ✅ [Autenticação e Segurança](AUTENTICACAO_GUIA_COMPLETO.md) - Seção de permissões
+2. ✅ [Gestão de Veículos](VEICULOS_GUIA_COMPLETO.md) - Controle da frota
+3. ✅ [Sistema de Manutenções](MANUTENCAO_GUIA_ACESSO.md) - Custos e planejamento
+4. ✅ [Sistema de Locações](LOCACOES_GUIA_COMPLETO.md) - Processo operacional
 
 **Foco em gestão operacional!**
 
 ---
 
-### ????? **Funcionário (Employee)**
+### 📚📚✅ **Funcionário (Employee)**
 Leia primeiro:
-1. ? [Autenticação e Segurança](AUTENTICACAO_GUIA_COMPLETO.md) - Como fazer login
-2. ? [Gestão de Clientes](CLIENTES_GUIA_COMPLETO.md) - Cadastro de clientes
-3. ? [Sistema de Locações](LOCACOES_GUIA_COMPLETO.md) - Processo completo
-4. ? [Reservas de Viagem](RESERVAS_VIAGEM_GUIA_COMPLETO.md) - Vender pacotes
+1. ✅ [Autenticação e Segurança](AUTENTICACAO_GUIA_COMPLETO.md) - Como fazer login
+2. ✅ [Gestão de Clientes](CLIENTES_GUIA_COMPLETO.md) - Cadastro de clientes
+3. ✅ [Sistema de Locações](LOCACOES_GUIA_COMPLETO.md) - Processo completo
+4. ✅ [Reservas de Viagem](RESERVAS_VIAGEM_GUIA_COMPLETO.md) - Vender pacotes
 
 **Foco no atendimento ao cliente!**
 
 ---
 
-### ?? **Usuário Básico (User)**
+### 📚 **Usuário Básico (User)**
 Leia primeiro:
-1. ? [Autenticação e Segurança](AUTENTICACAO_GUIA_COMPLETO.md) - Como acessar
-2. ? [Gestão de Clientes](CLIENTES_GUIA_COMPLETO.md) - Consultas
-3. ? [Gestão de Veículos](VEICULOS_GUIA_COMPLETO.md) - Visualização
+1. ✅ [Autenticação e Segurança](AUTENTICACAO_GUIA_COMPLETO.md) - Como acessar
+2. ✅ [Gestão de Clientes](CLIENTES_GUIA_COMPLETO.md) - Consultas
+3. ✅ [Gestão de Veículos](VEICULOS_GUIA_COMPLETO.md) - Visualização
 
 **Acesso de consulta!**
 
 ---
 
-## ?? Busca Rápida por Funcionalidade
+## 📚 Busca Rápida por Funcionalidade
 
-### ?? **Cadastros**
+### 📚 **Cadastros**
 - [Cadastrar Cliente](CLIENTES_GUIA_COMPLETO.md#cadastro-de-clientes)
 - [Cadastrar Veículo](VEICULOS_GUIA_COMPLETO.md#cadastro-de-veículos)
 - [Cadastrar Pacote de Viagem](RESERVAS_VIAGEM_GUIA_COMPLETO.md#pacotes-de-viagem)
 - [Cadastrar Usuário](AUTENTICACAO_GUIA_COMPLETO.md#registro-de-novo-usuário)
 
-### ?? **Processos**
+### 📚 **Processos**
 - [Processo de Locação](LOCACOES_GUIA_COMPLETO.md#processo-de-locação)
 - [Devolução de Veículo](LOCACOES_GUIA_COMPLETO.md#devolução-de-veículo)
 - [Criar Reserva de Viagem](RESERVAS_VIAGEM_GUIA_COMPLETO.md#criar-reserva)
 - [Registrar Manutenção](MANUTENCAO_GUIA_ACESSO.md)
 
-### ?? **Documentos**
+### 📚 **Documentos**
 - [Upload de Documentos de Cliente](UPLOAD_DOCUMENTOS.md#para-clientes)
 - [Upload de Documentos de Veículo](UPLOAD_DOCUMENTOS.md#para-veículos)
 - [Gerar Contrato de Locação](LOCACOES_GUIA_COMPLETO.md#documentos-e-contratos)
 - [Laudo de Vistoria](LOCACOES_GUIA_COMPLETO.md#vistoria)
 
-### ?? **Relatórios**
+### 📚 **Relatórios**
 - [Relatórios de Locações](LOCACOES_GUIA_COMPLETO.md#relatórios)
 - [Relatórios de Manutenção](MANUTENCAO_GUIA_ACESSO.md#relatórios)
 - [Relatórios de Reservas](RESERVAS_VIAGEM_GUIA_COMPLETO.md#relatórios)
 - [Veículos Mais Alugados](VEICULOS_GUIA_COMPLETO.md#relatórios)
 
-### ?? **Manutenção**
+### 📚 **Manutenção**
 - [Nova Manutenção](MANUTENCAO_GUIA_ACESSO.md#nova-manutenção)
 - [Histórico por Veículo](MANUTENCAO_GUIA_ACESSO.md#histórico-de-manutenções)
 - [Relatório de Custos](MANUTENCAO_GUIA_ACESSO.md#relatório-de-custos)
 - [Adicionar Itens](MANUTENCAO_GUIA_ACESSO.md#adicionar-itens)
 
-### ?? **Segurança**
+### 📚 **Segurança**
 - [Fazer Login](AUTENTICACAO_GUIA_COMPLETO.md#login-e-registro)
 - [Trocar Senha](AUTENTICACAO_GUIA_COMPLETO.md#alterar-senha-logado)
 - [Recuperar Senha](AUTENTICACAO_GUIA_COMPLETO.md#recuperação-de-senha)
@@ -199,40 +199,40 @@ Leia primeiro:
 
 ---
 
-## ?? Solução Rápida de Problemas
+## 📚 Solução Rápida de Problemas
 
-### ? Problemas Comuns
+### ✅ Problemas Comuns
 
 **1. Não consigo fazer login**
-? Ver: [Autenticação - Solução de Problemas](AUTENTICACAO_GUIA_COMPLETO.md#solução-de-problemas)
+✅ Ver: [Autenticação - Solução de Problemas](AUTENTICACAO_GUIA_COMPLETO.md#solução-de-problemas)
 
 **2. CNH do cliente está vencida**
-? Ver: [Clientes - Validação CNH](CLIENTES_GUIA_COMPLETO.md#validações-automáticas)
+✅ Ver: [Clientes - Validação CNH](CLIENTES_GUIA_COMPLETO.md#validações-automáticas)
 
 **3. Veículo não está disponível**
-? Ver: [Veículos - Disponibilidade](VEICULOS_GUIA_COMPLETO.md#disponibilidade)
+✅ Ver: [Veículos - Disponibilidade](VEICULOS_GUIA_COMPLETO.md#disponibilidade)
 
 **4. Erro ao fazer upload de documento**
-? Ver: [Upload - Troubleshooting](UPLOAD_DOCUMENTOS.md#troubleshooting)
+✅ Ver: [Upload - Troubleshooting](UPLOAD_DOCUMENTOS.md#troubleshooting)
 
 **5. Não consigo cancelar reserva**
-? Ver: [Reservas - Cancelamento](RESERVAS_VIAGEM_GUIA_COMPLETO.md#cancelar-reserva)
+✅ Ver: [Reservas - Cancelamento](RESERVAS_VIAGEM_GUIA_COMPLETO.md#cancelar-reserva)
 
 **6. Veículo não pode ser excluído**
-? Ver: [Veículos - Regras de Exclusão](VEICULOS_GUIA_COMPLETO.md#excluir-veículo)
+✅ Ver: [Veículos - Regras de Exclusão](VEICULOS_GUIA_COMPLETO.md#excluir-veículo)
 
 ---
 
-## ?? Checklist de Início
+## 📚 Checklist de Início
 
-### ?? Primeira Utilização do Sistema
+### 📚 Primeira Utilização do Sistema
 
 - [ ] **1. Fazer primeiro login**
   - Usuário: admin@litoralsul.com.br
   - Senha: Admin@123456
   
 - [ ] **2. Trocar senha padrão**
-  - Menu ? Perfil ? Alterar Senha
+  - Menu ✅ Perfil ✅ Alterar Senha
   
 - [ ] **3. Criar usuários do time**
   - Manager (gerente)
@@ -268,9 +268,9 @@ Leia primeiro:
 
 ---
 
-## ?? Dicas Gerais
+## 📚 Dicas Gerais
 
-### ? Boas Práticas
+### ✅ Boas Práticas
 
 1. **Mantenha documentação atualizada**
    - Upload de documentos regularmente
@@ -296,19 +296,19 @@ Leia primeiro:
 
 ---
 
-## ?? Suporte
+## 📚 Suporte
 
-### ?? Precisa de Ajuda?
+### 📚 Precisa de Ajuda✅
 
 **Documentação:**
-- ?? Consulte os guias específicos
-- ?? Use a busca rápida acima
-- ? Veja os checklists
+- 📚 Consulte os guias específicos
+- 📚 Use a busca rápida acima
+- ✅ Veja os checklists
 
 **Suporte Técnico:**
-- ?? Email: suporte@litoralsul.com.br
-- ?? Telefone: (13) 3XXX-XXXX
-- ?? Chat interno (em breve)
+- 📚 Email: suporte@litoralsul.com.br
+- 📚 Telefone: (13) 3XXX-XXXX
+- 📚 Chat interno (em breve)
 
 **Horário de Atendimento:**
 - Segunda a Sexta: 8h às 18h
@@ -316,37 +316,37 @@ Leia primeiro:
 
 ---
 
-## ?? Atualizações
+## 📚 Atualizações
 
-### ?? Histórico de Versões
+### 📚 Histórico de Versões
 
 **Versão 1.0 - Outubro/2025**
-- ? Sistema de Locações completo
-- ? Sistema de Reservas de Viagem
-- ? Sistema de Manutenções
-- ? Upload de Documentos
-- ? Autenticação e Permissões
-- ? Relatórios Gerenciais
-- ? Documentação Completa
+- ✅ Sistema de Locações completo
+- ✅ Sistema de Reservas de Viagem
+- ✅ Sistema de Manutenções
+- ✅ Upload de Documentos
+- ✅ Autenticação e Permissões
+- ✅ Relatórios Gerenciais
+- ✅ Documentação Completa
 
 **Próximas Funcionalidades:**
-- ?? App Mobile
-- ?? Notificações Push
-- ?? Dashboard avançado
-- ?? Automações
-- ?? Email marketing
-- ? Avaliações de clientes
+- 📚 App Mobile
+- 📚 Notificações Push
+- 📚 Dashboard avançado
+- 📚 Automações
+- 📚 Email marketing
+- ✅ Avaliações de clientes
 
 ---
 
-## ?? Comece Agora!
+## 📚 Comece Agora!
 
 Escolha o guia apropriado para seu perfil e comece a explorar o sistema:
 
-- **Novo no sistema?** ? [Autenticação e Segurança](AUTENTICACAO_GUIA_COMPLETO.md)
-- **Atendente?** ? [Gestão de Clientes](CLIENTES_GUIA_COMPLETO.md)
-- **Gestor de frota?** ? [Gestão de Veículos](VEICULOS_GUIA_COMPLETO.md)
-- **Vendedor de turismo?** ? [Reservas de Viagem](RESERVAS_VIAGEM_GUIA_COMPLETO.md)
+- **Novo no sistema✅** ✅ [Autenticação e Segurança](AUTENTICACAO_GUIA_COMPLETO.md)
+- **Atendente✅** ✅ [Gestão de Clientes](CLIENTES_GUIA_COMPLETO.md)
+- **Gestor de frota✅** ✅ [Gestão de Veículos](VEICULOS_GUIA_COMPLETO.md)
+- **Vendedor de turismo✅** ✅ [Reservas de Viagem](RESERVAS_VIAGEM_GUIA_COMPLETO.md)
 
 ---
 
@@ -357,4 +357,5 @@ Escolha o guia apropriado para seu perfil e comece a explorar o sistema:
 
 ---
 
-?? **Boa leitura e bom trabalho!**
+📚 **Boa leitura e bom trabalho!**
+

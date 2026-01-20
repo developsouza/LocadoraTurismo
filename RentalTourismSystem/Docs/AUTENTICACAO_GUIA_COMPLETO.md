@@ -1,6 +1,6 @@
-﻿# ?? Sistema de Autenticação e Controle de Acesso - Guia Completo
+﻿# 📚 Sistema de Autenticação e Controle de Acesso - Guia Completo
 
-## ?? Índice
+## 📚 Índice
 - [Visão Geral](#visão-geral)
 - [Tipos de Usuários](#tipos-de-usuários)
 - [Login e Registro](#login-e-registro)
@@ -11,25 +11,25 @@
 
 ---
 
-## ?? Visão Geral
+## 📚 Visão Geral
 
 O sistema utiliza **ASP.NET Core Identity** para autenticação e autorização baseada em roles (funções), garantindo acesso seguro e controlado a todas as funcionalidades.
 
-### ?? Recursos de Segurança
+### 📚 Recursos de Segurança
 
-? **Autenticação Robusta**
+✅ **Autenticação Robusta**
 - Login com email e senha
 - Validação de credenciais
 - Sessão segura (8 horas)
 - Proteção contra ataques
 
-? **Autorização Baseada em Roles**
+✅ **Autorização Baseada em Roles**
 - 4 níveis de acesso
 - Permissões granulares
 - Controle por módulo
 - Hierarquia de privilégios
 
-? **Gestão de Usuários**
+✅ **Gestão de Usuários**
 - Cadastro de novos usuários
 - Edição de informações
 - Alteração de senha
@@ -37,32 +37,32 @@ O sistema utiliza **ASP.NET Core Identity** para autenticação e autorização 
 
 ---
 
-## ?? Tipos de Usuários
+## 📚 Tipos de Usuários
 
-### ?? **Admin (Administrador)**
+### 📚 **Admin (Administrador)**
 
 **Privilégios TOTAIS:**
-- ? Acesso completo ao sistema
-- ? Gerenciar todos os usuários
-- ? Criar, editar e excluir TUDO
-- ? Acessar relatórios gerenciais
-- ? Configurações do sistema
-- ? Backup e restore
-- ? Logs e auditoria
+- ✅ Acesso completo ao sistema
+- ✅ Gerenciar todos os usuários
+- ✅ Criar, editar e excluir TUDO
+- ✅ Acessar relatórios gerenciais
+- ✅ Configurações do sistema
+- ✅ Backup e restore
+- ✅ Logs e auditoria
 
 **Acesso aos módulos:**
 ```
-? Clientes (CRUD completo)
-? Veículos (CRUD completo)
-? Locações (CRUD completo)
-? Manutenções (CRUD completo)
-? Reservas (CRUD completo)
-? Pacotes (CRUD completo)
-? Funcionários (CRUD completo)
-? Agências (CRUD completo)
-? Usuários (CRUD completo)
-? Relatórios (todos)
-? Documentos (upload/exclusão)
+✅ Clientes (CRUD completo)
+✅ Veículos (CRUD completo)
+✅ Locações (CRUD completo)
+✅ Manutenções (CRUD completo)
+✅ Reservas (CRUD completo)
+✅ Pacotes (CRUD completo)
+✅ Funcionários (CRUD completo)
+✅ Agências (CRUD completo)
+✅ Usuários (CRUD completo)
+✅ Relatórios (todos)
+✅ Documentos (upload/exclusão)
 ```
 
 **Usuário padrão:**
@@ -71,122 +71,122 @@ Email: admin@litoralsul.com.br
 Senha: Admin@123456
 ```
 
-### ?? **Manager (Gerente)**
+### 📚 **Manager (Gerente)**
 
 **Privilégios GERENCIAIS:**
-- ? Gerenciar operações diárias
-- ? Criar e editar registros principais
-- ? Aprovar locações e reservas
-- ? Acessar relatórios operacionais
-- ?? NÃO gerencia usuários Admin
-- ?? NÃO acessa configurações críticas
+- ✅ Gerenciar operações diárias
+- ✅ Criar e editar registros principais
+- ✅ Aprovar locações e reservas
+- ✅ Acessar relatórios operacionais
+- 📚 NÃO gerencia usuários Admin
+- 📚 NÃO acessa configurações críticas
 
 **Acesso aos módulos:**
 ```
-? Clientes (CRUD completo)
-? Veículos (CRUD completo)
-? Locações (CRUD completo)
-? Manutenções (CRUD completo)
-? Reservas (CRUD completo)
-? Pacotes (CRUD completo)
-? Funcionários (CRUD)
-? Agências (CRUD)
-? Usuários (apenas visualização)
-? Relatórios (operacionais)
-? Documentos (upload/exclusão)
+✅ Clientes (CRUD completo)
+✅ Veículos (CRUD completo)
+✅ Locações (CRUD completo)
+✅ Manutenções (CRUD completo)
+✅ Reservas (CRUD completo)
+✅ Pacotes (CRUD completo)
+✅ Funcionários (CRUD)
+✅ Agências (CRUD)
+✅ Usuários (apenas visualização)
+✅ Relatórios (operacionais)
+✅ Documentos (upload/exclusão)
 ```
 
-### ?? **Employee (Funcionário)**
+### 📚 **Employee (Funcionário)**
 
 **Privilégios OPERACIONAIS:**
-- ? Criar locações e reservas
-- ? Cadastrar clientes
-- ? Fazer vistorias
-- ? Upload de documentos
-- ?? NÃO exclui registros
-- ?? NÃO gerencia usuários
-- ?? Relatórios limitados
+- ✅ Criar locações e reservas
+- ✅ Cadastrar clientes
+- ✅ Fazer vistorias
+- ✅ Upload de documentos
+- 📚 NÃO exclui registros
+- 📚 NÃO gerencia usuários
+- 📚 Relatórios limitados
 
 **Acesso aos módulos:**
 ```
-? Clientes (criar/editar)
-??? Veículos (visualização)
-? Locações (criar/editar/finalizar)
-??? Manutenções (visualização)
-? Reservas (criar/editar)
-??? Pacotes (visualização)
-??? Funcionários (visualização)
-??? Agências (visualização)
-? Usuários (sem acesso)
-??? Relatórios (básicos)
-? Documentos (upload, sem exclusão)
+✅ Clientes (criar/editar)
+📚✅ Veículos (visualização)
+✅ Locações (criar/editar/finalizar)
+📚✅ Manutenções (visualização)
+✅ Reservas (criar/editar)
+📚✅ Pacotes (visualização)
+📚✅ Funcionários (visualização)
+📚✅ Agências (visualização)
+✅ Usuários (sem acesso)
+📚✅ Relatórios (básicos)
+✅ Documentos (upload, sem exclusão)
 ```
 
-### ?? **User (Usuário Básico)**
+### 📚 **User (Usuário Básico)**
 
 **Privilégios LIMITADOS:**
-- ??? Visualização de informações
-- ??? Consultas básicas
-- ? Sem permissões de edição
-- ? Sem acesso a dados sensíveis
+- 📚✅ Visualização de informações
+- 📚✅ Consultas básicas
+- ✅ Sem permissões de edição
+- ✅ Sem acesso a dados sensíveis
 
 **Acesso aos módulos:**
 ```
-??? Clientes (visualização)
-??? Veículos (visualização)
-??? Locações (visualização)
-??? Manutenções (visualização)
-??? Reservas (visualização)
-??? Pacotes (visualização)
-? Funcionários (sem acesso)
-? Agências (sem acesso)
-? Usuários (sem acesso)
-? Relatórios (sem acesso)
-? Documentos (sem acesso)
+📚✅ Clientes (visualização)
+📚✅ Veículos (visualização)
+📚✅ Locações (visualização)
+📚✅ Manutenções (visualização)
+📚✅ Reservas (visualização)
+📚✅ Pacotes (visualização)
+✅ Funcionários (sem acesso)
+✅ Agências (sem acesso)
+✅ Usuários (sem acesso)
+✅ Relatórios (sem acesso)
+✅ Documentos (sem acesso)
 ```
 
 ---
 
-## ?? Login e Registro
+## 📚 Login e Registro
 
-### ?? Tela de Login
+### 📚 Tela de Login
 
 **Acesso:** `/Account/Login`
 
 **Formulário:**
 ```
-???????????????????????????????????
-?   LITORAL SUL                   ?
-?   Locadora e Turismo            ?
-?                                 ?
-?   Email:                        ?
-?   [___________________________] ?
-?                                 ?
-?   Senha:                        ?
-?   [___________________________] ?
-?                                 ?
-?   [ ] Lembrar-me               ?
-?                                 ?
-?   [       ENTRAR       ]        ?
-?                                 ?
-?   Esqueceu a senha?             ?
-???????????????????????????????????
+📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚✅
+✅   LITORAL SUL                   ✅
+✅   Locadora e Turismo            ✅
+✅                                 ✅
+✅   Email:                        ✅
+✅   [___________________________] ✅
+✅                                 ✅
+✅   Senha:                        ✅
+✅   [___________________________] ✅
+✅                                 ✅
+✅   [ ] Lembrar-me               ✅
+✅                                 ✅
+✅   [       ENTRAR       ]        ✅
+✅                                 ✅
+✅   Esqueceu a senha✅             ✅
+📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚✅
 ```
 
-### ? Validações de Login
+### ✅ Validações de Login
 
 **Sistema valida:**
 1. **Email:**
-   - ? Formato válido
-   - ? Cadastrado no sistema
-   - ? Conta ativa
+   - ✅ Formato válido
+   - ✅ Cadastrado no sistema
+   - ✅ Conta ativa
 
 2. **Senha:**
-   - ? Senha correta
-   - ? Conta não bloqueada
-   - ? Tentativas de login
+   - ✅ Senha correta
+   - ✅ Conta não bloqueada
+   - ✅ Tentativas de login
 
-### ?? Segurança do Login
+### 📚 Segurança do Login
 
 **Proteções implementadas:**
 
@@ -207,11 +207,11 @@ Senha: Admin@123456
    - Pelo menos 1 minúscula
    - Pelo menos 1 número
 
-### ?? Registro de Novo Usuário
+### 📚 Registro de Novo Usuário
 
 **Acesso:** `/Account/Register`
 
-> ?? **Importante:** Apenas Admin e Manager podem criar novos usuários!
+> 📚 **Importante:** Apenas Admin e Manager podem criar novos usuários!
 
 **Formulário:**
 ```
@@ -230,7 +230,7 @@ Confirmar Senha:
 [_________________________________]
 
 Função (Role):
-[ Selecione ? ]
+[ Selecione ✅ ]
   - Admin
   - Manager
   - Employee
@@ -239,75 +239,75 @@ Função (Role):
 [    CADASTRAR    ]  [  CANCELAR  ]
 ```
 
-### ? Validações de Registro
+### ✅ Validações de Registro
 
 **Campos obrigatórios:**
-- ? Nome completo
-- ? Email válido e único
-- ? Senha forte
-- ? Confirmação de senha
-- ? Função (role)
+- ✅ Nome completo
+- ✅ Email válido e único
+- ✅ Senha forte
+- ✅ Confirmação de senha
+- ✅ Função (role)
 
 **Regras de senha:**
 ```
-? Mínimo 6 caracteres
-? Pelo menos 1 letra maiúscula
-? Pelo menos 1 letra minúscula
-? Pelo menos 1 número
-? Caracteres especiais: opcional
+✅ Mínimo 6 caracteres
+✅ Pelo menos 1 letra maiúscula
+✅ Pelo menos 1 letra minúscula
+✅ Pelo menos 1 número
+✅ Caracteres especiais: opcional
 ```
 
 **Exemplo de senha válida:**
 ```
-? Admin@123456
-? Manager2024
-? Employee123
+✅ Admin@123456
+✅ Manager2024
+✅ Employee123
 ```
 
 ---
 
-## ????? Gerenciamento de Usuários
+## 📚📚✅ Gerenciamento de Usuários
 
-### ?? Como Acessar
+### 📚 Como Acessar
 
-**Menu ? Administração ? Gerenciar Usuários**
+**Menu ✅ Administração ✅ Gerenciar Usuários**
 
 OU
 
 **URL direta:** `/Account/ManageUsers`
 
-> ?? **Acesso:** Apenas Admin e Manager
+> 📚 **Acesso:** Apenas Admin e Manager
 
-### ?? Lista de Usuários
+### 📚 Lista de Usuários
 
 **Visualização:**
 ```
-???????????????????????????????????????????????????
-?  GERENCIAR USUÁRIOS                    [+ Novo] ?
-???????????????????????????????????????????????????
-?                                                 ?
-?  ?? João Silva                                  ?
-?  ?? joao@litoralsul.com.br                     ?
-?  ??? Role: Manager                              ?
-?  ?? Cadastrado: 15/01/2024                     ?
-?  ? Status: Ativo                              ?
-?  [?? Editar] [?? Bloquear] [??? Excluir]      ?
-?                                                 ?
-???????????????????????????????????????????????????
-?                                                 ?
-?  ?? Maria Santos                                ?
-?  ?? maria@litoralsul.com.br                    ?
-?  ??? Role: Employee                             ?
-?  ?? Cadastrado: 20/02/2024                     ?
-?  ? Status: Ativo                              ?
-?  [?? Editar] [?? Bloquear] [??? Excluir]      ?
-?                                                 ?
-???????????????????????????????????????????????????
+📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚✅
+✅  GERENCIAR USUÁRIOS                    [+ Novo] ✅
+📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚✅
+✅                                                 ✅
+✅  📚 João Silva                                  ✅
+✅  📚 joao@litoralsul.com.br                     ✅
+✅  📚✅ Role: Manager                              ✅
+✅  📚 Cadastrado: 15/01/2024                     ✅
+✅  ✅ Status: Ativo                              ✅
+✅  [📚 Editar] [📚 Bloquear] [📚✅ Excluir]      ✅
+✅                                                 ✅
+📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚✅
+✅                                                 ✅
+✅  📚 Maria Santos                                ✅
+✅  📚 maria@litoralsul.com.br                    ✅
+✅  📚✅ Role: Employee                             ✅
+✅  📚 Cadastrado: 20/02/2024                     ✅
+✅  ✅ Status: Ativo                              ✅
+✅  [📚 Editar] [📚 Bloquear] [📚✅ Excluir]      ✅
+✅                                                 ✅
+📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚✅
 ```
 
-### ?? Editar Usuário
+### 📚 Editar Usuário
 
-**Acesso:** Lista ? Botão "?? Editar"
+**Acesso:** Lista ✅ Botão "📚 Editar"
 
 **Campos editáveis:**
 ```
@@ -315,7 +315,7 @@ EDITAR USUÁRIO
 
 Nome: [João Silva                    ]
 Email: [joao@litoralsul.com.br      ]
-Role: [Manager ?]
+Role: [Manager ✅]
 
 Status: ( ) Ativo  ( ) Bloqueado
 
@@ -323,15 +323,15 @@ Status: ( ) Ativo  ( ) Bloqueado
 ```
 
 **Permissões para edição:**
-- ? **Admin:** Pode editar TODOS os usuários
-- ?? **Manager:** Pode editar Employee e User (NÃO Admin)
-- ? **Employee/User:** Sem permissão
+- ✅ **Admin:** Pode editar TODOS os usuários
+- 📚 **Manager:** Pode editar Employee e User (NÃO Admin)
+- ✅ **Employee/User:** Sem permissão
 
-### ?? Alterar Senha
+### 📚 Alterar Senha
 
 **Opção 1 - Próprio Usuário:**
 ```
-Menu ? Perfil ? Alterar Senha
+Menu ✅ Perfil ✅ Alterar Senha
 
 Senha Atual:
 [_________________________________]
@@ -347,7 +347,7 @@ Confirmar Nova Senha:
 
 **Opção 2 - Admin/Manager alterando:**
 ```
-Gerenciar Usuários ? Editar ? Redefinir Senha
+Gerenciar Usuários ✅ Editar ✅ Redefinir Senha
 
 Nova Senha:
 [_________________________________]
@@ -358,7 +358,7 @@ Confirmar Senha:
 [  REDEFINIR  ]
 ```
 
-### ?? Bloquear/Desbloquear Usuário
+### 📚 Bloquear/Desbloquear Usuário
 
 **Quando bloquear:**
 - Suspeita de acesso não autorizado
@@ -368,7 +368,7 @@ Confirmar Senha:
 
 **Como fazer:**
 ```
-Gerenciar Usuários ? Selecionar usuário ? ?? Bloquear
+Gerenciar Usuários ✅ Selecionar usuário ✅ 📚 Bloquear
 
 Motivo do bloqueio:
 [_________________________________]
@@ -377,33 +377,33 @@ Motivo do bloqueio:
 ```
 
 **Efeitos:**
-- ? Usuário não consegue fazer login
-- ?? Mensagem: "Conta bloqueada. Entre em contato com administrador"
-- ?? Bloqueio registrado em log
+- ✅ Usuário não consegue fazer login
+- 📚 Mensagem: "Conta bloqueada. Entre em contato com administrador"
+- 📚 Bloqueio registrado em log
 
 **Para desbloquear:**
 ```
-Gerenciar Usuários ? Usuário bloqueado ? ?? Desbloquear
+Gerenciar Usuários ✅ Usuário bloqueado ✅ 📚 Desbloquear
 
 [  DESBLOQUEAR  ]
 ```
 
-### ??? Excluir Usuário
+### 📚✅ Excluir Usuário
 
 **Regras:**
-- ? Pode excluir: Usuários sem vínculos
-- ? NÃO pode excluir: Usuário logado
-- ? NÃO pode excluir: Admin principal
-- ?? Manager não pode excluir Admin
+- ✅ Pode excluir: Usuários sem vínculos
+- ✅ NÃO pode excluir: Usuário logado
+- ✅ NÃO pode excluir: Admin principal
+- 📚 Manager não pode excluir Admin
 
 **Como fazer:**
 ```
-Gerenciar Usuários ? Selecionar ? ??? Excluir
+Gerenciar Usuários ✅ Selecionar ✅ 📚✅ Excluir
 
-?? ATENÇÃO!
+📚 ATENÇÃO!
 Esta ação não pode ser desfeita.
 
-Deseja realmente excluir o usuário?
+Deseja realmente excluir o usuário✅
 Nome: João Silva
 Email: joao@litoralsul.com.br
 
@@ -412,120 +412,120 @@ Email: joao@litoralsul.com.br
 
 ---
 
-## ?? Permissões por Módulo
+## 📚 Permissões por Módulo
 
-### ?? Tabela Completa de Permissões
+### 📚 Tabela Completa de Permissões
 
 | Módulo | Admin | Manager | Employee | User |
 |--------|-------|---------|----------|------|
 | **Clientes** |  |  |  |  |
-| Visualizar | ? | ? | ? | ? |
-| Criar | ? | ? | ? | ? |
-| Editar | ? | ? | ? | ? |
-| Excluir | ? | ? | ? | ? |
+| Visualizar | ✅ | ✅ | ✅ | ✅ |
+| Criar | ✅ | ✅ | ✅ | ✅ |
+| Editar | ✅ | ✅ | ✅ | ✅ |
+| Excluir | ✅ | ✅ | ✅ | ✅ |
 | **Veículos** |  |  |  |  |
-| Visualizar | ? | ? | ? | ? |
-| Criar | ? | ? | ? | ? |
-| Editar | ? | ? | ? | ? |
-| Excluir | ? | ? | ? | ? |
-| Alterar Status | ? | ? | ? | ? |
+| Visualizar | ✅ | ✅ | ✅ | ✅ |
+| Criar | ✅ | ✅ | ✅ | ✅ |
+| Editar | ✅ | ✅ | ✅ | ✅ |
+| Excluir | ✅ | ✅ | ✅ | ✅ |
+| Alterar Status | ✅ | ✅ | ✅ | ✅ |
 | **Locações** |  |  |  |  |
-| Visualizar | ? | ? | ? | ? |
-| Criar | ? | ? | ? | ? |
-| Editar | ? | ? | ? | ? |
-| Excluir | ? | ? | ? | ? |
-| Finalizar | ? | ? | ? | ? |
+| Visualizar | ✅ | ✅ | ✅ | ✅ |
+| Criar | ✅ | ✅ | ✅ | ✅ |
+| Editar | ✅ | ✅ | ✅ | ✅ |
+| Excluir | ✅ | ✅ | ✅ | ✅ |
+| Finalizar | ✅ | ✅ | ✅ | ✅ |
 | **Manutenções** |  |  |  |  |
-| Visualizar | ? | ? | ? | ? |
-| Criar | ? | ? | ? | ? |
-| Editar | ? | ? | ? | ? |
-| Excluir | ? | ? | ? | ? |
-| Relatórios | ? | ? | ? | ? |
+| Visualizar | ✅ | ✅ | ✅ | ✅ |
+| Criar | ✅ | ✅ | ✅ | ✅ |
+| Editar | ✅ | ✅ | ✅ | ✅ |
+| Excluir | ✅ | ✅ | ✅ | ✅ |
+| Relatórios | ✅ | ✅ | ✅ | ✅ |
 | **Reservas** |  |  |  |  |
-| Visualizar | ? | ? | ? | ? |
-| Criar | ? | ? | ? | ? |
-| Editar | ? | ? | ? | ? |
-| Cancelar | ? | ? | ? | ? |
+| Visualizar | ✅ | ✅ | ✅ | ✅ |
+| Criar | ✅ | ✅ | ✅ | ✅ |
+| Editar | ✅ | ✅ | ✅ | ✅ |
+| Cancelar | ✅ | ✅ | ✅ | ✅ |
 | **Pacotes** |  |  |  |  |
-| Visualizar | ? | ? | ? | ? |
-| Criar | ? | ? | ? | ? |
-| Editar | ? | ? | ? | ? |
-| Excluir | ? | ? | ? | ? |
+| Visualizar | ✅ | ✅ | ✅ | ✅ |
+| Criar | ✅ | ✅ | ✅ | ✅ |
+| Editar | ✅ | ✅ | ✅ | ✅ |
+| Excluir | ✅ | ✅ | ✅ | ✅ |
 | **Documentos** |  |  |  |  |
-| Visualizar | ? | ? | ? | ? |
-| Upload | ? | ? | ? | ? |
-| Download | ? | ? | ? | ? |
-| Excluir | ? | ? | ? | ? |
+| Visualizar | ✅ | ✅ | ✅ | ✅ |
+| Upload | ✅ | ✅ | ✅ | ✅ |
+| Download | ✅ | ✅ | ✅ | ✅ |
+| Excluir | ✅ | ✅ | ✅ | ✅ |
 | **Funcionários** |  |  |  |  |
-| Visualizar | ? | ? | ? | ? |
-| Criar | ? | ? | ? | ? |
-| Editar | ? | ? | ? | ? |
-| Excluir | ? | ? | ? | ? |
+| Visualizar | ✅ | ✅ | ✅ | ✅ |
+| Criar | ✅ | ✅ | ✅ | ✅ |
+| Editar | ✅ | ✅ | ✅ | ✅ |
+| Excluir | ✅ | ✅ | ✅ | ✅ |
 | **Agências** |  |  |  |  |
-| Visualizar | ? | ? | ? | ? |
-| Criar | ? | ? | ? | ? |
-| Editar | ? | ? | ? | ? |
-| Excluir | ? | ? | ? | ? |
+| Visualizar | ✅ | ✅ | ✅ | ✅ |
+| Criar | ✅ | ✅ | ✅ | ✅ |
+| Editar | ✅ | ✅ | ✅ | ✅ |
+| Excluir | ✅ | ✅ | ✅ | ✅ |
 | **Usuários** |  |  |  |  |
-| Visualizar | ? | ? | ? | ? |
-| Criar | ? | ? | ? | ? |
-| Editar | ? | ?* | ? | ? |
-| Excluir | ? | ?* | ? | ? |
+| Visualizar | ✅ | ✅ | ✅ | ✅ |
+| Criar | ✅ | ✅ | ✅ | ✅ |
+| Editar | ✅ | ✅* | ✅ | ✅ |
+| Excluir | ✅ | ✅* | ✅ | ✅ |
 | **Relatórios** |  |  |  |  |
-| Gerenciais | ? | ? | ? | ? |
-| Operacionais | ? | ? | ? | ? |
-| Financeiros | ? | ? | ? | ? |
+| Gerenciais | ✅ | ✅ | ✅ | ✅ |
+| Operacionais | ✅ | ✅ | ✅ | ✅ |
+| Financeiros | ✅ | ✅ | ✅ | ✅ |
 
 > \* Manager não pode editar/excluir Admin
 
-### ?? Página de Acesso Negado
+### 📚 Página de Acesso Negado
 
 **Quando usuário tenta acessar sem permissão:**
 
 ```
-???????????????????????????????????
-?   ?? ACESSO NEGADO              ?
-?                                 ?
-?   Você não tem permissão        ?
-?   para acessar esta página.     ?
-?                                 ?
-?   Entre em contato com o        ?
-?   administrador do sistema.     ?
-?                                 ?
-?   [  VOLTAR AO INÍCIO  ]        ?
-???????????????????????????????????
+📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚✅
+✅   📚 ACESSO NEGADO              ✅
+✅                                 ✅
+✅   Você não tem permissão        ✅
+✅   para acessar esta página.     ✅
+✅                                 ✅
+✅   Entre em contato com o        ✅
+✅   administrador do sistema.     ✅
+✅                                 ✅
+✅   [  VOLTAR AO INÍCIO  ]        ✅
+📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚✅
 ```
 
 **URL:** `/Account/AccessDenied`
 
 ---
 
-## ?? Segurança
+## 📚 Segurança
 
-### ??? Recursos de Segurança
+### 📚✅ Recursos de Segurança
 
-#### 1?? **Proteção de Senha**
+#### 1📚 **Proteção de Senha**
 
 **Requisitos:**
 ```
-? Mínimo 6 caracteres
-? Letra maiúscula
-? Letra minúscula
-? Número
-? Hash bcrypt (não armazena texto puro)
+✅ Mínimo 6 caracteres
+✅ Letra maiúscula
+✅ Letra minúscula
+✅ Número
+✅ Hash bcrypt (não armazena texto puro)
 ```
 
 **Exemplos:**
 ```
-? Admin@123456    (válida)
-? Manager2024     (válida)
-? Employee123     (válida)
-? admin           (muito fraca)
-? 123456          (sem letras)
-? senha           (sem números/maiúscula)
+✅ Admin@123456    (válida)
+✅ Manager2024     (válida)
+✅ Employee123     (válida)
+✅ admin           (muito fraca)
+✅ 123456          (sem letras)
+✅ senha           (sem números/maiúscula)
 ```
 
-#### 2?? **Bloqueio de Conta**
+#### 2📚 **Bloqueio de Conta**
 
 **Configuração:**
 - Máximo tentativas: 5
@@ -535,28 +535,28 @@ Email: joao@litoralsul.com.br
 
 **Cenário:**
 ```
-Tentativa 1: Senha errada ?
-Tentativa 2: Senha errada ?
-Tentativa 3: Senha errada ?
-Tentativa 4: Senha errada ?
-Tentativa 5: Senha errada ?
-? CONTA BLOQUEADA POR 5 MINUTOS
+Tentativa 1: Senha errada ✅
+Tentativa 2: Senha errada ✅
+Tentativa 3: Senha errada ✅
+Tentativa 4: Senha errada ✅
+Tentativa 5: Senha errada ✅
+✅ CONTA BLOQUEADA POR 5 MINUTOS
 ```
 
-#### 3?? **Sessão Segura**
+#### 3📚 **Sessão Segura**
 
 **Configurações:**
 - Duração: 8 horas
-- Cookie: HttpOnly ?
-- SameSite: Lax ?
-- Secure: Sim (produção) ?
-- Sliding: Sim ?
+- Cookie: HttpOnly ✅
+- SameSite: Lax ✅
+- Secure: Sim (produção) ✅
+- Sliding: Sim ✅
 
 **Renovação:**
 - Atividade = Renova sessão
 - Inativo 8h = Logout automático
 
-#### 4?? **Proteção CSRF**
+#### 4📚 **Proteção CSRF**
 
 **Anti-Forgery Token:**
 ```html
@@ -575,7 +575,7 @@ X-XSS-Protection: 1; mode=block
 Strict-Transport-Security: max-age=31536000
 ```
 
-#### 5?? **Rate Limiting**
+#### 5📚 **Rate Limiting**
 
 **Limites por política:**
 
@@ -594,15 +594,15 @@ HTTP 429 Too Many Requests
 }
 ```
 
-### ?? Auditoria e Logs
+### 📚 Auditoria e Logs
 
 **Sistema registra:**
-- ? Todas as tentativas de login
-- ? Criação/edição de usuários
-- ? Alterações de permissões
-- ? Bloqueios de conta
-- ? Acessos negados
-- ? Operações críticas
+- ✅ Todas as tentativas de login
+- ✅ Criação/edição de usuários
+- ✅ Alterações de permissões
+- ✅ Bloqueios de conta
+- ✅ Acessos negados
+- ✅ Operações críticas
 
 **Localização dos logs:**
 ```
@@ -619,15 +619,15 @@ RentalTourismSystem/logs/rental-tourism-YYYY-MM-DD.txt
 
 ---
 
-## ?? Recuperação de Senha
+## 📚 Recuperação de Senha
 
-### ?? Esqueci Minha Senha
+### 📚 Esqueci Minha Senha
 
-**Acesso:** Tela de Login ? "Esqueceu a senha?"
+**Acesso:** Tela de Login ✅ "Esqueceu a senha✅"
 
 **Processo:**
 ```
-1. Clicar em "Esqueceu a senha?"
+1. Clicar em "Esqueceu a senha✅"
 
 2. Informar email cadastrado:
    [_________________________________]
@@ -645,14 +645,14 @@ RentalTourismSystem/logs/rental-tourism-YYYY-MM-DD.txt
    [  REDEFINIR SENHA  ]
 
 6. Senha alterada!
-   ? Fazer login com nova senha
+   ✅ Fazer login com nova senha
 ```
 
-> ?? **Importante:** Link de recuperação válido por 24 horas
+> 📚 **Importante:** Link de recuperação válido por 24 horas
 
-### ?? Alterar Senha (Logado)
+### 📚 Alterar Senha (Logado)
 
-**Menu ? Meu Perfil ? Alterar Senha**
+**Menu ✅ Meu Perfil ✅ Alterar Senha**
 
 ```
 ALTERAR SENHA
@@ -670,14 +670,14 @@ Confirmar Nova Senha:
 ```
 
 **Validações:**
-- ? Senha atual correta
-- ? Nova senha atende requisitos
-- ? Confirmação coincide
-- ? Nova senha diferente da atual
+- ✅ Senha atual correta
+- ✅ Nova senha atende requisitos
+- ✅ Confirmação coincide
+- ✅ Nova senha diferente da atual
 
 ---
 
-## ?? Casos de Uso
+## 📚 Casos de Uso
 
 ### Caso 1: Primeiro Acesso
 
@@ -687,16 +687,16 @@ Sistema instalado, usar credenciais padrão:
 Email: admin@litoralsul.com.br
 Senha: Admin@123456
 
-? Fazer login
-? TROCAR SENHA imediatamente
-? Criar outros usuários
+✅ Fazer login
+✅ TROCAR SENHA imediatamente
+✅ Criar outros usuários
 ```
 
 ### Caso 2: Novo Funcionário
 
 ```
 Admin/Manager:
-1. Menu ? Gerenciar Usuários
+1. Menu ✅ Gerenciar Usuários
 2. Clicar "+ Novo Usuário"
 3. Preencher:
    Nome: Maria Santos
@@ -720,14 +720,14 @@ Situação: Suspeita de acesso não autorizado
 Admin:
 1. Gerenciar Usuários
 2. Localizar usuário suspeito
-3. Clicar "?? Bloquear"
+3. Clicar "📚 Bloquear"
 4. Informar motivo: "Tentativa de acesso suspeita"
 5. Confirmar
 
 Resultado:
-? Usuário não consegue logar
-? Ver mensagem de bloqueio
-? Deve entrar em contato com admin
+✅ Usuário não consegue logar
+✅ Ver mensagem de bloqueio
+✅ Deve entrar em contato com admin
 ```
 
 ### Caso 4: Funcionário Saiu da Empresa
@@ -741,35 +741,35 @@ Admin/Manager:
 4. Opção 2: Excluir (se sem vínculos)
 
 Recomendado: BLOQUEAR
-? Mantém logs
-? Mantém auditoria
-? Pode reativar se necessário
+✅ Mantém logs
+✅ Mantém auditoria
+✅ Pode reativar se necessário
 ```
 
 ---
 
-## ?? Solução de Problemas
+## 📚 Solução de Problemas
 
-### ? "Email ou senha incorretos"
+### ✅ "Email ou senha incorretos"
 **Soluções:**
 - Verificar caps lock
 - Confirmar email correto
 - Resetar senha se necessário
 - Contatar administrador
 
-### ? "Conta bloqueada"
+### ✅ "Conta bloqueada"
 **Soluções:**
 - Aguardar 5 minutos (bloqueio automático)
 - Contatar administrador para desbloqueio manual
 - Verificar se foi bloqueado por segurança
 
-### ? "Sessão expirada"
+### ✅ "Sessão expirada"
 **Soluções:**
 - Fazer login novamente
 - Marcar "Lembrar-me" para sessão mais longa
 - Verificar se não ultrapassou 8 horas de inatividade
 
-### ? "Acesso negado"
+### ✅ "Acesso negado"
 **Soluções:**
 - Verificar se tem permissão para a ação
 - Contatar manager/admin para solicitar permissão
@@ -777,34 +777,34 @@ Recomendado: BLOQUEAR
 
 ---
 
-## ? Boas Práticas
+## ✅ Boas Práticas
 
-### ?? Segurança
+### 📚 Segurança
 
-? **Faça:**
+✅ **Faça:**
 - Trocar senha padrão imediatamente
 - Usar senhas fortes e únicas
 - Fazer logout ao sair
 - Não compartilhar credenciais
 - Reportar acessos suspeitos
 
-? **Evite:**
+✅ **Evite:**
 - Senhas fracas (123456, senha, etc.)
 - Mesma senha em vários sistemas
 - Deixar sessão aberta em PC público
 - Anotar senha em local visível
 - Compartilhar conta com colegas
 
-### ?? Gestão de Usuários
+### 📚 Gestão de Usuários
 
-? **Faça:**
+✅ **Faça:**
 - Criar usuários com role apropriada
 - Revisar permissões regularmente
 - Bloquear usuários inativos
 - Manter registro de alterações
 - Documentar motivos de bloqueio
 
-? **Evite:**
+✅ **Evite:**
 - Dar privilégios além do necessário
 - Criar Admin desnecessariamente
 - Deixar contas de ex-funcionários ativas
@@ -813,12 +813,12 @@ Recomendado: BLOQUEAR
 
 ---
 
-## ?? Contato e Suporte
+## 📚 Contato e Suporte
 
 **Para problemas de acesso:**
-- ?? Email: suporte@litoralsul.com.br
-- ?? Telefone: (13) 3XXX-XXXX
-- ?? Falar com administrador do sistema
+- 📚 Email: suporte@litoralsul.com.br
+- 📚 Telefone: (13) 3XXX-XXXX
+- 📚 Falar com administrador do sistema
 
 **Horário de atendimento:**
 - Segunda a Sexta: 8h às 18h
@@ -826,7 +826,7 @@ Recomendado: BLOQUEAR
 
 ---
 
-## ?? Pronto para Usar!
+## 📚 Pronto para Usar!
 
 O sistema de autenticação está **100% configurado e seguro**.
 
@@ -842,3 +842,4 @@ O sistema de autenticação está **100% configurado e seguro**.
 **Versão:** 1.0  
 **Data:** Outubro/2025  
 **Tecnologia:** ASP.NET Core Identity 8.0
+

@@ -1,21 +1,21 @@
-﻿# ?? Guia de Início Rápido - Sistema Litoral Sul
+﻿# 📚 Guia de Início Rápido - Sistema Litoral Sul
 
-## ? 15 Minutos para Começar!
+## ✅ 15 Minutos para Começar!
 
 Este guia vai te colocar operacional no sistema em **15 minutos**.
 
 ---
 
-## ?? Pré-requisitos
+## 📚 Pré-requisitos
 
 Antes de começar, certifique-se que:
-- ? Sistema está instalado e rodando
-- ? Banco de dados configurado
-- ? Você tem as credenciais de acesso
+- ✅ Sistema está instalado e rodando
+- ✅ Banco de dados configurado
+- ✅ Você tem as credenciais de acesso
 
 ---
 
-## ?? Passo 1: Primeiro Acesso (2 min)
+## 📚 Passo 1: Primeiro Acesso (2 min)
 
 ### 1.1 Fazer Login
 
@@ -30,23 +30,23 @@ Antes de começar, certifique-se que:
 ### 1.2 Trocar Senha (IMPORTANTE!)
 
 ```
-1. Menu ? Perfil ? Alterar Senha
+1. Menu ✅ Perfil ✅ Alterar Senha
 2. Senha Atual: Admin@123456
 3. Nova Senha: [SuaSenhaForte123]
 4. Confirmar: [SuaSenhaForte123]
 5. Clicar "Salvar"
 ```
 
-? **Pronto!** Você está logado com segurança.
+✅ **Pronto!** Você está logado com segurança.
 
 ---
 
-## ?? Passo 2: Criar Usuários da Equipe (3 min)
+## 📚 Passo 2: Criar Usuários da Equipe (3 min)
 
 ### 2.1 Criar um Gerente
 
 ```
-1. Menu ? Administração ? Gerenciar Usuários
+1. Menu ✅ Administração ✅ Gerenciar Usuários
 2. Clicar "+ Novo Usuário"
 3. Preencher:
    Nome: João Silva
@@ -68,14 +68,14 @@ Antes de começar, certifique-se que:
 3. Salvar
 ```
 
-? **Pronto!** Equipe básica criada.
+✅ **Pronto!** Equipe básica criada.
 
 ---
 
-## ?? Passo 3: Configurar Agência (2 min)
+## 📚 Passo 3: Configurar Agência (2 min)
 
 ```
-1. Menu ? Configurações ? Agências
+1. Menu ✅ Configurações ✅ Agências
 2. Verificar se existe "Agência Centro" (criada automaticamente)
 3. Editar se necessário:
    Nome: Agência Centro
@@ -85,14 +85,14 @@ Antes de começar, certifique-se que:
 4. Salvar
 ```
 
-? **Pronto!** Agência configurada.
+✅ **Pronto!** Agência configurada.
 
 ---
 
-## ?? Passo 4: Cadastrar Primeiro Veículo (3 min)
+## 📚 Passo 4: Cadastrar Primeiro Veículo (3 min)
 
 ```
-1. Menu ? Locação ? Veículos ? + Novo Veículo
+1. Menu ✅ Locação ✅ Veículos ✅ + Novo Veículo
 
 2. Preencher:
    Marca: Volkswagen
@@ -110,14 +110,14 @@ Antes de começar, certifique-se que:
 3. Salvar
 ```
 
-? **Pronto!** Primeiro veículo cadastrado.
+✅ **Pronto!** Primeiro veículo cadastrado.
 
 ---
 
-## ?? Passo 5: Cadastrar Primeiro Cliente (3 min)
+## 📚 Passo 5: Cadastrar Primeiro Cliente (3 min)
 
 ```
-1. Menu ? Locação ? Clientes ? + Novo Cliente
+1. Menu ✅ Locação ✅ Clientes ✅ + Novo Cliente
 
 2. Preencher:
    Nome: José da Silva
@@ -134,14 +134,14 @@ Antes de começar, certifique-se que:
 3. Salvar
 ```
 
-? **Pronto!** Primeiro cliente cadastrado.
+✅ **Pronto!** Primeiro cliente cadastrado.
 
 ---
 
-## ?? Passo 6: Fazer Primeira Locação (2 min)
+## 📚 Passo 6: Fazer Primeira Locação (2 min)
 
 ```
-1. Menu ? Locação ? Locações ? + Nova Locação
+1. Menu ✅ Locação ✅ Locações ✅ + Nova Locação
 
 2. Preencher:
    Cliente: José da Silva
@@ -158,27 +158,27 @@ Antes de começar, certifique-se que:
 4. Salvar
 ```
 
-? **Pronto!** Primeira locação criada!
+✅ **Pronto!** Primeira locação criada!
 
 ---
 
-## ?? Parabéns! Sistema Operacional
+## 📚 Parabéns! Sistema Operacional
 
 Você completou a configuração básica em **15 minutos**!
 
-### ?? O que você fez:
+### 📚 O que você fez:
 
-- ? Login seguro realizado
-- ? Senha alterada
-- ? Equipe criada (Manager + Employee)
-- ? Agência configurada
-- ? Primeiro veículo cadastrado
-- ? Primeiro cliente cadastrado
-- ? Primeira locação realizada
+- ✅ Login seguro realizado
+- ✅ Senha alterada
+- ✅ Equipe criada (Manager + Employee)
+- ✅ Agência configurada
+- ✅ Primeiro veículo cadastrado
+- ✅ Primeiro cliente cadastrado
+- ✅ Primeira locação realizada
 
 ---
 
-## ?? Próximos Passos
+## 📚 Próximos Passos
 
 ### Nível 1: Operação Básica (1-2 horas)
 
@@ -233,9 +233,9 @@ Você completou a configuração básica em **15 minutos**!
 
 ---
 
-## ?? Materiais de Apoio
+## 📚 Materiais de Apoio
 
-### ?? Guias Completos
+### 📚 Guias Completos
 
 Para se aprofundar em cada módulo:
 
@@ -271,18 +271,18 @@ Para se aprofundar em cada módulo:
 
 ---
 
-## ?? Dicas de Produtividade
+## 📚 Dicas de Produtividade
 
-### ?? Atalhos de Teclado
+### 📚 Atalhos de Teclado
 
 ```
-Ctrl + K     ? Busca global
-Ctrl + S     ? Salvar formulário
-Esc          ? Fechar modal
-F5           ? Atualizar página
+Ctrl + K     ✅ Busca global
+Ctrl + S     ✅ Salvar formulário
+Esc          ✅ Fechar modal
+F5           ✅ Atualizar página
 ```
 
-### ?? Buscas Rápidas
+### 📚 Buscas Rápidas
 
 **Clientes:**
 - Digite CPF ou nome na busca
@@ -296,19 +296,19 @@ F5           ? Atualizar página
 - Filtre por período ou cliente
 - Use filtros combinados
 
-### ?? Interface Mobile
+### 📚 Interface Mobile
 
 **O sistema é responsivo!**
-- ? Funciona em tablets
-- ? Funciona em smartphones
-- ? Menu adaptativo
-- ? Toque otimizado
+- ✅ Funciona em tablets
+- ✅ Funciona em smartphones
+- ✅ Menu adaptativo
+- ✅ Toque otimizado
 
 ---
 
-## ?? Problemas Comuns
+## 📚 Problemas Comuns
 
-### ? "Não consigo fazer login"
+### ✅ "Não consigo fazer login"
 
 **Soluções:**
 1. Verificar caps lock
@@ -316,7 +316,7 @@ F5           ? Atualizar página
 3. Resetar senha se necessário
 4. Limpar cache do navegador
 
-### ? "Veículo não aparece disponível"
+### ✅ "Veículo não aparece disponível"
 
 **Verificar:**
 1. Status do veículo = "Disponível"
@@ -324,7 +324,7 @@ F5           ? Atualizar página
 3. Sem manutenção agendada
 4. Atualizar página (F5)
 
-### ? "Cliente com CNH vencida"
+### ✅ "Cliente com CNH vencida"
 
 **Solução:**
 1. Solicitar CNH atualizada
@@ -332,7 +332,7 @@ F5           ? Atualizar página
 3. Atualizar número e validade
 4. Fazer upload da nova CNH
 
-### ? "Erro ao salvar"
+### ✅ "Erro ao salvar"
 
 **Verificar:**
 1. Todos campos obrigatórios preenchidos
@@ -342,9 +342,9 @@ F5           ? Atualizar página
 
 ---
 
-## ?? Checklist Diário de Operação
+## 📚 Checklist Diário de Operação
 
-### ?? Início do Dia
+### 📚 Início do Dia
 
 - [ ] Fazer login
 - [ ] Verificar locações do dia
@@ -352,7 +352,7 @@ F5           ? Atualizar página
 - [ ] Verificar devoluções previstas
 - [ ] Checar alertas pendentes
 
-### ?? Durante o Dia
+### 📚 Durante o Dia
 
 - [ ] Registrar novas locações
 - [ ] Fazer vistorias de retirada
@@ -360,7 +360,7 @@ F5           ? Atualizar página
 - [ ] Fazer vistorias de devolução
 - [ ] Upload de documentos novos
 
-### ?? Fim do Dia
+### 📚 Fim do Dia
 
 - [ ] Finalizar devoluções do dia
 - [ ] Verificar pagamentos pendentes
@@ -370,7 +370,7 @@ F5           ? Atualizar página
 
 ---
 
-## ?? Metas Semanais
+## 📚 Metas Semanais
 
 ### Semana 1: Adaptação
 - [ ] Conhecer todas as telas
@@ -398,9 +398,9 @@ F5           ? Atualizar página
 
 ---
 
-## ?? Certificação de Competência
+## 📚 Certificação de Competência
 
-### ? Nível Básico
+### ✅ Nível Básico
 
 Você domina o básico quando consegue:
 - [x] Fazer login e navegação
@@ -409,7 +409,7 @@ Você domina o básico quando consegue:
 - [x] Criar locações simples
 - [x] Gerar contratos
 
-### ? Nível Intermediário
+### ✅ Nível Intermediário
 
 Você está no nível intermediário quando:
 - [ ] Gerencia todo processo de locação
@@ -418,7 +418,7 @@ Você está no nível intermediário quando:
 - [ ] Gerencia documentos
 - [ ] Usa filtros e relatórios
 
-### ? Nível Avançado
+### ✅ Nível Avançado
 
 Você é expert quando:
 - [ ] Gerencia manutenções
@@ -429,32 +429,32 @@ Você é expert quando:
 
 ---
 
-## ?? Suporte e Contato
+## 📚 Suporte e Contato
 
-### ?? Precisa de Ajuda?
+### 📚 Precisa de Ajuda✅
 
 **Durante o horário comercial:**
-- ?? Email: suporte@litoralsul.com.br
-- ?? WhatsApp: (13) 9XXXX-XXXX
-- ?? Telefone: (13) 3XXX-XXXX
+- 📚 Email: suporte@litoralsul.com.br
+- 📚 WhatsApp: (13) 9XXXX-XXXX
+- 📚 Telefone: (13) 3XXX-XXXX
 
 **Fora do horário:**
-- ?? Consulte os guias de documentação
-- ?? Use a busca no sistema
-- ?? Anote dúvidas para perguntar depois
+- 📚 Consulte os guias de documentação
+- 📚 Use a busca no sistema
+- 📚 Anote dúvidas para perguntar depois
 
 **Recursos Online:**
-- ?? [Documentação Completa](README.md)
-- ?? Vídeos tutoriais (em breve)
-- ?? FAQ (perguntas frequentes)
+- 📚 [Documentação Completa](README.md)
+- 📚 Vídeos tutoriais (em breve)
+- 📚 FAQ (perguntas frequentes)
 
 ---
 
-## ?? Você está Pronto!
+## 📚 Você está Pronto!
 
 Agora você tem todas as ferramentas para usar o sistema com eficiência.
 
-### ?? Lembre-se:
+### 📚 Lembre-se:
 
 1. **Pratique**: Quanto mais usar, mais fácil fica
 2. **Explore**: Teste todas as funcionalidades
@@ -464,10 +464,11 @@ Agora você tem todas as ferramentas para usar o sistema com eficiência.
 
 ---
 
-**Bom trabalho e sucesso com o sistema! ??**
+**Bom trabalho e sucesso com o sistema! 📚**
 
 ---
 
 **Sistema:** Litoral Sul Locadora e Turismo  
 **Versão:** 1.0  
 **Última Atualização:** Outubro/2025
+

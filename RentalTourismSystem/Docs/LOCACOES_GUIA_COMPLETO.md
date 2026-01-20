@@ -1,6 +1,6 @@
-﻿# ?? Sistema de Locações de Veículos - Guia Completo
+﻿# 📚 Sistema de Locações de Veículos - Guia Completo
 
-## ?? Índice
+## 📚 Índice
 - [Visão Geral](#visão-geral)
 - [Criar Nova Locação](#criar-nova-locação)
 - [Processo de Locação](#processo-de-locação)
@@ -13,13 +13,13 @@
 
 ---
 
-## ?? Visão Geral
+## 📚 Visão Geral
 
 O sistema de locações gerencia todo o processo de aluguel de veículos, desde a reserva até a devolução, incluindo contratos, vistorias e pagamentos.
 
-### ?? Funcionalidades Principais
+### 📚 Funcionalidades Principais
 
-? **Processo Completo de Locação**
+✅ **Processo Completo de Locação**
 - Seleção de cliente e veículo
 - Definição de período de locação
 - Cálculo automático de valores
@@ -27,14 +27,14 @@ O sistema de locações gerencia todo o processo de aluguel de veículos, desde 
 - Vistoria de retirada e devolução
 - Registro de quilometragem
 
-? **Controle Financeiro**
+✅ **Controle Financeiro**
 - Cálculo de diárias
 - Valores de caução
 - Extras e adicionais
 - Multas por atraso
 - Histórico de pagamentos
 
-? **Documentação**
+✅ **Documentação**
 - Contrato de locação (PDF)
 - Laudo de vistoria (PDF)
 - Registro fotográfico
@@ -42,33 +42,33 @@ O sistema de locações gerencia todo o processo de aluguel de veículos, desde 
 
 ---
 
-## ?? Criar Nova Locação
+## 📚 Criar Nova Locação
 
-### ?? Como Acessar
+### 📚 Como Acessar
 
 **Opção 1 - Menu Lateral:**
 ```
-Menu ? Locação ? Locações ? ? Nova Locação
+Menu ✅ Locação ✅ Locações ✅ ✅ Nova Locação
 ```
 
 **Opção 2 - A partir do Cliente:**
 ```
-Clientes ? Detalhes do Cliente ? ?? Nova Locação
+Clientes ✅ Detalhes do Cliente ✅ 📚 Nova Locação
 ```
 
 **Opção 3 - A partir do Veículo:**
 ```
-Veículos ? Detalhes do Veículo ? ? Nova Locação
+Veículos ✅ Detalhes do Veículo ✅ ✅ Nova Locação
 (apenas se veículo disponível)
 ```
 
 **URL direta:** `/Locacoes/Create`
 
-### ?? Pré-requisitos
+### 📚 Pré-requisitos
 
 Antes de criar locação, certifique-se que:
 
-#### ? **Cliente**
+#### ✅ **Cliente**
 - [x] Cliente cadastrado no sistema
 - [x] CPF válido
 - [x] Email e telefone atualizados
@@ -76,21 +76,21 @@ Antes de criar locação, certifique-se que:
 - [x] Idade mínima 21 anos
 - [x] Documentos enviados (CNH, RG, CPF)
 
-#### ? **Veículo**
+#### ✅ **Veículo**
 - [x] Veículo cadastrado
 - [x] Status = "Disponível"
 - [x] Sem manutenção pendente
 - [x] Documentos em dia (CRLV, Seguro)
 - [x] Disponível no período desejado
 
-#### ? **Sistema**
+#### ✅ **Sistema**
 - [x] Agência definida
 - [x] Funcionário responsável
 - [x] Período de locação válido
 
-### ?? Formulário de Locação
+### 📚 Formulário de Locação
 
-#### 1?? **Seleção - Quem e O que**
+#### 1📚 **Seleção - Quem e O que**
 
 | Campo | Descrição | Validação |
 |-------|-----------|-----------|
@@ -99,25 +99,25 @@ Antes de criar locação, certifique-se que:
 | **Funcionário** | Responsável pela locação | Obrigatório |
 | **Agência** | Local de retirada/devolução | Obrigatório |
 
-#### 2?? **Período - Quando**
+#### 2📚 **Período - Quando**
 
 | Campo | Formato | Validação | Exemplo |
 |-------|---------|-----------|---------|
 | **Data de Retirada** | dd/MM/yyyy HH:mm | Obrigatório, data futura ou hoje | 15/12/2024 10:00 |
 | **Data de Devolução** | dd/MM/yyyy HH:mm | Obrigatório, após retirada | 20/12/2024 18:00 |
 
-> ?? **Sistema calcula automaticamente:** Quantidade de diárias
+> 📚 **Sistema calcula automaticamente:** Quantidade de diárias
 
-#### 3?? **Quilometragem**
+#### 3📚 **Quilometragem**
 
 | Campo | Descrição | Validação | Exemplo |
 |-------|-----------|-----------|---------|
-| **KM na Retirada** | Quilometragem atual do veículo | Obrigatório, ? 0 | 45.000 km |
+| **KM na Retirada** | Quilometragem atual do veículo | Obrigatório, ✅ 0 | 45.000 km |
 | **KM na Devolução** | Preenchido na devolução | Automático | - |
 
-> ?? **Automático:** Sistema preenche com KM atual do veículo
+> 📚 **Automático:** Sistema preenche com KM atual do veículo
 
-#### 4?? **Valores - Quanto**
+#### 4📚 **Valores - Quanto**
 
 | Campo | Cálculo | Exemplo |
 |-------|---------|---------|
@@ -125,29 +125,29 @@ Antes de criar locação, certifique-se que:
 | **Quantidade de Diárias** | Calculado automaticamente | 5 diárias |
 | **Valor Total** | Diária × Quantidade | R$ 750,00 |
 
-> ?? **Cálculo Automático:** Sistema calcula baseado no período
+> 📚 **Cálculo Automático:** Sistema calcula baseado no período
 
-#### 5?? **Observações**
+#### 5📚 **Observações**
 
 | Campo | Descrição | Exemplo |
 |-------|-----------|---------|
 | **Observações** | Informações adicionais (opcional) | "Cliente solicitou seguro adicional" |
 
-### ?? Passo a Passo - Criar Locação
+### 📚 Passo a Passo - Criar Locação
 
 **Exemplo prático:**
 
 ```
-1. ACESSE: Locações ? Nova Locação
+1. ACESSE: Locações ✅ Nova Locação
 
 2. SELECIONE CLIENTE:
    Cliente: Maria da Silva
    CPF: 987.654.321-00
-   ? CNH válida até: 10/08/2028
+   ✅ CNH válida até: 10/08/2028
 
 3. SELECIONE VEÍCULO:
    Veículo: Gol 1.0 Flex - ABC1D23
-   ? Disponível
+   ✅ Disponível
    Diária: R$ 150,00
 
 4. DEFINA RESPONSÁVEIS:
@@ -158,9 +158,9 @@ Antes de criar locação, certifique-se que:
    Retirada: 15/12/2024 10:00
    Devolução: 20/12/2024 18:00
    
-   ?? Sistema calcula:
-   ? 5 diárias completas
-   ? Valor Total: R$ 750,00
+   📚 Sistema calcula:
+   ✅ 5 diárias completas
+   ✅ Valor Total: R$ 750,00
 
 6. QUILOMETRAGEM:
    KM Retirada: 45.000 (do veículo)
@@ -171,65 +171,65 @@ Antes de criar locação, certifique-se que:
 8. CLIQUE: "Criar Locação"
 
 9. RESULTADO:
-   ? Locação criada com sucesso!
-   ? Veículo alterado para status "Locado"
-   ? Contrato gerado
-   ? Próximo: Fazer vistoria
+   ✅ Locação criada com sucesso!
+   ✅ Veículo alterado para status "Locado"
+   ✅ Contrato gerado
+   ✅ Próximo: Fazer vistoria
 ```
 
-### ? Validações Automáticas
+### ✅ Validações Automáticas
 
 Sistema valida automaticamente:
 
 1. **Cliente:**
-   - ? CNH válida (não vencida)
-   - ? Idade mínima 21 anos
-   - ? Cadastro completo
+   - ✅ CNH válida (não vencida)
+   - ✅ Idade mínima 21 anos
+   - ✅ Cadastro completo
 
 2. **Veículo:**
-   - ? Status "Disponível"
-   - ? Sem locação no período
-   - ? Documentos em dia
+   - ✅ Status "Disponível"
+   - ✅ Sem locação no período
+   - ✅ Documentos em dia
 
 3. **Período:**
-   - ? Data devolução após retirada
-   - ? Mínimo 1 diária
-   - ? Período disponível
+   - ✅ Data devolução após retirada
+   - ✅ Mínimo 1 diária
+   - ✅ Período disponível
 
 4. **Valores:**
-   - ? Valor total > 0
-   - ? Cálculo correto de diárias
-   - ? Sem inconsistências
+   - ✅ Valor total > 0
+   - ✅ Cálculo correto de diárias
+   - ✅ Sem inconsistências
 
 ---
 
-## ?? Processo de Locação
+## 📚 Processo de Locação
 
-### ?? Fluxo Completo
+### 📚 Fluxo Completo
 
 ```
 1. RESERVA/AGENDAMENTO
-   ?
+   ✅
 2. CRIAÇÃO DA LOCAÇÃO
-   ?
+   ✅
 3. VISTORIA DE RETIRADA
-   ?
+   ✅
 4. GERAÇÃO DO CONTRATO
-   ?
+   ✅
 5. RETIRADA DO VEÍCULO
-   ?
+   ✅
 6. PERÍODO DE LOCAÇÃO
-   ?
+   ✅
 7. DEVOLUÇÃO DO VEÍCULO
-   ?
+   ✅
 8. VISTORIA DE DEVOLUÇÃO
-   ?
+   ✅
 9. CÁLCULO FINAL
-   ?
+   ✅
 10. FINALIZAÇÃO
 ```
 
-### 1?? Criação da Locação
+### 1📚 Criação da Locação
 
 **Status:** Criada
 **Ações:**
@@ -240,52 +240,52 @@ Sistema valida automaticamente:
 
 **Próximo:** Vistoria de Retirada
 
-### 2?? Vistoria de Retirada
+### 2📚 Vistoria de Retirada
 
 **Objetivo:** Registrar estado do veículo antes da entrega
 
 **Como fazer:**
 ```
-Locações ? Detalhes da Locação ? ?? Vistoria de Retirada
+Locações ✅ Detalhes da Locação ✅ 📚 Vistoria de Retirada
 ```
 
 **Itens a verificar:**
-- ? Lataria (arranhões, amassados)
-- ? Vidros (trincas, quebras)
-- ? Pneus (estado, calibragem)
-- ? Documentos no veículo
-- ? Combustível (nível)
-- ? Acessórios (macaco, estepe, extintor)
-- ? Interior (bancos, painel)
-- ? Limpeza geral
+- ✅ Lataria (arranhões, amassados)
+- ✅ Vidros (trincas, quebras)
+- ✅ Pneus (estado, calibragem)
+- ✅ Documentos no veículo
+- ✅ Combustível (nível)
+- ✅ Acessórios (macaco, estepe, extintor)
+- ✅ Interior (bancos, painel)
+- ✅ Limpeza geral
 
 **Registro fotográfico:**
-- ?? Frente
-- ?? Traseira
-- ?? Laterais
-- ?? Painel
-- ?? Detalhes específicos
+- 📚 Frente
+- 📚 Traseira
+- 📚 Laterais
+- 📚 Painel
+- 📚 Detalhes específicos
 
-### 3?? Geração do Contrato
+### 3📚 Geração do Contrato
 
 **Automático após salvar locação**
 
 ```
-Locações ? Detalhes ? ?? Gerar Contrato
+Locações ✅ Detalhes ✅ 📚 Gerar Contrato
 ```
 
 **Contrato inclui:**
-- ? Dados do cliente
-- ? Dados do veículo
-- ? Período da locação
-- ? Valores e condições
-- ? Responsabilidades
-- ? Termos e condições
-- ? Assinaturas
+- ✅ Dados do cliente
+- ✅ Dados do veículo
+- ✅ Período da locação
+- ✅ Valores e condições
+- ✅ Responsabilidades
+- ✅ Termos e condições
+- ✅ Assinaturas
 
 **Formato:** PDF para impressão
 
-### 4?? Retirada do Veículo
+### 4📚 Retirada do Veículo
 
 **Checklist final:**
 - [x] Contrato assinado
@@ -295,82 +295,82 @@ Locações ? Detalhes ? ?? Gerar Contrato
 - [x] Veículo limpo e abastecido
 
 **Cliente recebe:**
-- ?? Cópia do contrato
-- ?? Laudo de vistoria
-- ?? Chaves do veículo
-- ?? Contato de emergência
+- 📚 Cópia do contrato
+- 📚 Laudo de vistoria
+- 📚 Chaves do veículo
+- 📚 Contato de emergência
 
-### 5?? Período de Locação
+### 5📚 Período de Locação
 
 **Sistema monitora:**
-- ? Dias restantes
-- ?? Data prevista de devolução
-- ?? Status do veículo (Locado)
-- ?? Alertas de vencimento
+- ✅ Dias restantes
+- 📚 Data prevista de devolução
+- 📚 Status do veículo (Locado)
+- 📚 Alertas de vencimento
 
 **Cliente pode:**
-- ?? Solicitar extensão
-- ?? Reportar problemas
-- ?? Informar localização (futuro)
+- 📚 Solicitar extensão
+- 📚 Reportar problemas
+- 📚 Informar localização (futuro)
 
 ---
 
-## ?? Devolução de Veículo
+## 📚 Devolução de Veículo
 
-### ?? Como Registrar Devolução
+### 📚 Como Registrar Devolução
 
-**Locações ? Detalhes da Locação ? ?? Registrar Devolução**
+**Locações ✅ Detalhes da Locação ✅ 📚 Registrar Devolução**
 
-### ?? Processo de Devolução
+### 📚 Processo de Devolução
 
-#### 1?? **Recepção do Veículo**
+#### 1📚 **Recepção do Veículo**
 
 **Verificar:**
-- ? Veículo retornou na data prevista
-- ? Cliente trouxe documentos
-- ? Chaves entregues
+- ✅ Veículo retornou na data prevista
+- ✅ Cliente trouxe documentos
+- ✅ Chaves entregues
 
-#### 2?? **Registrar Quilometragem**
+#### 2📚 **Registrar Quilometragem**
 
 ```
 KM na Devolução: 45.850 km
 
-?? Sistema calcula:
+📚 Sistema calcula:
    KM Retirada: 45.000 km
    KM Devolução: 45.850 km
    KM Rodados: 850 km
    Média: 170 km/dia
 ```
 
-> ?? **Automático:** Sistema atualiza KM do veículo
+> 📚 **Automático:** Sistema atualiza KM do veículo
 
-#### 3?? **Vistoria de Devolução**
+#### 3📚 **Vistoria de Devolução**
 
 **Comparar com vistoria de retirada:**
 
 ```
-Locações ? Detalhes ? ?? Vistoria de Devolução
+Locações ✅ Detalhes ✅ 📚 Vistoria de Devolução
 ```
 
 **Verificar:**
-- ? Novos danos?
-- ? Estado de conservação
-- ? Limpeza
-- ? Combustível (mesmo nível)
-- ? Acessórios completos
+- ✅ Novos danos✅
+- ✅ Estado de conservação
+- ✅ Limpeza
+- ✅ Combustível (mesmo nível)
+- ✅ Acessórios completos
 
 **Registrar:**
-- ?? Estado geral: Bom / Regular / Ruim
-- ?? Observações de danos
-- ?? Fotos de novos danos
-- ?? Cálculo de multas (se aplicável)
+- 📚 Estado geral: Bom / Regular / Ruim
+- 📚 Observações de danos
+- 📚 Fotos de novos danos
+- 📚 Cálculo de multas (se aplicável)
 
-#### 4?? **Cálculo Final**
+#### 4📚 **Cálculo Final**
 
 **Sistema calcula automaticamente:**
 
 ```
-?? CÁLCULO DE VALORES:
+📚 CÁLCULO DE VALORES:
 
 Valor Inicial: R$ 750,00 (5 diárias)
 
@@ -389,7 +389,7 @@ Valor Inicial: R$ 750,00 (5 diárias)
 Status: Aguardando Pagamento
 ```
 
-#### 5?? **Finalização**
+#### 5📚 **Finalização**
 
 **Após confirmação de pagamento:**
 
@@ -403,7 +403,7 @@ Status: Aguardando Pagamento
 5. Arquivar documentação
 ```
 
-### ? Situações Especiais
+### ✅ Situações Especiais
 
 #### **Devolução Antecipada**
 
@@ -418,7 +418,7 @@ Opções:
 2. Cobrar valor total (depende do contrato)
 3. Gerar crédito para próxima locação
 
-? Definir política comercial
+✅ Definir política comercial
 ```
 
 #### **Devolução Atrasada**
@@ -437,7 +437,7 @@ Multa por atraso: R$ 100,00
 
 Total: R$ 1.150,00
 
-?? Sistema alerta atraso automaticamente
+📚 Sistema alerta atraso automaticamente
 ```
 
 #### **Veículo com Danos**
@@ -459,15 +459,15 @@ Próximo: Veículo vai para "Manutenção"
 
 ---
 
-## ?? Documentos e Contratos
+## 📚 Documentos e Contratos
 
-### ?? Geração de Documentos
+### 📚 Geração de Documentos
 
-#### 1?? **Contrato de Locação**
+#### 1📚 **Contrato de Locação**
 
 **Acesso:**
 ```
-Locações ? Detalhes ? ?? Gerar Contrato
+Locações ✅ Detalhes ✅ 📚 Gerar Contrato
 ```
 
 **Conteúdo:**
@@ -517,16 +517,16 @@ Data: [Data]
 
 **Formato:** PDF para impressão
 
-#### 2?? **Laudo de Vistoria**
+#### 2📚 **Laudo de Vistoria**
 
 **Vistoria de Retirada:**
 ```
-Locações ? Detalhes ? ?? Vistoria de Retirada
+Locações ✅ Detalhes ✅ 📚 Vistoria de Retirada
 ```
 
 **Vistoria de Devolução:**
 ```
-Locações ? Detalhes ? ?? Vistoria de Devolução
+Locações ✅ Detalhes ✅ 📚 Vistoria de Devolução
 ```
 
 **Conteúdo:**
@@ -577,23 +577,23 @@ Cliente
 
 **Formato:** PDF com fotos
 
-### ?? Envio de Documentos
+### 📚 Envio de Documentos
 
 **Opções:**
-- ?? Email para cliente
-- ?? WhatsApp (futuro)
-- ?? Download direto
-- ??? Impressão
+- 📚 Email para cliente
+- 📚 WhatsApp (futuro)
+- 📚 Download direto
+- 📚✅ Impressão
 
 ---
 
-## ?? Gestão de Locações
+## 📚 Gestão de Locações
 
-### ?? Lista de Locações
+### 📚 Lista de Locações
 
-**Menu ? Locação ? Locações ? Ver Todas**
+**Menu ✅ Locação ✅ Locações ✅ Ver Todas**
 
-### ?? Filtros e Buscas
+### 📚 Filtros e Buscas
 
 **Filtros disponíveis:**
 
@@ -611,19 +611,19 @@ Cliente
 - Por veículo (modelo/placa)
 - Por número de locação
 
-### ?? Visualização
+### 📚 Visualização
 
 #### **Card de Locação:**
 ```
-?? Locação #12345
-?????????????????????????????
-?? Cliente: Maria da Silva
-?? Veículo: Gol 1.0 - ABC1234
-?? 15/12 a 20/12/2024 (5 dias)
-?? R$ 750,00
-?? Status: ATIVA
+📚 Locação #12345
+📚📚📚📚📚📚📚📚📚📚📚📚📚📚✅
+📚 Cliente: Maria da Silva
+📚 Veículo: Gol 1.0 - ABC1234
+📚 15/12 a 20/12/2024 (5 dias)
+📚 R$ 750,00
+📚 Status: ATIVA
 
-?? Devolução em: 3 dias
+📚 Devolução em: 3 dias
 
 [Detalhes] [Vistoria] [Contrato]
 ```
@@ -632,31 +632,31 @@ Cliente
 
 | Status | Cor | Significado |
 |--------|-----|-------------|
-| **Ativa** | ?? Verde | Locação em andamento |
-| **Atrasada** | ?? Vermelho | Passou data de devolução |
-| **Finalizada** | ?? Azul | Concluída normalmente |
-| **Cancelada** | ? Cinza | Cancelada antes da retirada |
+| **Ativa** | 📚 Verde | Locação em andamento |
+| **Atrasada** | 📚 Vermelho | Passou data de devolução |
+| **Finalizada** | 📚 Azul | Concluída normalmente |
+| **Cancelada** | ✅ Cinza | Cancelada antes da retirada |
 
-### ?? Alertas
+### 📚 Alertas
 
 **Sistema alerta:**
-- ?? Locação atrasada (passou data devolução)
-- ?? Devolução hoje
-- ?? Devolução em 1-2 dias
-- ?? Vistoria pendente
-- ?? Pagamento pendente
+- 📚 Locação atrasada (passou data devolução)
+- 📚 Devolução hoje
+- 📚 Devolução em 1-2 dias
+- 📚 Vistoria pendente
+- 📚 Pagamento pendente
 
 ---
 
-## ?? Relatórios
+## 📚 Relatórios
 
-### ?? Como Acessar
+### 📚 Como Acessar
 
-**Menu ? Relatórios ? Locações**
+**Menu ✅ Relatórios ✅ Locações**
 
-### ?? Tipos de Relatórios
+### 📚 Tipos de Relatórios
 
-#### 1?? **Locações por Período**
+#### 1📚 **Locações por Período**
 
 ```
 RELATÓRIO: Locações - Dezembro/2024
@@ -673,13 +673,13 @@ Data       | Cliente        | Veículo      | Valor
 ```
 
 **Filtros:**
-- ?? Data início/fim
-- ?? Agência
-- ?? Cliente
-- ?? Veículo
-- ?? Status
+- 📚 Data início/fim
+- 📚 Agência
+- 📚 Cliente
+- 📚 Veículo
+- 📚 Status
 
-#### 2?? **Receita por Veículo**
+#### 2📚 **Receita por Veículo**
 
 ```
 Veículo          | Locações | Dias | Receita
@@ -688,7 +688,7 @@ HB20 DEF5678     | 9        | 67   | R$ 10.050,00
 Onix GHI9012     | 8        | 54   | R$ 8.100,00
 ```
 
-#### 3?? **Clientes Frequentes**
+#### 3📚 **Clientes Frequentes**
 
 ```
 Cliente          | Locações | Valor Total | Última Locação
@@ -697,7 +697,7 @@ João Santos      | 12       | R$ 18.000   | 10/12/2024
 Ana Costa        | 8        | R$ 12.000   | 05/12/2024
 ```
 
-#### 4?? **Locações Ativas**
+#### 4📚 **Locações Ativas**
 
 ```
 LOCAÇÕES ATIVAS - Hoje: 20/12/2024
@@ -705,31 +705,31 @@ LOCAÇÕES ATIVAS - Hoje: 20/12/2024
 Total Ativas: 7 veículos locados
 
 Cliente     | Veículo     | Devolução   | Status
-Maria       | Gol ABC     | Hoje 18:00  | ?? Devolve hoje
-João        | HB20 DEF    | 22/12       | ?? No prazo
-Ana         | Onix GHI    | 18/12       | ?? ATRASADA!
+Maria       | Gol ABC     | Hoje 18:00  | 📚 Devolve hoje
+João        | HB20 DEF    | 22/12       | 📚 No prazo
+Ana         | Onix GHI    | 18/12       | 📚 ATRASADA!
 ```
 
-### ?? Exportação
+### 📚 Exportação
 
 **Formatos:**
-- ?? Excel (.xlsx)
-- ?? PDF
-- ?? CSV
-- ??? Impressão
+- 📚 Excel (.xlsx)
+- 📚 PDF
+- 📚 CSV
+- 📚✅ Impressão
 
 ---
 
-## ?? Permissões de Acesso
+## 📚 Permissões de Acesso
 
-### ??? **Visualização**
+### 📚✅ **Visualização**
 **Quem pode:** Todos os usuários autenticados
 - Ver lista de locações
 - Ver detalhes de locação
 - Visualizar contratos
 - Consultar histórico
 
-### ?? **Criação e Edição**
+### 📚 **Criação e Edição**
 **Quem pode:** Admin, Manager, Employee
 - Criar nova locação
 - Editar locação (antes da retirada)
@@ -737,21 +737,21 @@ Ana         | Onix GHI    | 18/12       | ?? ATRASADA!
 - Fazer vistoria
 - Gerar contratos
 
-### ??? **Cancelamento**
+### 📚✅ **Cancelamento**
 **Quem pode:** Admin, Manager
 - Cancelar locação (antes da retirada)
 - Ajustar valores
 - Aplicar descontos
 
-> ?? **Importante:** Locações em andamento ou finalizadas NÃO podem ser excluídas!
+> 📚 **Importante:** Locações em andamento ou finalizadas NÃO podem ser excluídas!
 
 ---
 
-## ? Boas Práticas
+## ✅ Boas Práticas
 
-### ?? Ao Criar Locação
+### 📚 Ao Criar Locação
 
-? **Faça:**
+✅ **Faça:**
 - Verificar CNH do cliente (válida)
 - Confirmar disponibilidade do veículo
 - Validar período de locação
@@ -759,29 +759,29 @@ Ana         | Onix GHI    | 18/12       | ?? ATRASADA!
 - Gerar contrato antes da entrega
 - Registrar fotos do veículo
 
-? **Evite:**
+✅ **Evite:**
 - Criar sem verificar CNH
 - Locar veículo em manutenção
 - Pular etapa de vistoria
 - Entregar sem contrato assinado
 - Não registrar danos existentes
 
-### ?? Durante a Locação
+### 📚 Durante a Locação
 
-? **Faça:**
+✅ **Faça:**
 - Monitorar data de devolução
 - Manter contato com cliente (se atraso)
 - Verificar alertas do sistema
 - Estar pronto para devolução
 
-? **Evite:**
+✅ **Evite:**
 - Ignorar atrasos
 - Não avisar cliente sobre vencimento
 - Descuidar do acompanhamento
 
-### ?? Na Devolução
+### 📚 Na Devolução
 
-? **Faça:**
+✅ **Faça:**
 - Vistoria completa e detalhada
 - Registrar quilometragem correta
 - Documentar TODOS os danos (novos)
@@ -789,7 +789,7 @@ Ana         | Onix GHI    | 18/12       | ?? ATRASADA!
 - Confirmar pagamento antes de liberar
 - Alterar status do veículo
 
-? **Evite:**
+✅ **Evite:**
 - Vistoria superficial
 - Ignorar pequenos danos
 - Liberar sem pagamento
@@ -798,7 +798,7 @@ Ana         | Onix GHI    | 18/12       | ?? ATRASADA!
 
 ---
 
-## ?? Casos de Uso
+## 📚 Casos de Uso
 
 ### Caso 1: Locação Simples
 
@@ -811,15 +811,15 @@ Ana         | Onix GHI    | 18/12       | ?? ATRASADA!
 4. Valor: R$ 450,00
 
 Processo:
-? Criar locação
-? Vistoria de retirada (OK)
-? Gerar contrato
-? Cliente retira veículo
-? Aguardar devolução (17/12)
-? Cliente devolve no prazo
-? Vistoria devolução (OK)
-? Confirmar pagamento
-? Finalizar locação
+✅ Criar locação
+✅ Vistoria de retirada (OK)
+✅ Gerar contrato
+✅ Cliente retira veículo
+✅ Aguardar devolução (17/12)
+✅ Cliente devolve no prazo
+✅ Vistoria devolução (OK)
+✅ Confirmar pagamento
+✅ Finalizar locação
 ```
 
 ### Caso 2: Locação com Atraso
@@ -851,7 +851,7 @@ Ações:
 
 ```
 Vistoria Devolução:
-?? Dano identificado: Arranhão na lateral
+📚 Dano identificado: Arranhão na lateral
 
 Procedimento:
 1. Documentar com fotos
@@ -864,32 +864,32 @@ Procedimento:
 5. Negociar com cliente
 6. Confirmar pagamento
 7. Programar reparo
-8. Veículo ? Status "Manutenção"
+8. Veículo ✅ Status "Manutenção"
 ```
 
 ---
 
-## ?? Solução de Problemas
+## 📚 Solução de Problemas
 
-### ? "CNH do cliente vencida"
+### ✅ "CNH do cliente vencida"
 **Solução:** 
 - Não permitir locação
 - Solicitar CNH atualizada
 - Atualizar cadastro do cliente
 
-### ? "Veículo indisponível"
+### ✅ "Veículo indisponível"
 **Solução:**
 - Verificar status do veículo
 - Consultar outras locações no período
 - Sugerir veículo similar
 
-### ? "Erro ao gerar contrato"
+### ✅ "Erro ao gerar contrato"
 **Solução:**
 - Verificar dados completos
 - Confirmar template do contrato
 - Tentar novamente
 
-### ? "Cliente não devolveu"
+### ✅ "Cliente não devolveu"
 **Solução:**
 - Contatar cliente imediatamente
 - Verificar localização (se disponível)
@@ -898,29 +898,29 @@ Procedimento:
 
 ---
 
-## ?? Atalhos
+## 📚 Atalhos
 
-### ?? Teclado
+### 📚 Teclado
 ```
-Ctrl + N     ? Nova locação
-Ctrl + F     ? Buscar locação
-Ctrl + P     ? Imprimir contrato
+Ctrl + N     ✅ Nova locação
+Ctrl + F     ✅ Buscar locação
+Ctrl + P     ✅ Imprimir contrato
 ```
 
-### ?? URLs
+### 📚 URLs
 ```
-/Locacoes/Index          ? Todas as locações
-/Locacoes/Create         ? Nova locação
-/Locacoes/Details/{id}   ? Detalhes
+/Locacoes/Index          ✅ Todas as locações
+/Locacoes/Create         ✅ Nova locação
+/Locacoes/Details/{id}   ✅ Detalhes
 ```
 
 ---
 
-## ?? Pronto para Usar!
+## 📚 Pronto para Usar!
 
 O sistema de locações está **100% operacional**.
 
-**Acesse:** Menu ? Locação ? Locações
+**Acesse:** Menu ✅ Locação ✅ Locações
 
 ---
 
@@ -931,3 +931,4 @@ O sistema de locações está **100% operacional**.
 - [Gestão de Clientes](CLIENTES_GUIA_COMPLETO.md)
 - [Gestão de Veículos](VEICULOS_GUIA_COMPLETO.md)
 - [Sistema de Manutenções](MANUTENCAO_GUIA_ACESSO.md)
+

@@ -234,19 +234,19 @@ No painel de **Ações Rápidas** (lado direito):
 
 ### ❓ Perguntas Frequentes
 
-**P: Como alterar o status de uma manutenção?**
+**P: Como alterar o status de uma manutenção✅**
 R: Acesse Manutenções → Editar → Altere o status desejado
 
-**P: Posso excluir uma manutenção já concluída?**
+**P: Posso excluir uma manutenção já concluída✅**
 R: Apenas usuários Admin podem excluir manutenções
 
-**P: Como ver o total gasto com um veículo?**
+**P: Como ver o total gasto com um veículo✅**
 R: Veículos → Detalhes → Histórico de Manutenções (mostra total e média)
 
-**P: Posso adicionar itens depois de criar a manutenção?**
+**P: Posso adicionar itens depois de criar a manutenção✅**
 R: Sim! Acesse Detalhes da Manutenção → Adicionar Item
 
-**P: Como fazer uma manutenção preventiva?**
+**P: Como fazer uma manutenção preventiva✅**
 R: Ao criar/editar, marque a opção "Manutenção Preventiva"
 
 ## 🎉 Pronto para Usar!
@@ -260,3 +260,4 @@ Acesse pelo menu **Locação → Manutenções** ou diretamente pelos **Veículo
 **Desenvolvido para:** Litoral Sul Locadora e Turismo  
 **Versão:** 1.0  
 **Data:** Outubro/2025
+

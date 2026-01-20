@@ -1,14 +1,14 @@
-﻿# ?? Correção de Emojis nos Documentos
+﻿# 📚 Correção de Emojis nos Documentos
 
-## ? Problema
+## ✅ Problema
 
-Os emojis nos documentos Markdown estão aparecendo como "??" ou caracteres quebrados no visualizador.
+Os emojis nos documentos Markdown estão aparecendo como "📚" ou caracteres quebrados no visualizador.
 
-## ?? Causa
+## 📚 Causa
 
 Os arquivos `.md` foram salvos com encoding incorreto (não UTF-8 ou UTF-8 sem BOM).
 
-## ? Soluções
+## ✅ Soluções
 
 ### Solução 1: Recriar Arquivos com Emojis Corretos (Recomendado)
 
@@ -16,28 +16,28 @@ Os emojis originais foram:
 
 | Corrompido | Emoji Correto | Código |
 |------------|---------------|--------|
-| ?? | ?? | `:rocket:` |
-| ?? | ?? | `:books:` |
-| ?? | ?? | `:book:` |
-| ?? | ?? | `:closed_lock_with_key:` |
-| ?? | ?? | `:busts_in_silhouette:` |
-| ?? | ?? | `:car:` |
-| ?? | ?? | `:clipboard:` |
-| ?? | ?? | `:wrench:` |
-| ?? | ?? | `:airplane:` |
-| ?? | ?? | `:paperclip:` |
-| ?? | ?? | `:computer:` |
-| ?? | ?? | `:art:` |
-| ?? | ?? | `:gear:` |
-| ?? | ? | `:white_check_mark:` |
-| ?? | ? | `:x:` |
-| ?? | ?? | `:warning:` |
-| ?? | ?? | `:bulb:` |
-| ?? | ?? | `:bar_chart:` |
-| ?? | ?? | `:trophy:` |
-| ?? | ????? | `:man_office_worker:` |
-| ?? | ?? | `:necktie:` |
-| ???? | ????? | `:man_technologist:` |
+| 📚 | 📚 | `:rocket:` |
+| 📚 | 📚 | `:books:` |
+| 📚 | 📚 | `:book:` |
+| 📚 | 📚 | `:closed_lock_with_key:` |
+| 📚 | 📚 | `:busts_in_silhouette:` |
+| 📚 | 📚 | `:car:` |
+| 📚 | 📚 | `:clipboard:` |
+| 📚 | 📚 | `:wrench:` |
+| 📚 | 📚 | `:airplane:` |
+| 📚 | 📚 | `:paperclip:` |
+| 📚 | 📚 | `:computer:` |
+| 📚 | 📚 | `:art:` |
+| 📚 | 📚 | `:gear:` |
+| 📚 | ✅ | `:white_check_mark:` |
+| 📚 | ✅ | `:x:` |
+| 📚 | 📚 | `:warning:` |
+| 📚 | 📚 | `:bulb:` |
+| 📚 | 📚 | `:bar_chart:` |
+| 📚 | 📚 | `:trophy:` |
+| 📚 | 📚📚✅ | `:man_office_worker:` |
+| 📚 | 📚 | `:necktie:` |
+| 📚📚 | 📚📚✅ | `:man_technologist:` |
 
 ### Solução 2: Script PowerShell de Correção Automática
 
@@ -69,19 +69,19 @@ Se os emojis não funcionarem, use HTML entities:
 ```
 
 Códigos úteis:
-- ?? = `&#128640;`
-- ?? = `&#128218;`
-- ? = `&#9989;`
-- ? = `&#10060;`
+- 📚 = `&#128640;`
+- 📚 = `&#128218;`
+- ✅ = `&#9989;`
+- ✅ = `&#10060;`
 
-## ?? Script de Correção Completa
+## 📚 Script de Correção Completa
 
 Crie um arquivo `CorrigirEmojis.ps1`:
 
 ```powershell
 # Mapeamento de emojis corrompidos
 $emojiMap = @{
-    '??' = '??'  # rocket
+    '📚' = '📚'  # rocket
     # Adicione mais mapeamentos conforme necessário
 }
 
@@ -103,7 +103,7 @@ Get-ChildItem -Path $docsPath -Filter "*.md" | ForEach-Object {
 }
 ```
 
-## ?? Garantir UTF-8 no Navegador
+## 📚 Garantir UTF-8 no Navegador
 
 O visualizador já inclui estas meta tags:
 
@@ -112,16 +112,16 @@ O visualizador já inclui estas meta tags:
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 ```
 
-## ? Verificação
+## ✅ Verificação
 
 Para verificar se foi corrigido:
 
 1. Acesse `/Documentacao` no navegador
 2. Abra qualquer documento
 3. Verifique se os emojis aparecem corretamente
-4. Se ainda aparecer "??", tente as soluções acima
+4. Se ainda aparecer "📚", tente as soluções acima
 
-## ?? Prevenção Futura
+## 📚 Prevenção Futura
 
 Ao criar novos documentos:
 
@@ -129,7 +129,7 @@ Ao criar novos documentos:
 2. **Notepad++**: Encoding > UTF-8-BOM
 3. **PowerShell**: Use sempre `New-Object System.Text.UTF8Encoding $true`
 
-## ?? Ainda com Problemas?
+## 📚 Ainda com Problemas✅
 
 Se os emojis ainda não aparecerem:
 
@@ -141,3 +141,4 @@ Se os emojis ainda não aparecerem:
 ---
 
 **Última Atualização**: Janeiro 2025
+

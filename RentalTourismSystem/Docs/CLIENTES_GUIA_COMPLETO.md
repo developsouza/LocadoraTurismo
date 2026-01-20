@@ -1,6 +1,6 @@
-﻿# ?? Sistema de Gestão de Clientes - Guia Completo
+﻿# 📚 Sistema de Gestão de Clientes - Guia Completo
 
-## ?? Índice
+## 📚 Índice
 - [Visão Geral](#visão-geral)
 - [Cadastro de Clientes](#cadastro-de-clientes)
 - [Consulta e Filtros](#consulta-e-filtros)
@@ -12,27 +12,27 @@
 
 ---
 
-## ?? Visão Geral
+## 📚 Visão Geral
 
 O módulo de gestão de clientes é o coração do sistema, permitindo o cadastro completo e gerenciamento de dados dos clientes da locadora e agência de turismo.
 
-### ?? Funcionalidades Principais
+### 📚 Funcionalidades Principais
 
-? **Cadastro Completo**
+✅ **Cadastro Completo**
 - Dados pessoais (nome, CPF, telefone, email)
 - Endereço e CEP
 - Data de nascimento com validação de idade
 - Estado civil e profissão
 - Documentação (CNH com validade)
 
-? **Gerenciamento**
+✅ **Gerenciamento**
 - Visualização de todos os clientes
 - Busca e filtros avançados
 - Edição de informações
 - Upload de documentos
 - Histórico de locações e reservas
 
-? **Integração**
+✅ **Integração**
 - Vinculação com locações de veículos
 - Vinculação com reservas de viagem
 - Upload de documentos (CNH, RG, CPF, etc.)
@@ -40,18 +40,18 @@ O módulo de gestão de clientes é o coração do sistema, permitindo o cadastr
 
 ---
 
-## ?? Cadastro de Clientes
+## 📚 Cadastro de Clientes
 
-### ?? Como Acessar
-**Menu Lateral ? Locação ? Clientes ? ? Novo Cliente**
+### 📚 Como Acessar
+**Menu Lateral ✅ Locação ✅ Clientes ✅ ✅ Novo Cliente**
 
 OU
 
 **URL direta:** `/Clientes/Create`
 
-### ?? Campos Obrigatórios
+### 📚 Campos Obrigatórios
 
-#### 1?? **Dados Pessoais**
+#### 1📚 **Dados Pessoais**
 | Campo | Formato | Validação | Exemplo |
 |-------|---------|-----------|---------|
 | **Nome Completo** | Texto (máx. 100 caracteres) | Obrigatório | João Silva Santos |
@@ -60,52 +60,52 @@ OU
 | **Email** | email@dominio.com | Obrigatório, formato válido | joao@email.com |
 | **Data de Nascimento** | dd/MM/yyyy | Obrigatório, entre 21 e 100 anos | 15/03/1990 |
 
-#### 2?? **Endereço**
+#### 2📚 **Endereço**
 | Campo | Formato | Validação | Exemplo |
 |-------|---------|-----------|---------|
 | **Endereço Completo** | Texto (máx. 200 caracteres) | Obrigatório | Rua das Flores, 123, Centro |
 | **CEP** | 00000-000 | Opcional | 11700-000 |
 
-#### 3?? **Informações Complementares**
+#### 3📚 **Informações Complementares**
 | Campo | Formato | Validação | Exemplo |
 |-------|---------|-----------|---------|
 | **Estado Civil** | Seleção | Opcional | Casado, Solteiro, etc. |
 | **Profissão** | Texto (máx. 100 caracteres) | Opcional | Engenheiro Civil |
 
-#### 4?? **Documentação (CNH)**
+#### 4📚 **Documentação (CNH)**
 | Campo | Formato | Validação | Exemplo |
 |-------|---------|-----------|---------|
 | **Número da CNH** | Texto (máx. 20 caracteres) | Opcional* | 12345678900 |
 | **Validade da CNH** | dd/MM/yyyy | Obrigatório se CNH informada | 15/12/2027 |
 | **Categoria CNH** | Texto (máx. 5 caracteres) | Opcional | B, AB, etc. |
 
-> ?? **Importante:** Se informar número da CNH, a validade torna-se obrigatória e deve ser uma data futura!
+> 📚 **Importante:** Se informar número da CNH, a validade torna-se obrigatória e deve ser uma data futura!
 
-### ?? Validações Automáticas
+### 📚 Validações Automáticas
 
-#### ? **CPF**
+#### ✅ **CPF**
 - Validação de dígitos verificadores
 - Não permite CPF com todos os números iguais
 - Aceita formato com ou sem pontuação
 
-#### ? **Idade**
+#### ✅ **Idade**
 - Mínima: 21 anos
 - Máxima: 100 anos
 - Cálculo automático da idade atual
 
-#### ? **CNH**
+#### ✅ **CNH**
 - Validade deve ser data futura
 - Se informar CNH, validade é obrigatória
 - Indica visualmente CNH válida/vencida
 
-#### ? **Email**
+#### ✅ **Email**
 - Formato válido (exemplo@dominio.com)
 - Único no sistema
 
-### ?? Passo a Passo - Cadastro
+### 📚 Passo a Passo - Cadastro
 
 1. **Acesse o formulário de cadastro**
-   - Menu ? Clientes ? Novo Cliente
+   - Menu ✅ Clientes ✅ Novo Cliente
 
 2. **Preencha os dados pessoais**
    ```
@@ -142,16 +142,16 @@ OU
 
 ---
 
-## ?? Consulta e Filtros
+## 📚 Consulta e Filtros
 
-### ?? Como Acessar
-**Menu Lateral ? Locação ? Clientes**
+### 📚 Como Acessar
+**Menu Lateral ✅ Locação ✅ Clientes**
 
 OU
 
 **URL direta:** `/Clientes/Index`
 
-### ?? Busca Rápida
+### 📚 Busca Rápida
 
 **Campo de busca no topo da lista:**
 - Busca por nome
@@ -161,12 +161,12 @@ OU
 
 **Como usar:**
 ```
-Digite: "Silva" ? Encontra todos os clientes com "Silva" no nome
-Digite: "123.456" ? Encontra cliente com CPF contendo esses números
-Digite: "maria@" ? Encontra emails começando com "maria@"
+Digite: "Silva" ✅ Encontra todos os clientes com "Silva" no nome
+Digite: "123.456" ✅ Encontra cliente com CPF contendo esses números
+Digite: "maria@" ✅ Encontra emails começando com "maria@"
 ```
 
-### ?? Informações Exibidas na Lista
+### 📚 Informações Exibidas na Lista
 
 Cada cliente na lista mostra:
 
@@ -177,39 +177,39 @@ Cada cliente na lista mostra:
 | **Email** | Email de contato | maria@email.com |
 | **Telefone** | Telefone formatado | (13) 99876-5432 |
 | **Idade** | Calculada automaticamente | 38 anos |
-| **CNH Status** | ? Válida / ?? Vencida / ? Sem CNH | ? Válida até 2028 |
+| **CNH Status** | ✅ Válida / 📚 Vencida / ✅ Sem CNH | ✅ Válida até 2028 |
 | **Total Locações** | Quantidade de locações | 5 locações |
 | **Total Reservas** | Quantidade de reservas | 3 reservas |
 
-### ?? Indicadores Visuais
+### 📚 Indicadores Visuais
 
 #### **Status da CNH**
-- ?? **Verde:** CNH válida
-- ?? **Amarelo:** CNH vence em menos de 30 dias
-- ?? **Vermelho:** CNH vencida
-- ? **Cinza:** Sem CNH cadastrada
+- 📚 **Verde:** CNH válida
+- 📚 **Amarelo:** CNH vence em menos de 30 dias
+- 📚 **Vermelho:** CNH vencida
+- ✅ **Cinza:** Sem CNH cadastrada
 
 #### **Atividade do Cliente**
-- ?? **Badge azul:** Cliente com locações ativas
-- ?? **Badge roxo:** Cliente com reservas futuras
-- ?? **Badge verde:** Cliente ativo (locações + reservas)
-- ? **Sem badge:** Cliente sem atividades recentes
+- 📚 **Badge azul:** Cliente com locações ativas
+- 📚 **Badge roxo:** Cliente com reservas futuras
+- 📚 **Badge verde:** Cliente ativo (locações + reservas)
+- ✅ **Sem badge:** Cliente sem atividades recentes
 
 ---
 
-## ?? Edição e Atualização
+## 📚 Edição e Atualização
 
-### ?? Como Acessar
+### 📚 Como Acessar
 
 **Opção 1 - Pela Lista:**
-- Clientes ? Botão "?? Editar" ao lado do cliente
+- Clientes ✅ Botão "📚 Editar" ao lado do cliente
 
 **Opção 2 - Pelos Detalhes:**
-- Clientes ? Detalhes ? Botão "Editar"
+- Clientes ✅ Detalhes ✅ Botão "Editar"
 
-### ?? Campos Editáveis
+### 📚 Campos Editáveis
 
-**? Permitido Editar:**
+**✅ Permitido Editar:**
 - Nome completo
 - Telefone
 - Email
@@ -217,19 +217,19 @@ Cada cliente na lista mostra:
 - Estado civil e profissão
 - CNH (número, validade, categoria)
 
-**?? Não Editável:**
+**📚 Não Editável:**
 - CPF (identificador único)
 - Data de nascimento (para manter histórico)
 - Data de cadastro (registro histórico)
 
-### ?? Validações na Edição
+### 📚 Validações na Edição
 
 1. **Email único:** Não pode usar email já cadastrado por outro cliente
 2. **CNH válida:** Se alterar CNH, a nova validade deve ser futura
 3. **Idade:** Não pode alterar data de nascimento para fora do range (21-100 anos)
 4. **Telefone:** Deve manter formato válido
 
-### ?? Exemplo de Atualização
+### 📚 Exemplo de Atualização
 
 **Cenário:** Atualizar telefone e CNH do cliente
 
@@ -250,16 +250,16 @@ Cada cliente na lista mostra:
 
 ---
 
-## ?? Documentos do Cliente
+## 📚 Documentos do Cliente
 
-### ?? Como Acessar
-**Clientes ? Detalhes do Cliente ? Botão "?? Documentos"**
+### 📚 Como Acessar
+**Clientes ✅ Detalhes do Cliente ✅ Botão "📚 Documentos"**
 
 OU
 
 **URL direta:** `/DocumentosUpload/UploadCliente/{id}`
 
-### ?? Tipos de Documentos Suportados
+### 📚 Tipos de Documentos Suportados
 
 | Tipo | Descrição | Formato |
 |------|-----------|---------|
@@ -270,7 +270,7 @@ OU
 | **Foto de Perfil** | Foto 3x4 | Imagem |
 | **Outros** | Documentos diversos | PDF, Imagem |
 
-### ?? Como Fazer Upload
+### 📚 Como Fazer Upload
 
 1. **Acesse a área de documentos do cliente**
 2. **Selecione o tipo de documento** (dropdown)
@@ -281,37 +281,37 @@ OU
 5. **Adicione uma descrição** (opcional)
 6. **Clique em "Enviar Documento"**
 
-### ??? Visualização de Documentos
+### 📚✅ Visualização de Documentos
 
 **Lista de documentos mostra:**
-- ?? Nome do arquivo
-- ??? Tipo do documento
-- ?? Tamanho do arquivo
-- ?? Data de upload
-- ?? Usuário que fez upload
-- ?? Descrição (se houver)
+- 📚 Nome do arquivo
+- 📚✅ Tipo do documento
+- 📚 Tamanho do arquivo
+- 📚 Data de upload
+- 📚 Usuário que fez upload
+- 📚 Descrição (se houver)
 
 **Ações disponíveis:**
-- ??? **Visualizar** (para imagens)
-- ?? **Baixar** (todos os tipos)
-- ??? **Excluir** (Admin/Manager)
+- 📚✅ **Visualizar** (para imagens)
+- 📚 **Baixar** (todos os tipos)
+- 📚✅ **Excluir** (Admin/Manager)
 
-### ?? Documentação Completa
+### 📚 Documentação Completa
 
 Para informações detalhadas sobre upload de documentos, consulte:
-?? **[UPLOAD_DOCUMENTOS.md](UPLOAD_DOCUMENTOS.md)**
+📚 **[UPLOAD_DOCUMENTOS.md](UPLOAD_DOCUMENTOS.md)**
 
 ---
 
-## ?? Histórico e Relatórios
+## 📚 Histórico e Relatórios
 
-### ?? Visualização de Detalhes
+### 📚 Visualização de Detalhes
 
-**Clientes ? Detalhes do Cliente**
+**Clientes ✅ Detalhes do Cliente**
 
-### ?? Informações Disponíveis
+### 📚 Informações Disponíveis
 
-#### 1?? **Resumo do Cliente**
+#### 1📚 **Resumo do Cliente**
 ```
 Nome: Maria da Silva
 CPF: 987.654.321-00
@@ -321,30 +321,30 @@ Idade: 38 anos
 Cadastrado em: 15/01/2024
 ```
 
-#### 2?? **Status da CNH**
+#### 2📚 **Status da CNH**
 ```
 CNH: 98765432100
 Categoria: AB
 Validade: 10/08/2028
-Status: ? Válida (vence em 1.250 dias)
+Status: ✅ Válida (vence em 1.250 dias)
 ```
 
-#### 3?? **Estatísticas**
+#### 3📚 **Estatísticas**
 ```
-?? Total de Locações: 5
-?? Total de Reservas: 3
-?? Valor Total Gasto: R$ 8.450,00
-?? Ticket Médio: R$ 1.056,25
+📚 Total de Locações: 5
+📚 Total de Reservas: 3
+📚 Valor Total Gasto: R$ 8.450,00
+📚 Ticket Médio: R$ 1.056,25
 ```
 
-#### 4?? **Histórico de Locações**
+#### 4📚 **Histórico de Locações**
 - Lista das últimas locações
 - Veículo locado
 - Período da locação
 - Valor pago
 - Status da locação
 
-#### 5?? **Histórico de Reservas**
+#### 5📚 **Histórico de Reservas**
 - Lista das reservas de viagem
 - Pacote contratado
 - Data da viagem
@@ -352,52 +352,52 @@ Status: ? Válida (vence em 1.250 dias)
 - Valor total
 - Status da reserva
 
-### ?? Ações Rápidas
+### 📚 Ações Rápidas
 
 **Painel lateral direito:**
 
 ```
-?? Nova Locação
-   ? Criar locação para este cliente
+📚 Nova Locação
+   ✅ Criar locação para este cliente
 
-?? Nova Reserva
-   ? Criar reserva de viagem
+📚 Nova Reserva
+   ✅ Criar reserva de viagem
 
-?? Documentos
-   ? Gerenciar documentos do cliente
+📚 Documentos
+   ✅ Gerenciar documentos do cliente
 
-?? Editar
-   ? Editar informações do cliente
+📚 Editar
+   ✅ Editar informações do cliente
 
-?? Enviar Email
-   ? Enviar comunicação (futuro)
+📚 Enviar Email
+   ✅ Enviar comunicação (futuro)
 ```
 
 ---
 
-## ?? Permissões de Acesso
+## 📚 Permissões de Acesso
 
-### ??? **Visualização**
+### 📚✅ **Visualização**
 **Quem pode:** Todos os usuários autenticados
 - Ver lista de clientes
 - Ver detalhes do cliente
 - Ver histórico de locações/reservas
 - Consultar documentos
 
-### ?? **Criação e Edição**
+### 📚 **Criação e Edição**
 **Quem pode:** Admin, Manager, Employee
 - Cadastrar novos clientes
 - Editar informações de clientes
 - Fazer upload de documentos
 
-### ??? **Exclusão**
+### 📚✅ **Exclusão**
 **Quem pode:** Admin, Manager
 - Excluir clientes SEM vinculações
 - Excluir documentos de clientes
 
-> ?? **Importante:** Clientes com locações ou reservas NÃO podem ser excluídos!
+> 📚 **Importante:** Clientes com locações ou reservas NÃO podem ser excluídos!
 
-### ?? Regras de Negócio
+### 📚 Regras de Negócio
 
 #### **Não é possível excluir cliente se:**
 1. Possui locações cadastradas (ativas ou finalizadas)
@@ -411,11 +411,11 @@ Status: ? Válida (vence em 1.250 dias)
 
 ---
 
-## ? Boas Práticas
+## ✅ Boas Práticas
 
-### ?? Cadastro
+### 📚 Cadastro
 
-? **Faça:**
+✅ **Faça:**
 - Sempre preencher todos os campos obrigatórios
 - Validar CPF antes de salvar
 - Confirmar dados de contato (telefone/email)
@@ -423,52 +423,52 @@ Status: ? Válida (vence em 1.250 dias)
 - Solicitar documentos complementares
 - Manter dados atualizados
 
-? **Evite:**
+✅ **Evite:**
 - Cadastrar clientes sem CNH válida para locações
 - Usar telefones/emails incorretos
 - Duplicar cadastros (verificar CPF antes)
 - Deixar campos importantes em branco
 - Cadastrar menores de 21 anos
 
-### ?? Documentação
+### 📚 Documentação
 
-? **Faça:**
+✅ **Faça:**
 - Upload de CNH, RG e CPF sempre que possível
 - Verificar qualidade da imagem/PDF
 - Adicionar descrição aos documentos
 - Manter documentos atualizados (CNH renovada)
 - Organizar por tipo de documento
 
-? **Evite:**
+✅ **Evite:**
 - Arquivos muito grandes (>10MB)
 - Imagens ilegíveis ou de baixa qualidade
 - Documentos vencidos
 - Misturar tipos de documentos
 
-### ?? Consultas
+### 📚 Consultas
 
-? **Faça:**
+✅ **Faça:**
 - Usar busca para encontrar clientes rapidamente
 - Verificar CNH antes de criar locação
 - Consultar histórico do cliente
 - Verificar inadimplência (futuro)
 - Manter contato atualizado
 
-? **Evite:**
+✅ **Evite:**
 - Criar locação para cliente com CNH vencida
 - Ignorar alertas do sistema
 - Não verificar histórico de problemas
 
-### ?? Manutenção
+### 📚 Manutenção
 
-? **Faça:**
+✅ **Faça:**
 - Atualizar dados quando cliente informar mudanças
 - Renovar CNH quando cliente trouxer nova
 - Limpar cadastros duplicados
 - Revisar dados periodicamente
 - Manter documentação completa
 
-? **Evite:**
+✅ **Evite:**
 - Deixar dados desatualizados
 - Manter CNH vencida no cadastro
 - Ignorar solicitações de atualização
@@ -476,18 +476,18 @@ Status: ? Válida (vence em 1.250 dias)
 
 ---
 
-## ?? Casos de Uso Comuns
+## 📚 Casos de Uso Comuns
 
 ### Caso 1: Cliente sem CNH
 **Situação:** Cliente quer fazer reserva de viagem (não precisa de CNH)
 
 ```
-? Permitido:
+✅ Permitido:
 - Cadastrar cliente sem CNH
 - Criar reserva de viagem
 - Fazer upload de RG e CPF
 
-? Não Permitido:
+✅ Não Permitido:
 - Criar locação de veículo (requer CNH válida)
 ```
 
@@ -495,7 +495,7 @@ Status: ? Válida (vence em 1.250 dias)
 **Situação:** Cliente com CNH vencida no sistema
 
 ```
-?? Sistema alerta: CNH VENCIDA
+📚 Sistema alerta: CNH VENCIDA
 
 Ações:
 1. Solicitar nova CNH ao cliente
@@ -509,7 +509,7 @@ Ações:
 
 ```
 Passos:
-1. Clientes ? Buscar cliente
+1. Clientes ✅ Buscar cliente
 2. Clicar em "Editar"
 3. Atualizar endereço e telefone
 4. Salvar alterações
@@ -520,7 +520,7 @@ Passos:
 **Situação:** Ver histórico completo de cliente antigo
 
 ```
-1. Clientes ? Detalhes do cliente
+1. Clientes ✅ Detalhes do cliente
 2. Ver estatísticas:
    - Total gasto: R$ 15.000
    - Locações: 12
@@ -531,37 +531,37 @@ Passos:
 
 ---
 
-## ?? Solução de Problemas
+## 📚 Solução de Problemas
 
-### ? Erro: "CPF já cadastrado"
+### ✅ Erro: "CPF já cadastrado"
 **Causa:** Já existe cliente com este CPF
 **Solução:** 
 - Buscar cliente existente
 - Atualizar dados do cliente existente
 - Não criar duplicata
 
-### ? Erro: "CNH vencida"
+### ✅ Erro: "CNH vencida"
 **Causa:** Data de validade da CNH é anterior à data atual
 **Solução:**
 - Solicitar CNH atualizada ao cliente
 - Atualizar dados no sistema
 - Fazer upload da nova CNH
 
-### ? Erro: "Idade inválida"
+### ✅ Erro: "Idade inválida"
 **Causa:** Cliente tem menos de 21 ou mais de 100 anos
 **Solução:**
 - Verificar data de nascimento
 - Clientes menores de 21 não podem ser cadastrados
 - Confirmar data correta
 
-### ? Erro: "Email inválido"
+### ✅ Erro: "Email inválido"
 **Causa:** Formato de email incorreto
 **Solução:**
 - Verificar formato: exemplo@dominio.com
 - Confirmar email com cliente
 - Usar email válido e ativo
 
-### ? Erro: "Não é possível excluir"
+### ✅ Erro: "Não é possível excluir"
 **Causa:** Cliente possui locações ou reservas
 **Solução:**
 - Cliente com histórico não pode ser excluído
@@ -570,25 +570,25 @@ Passos:
 
 ---
 
-## ?? Atalhos e Dicas
+## 📚 Atalhos e Dicas
 
-### ?? Atalhos de Teclado
+### 📚 Atalhos de Teclado
 ```
-Ctrl + K     ? Busca global (buscar cliente)
-Ctrl + N     ? Novo cliente (em breve)
-Ctrl + S     ? Salvar (nos formulários)
-Esc          ? Cancelar/Fechar modal
-```
-
-### ?? Links Rápidos
-```
-/Clientes/Index          ? Lista de clientes
-/Clientes/Create         ? Novo cliente
-/Clientes/Details/{id}   ? Detalhes do cliente
-/Clientes/Edit/{id}      ? Editar cliente
+Ctrl + K     ✅ Busca global (buscar cliente)
+Ctrl + N     ✅ Novo cliente (em breve)
+Ctrl + S     ✅ Salvar (nos formulários)
+Esc          ✅ Cancelar/Fechar modal
 ```
 
-### ?? Dicas Profissionais
+### 📚 Links Rápidos
+```
+/Clientes/Index          ✅ Lista de clientes
+/Clientes/Create         ✅ Novo cliente
+/Clientes/Details/{id}   ✅ Detalhes do cliente
+/Clientes/Edit/{id}      ✅ Editar cliente
+```
+
+### 📚 Dicas Profissionais
 
 1. **Organize por Status de CNH**
    - Filtre clientes com CNH próxima ao vencimento
@@ -608,28 +608,28 @@ Esc          ? Cancelar/Fechar modal
 
 ---
 
-## ?? Suporte
+## 📚 Suporte
 
-### ? Dúvidas Frequentes
+### ✅ Dúvidas Frequentes
 
-**P: Posso cadastrar cliente menor de 21 anos?**
+**P: Posso cadastrar cliente menor de 21 anos✅**
 R: Não. A idade mínima é 21 anos para locações.
 
-**P: CNH é obrigatória para todos os clientes?**
+**P: CNH é obrigatória para todos os clientes✅**
 R: Não. Apenas para clientes que vão alugar veículos.
 
-**P: Posso usar o mesmo email para vários clientes?**
+**P: Posso usar o mesmo email para vários clientes✅**
 R: Não. Cada cliente deve ter email único.
 
-**P: Como faço backup dos documentos?**
+**P: Como faço backup dos documentos✅**
 R: Os documentos são salvos no servidor. Consulte o administrador.
 
-**P: Posso recuperar cliente excluído?**
+**P: Posso recuperar cliente excluído✅**
 R: Não. Exclusões são permanentes. Por isso a restrição.
 
 ---
 
-## ?? Pronto para Usar!
+## 📚 Pronto para Usar!
 
 O sistema de gestão de clientes está **100% operacional**.
 
@@ -639,7 +639,7 @@ O sistema de gestão de clientes está **100% operacional**.
 3. Crie locações e reservas
 4. Acompanhe o histórico
 
-**Acesse:** Menu ? Locação ? Clientes
+**Acesse:** Menu ✅ Locação ✅ Clientes
 
 ---
 
@@ -649,3 +649,4 @@ O sistema de gestão de clientes está **100% operacional**.
 **Documentação relacionada:** 
 - [Upload de Documentos](UPLOAD_DOCUMENTOS.md)
 - [Sistema de Manutenções](MANUTENCAO_GUIA_ACESSO.md)
+

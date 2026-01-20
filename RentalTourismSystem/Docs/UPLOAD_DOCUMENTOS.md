@@ -1,25 +1,25 @@
 ﻿# Funcionalidade de Upload de Documentos
 
-## ?? Descrição
+## 📚 Descrição
 
 Sistema completo de upload e gerenciamento de documentos para clientes, veículos e funcionários no RentalTourismSystem.
 
-## ? Recursos Implementados
+## ✅ Recursos Implementados
 
 ### 1. **Upload de Documentos**
-- ? Suporte para PDF e imagens (JPG, JPEG, PNG, GIF, BMP)
-- ? Limite de tamanho: 10MB por arquivo
-- ? Validação de tipo e tamanho de arquivo
-- ? Preview de imagens antes do upload
-- ? Armazenamento organizado por tipo de entidade (clientes/veiculos)
-- ? Geração de nomes únicos para evitar conflitos
+- ✅ Suporte para PDF e imagens (JPG, JPEG, PNG, GIF, BMP)
+- ✅ Limite de tamanho: 10MB por arquivo
+- ✅ Validação de tipo e tamanho de arquivo
+- ✅ Preview de imagens antes do upload
+- ✅ Armazenamento organizado por tipo de entidade (clientes/veiculos)
+- ✅ Geração de nomes únicos para evitar conflitos
 
 ### 2. **Gerenciamento de Documentos**
-- ? Listagem de documentos enviados
-- ? Visualização de imagens inline
-- ? Download de documentos
-- ? Exclusão de documentos (Admin/Manager)
-- ? Metadados: nome, tipo, tamanho, data de upload, usuário
+- ✅ Listagem de documentos enviados
+- ✅ Visualização de imagens inline
+- ✅ Download de documentos
+- ✅ Exclusão de documentos (Admin/Manager)
+- ✅ Metadados: nome, tipo, tamanho, data de upload, usuário
 
 ### 3. **Tipos de Documentos Suportados**
 
@@ -49,7 +49,7 @@ Sistema completo de upload e gerenciamento de documentos para clientes, veículo
 - Foto de Perfil
 - Outros
 
-## ?? Como Usar
+## 📚 Como Usar
 
 ### Passo 1: Executar o Script SQL
 
@@ -78,7 +78,7 @@ A pasta será criada automaticamente pelo FileService se não existir.
 
 #### **Para Clientes:**
 1. Acesse `Clientes > Detalhes do Cliente`
-2. Clique no botão "?? Documentos"
+2. Clique no botão "📚 Documentos"
 3. Selecione o tipo de documento
 4. Escolha o arquivo
 5. Adicione uma descrição (opcional)
@@ -86,13 +86,13 @@ A pasta será criada automaticamente pelo FileService se não existir.
 
 #### **Para Veículos:**
 1. Acesse `Veículos > Detalhes do Veículo`
-2. Clique no botão "?? Documentos"
+2. Clique no botão "📚 Documentos"
 3. Selecione o tipo de documento
 4. Escolha o arquivo
 5. Adicione uma descrição (opcional)
 6. Clique em "Enviar Documento"
 
-## ?? Permissões
+## 📚 Permissões
 
 ### Upload de Documentos
 - **Clientes:** Admin, Manager, Employee
@@ -105,37 +105,37 @@ A pasta será criada automaticamente pelo FileService se não existir.
 ### Exclusão
 - **Apenas:** Admin, Manager
 
-## ?? Estrutura de Arquivos
+## 📚 Estrutura de Arquivos
 
 ```
 RentalTourismSystem/
-??? Controllers/
-?   ??? DocumentosUploadController.cs          # Controller principal
-??? Models/
-?   ??? Documento.cs                            # Model do documento
-??? Services/
-?   ??? IFileService.cs                         # Interface do serviço
-?   ??? FileService.cs                          # Implementação do serviço
-??? Views/
-?   ??? DocumentosUpload/
-?       ??? UploadCliente.cshtml                # View para clientes
-?       ??? UploadVeiculo.cshtml                # View para veículos
-??? Data/
-?   ??? RentalTourismContext.cs                 # DbContext atualizado
-??? Migrations/
-?   ??? Scripts/
-?       ??? AdicionarTabelaDocumentos.sql       # Script de criação
-??? wwwroot/
-    ??? uploads/                                 # Pasta de armazenamento
-        ??? clientes/
-        ?   ??? 1/                              # Documentos do cliente ID 1
-        ?   ??? 2/                              # Documentos do cliente ID 2
-        ??? veiculos/
-            ??? 1/                              # Documentos do veículo ID 1
-            ??? 2/                              # Documentos do veículo ID 2
+📚✅ Controllers/
+✅   📚✅ DocumentosUploadController.cs          # Controller principal
+📚✅ Models/
+✅   📚✅ Documento.cs                            # Model do documento
+📚✅ Services/
+✅   📚✅ IFileService.cs                         # Interface do serviço
+✅   📚✅ FileService.cs                          # Implementação do serviço
+📚✅ Views/
+✅   📚✅ DocumentosUpload/
+✅       📚✅ UploadCliente.cshtml                # View para clientes
+✅       📚✅ UploadVeiculo.cshtml                # View para veículos
+📚✅ Data/
+✅   📚✅ RentalTourismContext.cs                 # DbContext atualizado
+📚✅ Migrations/
+✅   📚✅ Scripts/
+✅       📚✅ AdicionarTabelaDocumentos.sql       # Script de criação
+📚✅ wwwroot/
+    📚✅ uploads/                                 # Pasta de armazenamento
+        📚✅ clientes/
+        ✅   📚✅ 1/                              # Documentos do cliente ID 1
+        ✅   📚✅ 2/                              # Documentos do cliente ID 2
+        📚✅ veiculos/
+            📚✅ 1/                              # Documentos do veículo ID 1
+            📚✅ 2/                              # Documentos do veículo ID 2
 ```
 
-## ?? Configuração Técnica
+## 📚 Configuração Técnica
 
 ### Serviço Registrado em Program.cs
 ```csharp
@@ -157,7 +157,7 @@ Documento (1) -> (*) ApplicationUser  [SET NULL]
 - `IX_Documentos_VeiculoId`
 - `IX_Documentos_FuncionarioId`
 
-## ?? Campos da Tabela Documentos
+## 📚 Campos da Tabela Documentos
 
 | Campo | Tipo | Descrição |
 |-------|------|-----------|
@@ -175,25 +175,25 @@ Documento (1) -> (*) ApplicationUser  [SET NULL]
 | FuncionarioId | INT (nullable) | FK para Funcionário |
 | ApplicationUserId | NVARCHAR(450) (nullable) | FK para ApplicationUser |
 
-## ?? Recursos da Interface
+## 📚 Recursos da Interface
 
 ### Preview de Arquivos
-- ? Preview de imagens antes do upload
-- ? Ícone para PDFs
+- ✅ Preview de imagens antes do upload
+- ✅ Ícone para PDFs
 
 ### Lista de Documentos
-- ? Cards com informações completas
-- ? Ícones diferenciados por tipo
-- ? Informações de tamanho formatadas
-- ? Data e hora do upload
-- ? Nome do usuário que fez o upload
+- ✅ Cards com informações completas
+- ✅ Ícones diferenciados por tipo
+- ✅ Informações de tamanho formatadas
+- ✅ Data e hora do upload
+- ✅ Nome do usuário que fez o upload
 
 ### Ações Disponíveis
-- ??? Visualizar (imagens)
-- ?? Baixar (todos os tipos)
-- ??? Excluir (Admin/Manager)
+- 📚✅ Visualizar (imagens)
+- 📚 Baixar (todos os tipos)
+- 📚✅ Excluir (Admin/Manager)
 
-## ?? Segurança
+## 📚 Segurança
 
 1. **Validação de Arquivo:**
    - Extensões permitidas controladas
@@ -210,7 +210,7 @@ Documento (1) -> (*) ApplicationUser  [SET NULL]
    - Verificação de autorização por role
    - Logs de todas as operações
 
-## ?? Logs
+## 📚 Logs
 
 Todas as operações são logadas:
 - Upload de documentos
@@ -219,15 +219,15 @@ Todas as operações são logadas:
 - Tentativas de acesso não autorizado
 - Erros durante operações
 
-## ?? Tratamento de Erros
+## 📚 Tratamento de Erros
 
-- ? Validação de entrada
-- ? Mensagens de erro amigáveis
-- ? Logs detalhados para debugging
-- ? Rollback em caso de falha
-- ? Feedback visual para o usuário
+- ✅ Validação de entrada
+- ✅ Mensagens de erro amigáveis
+- ✅ Logs detalhados para debugging
+- ✅ Rollback em caso de falha
+- ✅ Feedback visual para o usuário
 
-## ?? Extensibilidade
+## 📚 Extensibilidade
 
 ### Para adicionar novo tipo de documento:
 
@@ -262,7 +262,7 @@ modelBuilder.Entity<Documento>()
 
 3. Crie action no controller e view correspondente
 
-## ?? Melhorias Futuras
+## 📚 Melhorias Futuras
 
 - [ ] Suporte para múltiplos uploads simultâneos
 - [ ] Compressão automática de imagens
@@ -275,7 +275,7 @@ modelBuilder.Entity<Documento>()
 - [ ] Thumbnail automático para imagens
 - [ ] Busca por conteúdo de documentos
 
-## ?? Troubleshooting
+## 📚 Troubleshooting
 
 ### Erro: "Pasta não encontrada"
 **Solução:** Certifique-se que a pasta `wwwroot/uploads` existe e tem permissões de escrita.
@@ -289,11 +289,11 @@ modelBuilder.Entity<Documento>()
 ### Erro: "Documento não encontrado"
 **Solução:** Verifique se o arquivo físico existe e o caminho está correto no banco
 
-## ?? Licença
+## 📚 Licença
 
 Este módulo faz parte do RentalTourismSystem e segue a mesma licença do projeto principal.
 
-## ?? Contribuidores
+## 📚 Contribuidores
 
 Desenvolvido como parte do sistema de locação e turismo integrado.
 
@@ -301,4 +301,5 @@ Desenvolvido como parte do sistema de locação e turismo integrado.
 
 **Versão:** 1.0.0  
 **Data:** Outubro 2025  
-**Status:** ? Produção
+**Status:** ✅ Produção
+

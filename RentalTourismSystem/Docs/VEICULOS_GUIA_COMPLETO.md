@@ -1,6 +1,6 @@
-﻿# ?? Sistema de Gestão de Veículos - Guia Completo
+﻿# 📚 Sistema de Gestão de Veículos - Guia Completo
 
-## ?? Índice
+## 📚 Índice
 - [Visão Geral](#visão-geral)
 - [Cadastro de Veículos](#cadastro-de-veículos)
 - [Gerenciamento de Status](#gerenciamento-de-status)
@@ -12,27 +12,27 @@
 
 ---
 
-## ?? Visão Geral
+## 📚 Visão Geral
 
 O módulo de gestão de veículos permite controle completo da frota, desde o cadastro até o acompanhamento de manutenções, locações e disponibilidade.
 
-### ?? Funcionalidades Principais
+### 📚 Funcionalidades Principais
 
-? **Gestão Completa da Frota**
+✅ **Gestão Completa da Frota**
 - Cadastro detalhado de veículos
 - Controle de status (Disponível, Locado, Manutenção, etc.)
 - Histórico de locações
 - Histórico de manutenções
 - Cálculo de disponibilidade
 
-? **Controle Operacional**
+✅ **Controle Operacional**
 - Quilometragem atual
 - Última manutenção
 - Próxima manutenção prevista
 - Alertas de manutenção preventiva
 - Gestão de documentos (CRLV, Seguro, etc.)
 
-? **Integração**
+✅ **Integração**
 - Sistema de locações
 - Sistema de manutenções
 - Sistema de relatórios
@@ -40,18 +40,18 @@ O módulo de gestão de veículos permite controle completo da frota, desde o ca
 
 ---
 
-## ?? Cadastro de Veículos
+## 📚 Cadastro de Veículos
 
-### ?? Como Acessar
-**Menu Lateral ? Locação ? Veículos ? ? Novo Veículo**
+### 📚 Como Acessar
+**Menu Lateral ✅ Locação ✅ Veículos ✅ ✅ Novo Veículo**
 
 OU
 
 **URL direta:** `/Veiculos/Create`
 
-### ?? Campos do Formulário
+### 📚 Campos do Formulário
 
-#### 1?? **Informações Básicas**
+#### 1📚 **Informações Básicas**
 
 | Campo | Formato | Validação | Exemplo |
 |-------|---------|-----------|---------|
@@ -61,42 +61,42 @@ OU
 | **Placa** | XXX-0000 ou XXX0X00 | Obrigatório, formato Mercosul ou antigo | ABC-1234 ou ABC1D23 |
 | **Cor** | Texto (máx. 50 caracteres) | Obrigatório | Branco |
 
-#### 2?? **Especificações Técnicas**
+#### 2📚 **Especificações Técnicas**
 
 | Campo | Formato | Validação | Exemplo |
 |-------|---------|-----------|---------|
 | **Combustível** | Seleção | Obrigatório | Gasolina, Álcool, Flex, Diesel, Elétrico, Híbrido |
 | **Câmbio** | Seleção | Obrigatório | Manual, Automático, Automatizado, CVT |
-| **Quilometragem** | Número inteiro | Obrigatório (? 0) | 45.000 |
+| **Quilometragem** | Número inteiro | Obrigatório (✅ 0) | 45.000 |
 
-#### 3?? **Valores**
+#### 3📚 **Valores**
 
 | Campo | Formato | Validação | Exemplo |
 |-------|---------|-----------|---------|
 | **Valor da Diária** | Decimal (R$) | Obrigatório | R$ 150,00 |
 | **Valor de Mercado** | Decimal (R$) | Opcional | R$ 55.000,00 |
 
-#### 4?? **Localização e Status**
+#### 4📚 **Localização e Status**
 
 | Campo | Formato | Validação | Exemplo |
 |-------|---------|-----------|---------|
 | **Agência** | Seleção | Obrigatório | Agência Centro |
 | **Status** | Seleção | Obrigatório | Disponível |
 
-### ?? Status do Veículo
+### 📚 Status do Veículo
 
-| Status | Descrição | Cor | Permite Locação? |
+| Status | Descrição | Cor | Permite Locação✅ |
 |--------|-----------|-----|------------------|
-| **Disponível** | Veículo pronto para locação | ?? Verde | ? Sim |
-| **Locado** | Veículo em locação ativa | ?? Azul | ? Não |
-| **Manutenção** | Veículo em manutenção | ?? Amarelo | ? Não |
-| **Reservado** | Veículo reservado para locação futura | ?? Roxo | ? Não |
-| **Inativo** | Veículo fora de operação | ?? Vermelho | ? Não |
+| **Disponível** | Veículo pronto para locação | 📚 Verde | ✅ Sim |
+| **Locado** | Veículo em locação ativa | 📚 Azul | ✅ Não |
+| **Manutenção** | Veículo em manutenção | 📚 Amarelo | ✅ Não |
+| **Reservado** | Veículo reservado para locação futura | 📚 Roxo | ✅ Não |
+| **Inativo** | Veículo fora de operação | 📚 Vermelho | ✅ Não |
 
-### ?? Passo a Passo - Cadastro
+### 📚 Passo a Passo - Cadastro
 
 1. **Acesse o formulário**
-   - Menu ? Veículos ? Novo Veículo
+   - Menu ✅ Veículos ✅ Novo Veículo
 
 2. **Preencha as informações básicas**
    ```
@@ -133,74 +133,74 @@ OU
 
 ---
 
-## ?? Gerenciamento de Status
+## 📚 Gerenciamento de Status
 
-### ?? Como Alterar Status
+### 📚 Como Alterar Status
 
 **Opção 1 - Detalhes do Veículo:**
 ```
-Veículos ? Detalhes ? Painel "Ações Rápidas" ? ?? Alterar Status
+Veículos ✅ Detalhes ✅ Painel "Ações Rápidas" ✅ 📚 Alterar Status
 ```
 
 **Opção 2 - Lista de Veículos:**
 ```
-Veículos ? Botão de ação ? Alterar Status
+Veículos ✅ Botão de ação ✅ Alterar Status
 ```
 
-### ?? Quando Alterar Status
+### 📚 Quando Alterar Status
 
-#### ?? **Para DISPONÍVEL**
+#### 📚 **Para DISPONÍVEL**
 **Quando:**
 - Veículo retorna de locação
 - Manutenção foi concluída
 - Veículo foi reativado
 
 **Pré-requisitos:**
-- ? Não estar em locação ativa
-- ? Manutenção concluída (se aplicável)
-- ? Vistoria aprovada
+- ✅ Não estar em locação ativa
+- ✅ Manutenção concluída (se aplicável)
+- ✅ Vistoria aprovada
 
-#### ?? **Para LOCADO**
+#### 📚 **Para LOCADO**
 **Quando:**
 - Cliente retira veículo para locação
 
 **Pré-requisitos:**
-- ? Status anterior: Disponível ou Reservado
-- ? Locação criada no sistema
-- ? Cliente com CNH válida
+- ✅ Status anterior: Disponível ou Reservado
+- ✅ Locação criada no sistema
+- ✅ Cliente com CNH válida
 
-> ?? **Automático:** Sistema altera para "Locado" automaticamente ao criar locação!
+> 📚 **Automático:** Sistema altera para "Locado" automaticamente ao criar locação!
 
-#### ?? **Para MANUTENÇÃO**
+#### 📚 **Para MANUTENÇÃO**
 **Quando:**
 - Veículo precisa de reparo
 - Revisão preventiva agendada
 - Problema identificado
 
 **Pré-requisitos:**
-- ? Não estar em locação
-- ? Criar registro de manutenção
+- ✅ Não estar em locação
+- ✅ Criar registro de manutenção
 
-#### ?? **Para RESERVADO**
+#### 📚 **Para RESERVADO**
 **Quando:**
 - Cliente faz reserva antecipada
 - Veículo será usado em evento específico
 
 **Pré-requisitos:**
-- ? Status anterior: Disponível
-- ? Período definido
+- ✅ Status anterior: Disponível
+- ✅ Período definido
 
-#### ?? **Para INATIVO**
+#### 📚 **Para INATIVO**
 **Quando:**
 - Veículo vendido
 - Veículo em sinistro grave
 - Aguardando decisão sobre destino
 
 **Pré-requisitos:**
-- ? Não estar em locação
-- ? Sem manutenções pendentes
+- ✅ Não estar em locação
+- ✅ Sem manutenções pendentes
 
-### ?? Fluxo de Status
+### 📚 Fluxo de Status
 
 ```mermaid
 graph LR
@@ -215,43 +215,43 @@ graph LR
     C --> E
 ```
 
-### ?? Mudanças Automáticas de Status
+### 📚 Mudanças Automáticas de Status
 
-| Evento | Status Anterior | Status Novo | Automático? |
+| Evento | Status Anterior | Status Novo | Automático✅ |
 |--------|-----------------|-------------|-------------|
-| Criar locação | Disponível | Locado | ? Sim |
-| Finalizar locação | Locado | Disponível | ?? Manual recomendado |
-| Criar manutenção | Qualquer | Manutenção | ? Sim (opcional) |
-| Concluir manutenção | Manutenção | Disponível | ?? Manual |
+| Criar locação | Disponível | Locado | ✅ Sim |
+| Finalizar locação | Locado | Disponível | 📚 Manual recomendado |
+| Criar manutenção | Qualquer | Manutenção | ✅ Sim (opcional) |
+| Concluir manutenção | Manutenção | Disponível | 📚 Manual |
 
 ---
 
-## ?? Manutenções
+## 📚 Manutenções
 
-### ?? Acesso ao Sistema de Manutenções
+### 📚 Acesso ao Sistema de Manutenções
 
 **Opção 1 - Menu Lateral:**
 ```
-Menu ? Locação ? Manutenções
+Menu ✅ Locação ✅ Manutenções
 ```
 
 **Opção 2 - Lista de Veículos:**
 ```
-Veículos ? Botão "?? Manutenções" (Admin/Manager)
+Veículos ✅ Botão "📚 Manutenções" (Admin/Manager)
 ```
 
 **Opção 3 - Detalhes do Veículo:**
 ```
-Veículos ? Detalhes ? Painel "Ações Rápidas"
-? ?? Histórico de Manutenções
-? ?? Nova Manutenção
+Veículos ✅ Detalhes ✅ Painel "Ações Rápidas"
+✅ 📚 Histórico de Manutenções
+✅ 📚 Nova Manutenção
 ```
 
-### ?? Informações de Manutenção
+### 📚 Informações de Manutenção
 
 #### **No Card do Veículo:**
 ```
-?? Manutenções:
+📚 Manutenções:
    - Total: 8 manutenções
    - Última: Troca de Óleo (há 15 dias)
    - Próxima: Revisão 10.000km (prevista)
@@ -267,46 +267,46 @@ Veículos ? Detalhes ? Painel "Ações Rápidas"
 - Oficina e responsável
 - Observações e garantia
 
-### ?? Tipos de Manutenção
+### 📚 Tipos de Manutenção
 
-1. **Preventiva** ???
+1. **Preventiva** 📚✅
    - Revisões programadas
    - Troca de óleo periódica
    - Alinhamento/balanceamento
    - Inspeção veicular
 
-2. **Corretiva** ??
+2. **Corretiva** 📚
    - Problemas identificados
    - Reparos necessários
    - Substituição de peças
 
-3. **Urgente** ??
+3. **Urgente** 📚
    - Problemas críticos
    - Segurança comprometida
    - Veículo parado
 
-### ?? Alertas de Manutenção
+### 📚 Alertas de Manutenção
 
 **Sistema alerta quando:**
-- ?? Veículo atingiu quilometragem de revisão
-- ?? Última manutenção há mais de X dias
-- ?? Manutenção urgente pendente
-- ?? Manutenção agendada se aproximando
+- 📚 Veículo atingiu quilometragem de revisão
+- 📚 Última manutenção há mais de X dias
+- 📚 Manutenção urgente pendente
+- 📚 Manutenção agendada se aproximando
 
-### ?? Documentação Completa
+### 📚 Documentação Completa
 
 Para informações detalhadas sobre manutenções:
-?? **[MANUTENCAO_GUIA_ACESSO.md](MANUTENCAO_GUIA_ACESSO.md)**
+📚 **[MANUTENCAO_GUIA_ACESSO.md](MANUTENCAO_GUIA_ACESSO.md)**
 
 ---
 
-## ?? Disponibilidade
+## 📚 Disponibilidade
 
-### ?? Verificar Disponibilidade
+### 📚 Verificar Disponibilidade
 
-**Veículos ? Detalhes ? Botão "?? Verificar Disponibilidade"**
+**Veículos ✅ Detalhes ✅ Botão "📚 Verificar Disponibilidade"**
 
-### ?? Consulta de Período
+### 📚 Consulta de Período
 
 **Formulário de verificação:**
 ```
@@ -318,7 +318,7 @@ Data Final: 05/12/2024
 
 **Resultado:**
 ```
-? Veículo DISPONÍVEL no período selecionado
+✅ Veículo DISPONÍVEL no período selecionado
    01/12 a 05/12/2024
 
    Sem locações agendadas
@@ -328,7 +328,7 @@ Data Final: 05/12/2024
 OU
 
 ```
-? Veículo INDISPONÍVEL no período
+✅ Veículo INDISPONÍVEL no período
 
    Motivo: Locação ativa
    Cliente: João Silva
@@ -337,41 +337,41 @@ OU
    Alternativa: Buscar outro veículo similar
 ```
 
-### ?? Calendário de Ocupação
+### 📚 Calendário de Ocupação
 
 **Informações exibidas:**
-- ?? Dias disponíveis
-- ?? Dias locados
-- ?? Dias em manutenção
-- ?? Dias reservados
-- ? Dias inativos
+- 📚 Dias disponíveis
+- 📚 Dias locados
+- 📚 Dias em manutenção
+- 📚 Dias reservados
+- ✅ Dias inativos
 
-### ?? Regras de Disponibilidade
+### 📚 Regras de Disponibilidade
 
 **Veículo está disponível quando:**
-- ? Status = "Disponível"
-- ? Sem locação no período
-- ? Sem manutenção agendada
-- ? Sem reserva confirmada
+- ✅ Status = "Disponível"
+- ✅ Sem locação no período
+- ✅ Sem manutenção agendada
+- ✅ Sem reserva confirmada
 
 **Veículo NÃO está disponível quando:**
-- ? Em locação ativa
-- ? Em manutenção
-- ? Status = Inativo
-- ? Reservado para outro cliente
+- ✅ Em locação ativa
+- ✅ Em manutenção
+- ✅ Status = Inativo
+- ✅ Reservado para outro cliente
 
 ---
 
-## ?? Documentos do Veículo
+## 📚 Documentos do Veículo
 
-### ?? Como Acessar
-**Veículos ? Detalhes ? Botão "?? Documentos"**
+### 📚 Como Acessar
+**Veículos ✅ Detalhes ✅ Botão "📚 Documentos"**
 
 OU
 
 **URL direta:** `/DocumentosUpload/UploadVeiculo/{id}`
 
-### ?? Tipos de Documentos
+### 📚 Tipos de Documentos
 
 | Tipo | Descrição | Renovação |
 |------|-----------|-----------|
@@ -382,7 +382,7 @@ OU
 | **Fotos do Veículo** | Fotos externas e internas | Conforme necessário |
 | **Outros** | Documentos diversos | Variável |
 
-### ?? Upload de Documentos
+### 📚 Upload de Documentos
 
 1. **Acesse área de documentos**
 2. **Selecione tipo de documento**
@@ -394,37 +394,37 @@ OU
    - Exemplo: "CRLV 2024", "Seguro renovado até 12/2025"
 5. **Envie o documento**
 
-### ?? Alertas de Documentação
+### 📚 Alertas de Documentação
 
 **Sistema alerta quando:**
-- ?? CRLV vencido
-- ?? Seguro vencido
-- ?? IPVA a vencer (30 dias)
-- ?? Documentos faltantes
+- 📚 CRLV vencido
+- 📚 Seguro vencido
+- 📚 IPVA a vencer (30 dias)
+- 📚 Documentos faltantes
 
-### ?? Checklist de Documentação
+### 📚 Checklist de Documentação
 
 **Documentos obrigatórios:**
-- ? CRLV válido
-- ? Seguro em dia
-- ? IPVA quitado
-- ? Fotos atualizadas (opcional)
+- ✅ CRLV válido
+- ✅ Seguro em dia
+- ✅ IPVA quitado
+- ✅ Fotos atualizadas (opcional)
 
-### ?? Documentação Completa
+### 📚 Documentação Completa
 
 Para informações detalhadas sobre upload de documentos:
-?? **[UPLOAD_DOCUMENTOS.md](UPLOAD_DOCUMENTOS.md)**
+📚 **[UPLOAD_DOCUMENTOS.md](UPLOAD_DOCUMENTOS.md)**
 
 ---
 
-## ?? Relatórios
+## 📚 Relatórios
 
-### ?? Como Acessar
-**Menu ? Relatórios ? Veículos**
+### 📚 Como Acessar
+**Menu ✅ Relatórios ✅ Veículos**
 
-### ?? Tipos de Relatórios
+### 📚 Tipos de Relatórios
 
-#### 1?? **Veículos Mais Alugados**
+#### 1📚 **Veículos Mais Alugados**
 ```
 Ranking de veículos por quantidade de locações
 
@@ -440,7 +440,7 @@ Top 5:
 - Agência
 - Status
 
-#### 2?? **Receita por Veículo**
+#### 2📚 **Receita por Veículo**
 ```
 Veículo          | Locações | Dias | Receita Total | Receita Média/Dia
 Gol ABC1234      | 12       | 156  | R$ 23.400,00  | R$ 150,00
@@ -448,20 +448,20 @@ HB20 DEF5678     | 8        | 104  | R$ 15.600,00  | R$ 150,00
 ...
 ```
 
-#### 3?? **Status da Frota**
+#### 3📚 **Status da Frota**
 ```
-?? Status atual da frota:
+📚 Status atual da frota:
    
-   ?? Disponível: 15 veículos (60%)
-   ?? Locado: 7 veículos (28%)
-   ?? Manutenção: 2 veículos (8%)
-   ?? Reservado: 1 veículo (4%)
-   ?? Inativo: 0 veículos (0%)
+   📚 Disponível: 15 veículos (60%)
+   📚 Locado: 7 veículos (28%)
+   📚 Manutenção: 2 veículos (8%)
+   📚 Reservado: 1 veículo (4%)
+   📚 Inativo: 0 veículos (0%)
    
    Total: 25 veículos
 ```
 
-#### 4?? **Custos de Manutenção**
+#### 4📚 **Custos de Manutenção**
 ```
 Veículo          | Manutenções | Custo Total | Custo Médio
 Gol ABC1234      | 8           | R$ 4.850,00 | R$ 606,25
@@ -470,9 +470,9 @@ HB20 DEF5678     | 5           | R$ 3.200,00 | R$ 640,00
 ```
 
 **Ver relatório completo:**
-?? **Manutenções ? Relatório de Custos**
+📚 **Manutenções ✅ Relatório de Custos**
 
-#### 5?? **Quilometragem**
+#### 5📚 **Quilometragem**
 ```
 Veículo          | KM Atual | KM Inicial | KM Rodados | Média KM/Dia
 Gol ABC1234      | 45.000   | 5.000      | 40.000     | 150 km
@@ -480,29 +480,29 @@ HB20 DEF5678     | 35.000   | 10.000     | 25.000     | 120 km
 ...
 ```
 
-### ?? Filtros Disponíveis
+### 📚 Filtros Disponíveis
 
 **Todos os relatórios permitem filtrar por:**
-- ?? Período (data início/fim)
-- ?? Agência específica
-- ?? Veículo específico
-- ?? Status do veículo
-- ??? Tipo de combustível
-- ?? Tipo de câmbio
+- 📚 Período (data início/fim)
+- 📚 Agência específica
+- 📚 Veículo específico
+- 📚 Status do veículo
+- 📚✅ Tipo de combustível
+- 📚 Tipo de câmbio
 
-### ?? Exportação
+### 📚 Exportação
 
 **Formatos disponíveis:**
-- ?? Excel (.xlsx)
-- ?? PDF
-- ?? CSV
-- ??? Impressão direta
+- 📚 Excel (.xlsx)
+- 📚 PDF
+- 📚 CSV
+- 📚✅ Impressão direta
 
 ---
 
-## ?? Permissões de Acesso
+## 📚 Permissões de Acesso
 
-### ??? **Visualização**
+### 📚✅ **Visualização**
 **Quem pode:** Todos os usuários autenticados
 - Ver lista de veículos
 - Ver detalhes do veículo
@@ -510,7 +510,7 @@ HB20 DEF5678     | 35.000   | 10.000     | 25.000     | 120 km
 - Ver histórico de locações
 - Ver documentos
 
-### ?? **Criação e Edição**
+### 📚 **Criação e Edição**
 **Quem pode:** Admin, Manager
 - Cadastrar novos veículos
 - Editar informações
@@ -518,14 +518,14 @@ HB20 DEF5678     | 35.000   | 10.000     | 25.000     | 120 km
 - Fazer upload de documentos
 - Criar manutenções
 
-### ??? **Exclusão**
+### 📚✅ **Exclusão**
 **Quem pode:** Apenas Admin
 - Excluir veículos SEM histórico
 - Excluir documentos
 
-> ?? **Importante:** Veículos com locações ou manutenções NÃO podem ser excluídos!
+> 📚 **Importante:** Veículos com locações ou manutenções NÃO podem ser excluídos!
 
-### ?? Regras de Negócio
+### 📚 Regras de Negócio
 
 #### **Não é possível excluir veículo se:**
 1. Possui locações cadastradas
@@ -540,61 +540,61 @@ HB20 DEF5678     | 35.000   | 10.000     | 25.000     | 120 km
 
 ---
 
-## ? Boas Práticas
+## ✅ Boas Práticas
 
-### ?? Cadastro
+### 📚 Cadastro
 
-? **Faça:**
+✅ **Faça:**
 - Cadastrar veículos com todas as informações
 - Validar placa (Mercosul ou antiga)
 - Definir valor de diária competitivo
 - Atribuir à agência correta
 - Fazer upload de fotos e documentos
 
-? **Evite:**
+✅ **Evite:**
 - Deixar campos importantes em branco
 - Usar placas inválidas
 - Cadastrar sem documentação
 - Esquecer de definir agência
 
-### ?? Status
+### 📚 Status
 
-? **Faça:**
+✅ **Faça:**
 - Atualizar status ao iniciar locação
 - Marcar "Manutenção" quando necessário
 - Retornar para "Disponível" após revisão
 - Usar "Reservado" para compromissos futuros
 
-? **Evite:**
+✅ **Evite:**
 - Deixar status desatualizado
 - Locar veículo em manutenção
 - Esquecer de marcar manutenções
 
-### ?? Manutenção
+### 📚 Manutenção
 
-? **Faça:**
+✅ **Faça:**
 - Registrar TODAS as manutenções
 - Programar manutenções preventivas
 - Acompanhar quilometragem
 - Atualizar custos reais
 - Manter histórico completo
 
-? **Evite:**
+✅ **Evite:**
 - Adiar manutenções preventivas
 - Não registrar reparos
 - Ignorar alertas do sistema
 - Rodar além da quilometragem recomendada
 
-### ?? Documentação
+### 📚 Documentação
 
-? **Faça:**
+✅ **Faça:**
 - Manter CRLV atualizado
 - Renovar seguro antes do vencimento
 - Pagar IPVA em dia
 - Upload de documentos obrigatórios
 - Fotos de todos os ângulos
 
-? **Evite:**
+✅ **Evite:**
 - Operar com documentos vencidos
 - Atrasar renovações
 - Falta de comprovantes
@@ -602,14 +602,14 @@ HB20 DEF5678     | 35.000   | 10.000     | 25.000     | 120 km
 
 ---
 
-## ?? Casos de Uso Comuns
+## 📚 Casos de Uso Comuns
 
 ### Caso 1: Cadastrar Novo Veículo
 
 **Cenário:** Locadora comprou veículo novo
 
 ```
-1. Menu ? Veículos ? Novo Veículo
+1. Menu ✅ Veículos ✅ Novo Veículo
 2. Preencher dados:
    - Marca: Volkswagen
    - Modelo: Polo 1.0 TSI
@@ -641,7 +641,7 @@ HB20 DEF5678     | 35.000   | 10.000     | 25.000     | 120 km
 
 ```
 1. Detalhes do Veículo
-2. Alterar Status ? Manutenção
+2. Alterar Status ✅ Manutenção
 3. Nova Manutenção:
    - Tipo: Freios
    - Status: Em Andamento
@@ -652,8 +652,8 @@ HB20 DEF5678     | 35.000   | 10.000     | 25.000     | 120 km
    - Oficina: Auto Center Silva
 
 4. Aguardar conclusão
-5. Atualizar manutenção ? Concluída
-6. Alterar Status ? Disponível
+5. Atualizar manutenção ✅ Concluída
+6. Alterar Status ✅ Disponível
 7. Veículo liberado para locação
 ```
 
@@ -663,21 +663,21 @@ HB20 DEF5678     | 35.000   | 10.000     | 25.000     | 120 km
 
 ```
 1. Buscar veículo desejado
-2. Detalhes ? Verificar Disponibilidade
+2. Detalhes ✅ Verificar Disponibilidade
 3. Informar período:
    - Data Inicial: 15/12/2024
    - Data Final: 17/12/2024
 4. Verificar
 
 Resultado:
-? Disponível
-   ? Criar locação
+✅ Disponível
+   ✅ Criar locação
 
 OU
 
-? Indisponível (já locado)
-   ? Sugerir veículo similar
-   ? Buscar outra data
+✅ Indisponível (já locado)
+   ✅ Sugerir veículo similar
+   ✅ Buscar outra data
 ```
 
 ### Caso 4: Atualizar Quilometragem
@@ -691,36 +691,36 @@ OU
 4. Sistema atualiza KM do veículo automaticamente
 
 5. Verificar se atingiu KM de manutenção:
-   Se SIM ? Programar revisão
-   Se NÃO ? Marcar disponível
+   Se SIM ✅ Programar revisão
+   Se NÃO ✅ Marcar disponível
 ```
 
 ---
 
-## ?? Solução de Problemas
+## 📚 Solução de Problemas
 
-### ? Erro: "Placa já cadastrada"
+### ✅ Erro: "Placa já cadastrada"
 **Causa:** Já existe veículo com esta placa
 **Solução:** 
 - Buscar veículo existente
 - Verificar se é duplicata
 - Corrigir placa se incorreta
 
-### ? Erro: "Não pode alterar status"
+### ✅ Erro: "Não pode alterar status"
 **Causa:** Veículo em locação ativa
 **Solução:**
 - Finalizar locação primeiro
 - Verificar se cliente já devolveu
 - Registrar devolução
 
-### ? Erro: "Não é possível excluir"
+### ✅ Erro: "Não é possível excluir"
 **Causa:** Veículo possui histórico de locações
 **Solução:**
 - Veículos com histórico não podem ser excluídos
 - Use status "Inativo" ao invés de excluir
 - Mantenha registro histórico
 
-### ? Erro: "Veículo indisponível para locação"
+### ✅ Erro: "Veículo indisponível para locação"
 **Causa:** Status diferente de "Disponível"
 **Solução:**
 - Verificar status atual
@@ -730,25 +730,25 @@ OU
 
 ---
 
-## ?? Atalhos e Dicas
+## 📚 Atalhos e Dicas
 
-### ?? Atalhos de Teclado
+### 📚 Atalhos de Teclado
 ```
-Ctrl + K     ? Busca global (buscar veículo)
-Ctrl + N     ? Novo veículo (em breve)
-Ctrl + S     ? Salvar (nos formulários)
-Esc          ? Cancelar/Fechar modal
-```
-
-### ?? Links Rápidos
-```
-/Veiculos/Index                    ? Lista de veículos
-/Veiculos/Create                   ? Novo veículo
-/Veiculos/Details/{id}             ? Detalhes
-/Manutencoes/HistoricoVeiculo/{id} ? Histórico manutenções
+Ctrl + K     ✅ Busca global (buscar veículo)
+Ctrl + N     ✅ Novo veículo (em breve)
+Ctrl + S     ✅ Salvar (nos formulários)
+Esc          ✅ Cancelar/Fechar modal
 ```
 
-### ?? Dicas Profissionais
+### 📚 Links Rápidos
+```
+/Veiculos/Index                    ✅ Lista de veículos
+/Veiculos/Create                   ✅ Novo veículo
+/Veiculos/Details/{id}             ✅ Detalhes
+/Manutencoes/HistoricoVeiculo/{id} ✅ Histórico manutenções
+```
+
+### 📚 Dicas Profissionais
 
 1. **Organize por Agência**
    - Mantenha veículos na agência correta
@@ -775,26 +775,26 @@ Esc          ? Cancelar/Fechar modal
 
 ---
 
-## ?? Perguntas Frequentes
+## 📚 Perguntas Frequentes
 
-**P: Posso alterar a placa de um veículo?**
+**P: Posso alterar a placa de um veículo✅**
 R: Sim, mas apenas Admin. Certifique-se que é uma correção válida.
 
-**P: Como transfiro veículo entre agências?**
+**P: Como transfiro veículo entre agências✅**
 R: Edite o veículo e altere a agência. Sistema registra a transferência.
 
-**P: Posso excluir veículo com locações antigas?**
+**P: Posso excluir veículo com locações antigas✅**
 R: Não. Use status "Inativo" ao invés de excluir.
 
-**P: Como sei quando fazer manutenção?**
+**P: Como sei quando fazer manutenção✅**
 R: Sistema alerta baseado em quilometragem e última manutenção.
 
-**P: Preciso cadastrar fotos do veículo?**
+**P: Preciso cadastrar fotos do veículo✅**
 R: Opcional, mas altamente recomendado para vistorias.
 
 ---
 
-## ?? Pronto para Usar!
+## 📚 Pronto para Usar!
 
 O sistema de gestão de veículos está **100% operacional**.
 
@@ -805,7 +805,7 @@ O sistema de gestão de veículos está **100% operacional**.
 4. Programe manutenções preventivas
 5. Inicie as locações!
 
-**Acesse:** Menu ? Locação ? Veículos
+**Acesse:** Menu ✅ Locação ✅ Veículos
 
 ---
 
@@ -816,3 +816,4 @@ O sistema de gestão de veículos está **100% operacional**.
 - [Sistema de Manutenções](MANUTENCAO_GUIA_ACESSO.md)
 - [Upload de Documentos](UPLOAD_DOCUMENTOS.md)
 - [Sistema de Locações](LOCACOES_GUIA_COMPLETO.md)
+

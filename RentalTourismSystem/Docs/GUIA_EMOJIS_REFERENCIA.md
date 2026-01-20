@@ -1,144 +1,146 @@
-# ?? Guia de Emojis - Referência de Substituição
+ï»¿# ðŸ“š Guia de Emojis - Referï¿½ncia de Substituiï¿½ï¿½o
 
-## ?? Problema Identificado
+## ðŸ“š Problema Identificado
 
-Os emojis nos arquivos Markdown foram corrompidos e aparecem como "??" no navegador.
+Os emojis nos arquivos Markdown foram corrompidos e aparecem como "ðŸ“š" no navegador.
 
-## ? Solução: Mapeamento de Emojis
+## âœ… Soluï¿½ï¿½o: Mapeamento de Emojis
 
-### ?? Emojis por Contexto
+### ðŸ“š Emojis por Contexto
 
-Baseando-se no contexto dos documentos, aqui está o mapeamento dos emojis que deveriam ser usados:
+Baseando-se no contexto dos documentos, aqui estï¿½ o mapeamento dos emojis que deveriam ser usados:
 
-#### ?? Documentação e Guias
-- **??** antes de "Guia" = ?? (`:books:`)
-- **??** antes de "Documentação" = ?? (`:books:`)
-- **??** antes de "README" = ?? (`:book:`)
-- **??** antes de "Índice" = ?? (`:clipboard:`)
+#### ðŸ“š Documentaï¿½ï¿½o e Guias
+- **ðŸ“š** antes de "Guia" = ðŸ“š (`:books:`)
+- **ðŸ“š** antes de "Documentaï¿½ï¿½o" = ðŸ“š (`:books:`)
+- **ðŸ“š** antes de "README" = ðŸ“š (`:book:`)
+- **ðŸ“š** antes de "ï¿½ndice" = ðŸ“š (`:clipboard:`)
 
-#### ?? Início Rápido
-- **??** antes de "Início Rápido" = ?? (`:rocket:`)
-- **??** antes de "Guia de Início Rápido" = ?? (`:rocket:`)
-- **?** antes de "15 Minutos" = ? (`:zap:`)
+#### ðŸ“š Inï¿½cio Rï¿½pido
+- **ðŸ“š** antes de "Inï¿½cio Rï¿½pido" = ðŸ“š (`:rocket:`)
+- **ðŸ“š** antes de "Guia de Inï¿½cio Rï¿½pido" = ðŸ“š (`:rocket:`)
+- **âœ…** antes de "15 Minutos" = âœ… (`:zap:`)
 
-#### ?? Segurança
-- **??** antes de "Autenticação" = ?? (`:closed_lock_with_key:`)
-- **??** antes de "Segurança" = ?? (`:lock:`)
+#### ðŸ“š Seguranï¿½a
+- **ðŸ“š** antes de "Autenticaï¿½ï¿½o" = ðŸ“š (`:closed_lock_with_key:`)
+- **ðŸ“š** antes de "Seguranï¿½a" = ðŸ“š (`:lock:`)
 
-#### ?? Gestão
-- **??** antes de "Gestão de Clientes" = ?? (`:busts_in_silhouette:`)
-- **??** antes de "Gestão de Veículos" = ?? (`:car:`)
-- **??** antes de "Locações" = ?? (`:clipboard:`)
-- **??** antes de "Manutenções" = ?? (`:wrench:`)
-- **??** antes de "Reservas" = ?? (`:airplane:`)
-- **??** antes de "Upload" = ?? (`:paperclip:`)
+#### ðŸ“š Gestï¿½o
+- **ðŸ“š** antes de "Gestï¿½o de Clientes" = ðŸ“š (`:busts_in_silhouette:`)
+- **ðŸ“š** antes de "Gestï¿½o de Veï¿½culos" = ðŸ“š (`:car:`)
+- **ðŸ“š** antes de "Locaï¿½ï¿½es" = ðŸ“š (`:clipboard:`)
+- **ðŸ“š** antes de "Manutenï¿½ï¿½es" = ðŸ“š (`:wrench:`)
+- **ðŸ“š** antes de "Reservas" = ðŸ“š (`:airplane:`)
+- **ðŸ“š** antes de "Upload" = ðŸ“š (`:paperclip:`)
 
-#### ?? Técnico
-- **??** antes de "Referência Técnica" = ?? (`:computer:`)
-- **???** antes de "Arquitetura" = ??? (`:building_construction:`)
-- **??** antes de "APIs" = ?? (`:electric_plug:`)
+#### ðŸ“š Tï¿½cnico
+- **ðŸ“š** antes de "Referï¿½ncia Tï¿½cnica" = ðŸ“š (`:computer:`)
+- **ðŸ“šâœ…** antes de "Arquitetura" = ðŸ“šâœ… (`:building_construction:`)
+- **ðŸ“š** antes de "APIs" = ðŸ“š (`:electric_plug:`)
 
-#### ?? Visual
-- **??** antes de "Fluxogramas" = ?? (`:art:`)
-- **???** antes de "Diagrama" = ?? (`:bar_chart:`)
+#### ðŸ“š Visual
+- **ðŸ“š** antes de "Fluxogramas" = ðŸ“š (`:art:`)
+- **ðŸ“šâœ…** antes de "Diagrama" = ðŸ“š (`:bar_chart:`)
 
-#### ? Status e Ações
-- **?** antes de "Pronto" = ? (`:white_check_mark:`)
-- **?** antes de "Login" = ? (`:white_check_mark:`)
-- **?** antes de "Sistema" = ? (`:white_check_mark:`)
-- **?** antes de "Banco" = ? (`:white_check_mark:`)
-- **?** antes de "Você" = ? (`:white_check_mark:`)
+#### âœ… Status e Aï¿½ï¿½es
+- **âœ…** antes de "Pronto" = âœ… (`:white_check_mark:`)
+- **âœ…** antes de "Login" = âœ… (`:white_check_mark:`)
+- **âœ…** antes de "Sistema" = âœ… (`:white_check_mark:`)
+- **âœ…** antes de "Banco" = âœ… (`:white_check_mark:`)
+- **âœ…** antes de "Vocï¿½" = âœ… (`:white_check_mark:`)
 
-#### ?? Interface
-- **??** antes de "Interface" = ?? (`:iphone:`)
-- **??** antes de "Mobile" = ?? (`:iphone:`)
-- **??** antes de "Menu" = ?? (`:dart:`)
+#### ðŸ“š Interface
+- **ðŸ“š** antes de "Interface" = ðŸ“š (`:iphone:`)
+- **ðŸ“š** antes de "Mobile" = ðŸ“š (`:iphone:`)
+- **ðŸ“š** antes de "Menu" = ðŸ“š (`:dart:`)
 
-#### ?? Configuração
-- **??** antes de "Configurar" = ?? (`:gear:`)
-- **??** antes de "Passo" = ?? (`:1234:`)
+#### ðŸ“š Configuraï¿½ï¿½o
+- **ðŸ“š** antes de "Configurar" = ðŸ“š (`:gear:`)
+- **ðŸ“š** antes de "Passo" = ðŸ“š (`:1234:`)
 
-#### ?? Níveis e Perfis
-- **?????** antes de "ADMINISTRADOR" = ????? (`:man_office_worker:`)
-- **??** antes de "GERENTE" = ?? (`:necktie:`)
-- **?????** antes de "FUNCIONÁRIO" = ?? (`:bust_in_silhouette:`)
-- **??** antes de "DESENVOLVEDOR" = ????? (`:man_technologist:`)
+#### ðŸ“š Nï¿½veis e Perfis
+- **ðŸ“šðŸ“šâœ…** antes de "ADMINISTRADOR" = ðŸ“šðŸ“šâœ… (`:man_office_worker:`)
+- **ðŸ“š** antes de "GERENTE" = ðŸ“š (`:necktie:`)
+- **ðŸ“šðŸ“šâœ…** antes de "FUNCIONï¿½RIO" = ðŸ“š (`:bust_in_silhouette:`)
+- **ðŸ“š** antes de "DESENVOLVEDOR" = ðŸ“šðŸ“šâœ… (`:man_technologist:`)
 
-#### ?? Estatísticas
-- **??** antes de "Estatísticas" = ?? (`:bar_chart:`)
-- **??** antes de "Métricas" = ?? (`:chart_with_upwards_trend:`)
+#### ðŸ“š Estatï¿½sticas
+- **ðŸ“š** antes de "Estatï¿½sticas" = ðŸ“š (`:bar_chart:`)
+- **ðŸ“š** antes de "Mï¿½tricas" = ðŸ“š (`:chart_with_upwards_trend:`)
 
-#### ?? Suporte
-- **??** antes de "Suporte" = ?? (`:telephone_receiver:`)
-- **??** antes de "Contato" = ?? (`:telephone_receiver:`)
-- **??** antes de "Email" = ?? (`:email:`)
-- **??** antes de "WhatsApp" = ?? (`:speech_balloon:`)
+#### ðŸ“š Suporte
+- **ðŸ“š** antes de "Suporte" = ðŸ“š (`:telephone_receiver:`)
+- **ðŸ“š** antes de "Contato" = ðŸ“š (`:telephone_receiver:`)
+- **ðŸ“š** antes de "Email" = ðŸ“š (`:email:`)
+- **ðŸ“š** antes de "WhatsApp" = ðŸ“š (`:speech_balloon:`)
 
-#### ?? Conclusão
-- **??** antes de "Conclusão" = ?? (`:dart:`)
-- **??** antes de "Próximos Passos" = ?? (`:rocket:`)
+#### ðŸ“š Conclusï¿½o
+- **ðŸ“š** antes de "Conclusï¿½o" = ðŸ“š (`:dart:`)
+- **ðŸ“š** antes de "Prï¿½ximos Passos" = ðŸ“š (`:rocket:`)
 
-### ?? Como Corrigir Manualmente
+### ðŸ“š Como Corrigir Manualmente
 
 1. Abra cada arquivo `.md`
-2. Procure por "??" ou "?"
-3. Veja o contexto (palavra após o emoji)
+2. Procure por "ðŸ“š" ou "âœ…"
+3. Veja o contexto (palavra apï¿½s o emoji)
 4. Substitua pelo emoji correto da lista acima
 5. Salve como UTF-8 with BOM
 
-### ?? Alternativa: Usar Ícones Font Awesome
+### ðŸ“š Alternativa: Usar ï¿½cones Font Awesome
 
-Se os emojis não funcionarem, você pode usar ícones HTML:
+Se os emojis nï¿½o funcionarem, vocï¿½ pode usar ï¿½cones HTML:
 
 ```html
 <!-- Em vez de emojis, use Font Awesome -->
-<i class="fas fa-rocket"></i> Guia de Início Rápido
-<i class="fas fa-book"></i> Documentação
-<i class="fas fa-lock"></i> Segurança
-<i class="fas fa-users"></i> Gestão de Clientes
-<i class="fas fa-car"></i> Gestão de Veículos
+<i class="fas fa-rocket"></i> Guia de Inï¿½cio Rï¿½pido
+<i class="fas fa-book"></i> Documentaï¿½ï¿½o
+<i class="fas fa-lock"></i> Seguranï¿½a
+<i class="fas fa-users"></i> Gestï¿½o de Clientes
+<i class="fas fa-car"></i> Gestï¿½o de Veï¿½culos
 ```
 
-Esses ícones já estão incluídos no sistema via CDN.
+Esses ï¿½cones jï¿½ estï¿½o incluï¿½dos no sistema via CDN.
 
-## ?? Lista Completa de Substituições Sugeridas
+## ðŸ“š Lista Completa de Substituiï¿½ï¿½es Sugeridas
 
 ### Para copiar e colar no editor:
 
 ```
-?? Documentação ? ?? Documentação
-?? Guia ? ?? Guia
-?? README ? ?? README
-?? Índice ? ?? Índice
-?? Início Rápido ? ?? Início Rápido
-? 15 Minutos ? ? 15 Minutos
-?? Autenticação ? ?? Autenticação
-?? Segurança ? ?? Segurança
-?? Gestão de Clientes ? ?? Gestão de Clientes
-?? Gestão de Veículos ? ?? Gestão de Veículos
-?? Locações ? ?? Locações
-?? Manutenções ? ?? Manutenções
-?? Reservas ? ?? Reservas
-?? Upload ? ?? Upload
-?? Referência Técnica ? ?? Referência Técnica
-?? Fluxogramas ? ?? Fluxogramas
-? Pronto ? ? Pronto
-?? Próximos Passos ? ?? Próximos Passos
+ðŸ“š Documentaï¿½ï¿½o âœ… ðŸ“š Documentaï¿½ï¿½o
+ðŸ“š Guia âœ… ðŸ“š Guia
+ðŸ“š README âœ… ðŸ“š README
+ðŸ“š ï¿½ndice âœ… ðŸ“š ï¿½ndice
+ðŸ“š Inï¿½cio Rï¿½pido âœ… ðŸ“š Inï¿½cio Rï¿½pido
+âœ… 15 Minutos âœ… âœ… 15 Minutos
+ðŸ“š Autenticaï¿½ï¿½o âœ… ðŸ“š Autenticaï¿½ï¿½o
+ðŸ“š Seguranï¿½a âœ… ðŸ“š Seguranï¿½a
+ðŸ“š Gestï¿½o de Clientes âœ… ðŸ“š Gestï¿½o de Clientes
+ðŸ“š Gestï¿½o de Veï¿½culos âœ… ðŸ“š Gestï¿½o de Veï¿½culos
+ðŸ“š Locaï¿½ï¿½es âœ… ðŸ“š Locaï¿½ï¿½es
+ðŸ“š Manutenï¿½ï¿½es âœ… ðŸ“š Manutenï¿½ï¿½es
+ðŸ“š Reservas âœ… ðŸ“š Reservas
+ðŸ“š Upload âœ… ðŸ“š Upload
+ðŸ“š Referï¿½ncia Tï¿½cnica âœ… ðŸ“š Referï¿½ncia Tï¿½cnica
+ðŸ“š Fluxogramas âœ… ðŸ“š Fluxogramas
+âœ… Pronto âœ… âœ… Pronto
+ðŸ“š Prï¿½ximos Passos âœ… ðŸ“š Prï¿½ximos Passos
 ```
 
-## ?? Preview de Emojis no Sistema
+## ðŸ“š Preview de Emojis no Sistema
 
-O visualizador de documentação do sistema já está configurado para UTF-8.
-Após corrigir os arquivos, eles aparecerão corretamente.
+O visualizador de documentaï¿½ï¿½o do sistema jï¿½ estï¿½ configurado para UTF-8.
+Apï¿½s corrigir os arquivos, eles aparecerï¿½o corretamente.
 
-## ? Status Atual
+## âœ… Status Atual
 
-- ? Acentos corrigidos (ç, ã, é, etc.)
-- ?? Emojis precisam ser manualmente substituídos
-- ? Encoding UTF-8 com BOM aplicado
-- ? Meta tags UTF-8 adicionadas ao visualizador
+- âœ… Acentos corrigidos (ï¿½, ï¿½, ï¿½, etc.)
+- ðŸ“š Emojis precisam ser manualmente substituï¿½dos
+- âœ… Encoding UTF-8 com BOM aplicado
+- âœ… Meta tags UTF-8 adicionadas ao visualizador
 
 ---
 
-**Última Atualização**: Janeiro 2025  
-**Status**: Emojis necessitam correção manual
+**ï¿½ltima Atualizaï¿½ï¿½o**: Janeiro 2025  
+**Status**: Emojis necessitam correï¿½ï¿½o manual
+
+

@@ -1,6 +1,6 @@
-﻿# ?? Referência Técnica do Sistema - Documentação para Desenvolvedores
+﻿# 📚 Referência Técnica do Sistema - Documentação para Desenvolvedores
 
-## ?? Índice
+## 📚 Índice
 - [Visão Geral Técnica](#visão-geral-técnica)
 - [Arquitetura](#arquitetura)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
@@ -12,90 +12,90 @@
 
 ---
 
-## ?? Visão Geral Técnica
+## 📚 Visão Geral Técnica
 
-### ?? Sobre o Sistema
+### 📚 Sobre o Sistema
 
 **Nome:** Sistema Integrado de Locação e Turismo  
 **Cliente:** Litoral Sul Locadora e Turismo  
 **Arquitetura:** ASP.NET Core 8.0 Razor Pages com MVC  
 **Padrão:** Model-View-Controller + MVVM  
 
-### ??? Stack Tecnológica
+### 📚✅ Stack Tecnológica
 
 ```
 Frontend:
-??? Razor Pages (Views)
-??? Bootstrap 5.3
-??? jQuery 3.x
-??? JavaScript ES6+
-??? CSS3 + SCSS
+📚✅ Razor Pages (Views)
+📚✅ Bootstrap 5.3
+📚✅ jQuery 3.x
+📚✅ JavaScript ES6+
+📚✅ CSS3 + SCSS
 
 Backend:
-??? ASP.NET Core 8.0
-??? Entity Framework Core 8.0
-??? ASP.NET Core Identity
-??? C# 12
+📚✅ ASP.NET Core 8.0
+📚✅ Entity Framework Core 8.0
+📚✅ ASP.NET Core Identity
+📚✅ C# 12
 
 Database:
-??? SQL Server 2019+
-??? T-SQL
+📚✅ SQL Server 2019+
+📚✅ T-SQL
 
 Logging:
-??? Serilog
-??? File Logger
-??? Console Logger
+📚✅ Serilog
+📚✅ File Logger
+📚✅ Console Logger
 
 Versionamento:
-??? API Versioning 7.x
+📚✅ API Versioning 7.x
 ```
 
 ---
 
-## ??? Arquitetura
+## 📚✅ Arquitetura
 
-### ?? Diagrama de Camadas
+### 📚 Diagrama de Camadas
 
 ```
-???????????????????????????????????????
-?         PRESENTATION LAYER          ?
-?  (Views, Controllers, ViewModels)   ?
-???????????????????????????????????????
-?         APPLICATION LAYER           ?
-?    (Services, Business Logic)       ?
-???????????????????????????????????????
-?          DOMAIN LAYER               ?
-?    (Models, Entities, DTOs)         ?
-???????????????????????????????????????
-?       INFRASTRUCTURE LAYER          ?
-?  (Data Access, External Services)   ?
-???????????????????????????????????????
-?         DATABASE LAYER              ?
-?         (SQL Server)                ?
-???????????????????????????????????????
+📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚✅
+✅         PRESENTATION LAYER          ✅
+✅  (Views, Controllers, ViewModels)   ✅
+📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚✅
+✅         APPLICATION LAYER           ✅
+✅    (Services, Business Logic)       ✅
+📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚✅
+✅          DOMAIN LAYER               ✅
+✅    (Models, Entities, DTOs)         ✅
+📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚✅
+✅       INFRASTRUCTURE LAYER          ✅
+✅  (Data Access, External Services)   ✅
+📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚✅
+✅         DATABASE LAYER              ✅
+✅         (SQL Server)                ✅
+📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚📚✅
 ```
 
-### ?? Fluxo de Dados
+### 📚 Fluxo de Dados
 
 ```
 User Request
-    ?
+    ✅
 Controller/Page
-    ?
+    ✅
 Service Layer (Business Logic)
-    ?
+    ✅
 Repository/DbContext
-    ?
+    ✅
 Database
-    ?
-Response ? ViewModel ? Data
+    ✅
+Response ✅ ViewModel ✅ Data
 ```
 
 ---
 
-## ?? Tecnologias Utilizadas
+## 📚 Tecnologias Utilizadas
 
-### ?? Frontend
+### 📚 Frontend
 
 #### **Bootstrap 5.3**
 ```html
@@ -143,7 +143,7 @@ window.RentalTourismSystem = {
 - Formatação de valores
 - Feedback visual
 
-### ??? Backend
+### 📚✅ Backend
 
 #### **ASP.NET Core 8.0**
 
@@ -205,137 +205,137 @@ dotnet ef database update PreviousMigration
 
 ---
 
-## ?? Estrutura do Projeto
+## 📚 Estrutura do Projeto
 
-### ??? Organização de Pastas
+### 📚✅ Organização de Pastas
 
 ```
 RentalTourismSystem/
-?
-??? Controllers/              # Controllers MVC
-?   ??? HomeController.cs
-?   ??? ClientesController.cs
-?   ??? VeiculosController.cs
-?   ??? LocacoesController.cs
-?   ??? ManutencoesController.cs
-?   ??? ReservasViagensController.cs
-?   ??? AccountController.cs
-?   ??? ApiController.cs
-?
-??? Models/                   # Modelos de domínio
-?   ??? Cliente.cs
-?   ??? Veiculo.cs
-?   ??? Locacao.cs
-?   ??? ManutencaoVeiculo.cs
-?   ??? ReservaViagem.cs
-?   ??? PacoteViagem.cs
-?   ??? Funcionario.cs
-?   ??? Agencia.cs
-?   ??? ApplicationUser.cs
-?   ??? Documento.cs
-?   ??? ViewModels/           # ViewModels
-?       ??? LoginViewModel.cs
-?       ??? ContratoLocacaoViewModel.cs
-?       ??? LaudoVistoriaViewModel.cs
-?
-??? Views/                    # Views Razor
-?   ??? Shared/
-?   ?   ??? _Layout.cshtml
-?   ?   ??? _LayoutLogin.cshtml
-?   ?   ??? Error.cshtml
-?   ??? Clientes/
-?   ??? Veiculos/
-?   ??? Locacoes/
-?   ??? Manutencoes/
-?   ??? ReservasViagens/
-?   ??? Account/
-?
-??? Services/                 # Serviços de aplicação
-?   ??? ILocacaoService.cs
-?   ??? LocacaoService.cs
-?   ??? IVeiculoService.cs
-?   ??? VeiculoService.cs
-?   ??? IFileService.cs
-?   ??? FileService.cs
-?   ??? INotificationService.cs
-?   ??? NotificationService.cs
-?   ??? EmailService.cs
-?   ??? RelatorioService.cs
-?
-??? Data/                     # Acesso a dados
-?   ??? RentalTourismContext.cs
-?   ??? SeedData.cs
-?
-??? Helpers/                  # Classes auxiliares
-?   ??? ValidationHelpers.cs
-?   ??? FormatHelpers.cs
-?   ??? DateTimeHelper.cs
-?   ??? ClienteHelper.cs
-?
-??? Extensions/               # Extension methods
-?   ??? ModelExtensions.cs
-?   ??? ClienteExtensions.cs
-?   ??? ReservaViagemExtensions.cs
-?
-??? wwwroot/                  # Arquivos estáticos
-?   ??? css/
-?   ??? js/
-?   ?   ??? site.js          # JavaScript consolidado
-?   ??? lib/                 # Bibliotecas externas
-?   ??? uploads/             # Upload de arquivos
-?       ??? clientes/
-?       ??? veiculos/
-?
-??? Migrations/               # Migrations EF
-?   ??? Scripts/             # Scripts SQL manuais
-?
-??? Docs/                     # Documentação
-?   ??? README.md
-?   ??? CLIENTES_GUIA_COMPLETO.md
-?   ??? VEICULOS_GUIA_COMPLETO.md
-?   ??? LOCACOES_GUIA_COMPLETO.md
-?   ??? MANUTENCAO_GUIA_ACESSO.md
-?   ??? RESERVAS_VIAGEM_GUIA_COMPLETO.md
-?   ??? AUTENTICACAO_GUIA_COMPLETO.md
-?   ??? UPLOAD_DOCUMENTOS.md
-?   ??? GUIA_INICIO_RAPIDO.md
-?
-??? appsettings.json          # Configurações
-??? appsettings.Development.json
-??? Program.cs                # Ponto de entrada
-??? RentalTourismSystem.csproj
+✅
+📚✅ Controllers/              # Controllers MVC
+✅   📚✅ HomeController.cs
+✅   📚✅ ClientesController.cs
+✅   📚✅ VeiculosController.cs
+✅   📚✅ LocacoesController.cs
+✅   📚✅ ManutencoesController.cs
+✅   📚✅ ReservasViagensController.cs
+✅   📚✅ AccountController.cs
+✅   📚✅ ApiController.cs
+✅
+📚✅ Models/                   # Modelos de domínio
+✅   📚✅ Cliente.cs
+✅   📚✅ Veiculo.cs
+✅   📚✅ Locacao.cs
+✅   📚✅ ManutencaoVeiculo.cs
+✅   📚✅ ReservaViagem.cs
+✅   📚✅ PacoteViagem.cs
+✅   📚✅ Funcionario.cs
+✅   📚✅ Agencia.cs
+✅   📚✅ ApplicationUser.cs
+✅   📚✅ Documento.cs
+✅   📚✅ ViewModels/           # ViewModels
+✅       📚✅ LoginViewModel.cs
+✅       📚✅ ContratoLocacaoViewModel.cs
+✅       📚✅ LaudoVistoriaViewModel.cs
+✅
+📚✅ Views/                    # Views Razor
+✅   📚✅ Shared/
+✅   ✅   📚✅ _Layout.cshtml
+✅   ✅   📚✅ _LayoutLogin.cshtml
+✅   ✅   📚✅ Error.cshtml
+✅   📚✅ Clientes/
+✅   📚✅ Veiculos/
+✅   📚✅ Locacoes/
+✅   📚✅ Manutencoes/
+✅   📚✅ ReservasViagens/
+✅   📚✅ Account/
+✅
+📚✅ Services/                 # Serviços de aplicação
+✅   📚✅ ILocacaoService.cs
+✅   📚✅ LocacaoService.cs
+✅   📚✅ IVeiculoService.cs
+✅   📚✅ VeiculoService.cs
+✅   📚✅ IFileService.cs
+✅   📚✅ FileService.cs
+✅   📚✅ INotificationService.cs
+✅   📚✅ NotificationService.cs
+✅   📚✅ EmailService.cs
+✅   📚✅ RelatorioService.cs
+✅
+📚✅ Data/                     # Acesso a dados
+✅   📚✅ RentalTourismContext.cs
+✅   📚✅ SeedData.cs
+✅
+📚✅ Helpers/                  # Classes auxiliares
+✅   📚✅ ValidationHelpers.cs
+✅   📚✅ FormatHelpers.cs
+✅   📚✅ DateTimeHelper.cs
+✅   📚✅ ClienteHelper.cs
+✅
+📚✅ Extensions/               # Extension methods
+✅   📚✅ ModelExtensions.cs
+✅   📚✅ ClienteExtensions.cs
+✅   📚✅ ReservaViagemExtensions.cs
+✅
+📚✅ wwwroot/                  # Arquivos estáticos
+✅   📚✅ css/
+✅   📚✅ js/
+✅   ✅   📚✅ site.js          # JavaScript consolidado
+✅   📚✅ lib/                 # Bibliotecas externas
+✅   📚✅ uploads/             # Upload de arquivos
+✅       📚✅ clientes/
+✅       📚✅ veiculos/
+✅
+📚✅ Migrations/               # Migrations EF
+✅   📚✅ Scripts/             # Scripts SQL manuais
+✅
+📚✅ Docs/                     # Documentação
+✅   📚✅ README.md
+✅   📚✅ CLIENTES_GUIA_COMPLETO.md
+✅   📚✅ VEICULOS_GUIA_COMPLETO.md
+✅   📚✅ LOCACOES_GUIA_COMPLETO.md
+✅   📚✅ MANUTENCAO_GUIA_ACESSO.md
+✅   📚✅ RESERVAS_VIAGEM_GUIA_COMPLETO.md
+✅   📚✅ AUTENTICACAO_GUIA_COMPLETO.md
+✅   📚✅ UPLOAD_DOCUMENTOS.md
+✅   📚✅ GUIA_INICIO_RAPIDO.md
+✅
+📚✅ appsettings.json          # Configurações
+📚✅ appsettings.Development.json
+📚✅ Program.cs                # Ponto de entrada
+📚✅ RentalTourismSystem.csproj
 ```
 
 ---
 
-## ??? Modelos de Dados
+## 📚✅ Modelos de Dados
 
-### ?? Diagrama ER Simplificado
+### 📚 Diagrama ER Simplificado
 
 ```
-????????????????     ????????????????     ????????????????
-?   Cliente    ???????   Locacao    ???????   Veiculo    ?
-????????????????     ????????????????     ????????????????
-       ?                    ?                     ?
-       ?                    ?                     ?
-       ?                    ?                     ?
-????????????????     ????????????????     ????????????????
-?  Documento   ?     ? Funcionario  ?     ? Manutencao   ?
-????????????????     ????????????????     ????????????????
-       ?                    ?                     ?
-       ?                    ?                     ?
-       ?             ????????????????     ????????????????
-????????????????     ?   Agencia    ?     ?ItemManutencao?
-?ReservaViagem ?     ????????????????     ????????????????
-????????????????            
-       ?                    
-       ?                    
-????????????????     
-?PacoteViagem  ?     
-????????????????     
+📚📚📚📚📚📚📚📚     📚📚📚📚📚📚📚📚     📚📚📚📚📚📚📚📚
+✅   Cliente    📚📚📚✅   Locacao    📚📚📚✅   Veiculo    ✅
+📚📚📚📚📚📚📚📚     📚📚📚📚📚📚📚📚     📚📚📚📚📚📚📚📚
+       ✅                    ✅                     ✅
+       ✅                    ✅                     ✅
+       ✅                    ✅                     ✅
+📚📚📚📚📚📚📚📚     📚📚📚📚📚📚📚📚     📚📚📚📚📚📚📚📚
+✅  Documento   ✅     ✅ Funcionario  ✅     ✅ Manutencao   ✅
+📚📚📚📚📚📚📚📚     📚📚📚📚📚📚📚📚     📚📚📚📚📚📚📚📚
+       ✅                    ✅                     ✅
+       ✅                    ✅                     ✅
+       ✅             📚📚📚📚📚📚📚📚     📚📚📚📚📚📚📚📚
+📚📚📚📚📚📚📚📚     ✅   Agencia    ✅     ✅ItemManutencao✅
+✅ReservaViagem ✅     📚📚📚📚📚📚📚📚     📚📚📚📚📚📚📚📚
+📚📚📚📚📚📚📚📚            
+       ✅                    
+       ✅                    
+📚📚📚📚📚📚📚📚     
+✅PacoteViagem  ✅     
+📚📚📚📚📚📚📚📚     
 ```
 
-### ?? Modelos Principais
+### 📚 Modelos Principais
 
 #### **Cliente**
 ```csharp
@@ -360,9 +360,9 @@ public class Cliente
     public DateTime DataNascimento { get; set; }
     
     [StringLength(20)]
-    public string? CNH { get; set; }
+    public string✅ CNH { get; set; }
     
-    public DateTime? ValidadeCNH { get; set; }
+    public DateTime✅ ValidadeCNH { get; set; }
     
     // Propriedades calculadas
     public int Idade => /* cálculo */;
@@ -420,7 +420,7 @@ public class Locacao
     [Required]
     public DateTime DataDevolucao { get; set; }
     
-    public DateTime? DataDevolucaoReal { get; set; }
+    public DateTime✅ DataDevolucaoReal { get; set; }
     
     [Required, Column(TypeName = "decimal(10,2)")]
     public decimal ValorTotal { get; set; }
@@ -478,9 +478,9 @@ public class ManutencaoVeiculo
 
 ---
 
-## ?? APIs e Endpoints
+## 📚 APIs e Endpoints
 
-### ?? Controllers API
+### 📚 Controllers API
 
 #### **ApiController - Endpoints Gerais**
 
@@ -531,7 +531,7 @@ builder.Services.AddApiVersioning(options =>
 ```
 GET /api/v1/api/validarcpf/12345678900
 GET /api/v2/api/validarcpf/12345678900
-GET /api/api/validarcpf/12345678900?version=1.0
+GET /api/api/validarcpf/12345678900✅version=1.0
 ```
 
 #### **Rate Limiting**
@@ -553,7 +553,7 @@ builder.Services.AddRateLimiter(options =>
 });
 ```
 
-### ?? Exemplo de Chamada AJAX
+### 📚 Exemplo de Chamada AJAX
 
 ```javascript
 // Validar CPF via API
@@ -575,9 +575,9 @@ async function validarCPF(cpf) {
 
 ---
 
-## ?? Segurança
+## 📚 Segurança
 
-### ??? Autenticação - ASP.NET Core Identity
+### 📚✅ Autenticação - ASP.NET Core Identity
 
 #### **Configuração**
 
@@ -619,7 +619,7 @@ public IActionResult Edit() { }
 }
 ```
 
-### ?? Headers de Segurança
+### 📚 Headers de Segurança
 
 ```csharp
 app.Use(async (context, next) =>
@@ -638,7 +638,7 @@ app.Use(async (context, next) =>
 });
 ```
 
-### ?? Anti-Forgery Token
+### 📚 Anti-Forgery Token
 
 ```html
 <!-- Formulário -->
@@ -655,7 +655,7 @@ app.Use(async (context, next) =>
 public IActionResult Create(Cliente cliente) { }
 ```
 
-### ?? Logging com Serilog
+### 📚 Logging com Serilog
 
 ```csharp
 // Program.cs
@@ -677,9 +677,9 @@ _logger.LogError(ex, "Erro ao processar locação {LocacaoId}", id);
 
 ---
 
-## ?? Configurações
+## 📚 Configurações
 
-### ?? appsettings.json
+### 📚 appsettings.json
 
 ```json
 {
@@ -712,7 +712,7 @@ _logger.LogError(ex, "Erro ao processar locação {LocacaoId}", id);
 }
 ```
 
-### ?? Variáveis de Ambiente (Produção)
+### 📚 Variáveis de Ambiente (Produção)
 
 ```bash
 # Azure App Service
@@ -723,9 +723,9 @@ AppSettings__SmtpPassword=...
 
 ---
 
-## ?? Deploy
+## 📚 Deploy
 
-### ?? Publicação
+### 📚 Publicação
 
 ```bash
 # Publicar para pasta
@@ -738,7 +738,7 @@ dotnet publish -c Release /p:PublishProfile=Azure
 Compress-Archive -Path ./publish/* -DestinationPath RentalTourism.zip
 ```
 
-### ??? Migrations em Produção
+### 📚✅ Migrations em Produção
 
 ```bash
 # Gerar script SQL
@@ -748,7 +748,7 @@ dotnet ef migrations script --output migration.sql
 # Upload do script no Azure SQL Database
 ```
 
-### ?? Checklist de Deploy
+### 📚 Checklist de Deploy
 
 - [ ] Atualizar connection string
 - [ ] Aplicar migrations
@@ -762,9 +762,9 @@ dotnet ef migrations script --output migration.sql
 
 ---
 
-## ?? Testes
+## 📚 Testes
 
-### ?? Testes Unitários (Futuro)
+### 📚 Testes Unitários (Futuro)
 
 ```csharp
 [Fact]
@@ -780,7 +780,7 @@ public void Cliente_IdadeMinimaValidacao()
 }
 ```
 
-### ?? Testes de Integração (Futuro)
+### 📚 Testes de Integração (Futuro)
 
 ```csharp
 [Fact]
@@ -801,16 +801,16 @@ public async Task CriarLocacao_ComSucesso()
 
 ---
 
-## ?? Recursos Adicionais
+## 📚 Recursos Adicionais
 
-### ?? Documentação Externa
+### 📚 Documentação Externa
 
 - [ASP.NET Core Docs](https://docs.microsoft.com/aspnet/core)
 - [Entity Framework Core](https://docs.microsoft.com/ef/core)
 - [Bootstrap 5](https://getbootstrap.com/docs/5.3)
 - [Serilog](https://serilog.net)
 
-### ??? Ferramentas Recomendadas
+### 📚✅ Ferramentas Recomendadas
 
 - Visual Studio 2022
 - SQL Server Management Studio
@@ -824,3 +824,4 @@ public async Task CriarLocacao_ComSucesso()
 **Versão:** 1.0  
 **Framework:** ASP.NET Core 8.0  
 **Última Atualização:** Outubro/2025
+
