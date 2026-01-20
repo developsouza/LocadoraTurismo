@@ -104,13 +104,12 @@ namespace RentalTourismSystem.Controllers
             try
             {
                 await CarregarViewBags();
-                _logger.LogInformation("Formulário de criação de veículo acessado por {User}", User.Identity?.Name);
                 return View();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao carregar formulário de criação de veículo por {User}", User.Identity?.Name);
-                TempData["Erro"] = "Erro ao carregar formulário.";
+                TempData["Erro"] = "Erro ao carregar formulário. Tente novamente.";
                 return RedirectToAction(nameof(Index));
             }
         }

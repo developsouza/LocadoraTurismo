@@ -14,46 +14,13 @@
     <!-- CSS Dependencies -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/animations.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
     @await RenderSectionAsync("Styles", required: false)
-
-    <style>
-        .sidebar-logo {
-            width: 40px;
-            height: auto;
-            max-height: 40px;
-            object-fit: contain;
-            margin-right: 12px;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-        }
-
-        /* Se quiser ajustar o tamanho conforme o contexto */
-        .sidebar-brand {
-            display: flex;
-            align-items: center;
-        }
-
-        .sidebar-brand-text {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.2;
-        }
-
-        /* Responsividade - logo menor em telas pequenas */
-        @@media (max-width: 768px) {
-            .sidebar-logo
-
-        {
-            width: 32px;
-            max-height: 32px;
-        }
-
-        }
-    </style>
 </head>
 <body data-theme="light">
     <!-- Loading Overlay -->
@@ -249,6 +216,28 @@
                                         </div>
                                     </li>
                                 }
+                            </ul>
+                        </div>
+                    }
+
+                    <!-- Templates de Documentos - Visível para todos os usuários autenticados -->
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Employee"))
+                    {
+                        <div class="nav-section">
+                            <div class="nav-section-title">Modelos de Documentos</div>
+                            <ul class="nav flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Documentos" asp-action="ContratoLocacaoTemplate" target="_blank">
+                                        <i class="fas fa-file-contract"></i>
+                                        <span class="nav-link-text">Contrato de Locação</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Documentos" asp-action="LaudoVistoriaTemplate" target="_blank">
+                                        <i class="fas fa-clipboard-check"></i>
+                                        <span class="nav-link-text">Laudo de Vistoria</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     }
@@ -524,16 +513,11 @@
             document.addEventListener('DOMContentLoaded', function() {
                 // Verificar se o sistema consolidado foi carregado
                 if (!window.RentalTourismSystem) {
-                    console.error('Sistema consolidado não carregado! Verifique se site.js está sendo carregado corretamente.');
                     return;
                 }
 
                 // Inicializar sistema do Layout
                 LayoutSystem.init();
-
-                console.log('Sistema de Locação e Turismo - Layout inicializado com sucesso');
-                console.log('Usuário logado:', '@User.Identity.Name');
-                console.log('Role:', '@(User.IsInRole("Admin") ? "Admin" : User.IsInRole("Manager") ? "Manager" : User.IsInRole("Employee") ? "Employee" : "User")');
             });
 
             // Sistema específico do Layout (gerencia funcionalidades da interface)
@@ -546,7 +530,6 @@
                     this.setupLoadingSystem();
                     this.setupAnimations();
                     this.setupUserFeedback();
-                    console.log('LayoutSystem inicializado');
                 },
 
                 setupNavigation: function() {
@@ -648,7 +631,6 @@
                         resultsHTML += '</div>';
                         searchResults.innerHTML = resultsHTML;
                     } catch (error) {
-                        console.error('Erro na busca:', error);
                         searchResults.innerHTML = `
                             <div class="text-center text-danger py-4">
                                 <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
@@ -823,7 +805,6 @@
                     }
                     throw new Error('Erro ao carregar dados do cliente');
                 } catch (error) {
-                    console.error('Erro:', error);
                     if (window.RentalTourismSystem?.NotificationSystem) {
                         window.RentalTourismSystem.NotificationSystem.error('Erro ao carregar cliente');
                     }
@@ -846,7 +827,6 @@
                     }
                     throw new Error('Erro ao carregar dados do veículo');
                 } catch (error) {
-                    console.error('Erro:', error);
                     if (window.RentalTourismSystem?.NotificationSystem) {
                         window.RentalTourismSystem.NotificationSystem.error('Erro ao carregar veículo');
                     }
@@ -875,31 +855,21 @@
                         case 'info':
                         case 'informacao':
                         default:
-                            window.RentalTourismSystem.NotificationSystem.info(mensagem);
+                        window.RentalTourismSystem.NotificationSystem.info(mensagem);
                             break;
                     }
                 } else {
-                    console.log(`[${tipo.toUpperCase()}] ${mensagem}`);
                     alert(`${tipo.toUpperCase()}: ${mensagem}`);
                 }
             }
-
-            /**
-             * Alias para compatibilidade com código antigo
-             */
-            const NotificationSystem = {
-                success: (msg, duration) => mostrarNotificacao(msg, 'success'),
-                error: (msg, duration) => mostrarNotificacao(msg, 'error'),
-                warning: (msg, duration) => mostrarNotificacao(msg, 'warning'),
-                info: (msg, duration) => mostrarNotificacao(msg, 'info')
-            };
 
             // Expor globalmente para compatibilidade
             window.LayoutSystem = LayoutSystem;
             window.carregarDadosCliente = carregarDadosCliente;
             window.carregarDadosVeiculo = carregarDadosVeiculo;
             window.mostrarNotificacao = mostrarNotificacao;
-            window.NotificationSystem = window.RentalTourismSystem?.NotificationSystem || NotificationSystem;
+            
+            // NotificationSystem já está exposto pelo site.js, não duplicar
         </script>
     }
 </body>

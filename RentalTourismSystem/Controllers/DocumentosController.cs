@@ -182,5 +182,19 @@ namespace RentalTourismSystem.Controllers
                 new ItemVistoria { Numero = 36, Descricao = "LATARIA", Normal = true, RiscadoAmassado = false }
             };
         }
+
+        // GET: Documentos/ContratoLocacaoTemplate
+        public IActionResult ContratoLocacaoTemplate()
+        {
+            _logger.LogInformation("Template de contrato de locação acessado por {User}", User.Identity?.Name);
+            return View();
+        }
+
+        // GET: Documentos/LaudoVistoriaTemplate
+        public IActionResult LaudoVistoriaTemplate()
+        {
+            _logger.LogInformation("Template de laudo de vistoria acessado por {User}", User.Identity?.Name);
+            return View();
+        }
     }
 }

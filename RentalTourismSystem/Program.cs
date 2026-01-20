@@ -94,8 +94,11 @@ app.UseRequestLocalization();
 // Rate Limiting
 app.UseRateLimiter();
 
-// Compressão de resposta
-app.UseResponseCompression();
+// Compressão de resposta - DESABILITADA EM DESENVOLVIMENTO para evitar conflitos com IIS Express
+if (!app.Environment.IsDevelopment())
+{
+    app.UseResponseCompression();
+}
 
 // Tratamento de erros
 if (app.Environment.IsDevelopment())

@@ -20,7 +20,6 @@ class SidebarManager {
         this.updateSidebarState();
         this.setupEventListeners();
         this.handleResize();
-        console.log('Sidebar Manager inicializado');
     }
 
     setupEventListeners() {
@@ -184,7 +183,6 @@ class ThemeManager {
         this.applyTheme(this.currentTheme);
         this.setupEventListeners();
         this.watchSystemTheme();
-        console.log('Theme Manager inicializado - Tema:', this.currentTheme);
     }
 
     setupEventListeners() {
@@ -271,7 +269,6 @@ class ThemeManager {
     }
 }
 
-/* ===== NOTIFICATION SYSTEM ===== */
 /* ===== NOTIFICATION SYSTEM - VERSÃO COMPLETA ===== */
 class NotificationSystem {
     static notificationContainer = null;
@@ -282,7 +279,6 @@ class NotificationSystem {
         this.createContainer();
         this.startPolling();
         this.setupBadgeClick();
-        console.log('Sistema de Notificações inicializado');
     }
 
     static createContainer() {
@@ -360,15 +356,12 @@ class NotificationSystem {
         this.pollingInterval = setInterval(async () => {
             await this.loadNotifications();
         }, this.updateFrequency);
-
-        console.log('Polling de notificações iniciado');
     }
 
     static stopPolling() {
         if (this.pollingInterval) {
             clearInterval(this.pollingInterval);
             this.pollingInterval = null;
-            console.log('Polling de notificações parado');
         }
     }
 
@@ -381,7 +374,7 @@ class NotificationSystem {
             this.updateBadge(notificacoes.length);
             this.updateDropdown(notificacoes);
         } catch (error) {
-            console.error('Erro ao carregar notificações:', error);
+            // Silenciosamente falhar para não poluir o console
         }
     }
 
@@ -462,7 +455,7 @@ class NotificationSystem {
                 this.success('Notificação marcada como lida', 2000);
             }
         } catch (error) {
-            console.error('Erro ao marcar notificação como lida:', error);
+            // Silenciosamente falhar
         }
     }
 
@@ -478,7 +471,7 @@ class NotificationSystem {
                 this.success('Todas as notificações foram marcadas como lidas', 3000);
             }
         } catch (error) {
-            console.error('Erro ao marcar todas como lidas:', error);
+            // Silenciosamente falhar
         }
     }
 
@@ -599,8 +592,6 @@ class DateTimeSystem {
     }
 
     static inicializarCamposDateTimeBrasil() {
-        console.log('Inicializando campos DateTime Brasil...');
-
         const configuracoes = {
             'DataRetirada': { offset: 0, hora: 9, preencherAutomatico: true },
             'DataDevolucao': { offset: 0, hora: 18, preencherAutomatico: false },
@@ -921,11 +912,9 @@ class MaskSystem {
     static initializeMasks() {
         if (this.initialized) return;
 
-        console.log('Inicializando sistema único de máscaras...');
         this.initialized = true;
         this.applyMasksToExistingFields();
         this.setupDynamicFieldObserver();
-        console.log('Sistema único de máscaras inicializado');
     }
 
     static applyMasksToExistingFields() {
@@ -1000,8 +989,6 @@ class MaskSystem {
 
         input.addEventListener('input', inputHandler);
         input.addEventListener('paste', pasteHandler);
-
-        console.log('Máscara CPF aplicada');
     }
 
     static applyPhoneMask(input) {
@@ -1017,8 +1004,6 @@ class MaskSystem {
 
         input.addEventListener('input', inputHandler);
         input.addEventListener('paste', pasteHandler);
-
-        console.log('Máscara telefone aplicada');
     }
 
     static applyMoneyMask(input) {
@@ -1027,8 +1012,6 @@ class MaskSystem {
 
         const moneyHandler = () => FormattingSystem.formatarMoeda(input);
         input.addEventListener('input', moneyHandler);
-
-        console.log('Máscara moeda aplicada');
     }
 
     static applyPlateMask(input) {
@@ -1037,8 +1020,6 @@ class MaskSystem {
 
         const plateHandler = () => FormattingSystem.formatarPlaca(input);
         input.addEventListener('input', plateHandler);
-
-        console.log('Máscara placa aplicada');
     }
 
     static setupDynamicFieldObserver() {
@@ -1097,11 +1078,9 @@ class ValidationSystem {
     static init() {
         if (this.initialized) return;
 
-        console.log('Inicializando sistema de validação integrado...');
         this.setupRealTimeValidation();
         this.setupFormSubmissions();
         this.initialized = true;
-        console.log('Sistema de validação inicializado');
     }
 
     static setupRealTimeValidation() {
@@ -1219,8 +1198,6 @@ class ValidationSystem {
                 e.preventDefault();
                 e.stopPropagation();
 
-                console.log('Validando formulário:', e.target.id || e.target.className);
-
                 const inputs = e.target.querySelectorAll('input, select, textarea');
                 let isValid = true;
                 let firstInvalidField = null;
@@ -1238,10 +1215,8 @@ class ValidationSystem {
                 e.target.classList.add('was-validated');
 
                 if (isValid) {
-                    console.log('Formulário válido, enviando...');
                     this.submitFormWithLoading(e.target);
                 } else {
-                    console.log('Formulário inválido');
                     if (firstInvalidField) {
                         firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         firstInvalidField.focus();
@@ -1255,7 +1230,6 @@ class ValidationSystem {
     static submitFormWithLoading(form) {
         // Verificar se é modal de confirmação - NÃO aplicar loading
         if (form.closest('.modal') || form.id === 'formExclusao') {
-            console.log('Submit sem loading para modal/confirmação');
             form.submit();
             return;
         }
@@ -1503,7 +1477,6 @@ function initializeTooltips() {
                 placement: 'auto'
             });
         });
-        console.log(`${tooltipTriggerList.length} tooltips inicializados`);
     }
 }
 
@@ -1548,18 +1521,13 @@ class PerformanceMonitor {
     static init() {
         window.addEventListener('load', () => {
             const loadTime = performance.now();
-            console.log(`Página carregada em ${Math.round(loadTime)}ms`);
-            if (loadTime > 3000) {
-                console.warn('Página carregou lentamente');
-            }
+            // Monitoramento silencioso de performance
         });
     }
 }
 
 /* ===== INITIALIZATION CONSOLIDADO ===== */
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('🚀 Inicializando sistema consolidado corrigido...');
-
     // 1. Sistemas principais
     window.sidebarManager = new SidebarManager();
     window.themeManager = new ThemeManager();
@@ -1605,8 +1573,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     }, 250);
-
-    console.log('✅ Sistema consolidado corrigido inicializado com sucesso');
 });
 
 /* ===== GLOBAL EXPORTS ===== */
@@ -1638,5 +1604,3 @@ window.initializeTooltips = initializeTooltips;
 window.setupAdvancedFormValidation = setupAdvancedFormValidation;
 window.setupAdvancedSearch = setupAdvancedSearch;
 window.setupAdvancedTableSort = setupAdvancedTableSort;
-
-console.log('📦 site.js consolidado e corrigido carregado com sucesso');

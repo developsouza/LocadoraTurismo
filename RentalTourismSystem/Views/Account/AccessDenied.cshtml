@@ -11,7 +11,30 @@
                 <p class="mb-4 px-3">
                     Você não tem permissão para acessar esta página ou recurso.
                 </p>
-                <a asp-action="Index" asp-controller="Home" class="btn btn-primary">
+                
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <div class="alert alert-info">
+                        <strong>Usuário logado:</strong> @User.Identity.Name<br />
+                        <strong>Permissão necessária:</strong> Admin ou Manager
+                    </div>
+                    <p class="text-muted small">
+                        Se você acredita que deveria ter acesso, entre em contato com um administrador.
+                    </p>
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        <strong>Você não está logado.</strong><br />
+                        Faça login para acessar esta página.
+                    </div>
+                    <a asp-action="Login" asp-controller="Account" asp-route-returnUrl="@Context.Request.Path" class="btn btn-primary mb-3">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Fazer Login
+                    </a>
+                }
+                
+                <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">
                     <i class="fas fa-home"></i>
                     Voltar ao Início
                 </a>

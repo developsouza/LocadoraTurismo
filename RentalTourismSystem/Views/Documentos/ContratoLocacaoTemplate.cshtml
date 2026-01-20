@@ -1,0 +1,548 @@
+@{
+    ViewData["Title"] = "Modelo de Contrato de Locação";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Modelo para Preenchimento Manual</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        /* Estilos otimizados para impressão A4 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11pt;
+            line-height: 1.3;
+            color: #000;
+            background: #fff;
+        }
+
+        .documento-contrato {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        /* Cabeçalho compacto */
+        .cabecalho-contrato {
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 8px;
+        }
+
+        .cabecalho-contrato h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .numero-contrato {
+            font-size: 10pt;
+            font-style: italic;
+            margin: 0;
+        }
+
+        /* Seções */
+        .secao-partes h2 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin: 10px 0 8px 0;
+        }
+
+        .parte {
+            margin-bottom: 8px;
+        }
+
+        .parte p {
+            text-align: justify;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .texto-padrao {
+            margin: 10px 0;
+        }
+
+        .texto-padrao p {
+            text-align: justify;
+            line-height: 1.4;
+        }
+
+        /* Cláusulas compactas */
+        .clausula {
+            margin: 12px 0;
+            page-break-inside: avoid;
+        }
+
+        .clausula h3 {
+            font-size: 11pt;
+            font-weight: bold;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .clausula p {
+            text-align: justify;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .paragrafo {
+            margin-left: 20px;
+            margin-top: 6px;
+        }
+
+        .destaque-veiculo {
+            background-color: #f5f5f5;
+            border-left: 3px solid #333;
+            padding: 8px 10px;
+            margin: 8px 0;
+        }
+
+        /* Campos em branco */
+        .campo-blank {
+            border-bottom: 1px solid #000;
+            display: inline-block;
+            min-width: 180px;
+            padding: 0 3px;
+        }
+
+        .campo-blank-sm {
+            border-bottom: 1px solid #000;
+            display: inline-block;
+            min-width: 80px;
+            padding: 0 3px;
+        }
+
+        .campo-blank-lg {
+            border-bottom: 1px solid #000;
+            display: inline-block;
+            min-width: 280px;
+            padding: 0 3px;
+        }
+
+        /* Local e Data */
+        .local-data {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .local-data p {
+            margin: 0;
+        }
+
+        /* Assinaturas */
+        .assinaturas {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0 15px 0;
+            gap: 30px;
+        }
+
+        .assinatura {
+            flex: 1;
+            text-align: center;
+        }
+
+        .linha-assinatura {
+            border-top: 1px solid #000;
+            margin-bottom: 5px;
+            margin-top: 40px;
+        }
+
+        .assinatura p {
+            margin: 3px 0;
+            font-size: 10pt;
+        }
+
+        .assinatura .small {
+            font-size: 9pt;
+            color: #555;
+        }
+
+        /* Rodapé */
+        .rodape {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #ccc;
+            font-size: 9pt;
+            color: #666;
+        }
+
+        .rodape p {
+            margin: 2px 0;
+        }
+
+        /* Impressão otimizada */
+        @@media print {
+            .no-print {
+                display: none !important;
+            }
+
+            @@page {
+                size: A4;
+                margin: 1.5cm 2cm;
+            }
+
+            body {
+                font-size: 10pt;
+                line-height: 1.25;
+            }
+
+            .documento-contrato {
+                padding: 0;
+            }
+
+            .clausula {
+                page-break-inside: avoid;
+            }
+
+            .assinaturas {
+                page-break-inside: avoid;
+            }
+
+            .cabecalho-contrato h1 {
+                font-size: 15pt;
+            }
+
+            .clausula h3 {
+                font-size: 10.5pt;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Botões de Ação (não imprime) -->
+    <div class="no-print" style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <button onclick="window.print()" class="btn btn-primary" style="margin-right: 10px;">
+            <i class="fas fa-print"></i> Imprimir
+        </button>
+        <button onclick="window.close()" class="btn btn-secondary">
+            <i class="fas fa-times"></i> Fechar
+        </button>
+    </div>
+
+    <!-- Documento -->
+    <div class="documento-contrato">
+        <!-- Cabeçalho -->
+        <div class="cabecalho-contrato">
+            <h1>CONTRATO DE LOCAÇÃO DE VEÍCULOS</h1>
+            <p class="numero-contrato">Contrato Nº <span class="campo-blank-sm">&nbsp;</span></p>
+        </div>
+
+        <!-- Partes do Contrato -->
+        <div class="secao-partes">
+            <h2>Entre:</h2>
+
+            <!-- LOCADOR -->
+            <div class="parte">
+                <p>
+                    <strong><span class="campo-blank-lg">&nbsp;</span></strong>,
+                    inscrita sob o CNPJ n.º <strong><span class="campo-blank">&nbsp;</span></strong>,
+                    com sede em <strong><span class="campo-blank-lg">&nbsp;</span></strong>,
+                    telefone <strong><span class="campo-blank">&nbsp;</span></strong>,
+                    e-mail <strong><span class="campo-blank">&nbsp;</span></strong>,
+                    neste ato representada por: <strong><span class="campo-blank">&nbsp;</span></strong>,
+                    doravante denominada <strong>LOCADOR</strong>,
+                </p>
+            </div>
+
+            <p style="text-align: center; margin: 8px 0;">e:</p>
+
+            <!-- LOCATÁRIO -->
+            <div class="parte">
+                <p>
+                    <strong><span class="campo-blank-lg">&nbsp;</span></strong>,
+                    <span class="campo-blank">&nbsp;</span>,
+                    profissão: <span class="campo-blank">&nbsp;</span>,
+                    CPF n.º <strong><span class="campo-blank">&nbsp;</span></strong>,
+                    CNH n.º <strong><span class="campo-blank">&nbsp;</span></strong>,
+                    categoria <strong><span class="campo-blank-sm">&nbsp;</span></strong>,
+                    residente em: <strong><span class="campo-blank-lg">&nbsp;</span></strong>,
+                    CEP <strong><span class="campo-blank">&nbsp;</span></strong>,
+                    telefone <strong><span class="campo-blank">&nbsp;</span></strong>,
+                    e-mail <strong><span class="campo-blank">&nbsp;</span></strong>,
+                    doravante denominado <strong>LOCATÁRIO</strong>.
+                </p>
+            </div>
+        </div>
+
+        <!-- Introdução -->
+        <div class="texto-padrao">
+            <p>
+                As partes acima identificadas têm entre si justo e acertado o presente contrato de locação de veículo,
+                ficando desde já aceito nas cláusulas e condições abaixo descritas.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 1ª - DO OBJETO -->
+        <div class="clausula">
+            <h3>CLÁUSULA 1ª - DO OBJETO</h3>
+            <p>
+                Por meio deste contrato, que firmam entre si o <strong>LOCADOR</strong> e o <strong>LOCATÁRIO</strong>,
+                regula-se a locação do veículo:
+            </p>
+            <div class="destaque-veiculo">
+                <p>
+                    <strong><span class="campo-blank">&nbsp;</span> <span class="campo-blank">&nbsp;</span></strong>,
+                    ano <strong><span class="campo-blank-sm">&nbsp;</span></strong>,
+                    cor <strong><span class="campo-blank">&nbsp;</span></strong>,
+                    <span class="campo-blank">&nbsp;</span>,
+                    <span class="campo-blank">&nbsp;</span>,
+                    placa <strong><span class="campo-blank">&nbsp;</span></strong>,
+                    com quilometragem de <strong><span class="campo-blank">&nbsp;</span> km</strong>,
+                    e com o valor de mercado aproximado em R$ <span class="campo-blank">&nbsp;</span>.
+                </p>
+            </div>
+            <p class="paragrafo">
+                <strong>Parágrafo único:</strong> O presente contrato é acompanhado de um laudo de vistoria,
+                que descreve o veículo e o seu estado de conservação no momento em que o mesmo foi entregue ao <strong>LOCATÁRIO</strong>.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 2ª - DO VALOR DO ALUGUEL -->
+        <div class="clausula">
+            <h3>CLÁUSULA 2ª - DO VALOR DO ALUGUEL</h3>
+            <p>
+                O valor da diária do aluguel, livremente ajustado pelas partes, e pago antecipadamente pelo <strong>LOCATÁRIO</strong>,
+                é de <strong>R$ <span class="campo-blank">&nbsp;</span> (<span class="campo-blank-lg">&nbsp;</span>)</strong>.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 1º.</strong> Diária corresponde ao período de 24 (vinte e quatro) horas contados da assinatura do contrato.
+                Após o término da diária, há tolerância de 1 (uma) hora para ocorrer a devolução do veículo alugado.
+                Após esse período, serão cobrados valores de horas extras até a décima segunda hora.
+                Após o início da décima segunda hora, ocorrerá a cobrança da diária extra.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 2º.</strong> O <strong>LOCATÁRIO</strong> deverá efetuar o pagamento do valor acordado no ato da assinatura
+                do contrato de locação, em espécie ou por transferência bancária, diretamente para o <strong>LOCADOR</strong>
+                ou terceiro autorizado por este.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 3º.</strong> Será de responsabilidade do <strong>LOCATÁRIO</strong> as despesas referentes à utilização do veículo.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 3ª - DO PRAZO DO ALUGUEL -->
+        <div class="clausula">
+            <h3>CLÁUSULA 3ª - DO PRAZO DO ALUGUEL</h3>
+            <p>
+                O prazo de locação do referido veículo é de <strong><span class="campo-blank">&nbsp;</span> (<span class="campo-blank">&nbsp;</span>) dias</strong>,
+                com início às <strong><span class="campo-blank-sm">&nbsp;</span></strong>h do dia
+                <strong><span class="campo-blank-lg">&nbsp;</span></strong>,
+                e com término às <strong><span class="campo-blank-sm">&nbsp;</span></strong>h do dia
+                <strong><span class="campo-blank-lg">&nbsp;</span></strong>.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 1º.</strong> Ao final do prazo estipulado, caso as partes permaneçam inertes,
+                a locação prorrogar-se-á automaticamente por tempo indeterminado.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 2º.</strong> Em caso de prorrogação da locação, o LOCATÁRIO deverá comunicar de imediato ao LOCADOR
+                para aditivo de contrato, bem como efetuar o pagamento da(s) diária(s) complementares.
+                Havendo atraso no pagamento do aluguel das diárias complementares, será aplicada multa de 10% (dez por cento),
+                sobre o valor devido, bem como juros de mora de 1% (um por cento) ao mês, mais correção monetária,
+                apurada conforme variação do IGP-M no período.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 3º.</strong> Caso o LOCADOR não queira prorrogar a locação ao terminar o prazo estipulado neste contrato,
+                e o referido veículo não for devolvido pelo LOCATÁRIO, será cobrado o valor do aluguel proporcional aos dias de atraso,
+                na forma da Cláusula 2ª, acumulado de multa diária de <strong>R$ <span class="campo-blank">&nbsp;</span></strong>,
+                pelo prazo máximo de 03 (três) diárias.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 4º.</strong> Finda a locação, o LOCATÁRIO deverá devolver o veículo nas mesmas condições em que recebeu,
+                salvo os desgastes decorrentes do uso normal, sob pena de indenização por perdas e danos a ser apurada.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 5º.</strong> Findo o prazo do contrato, o LOCATÁRIO, não vindo a devolver o veículo por um período de atraso
+                superior a 3 (três) dias, fica sujeito a ter a posse do veículo configurada como Apropriação Indébita,
+                implicando também a possibilidade de adoção de medidas judiciais, inclusive a Busca e Apreensão do veículo
+                e/ou lavratura de Boletim de Ocorrência.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 4ª - DO COMBUSTÍVEL -->
+        <div class="clausula">
+            <h3>CLÁUSULA 4ª - DO COMBUSTÍVEL</h3>
+            <p>
+                O veículo será entregue ao LOCATÁRIO com o tanque de combustível completo,
+                e sua quantidade será marcada no laudo de vistoria no momento da retirada.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 1º.</strong> Ao final do prazo estipulado, o LOCATÁRIO deverá devolver o veículo ao LOCADOR
+                com o tanque de combustível completo.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 2º.</strong> Caso não ocorra o cumprimento do parágrafo anterior, será cobrado o valor correspondente
+                à leitura do marcador em oitavos, com base em tabela própria, e o valor do litro será informado no momento
+                da retirada pelo LOCADOR.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 3º.</strong> Caso seja constatada a utilização de combustível adulterado, o LOCATÁRIO responderá
+                pelo mesmo e pelos danos decorrentes de tal utilização.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 5ª - DA LIMPEZA -->
+        <div class="clausula">
+            <h3>CLÁUSULA 5ª - DA LIMPEZA</h3>
+            <p>
+                O veículo será entregue ao LOCATÁRIO limpo e deverá ser devolvido ao LOCADOR nas mesmas condições
+                higiênicas que foi retirado.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 1º.</strong> Caso o veículo seja devolvido sujo, interna ou externamente, será cobrada uma taxa
+                de lavagem simples ou especial, dependendo do estado do veículo na devolução.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 6ª - DA UTILIZAÇÃO -->
+        <div class="clausula">
+            <h3>CLÁUSULA 6ª - DA UTILIZAÇÃO</h3>
+            <p>
+                O veículo deverá ser utilizado pelo LOCATÁRIO exclusivamente de acordo com a sua natureza
+                e respeitando as especificações do seu fabricante.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 1º.</strong> O LOCATÁRIO indica: <strong><span class="campo-blank-lg">&nbsp;</span></strong>,
+                CPF n.º <strong><span class="campo-blank">&nbsp;</span></strong>, como principal condutor do veículo descrito na cláusula 1ª
+                deste contrato, sob número de licença de direção: <strong><span class="campo-blank">&nbsp;</span></strong>,
+                categoria: <strong><span class="campo-blank-sm">&nbsp;</span></strong>,
+                válida até <strong><span class="campo-blank">&nbsp;</span></strong>.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 2º.</strong> Deverá também o LOCATÁRIO utilizar o veículo alugado sempre de acordo com os regulamentos
+                estabelecidos pelo Conselho Nacional de Trânsito (CONTRAN) e pelo Departamento Estadual de Trânsito (DETRAN).
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 7ª - DAS MULTAS E INFRAÇÕES -->
+        <div class="clausula">
+            <h3>CLÁUSULA 7ª - DAS MULTAS E INFRAÇÕES</h3>
+            <p>
+                As multas ou quaisquer outras infrações às leis de trânsito, cometidas durante o período da locação do veículo,
+                serão de responsabilidade do LOCATÁRIO, devendo ser liquidadas quando da notificação pelos órgãos competentes
+                ou no final do contrato, o que ocorrer primeiro.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 8ª - DA VEDAÇÃO À SUBLOCAÇÃO -->
+        <div class="clausula">
+            <h3>CLÁUSULA 8ª - DA VEDAÇÃO À SUBLOCAÇÃO E EMPRÉSTIMO DO VEÍCULO</h3>
+            <p>
+                Será permitido o uso do veículo objeto do presente contrato apenas ao LOCATÁRIO, sendo vedada,
+                no todo ou em parte, a sublocação, transferência, empréstimo, comodato ou cessão da locação,
+                seja a qualquer título, sem expressa anuência do LOCADOR, sob pena de imediata rescisão,
+                aplicação de multa e de demais penalidades contratuais e legais cabíveis.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 9ª - DO SEGURO -->
+        <div class="clausula">
+            <h3>CLÁUSULA 9ª - DA UTILIZAÇÃO DO SEGURO</h3>
+            <p>
+                Ocorrendo a necessidade da utilização do seguro veicular, devido à perda, extravio, furto, roubo,
+                destruição parcial ou total, ou colisão do veículo por ora locado, fica desde já estipulada
+                indenização devida pelo LOCATÁRIO que deverá, para efeito de cobertura do valor da franquia do seguro veicular,
+                pagar ao LOCADOR o valor de <strong>R$ <span class="campo-blank">&nbsp;</span> (<span class="campo-blank-lg">&nbsp;</span>)</strong>.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 10ª - DA GARANTIA -->
+        <div class="clausula">
+            <h3>CLÁUSULA 10ª - DA GARANTIA</h3>
+            <p>
+                O cumprimento das obrigações previstas neste contrato, inclusive o pagamento pontual do aluguel,
+                estará garantido por caução dada em dinheiro, perfazendo o montante de
+                <strong>R$ <span class="campo-blank">&nbsp;</span> (<span class="campo-blank-lg">&nbsp;</span>)</strong>,
+                entregue ao LOCADOR no ato de assinatura deste contrato.
+            </p>
+            <p class="paragrafo">
+                <strong>§ 1º.</strong> Ao final da locação, tendo sido todas as obrigações devidamente cumpridas,
+                o LOCATÁRIO estará autorizado a levantar a respectiva soma.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 11ª - DA RESCISÃO -->
+        <div class="clausula">
+            <h3>CLÁUSULA 11ª - DA RESCISÃO</h3>
+            <p>
+                Considera-se rescindido o contrato após a entrega do veículo e quitação de eventuais débitos
+                que ainda estejam pendentes.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 12ª - DAS PENALIDADES -->
+        <div class="clausula">
+            <h3>CLÁUSULA 12ª - DAS PENALIDADES</h3>
+            <p>
+                Exceto nos casos em que ocorra penalidade contratual prevista, a violação das cláusulas deste instrumento
+                acarretará à parte infratora uma aplicação de multa de <strong>R$ <span class="campo-blank">&nbsp;</span></strong>.
+            </p>
+        </div>
+
+        <!-- CLÁUSULA 13ª - DO FORO -->
+        <div class="clausula">
+            <h3>CLÁUSULA 13ª - DO FORO</h3>
+            <p>
+                Fica desde já eleito o foro da comarca de <strong><span class="campo-blank-lg">&nbsp;</span></strong>
+                para serem resolvidas eventuais pendências decorrentes deste contrato.
+            </p>
+        </div>
+
+        <!-- Encerramento -->
+        <div class="texto-padrao">
+            <p>
+                Por estarem assim certos e ajustados, firmam os signatários este instrumento em 02 (duas) vias
+                de igual teor e forma.
+            </p>
+        </div>
+
+        <!-- Local e Data -->
+        <div class="local-data">
+            <p>
+                <span class="campo-blank-lg">&nbsp;</span>,
+                <span class="campo-blank-lg">&nbsp;</span>.
+            </p>
+        </div>
+
+        <!-- Assinaturas -->
+        <div class="assinaturas">
+            <div class="assinatura">
+                <div class="linha-assinatura"></div>
+                <p><strong>LOCADOR: <span class="campo-blank">&nbsp;</span></strong></p>
+                <p class="small">Representante: <span class="campo-blank">&nbsp;</span></p>
+            </div>
+
+            <div class="assinatura">
+                <div class="linha-assinatura"></div>
+                <p><strong>LOCATÁRIO: <span class="campo-blank-lg">&nbsp;</span></strong></p>
+                <p class="small">CPF: <span class="campo-blank">&nbsp;</span></p>
+            </div>
+        </div>
+
+        <!-- Rodapé -->
+        <div class="rodape">
+            <p>Documento gerado eletronicamente em @DateTime.Now.ToString("dd/MM/yyyy 'às' HH:mm")</p>
+            <p>Modelo de Contrato de Locação - Sistema de Locação e Turismo</p>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
