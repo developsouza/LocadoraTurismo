@@ -1268,15 +1268,19 @@ class ValidationSystem {
 
         const originalText = submitBtn.innerHTML;
 
+        // Aplicar efeito visual nos campos (sem desabilitar para não bloquear o envio)
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.style.opacity = '0.6';
+            input.style.pointerEvents = 'none';
+        });
+
         // Desabilitar botão e mostrar loading
         submitBtn.disabled = true;
         submitBtn.innerHTML = `
             <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-            Processando...
+            Carregando...
         `;
-
-        // Mostrar overlay de loading
-        LoadingOverlaySystem.show(form, { message: 'Salvando...' });
 
         // Delay para UX
         setTimeout(() => {
