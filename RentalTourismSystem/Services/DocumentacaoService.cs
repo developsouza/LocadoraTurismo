@@ -1,5 +1,5 @@
-using RentalTourismSystem.Models.ViewModels;
 using Markdig;
+using RentalTourismSystem.Models.ViewModels;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -54,7 +54,7 @@ namespace RentalTourismSystem.Services
             foreach (var (id, metadata) in _documentosMetadata)
             {
                 var caminhoCompleto = Path.Combine(_docsPath, metadata.NomeArquivo);
-                
+
                 if (File.Exists(caminhoCompleto))
                 {
                     var doc = new DocumentoViewModel
@@ -82,7 +82,7 @@ namespace RentalTourismSystem.Services
             // Ordenar por categoria e título
             foreach (var categoria in resultado.DocumentosPorCategoria.Keys.ToList())
             {
-                resultado.DocumentosPorCategoria[categoria] = 
+                resultado.DocumentosPorCategoria[categoria] =
                     resultado.DocumentosPorCategoria[categoria]
                         .OrderBy(d => d.Titulo)
                         .ToList();
@@ -145,7 +145,7 @@ namespace RentalTourismSystem.Services
             foreach (var (id, metadata) in _documentosMetadata)
             {
                 var caminhoCompleto = Path.Combine(_docsPath, metadata.NomeArquivo);
-                
+
                 if (!File.Exists(caminhoCompleto))
                     continue;
 
@@ -232,12 +232,12 @@ namespace RentalTourismSystem.Services
                 var arquivo = match.Groups[1].Value;
                 var anchor = match.Groups[2].Value;
                 var id = Path.GetFileNameWithoutExtension(arquivo).ToUpperInvariant();
-                
+
                 if (_documentosMetadata.ContainsKey(id))
                 {
                     return $"href=\"/Documentacao/Visualizar/{id}{anchor}\"";
                 }
-                
+
                 return match.Value;
             });
         }
@@ -245,11 +245,11 @@ namespace RentalTourismSystem.Services
         private List<string> ExtrairTags(string conteudo)
         {
             var tags = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            
+
             // Extrair palavras-chave comuns
-            var palavrasChave = new[] { 
-                "login", "senha", "permissão", "cliente", "veículo", "locação", 
-                "manutenção", "reserva", "pacote", "relatório", "upload", "documento" 
+            var palavrasChave = new[] {
+                "login", "senha", "permissão", "cliente", "veículo", "locação",
+                "manutenção", "reserva", "pacote", "relatório", "upload", "documento"
             };
 
             foreach (var palavra in palavrasChave)
@@ -286,7 +286,7 @@ namespace RentalTourismSystem.Services
         private string ExtrairTrechoDestacado(string conteudo, string termo)
         {
             var index = conteudo.IndexOf(termo, StringComparison.OrdinalIgnoreCase);
-            
+
             if (index == -1)
                 return conteudo.Length > 150 ? conteudo.Substring(0, 150) + "..." : conteudo;
 
@@ -301,9 +301,9 @@ namespace RentalTourismSystem.Services
 
             // Destacar o termo encontrado
             trecho = Regex.Replace(
-                trecho, 
-                Regex.Escape(termo), 
-                $"<mark class=\"bg-warning\">{termo}</mark>", 
+                trecho,
+                Regex.Escape(termo),
+                $"<mark class=\"bg-warning\">{termo}</mark>",
                 RegexOptions.IgnoreCase
             );
 

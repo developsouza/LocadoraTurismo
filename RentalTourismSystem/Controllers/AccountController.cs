@@ -381,7 +381,7 @@ namespace RentalTourismSystem.Controllers
                 {
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                     var passwordResult = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
-                    
+
                     if (!passwordResult.Succeeded)
                     {
                         foreach (var error in passwordResult.Errors)
@@ -402,12 +402,12 @@ namespace RentalTourismSystem.Controllers
                     {
                         await _userManager.RemoveFromRolesAsync(user, currentRoles);
                         await _userManager.AddToRoleAsync(user, model.Role);
-                        _logger.LogInformation("Role do usuário {Email} alterada para {Role} por {Admin}", 
+                        _logger.LogInformation("Role do usuário {Email} alterada para {Role} por {Admin}",
                             user.Email, model.Role, User.Identity?.Name);
                     }
                 }
 
-                _logger.LogInformation("Usuário {UserId} ({Email}) atualizado por {Admin}", 
+                _logger.LogInformation("Usuário {UserId} ({Email}) atualizado por {Admin}",
                     user.Id, user.Email, User.Identity?.Name);
 
                 TempData["Sucesso"] = $"Usuário {user.NomeCompleto} atualizado com sucesso!";
@@ -544,7 +544,7 @@ namespace RentalTourismSystem.Controllers
                 }
                 else
                 {
-                    _logger.LogError("Erro ao excluir usuário {UserId}: {Errors}", id, 
+                    _logger.LogError("Erro ao excluir usuário {UserId}: {Errors}", id,
                         string.Join(", ", result.Errors.Select(e => e.Description)));
                     TempData["Erro"] = "Erro ao excluir usuário. " + string.Join(" ", result.Errors.Select(e => e.Description));
                 }

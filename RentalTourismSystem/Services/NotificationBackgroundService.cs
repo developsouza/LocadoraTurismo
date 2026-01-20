@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
-namespace RentalTourismSystem.Services
+﻿namespace RentalTourismSystem.Services
 {
     public class NotificationBackgroundService : BackgroundService
     {

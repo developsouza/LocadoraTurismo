@@ -46,7 +46,7 @@ namespace RentalTourismSystem.Controllers
             try
             {
                 var documento = _documentacaoService.ObterDocumento(id);
-                
+
                 if (documento == null)
                 {
                     TempData["Erro"] = "Documento não encontrado";
@@ -97,7 +97,7 @@ namespace RentalTourismSystem.Controllers
             try
             {
                 var (conteudo, nomeArquivo) = _documentacaoService.ObterArquivoParaDownload(id);
-                
+
                 if (conteudo == null)
                 {
                     TempData["Erro"] = "Documento não encontrado";

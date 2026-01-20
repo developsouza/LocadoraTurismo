@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RentalTourismSystem.Data;
-using System.Text;
 using RentalTourismSystem.Extensions;
+using System.Text;
 
 namespace RentalTourismSystem.Controllers
 {

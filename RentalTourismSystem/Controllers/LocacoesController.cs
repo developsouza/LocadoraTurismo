@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RentalTourismSystem.Data;
 using RentalTourismSystem.Models;
-using System.Globalization;
-using System.Security.Claims;
 
 namespace RentalTourismSystem.Controllers
 {
@@ -18,7 +16,7 @@ namespace RentalTourismSystem.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
 
         public LocacoesController(
-            RentalTourismContext context, 
+            RentalTourismContext context,
             ILogger<LocacoesController> logger,
             UserManager<ApplicationUser> userManager)
         {
@@ -132,18 +130,18 @@ namespace RentalTourismSystem.Controllers
             {
                 // Obter funcionário e agência do usuário logado
                 var funcionarioLogado = await ObterFuncionarioLogado();
-                
+
                 await CarregarViewBags(null, veiculoId, clienteId);
                 ViewBag.VeiculoIdPreSelecionado = veiculoId;
                 ViewBag.ClienteIdPreSelecionado = clienteId;
-                
+
                 // Passar dados do funcionário logado para pré-selecionar
                 if (funcionarioLogado != null)
                 {
                     ViewBag.FuncionarioLogadoId = funcionarioLogado.Id;
                     ViewBag.AgenciaLogadaId = funcionarioLogado.AgenciaId;
-                    
-                    _logger.LogInformation("Funcionário logado identificado: {FuncionarioNome} (ID: {FuncionarioId}) - Agência: {AgenciaId}", 
+
+                    _logger.LogInformation("Funcionário logado identificado: {FuncionarioNome} (ID: {FuncionarioId}) - Agência: {AgenciaId}",
                         funcionarioLogado.Nome, funcionarioLogado.Id, funcionarioLogado.AgenciaId);
                 }
                 else
@@ -696,10 +694,10 @@ namespace RentalTourismSystem.Controllers
             try
             {
                 _logger.LogInformation("=== INICIANDO ObterFuncionarioLogado ===");
-                
+
                 // Obter o usuário Identity atual
                 var user = await _userManager.GetUserAsync(User);
-                
+
                 if (user == null)
                 {
                     _logger.LogWarning("❌ Usuário Identity não encontrado. User.Identity.Name: {UserName}", User.Identity?.Name);
@@ -717,7 +715,7 @@ namespace RentalTourismSystem.Controllers
                 if (user.FuncionarioId.HasValue)
                 {
                     _logger.LogInformation("🔍 Buscando funcionário pelo FuncionarioId: {FuncionarioId}", user.FuncionarioId.Value);
-                    
+
                     var funcionario = await _context.Funcionarios
                         .Include(f => f.Agencia)
                         .FirstOrDefaultAsync(f => f.Id == user.FuncionarioId.Value);
@@ -743,7 +741,7 @@ namespace RentalTourismSystem.Controllers
                 if (!string.IsNullOrEmpty(user.Email))
                 {
                     _logger.LogInformation("🔍 Tentando fallback: buscar funcionário por email: {Email}", user.Email);
-                    
+
                     var funcionario = await _context.Funcionarios
                         .Include(f => f.Agencia)
                         .FirstOrDefaultAsync(f => f.Email == user.Email);
@@ -753,10 +751,10 @@ namespace RentalTourismSystem.Controllers
                         _logger.LogInformation("✅ Funcionário encontrado via email (fallback):");
                         _logger.LogInformation("   - Nome: {Nome} (ID: {Id})", funcionario.Nome, funcionario.Id);
                         _logger.LogInformation("   - Agência: {Agencia} (ID: {AgenciaId})", funcionario.Agencia?.Nome, funcionario.AgenciaId);
-                        
-                        _logger.LogWarning("💡 SUGESTÃO: Vincule o FuncionarioId {FuncionarioId} ao usuário {Email} em ManageUsers", 
+
+                        _logger.LogWarning("💡 SUGESTÃO: Vincule o FuncionarioId {FuncionarioId} ao usuário {Email} em ManageUsers",
                             funcionario.Id, user.Email);
-                        
+
                         return funcionario;
                     }
                     else

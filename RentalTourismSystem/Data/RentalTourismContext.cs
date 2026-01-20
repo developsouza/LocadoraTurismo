@@ -22,7 +22,7 @@ namespace RentalTourismSystem.Data
         public DbSet<ServicoAdicional> ServicosAdicionais { get; set; }
         public DbSet<Notificacao> Notificacoes { get; set; }
         public DbSet<Documento> Documentos { get; set; }
-        
+
         // ========== MANUTENÇÃO VEICULAR ==========
         public DbSet<TipoManutencao> TiposManutencao { get; set; }
         public DbSet<StatusManutencao> StatusManutencoes { get; set; }

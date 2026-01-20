@@ -1,5 +1,3 @@
-using RentalTourismSystem.Models;
-
 namespace RentalTourismSystem.Services
 {
     public interface IFileService
@@ -8,9 +6,9 @@ namespace RentalTourismSystem.Services
         /// Salva um arquivo no sistema de arquivos
         /// </summary>
         Task<(bool Success, string FilePath, string ErrorMessage)> SalvarArquivoAsync(
-            IFormFile arquivo, 
-            string pastaDestino, 
-            string[]? extensoesPermitidas = null, 
+            IFormFile arquivo,
+            string pastaDestino,
+            string[]? extensoesPermitidas = null,
             long tamanhoMaximoBytes = 10485760); // 10MB padrão
 
         /// <summary>

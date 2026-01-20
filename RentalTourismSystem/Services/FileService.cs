@@ -1,5 +1,3 @@
-using RentalTourismSystem.Models;
-
 namespace RentalTourismSystem.Services
 {
     public class FileService : IFileService
@@ -33,7 +31,7 @@ namespace RentalTourismSystem.Services
 
                 if (!extensoesPermitidas.Contains(extensao))
                 {
-                    return (false, string.Empty, 
+                    return (false, string.Empty,
                         $"Tipo de arquivo não permitido. Extensões permitidas: {string.Join(", ", extensoesPermitidas)}");
                 }
 
@@ -41,7 +39,7 @@ namespace RentalTourismSystem.Services
                 if (arquivo.Length > tamanhoMaximoBytes)
                 {
                     var tamanhoMaxMB = tamanhoMaximoBytes / 1024.0 / 1024.0;
-                    return (false, string.Empty, 
+                    return (false, string.Empty,
                         $"Arquivo muito grande. Tamanho máximo: {tamanhoMaxMB:0.##} MB");
                 }
 
@@ -138,7 +136,7 @@ namespace RentalTourismSystem.Services
                 return false;
 
             var extensao = Path.GetExtension(arquivo.FileName).ToLower();
-            
+
             if (!extensoesPermitidas.Contains(extensao))
                 return false;
 
@@ -156,7 +154,7 @@ namespace RentalTourismSystem.Services
         private string ObterContentType(string caminho)
         {
             var extensao = Path.GetExtension(caminho).ToLower();
-            
+
             return extensao switch
             {
                 ".pdf" => "application/pdf",

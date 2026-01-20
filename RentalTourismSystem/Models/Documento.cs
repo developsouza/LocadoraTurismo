@@ -122,18 +122,18 @@ namespace RentalTourismSystem.Models
         public const string CPF = "CPF";
         public const string ComprovanteResidencia = "Comprovante de Residência";
         public const string FotoPerfil = "Foto de Perfil";
-        
+
         // Documentos de Veículos
         public const string CRLV = "CRLV";
         public const string NotaFiscal = "Nota Fiscal";
         public const string Seguro = "Seguro";
         public const string IPVA = "IPVA";
         public const string FotoVeiculo = "Foto do Veículo";
-        
+
         // Documentos de Funcionários
         public const string ContratoTrabalho = "Contrato de Trabalho";
         public const string CarteiraTrabalho = "Carteira de Trabalho";
-        
+
         // Outros
         public const string Outros = "Outros";
 

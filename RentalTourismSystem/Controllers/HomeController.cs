@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RentalTourismSystem.Data;
+using RentalTourismSystem.Extensions;
 using RentalTourismSystem.Services;
 using System.Diagnostics;
-using RentalTourismSystem.Extensions;
 
 namespace RentalTourismSystem.Controllers
 {
@@ -227,7 +227,7 @@ namespace RentalTourismSystem.Controllers
             try
             {
                 _logger.LogInformation("Solicitação de dados do gráfico para {Dias} dias", dias);
-                
+
                 var dataFim = DateTime.Now.Date;
                 var dataInicio = dataFim.AddDays(-dias + 1);
 
@@ -286,10 +286,10 @@ namespace RentalTourismSystem.Controllers
                 }
 
                 _logger.LogInformation("Retornando {Count} dias de dados do gráfico", dados.Count);
-                
+
                 // Log de debug para ver os dados
                 _logger.LogDebug("Dados do gráfico: {@Dados}", dados);
-                
+
                 return Json(new { success = true, dados = dados });
             }
             catch (Exception ex)
@@ -307,14 +307,14 @@ namespace RentalTourismSystem.Controllers
             try
             {
                 _logger.LogInformation("Solicitação de dados mensais para {Dias} dias", dias);
-                
+
                 var dataFim = DateTime.Now.Date;
                 var dataInicio = dataFim.AddDays(-dias + 1);
 
                 _logger.LogInformation("Período mensal: {DataInicio} até {DataFim}", dataInicio, dataFim);
 
                 var dados = new List<object>();
-                
+
                 if (dias <= 30)
                 {
                     // Agrupar por dia
@@ -369,12 +369,12 @@ namespace RentalTourismSystem.Controllers
                 {
                     // Agrupar por semana para 90 dias
                     var semanas = (int)Math.Ceiling(dias / 7.0);
-                    
+
                     for (int i = 0; i < semanas; i++)
                     {
                         var inicioSemana = dataInicio.AddDays(i * 7);
                         var fimSemana = inicioSemana.AddDays(7);
-                        
+
                         if (fimSemana > dataFim)
                             fimSemana = dataFim.AddDays(1);
 
@@ -423,10 +423,10 @@ namespace RentalTourismSystem.Controllers
                 }
 
                 _logger.LogInformation("Retornando {Count} pontos de dados mensais", dados.Count);
-                
+
                 // Log de debug
                 _logger.LogDebug("Dados mensais do gráfico: {@Dados}", dados);
-                
+
                 return Json(new { success = true, dados = dados });
             }
             catch (Exception ex)

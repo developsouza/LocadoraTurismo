@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RentalTourismSystem.Data;
 using RentalTourismSystem.Models;
@@ -66,7 +65,7 @@ namespace RentalTourismSystem.Controllers
                     _context.Add(item);
                     await _context.SaveChangesAsync();
 
-                    _logger.LogInformation("Item de manutenção criado para manutenção {ManutencaoId} por {User}", 
+                    _logger.LogInformation("Item de manutenção criado para manutenção {ManutencaoId} por {User}",
                         item.ManutencaoVeiculoId, User.Identity?.Name);
 
                     TempData["Sucesso"] = "Item adicionado com sucesso!";
@@ -128,7 +127,7 @@ namespace RentalTourismSystem.Controllers
         {
             if (id != item.Id)
             {
-                _logger.LogWarning("Tentativa de edição com ID inconsistente {Id} != {ItemId} por {User}", 
+                _logger.LogWarning("Tentativa de edição com ID inconsistente {Id} != {ItemId} por {User}",
                     id, item.Id, User.Identity?.Name);
                 return NotFound();
             }
