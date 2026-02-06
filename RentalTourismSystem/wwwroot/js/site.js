@@ -277,8 +277,8 @@ class NotificationSystem {
 
     static initialize() {
         this.createContainer();
-        this.startPolling();
         this.setupBadgeClick();
+        this.startPolling();
     }
 
     static createContainer() {
@@ -434,7 +434,7 @@ class NotificationSystem {
                             ${notif.linkAcao ? `<a href="${notif.linkAcao}" class="btn btn-sm btn-outline-primary">${notif.textoLinkAcao || 'Ver'}</a>` : ''}
                         </div>
                     </div>
-                    <button class="btn btn-sm btn-link text-muted p-1 ms-2" onclick="NotificationSystem.markAsRead(${notif.id})" title="Marcar como lida">
+                    <button class="btn btn-sm btn-link text-muted p-1 ms-2" data-notification-id="${notif.id}" title="Marcar como lida">
                         <i class="fas fa-check"></i>
                     </button>
                 </div>
@@ -445,33 +445,45 @@ class NotificationSystem {
 
     static async markAsRead(id) {
         try {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['RequestVerificationToken'] = token;
+
             const response = await fetch(`/api/Notificacoes/${id}/marcar-lida`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' }
+                headers: headers
             });
 
             if (response.ok) {
                 await this.loadNotifications();
                 this.success('Notificação marcada como lida', 2000);
+            } else {
+                console.error('Erro ao marcar notificação como lida:', response.status);
             }
         } catch (error) {
-            // Silenciosamente falhar
+            console.error('Erro ao marcar notificação como lida:', error);
         }
     }
 
     static async markAllAsRead() {
         try {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['RequestVerificationToken'] = token;
+
             const response = await fetch('/api/Notificacoes/marcar-todas-lidas', {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' }
+                headers: headers
             });
 
             if (response.ok) {
                 await this.loadNotifications();
                 this.success('Todas as notificações foram marcadas como lidas', 3000);
+            } else {
+                console.error('Erro ao marcar todas como lidas:', response.status);
             }
         } catch (error) {
-            // Silenciosamente falhar
+            console.error('Erro ao marcar todas como lidas:', error);
         }
     }
 
@@ -483,15 +495,148 @@ class NotificationSystem {
                 this.markAllAsRead();
             });
         }
+
+        // Handler para botão "Ver todas"
+        const verTodasBtn = document.getElementById('ver-todas-notificacoes');
+        if (verTodasBtn) {
+            verTodasBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.showAllNotificationsModal();
+            });
+        }
+
+        // Event delegation para botões de marcar como lida
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-notification-id]');
+            if (btn) {
+                e.preventDefault();
+                const notificationId = parseInt(btn.dataset.notificationId);
+                this.markAsRead(notificationId);
+            }
+        });
+    }
+
+    static async showAllNotificationsModal() {
+        try {
+            const response = await fetch('/api/Notificacoes/ativas?limite=50');
+            if (!response.ok) throw new Error('Erro ao carregar notificações');
+
+            const notificacoes = await response.json();
+            this.createNotificationsModal(notificacoes);
+        } catch (error) {
+            console.error('Erro ao carregar todas as notificações:', error);
+            this.error('Erro ao carregar notificações');
+        }
+    }
+
+    static createNotificationsModal(notificacoes) {
+        // Remover modal existente se houver
+        const existingModal = document.getElementById('allNotificationsModal');
+        if (existingModal) existingModal.remove();
+
+        const modalHtml = `
+            <div class="modal fade" id="allNotificationsModal" tabindex="-1" aria-labelledby="allNotificationsModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="allNotificationsModalLabel">
+                                <i class="fas fa-bell me-2"></i>Todas as Notificações
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                        </div>
+                        <div class="modal-body p-0">
+                            ${notificacoes.length === 0 ? `
+                                <div class="text-center py-5">
+                                    <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+                                    <h6 class="text-muted">Nenhuma notificação</h6>
+                                    <p class="text-muted small">Você está em dia com tudo!</p>
+                                </div>
+                            ` : `
+                                <div class="list-group list-group-flush">
+                                    ${notificacoes.map(n => this.createModalNotificationItem(n)).join('')}
+                                </div>
+                            `}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                            ${notificacoes.length > 0 ? `
+                                <button type="button" class="btn btn-primary" id="modal-mark-all-read">
+                                    <i class="fas fa-check-double me-2"></i>Marcar todas como lidas
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        const modal = new bootstrap.Modal(document.getElementById('allNotificationsModal'));
+        modal.show();
+
+        // Handler para marcar todas como lidas no modal
+        const modalMarkAllBtn = document.getElementById('modal-mark-all-read');
+        if (modalMarkAllBtn) {
+            modalMarkAllBtn.addEventListener('click', async () => {
+                await this.markAllAsRead();
+                modal.hide();
+            });
+        }
+
+        // Remover modal do DOM ao fechar
+        document.getElementById('allNotificationsModal').addEventListener('hidden.bs.modal', function () {
+            this.remove();
+        });
+    }
+
+    static createModalNotificationItem(notif) {
+        const iconMap = {
+            'danger': 'exclamation-triangle text-danger',
+            'warning': 'exclamation-circle text-warning',
+            'info': 'info-circle text-info',
+            'success': 'check-circle text-success'
+        };
+
+        const icon = iconMap[notif.tipo] || iconMap['info'];
+        const bgClass = {
+            'danger': 'bg-danger-subtle',
+            'warning': 'bg-warning-subtle',
+            'info': 'bg-info-subtle',
+            'success': 'bg-success-subtle'
+        };
+
+        return `
+            <div class="list-group-item ${bgClass[notif.tipo] || ''}" data-id="${notif.id}">
+                <div class="d-flex align-items-start">
+                    <div class="flex-shrink-0 me-3">
+                        <i class="fas fa-${icon} fa-2x"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="mb-0 fw-bold">${notif.titulo}</h6>
+                            <small class="text-muted ms-2">${notif.tempoDecorrido}</small>
+                        </div>
+                        <p class="mb-2">${notif.mensagem}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                ${notif.categoria ? `<span class="badge bg-secondary">${notif.categoria}</span>` : ''}
+                            </div>
+                            <div>
+                                ${notif.linkAcao ? `<a href="${notif.linkAcao}" class="btn btn-sm btn-primary me-2">${notif.textoLinkAcao || 'Ver Detalhes'}</a>` : ''}
+                                <button class="btn btn-sm btn-outline-secondary" data-notification-id="${notif.id}" title="Marcar como lida">
+                                    <i class="fas fa-check"></i> Marcar como lida
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 }
 
-// Inicializar quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', () => {
-    NotificationSystem.initialize();
-});
-
-// Parar polling quando a página não estiver visível
+// Event listener para pausar polling quando página não está visível
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
         NotificationSystem.stopPolling();
@@ -1532,6 +1677,11 @@ document.addEventListener('DOMContentLoaded', function () {
     window.sidebarManager = new SidebarManager();
     window.themeManager = new ThemeManager();
     PerformanceMonitor.init();
+
+    // 1.5. Sistema de notificações (carregar cedo)
+    setTimeout(() => {
+        NotificationSystem.initialize();
+    }, 10);
 
     // 2. Sistema de máscaras (prioridade alta)
     setTimeout(() => {

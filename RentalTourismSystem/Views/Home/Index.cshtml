@@ -545,6 +545,44 @@
     </div>
 </div>
 
+<!-- Painel de Notificações do Sistema -->
+<div class="row g-4 mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-0 d-flex align-items-center">
+                        <i class="fas fa-bell icon-adaptive-info me-2"></i>Notificações do Sistema
+                    </h5>
+                    <small class="text-adaptive-muted">Atualizações e avisos recentes</small>
+                </div>
+                <button class="btn btn-sm btn-outline-primary" id="refresh-notifications-btn" title="Atualizar notificações">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            <div class="card-body p-0">
+                <div id="dashboard-notifications-list" class="list-group list-group-flush list-group-adaptive" style="max-height: 400px; overflow-y: auto;">
+                    <!-- Carregando... -->
+                    <div class="list-group-item border-0 px-4 py-4 text-center">
+                        <i class="fas fa-spinner fa-spin fa-2x mb-2 d-block icon-adaptive-primary"></i>
+                        <small class="text-adaptive-muted">Carregando notificações...</small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-adaptive-light">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <button class="btn btn-sm btn-outline-secondary" id="dashboard-mark-all-read">
+                        <i class="fas fa-check-double me-1"></i>Marcar todas como lidas
+                    </button>
+                    <button class="btn btn-sm btn-primary" id="dashboard-view-all-notifications">
+                        <i class="fas fa-eye me-1"></i>Ver todas
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Quick Actions Section -->
 <div class="row g-4 mt-4">
     <!-- Centro de Locação -->
@@ -1435,7 +1473,125 @@
             if (headerRow) {
                 headerRow.appendChild(helpText);
             }
+
+            // Inicializar painel de notificações do dashboard
+            initDashboardNotifications();
         });
+
+        // ===== DASHBOARD NOTIFICATIONS PANEL =====
+        function initDashboardNotifications() {
+            loadDashboardNotifications();
+
+            // Atualizar a cada 60 segundos
+            setInterval(loadDashboardNotifications, 60000);
+
+            // Botão de atualizar
+            const refreshBtn = document.getElementById('refresh-notifications-btn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    const icon = refreshBtn.querySelector('i');
+                    icon.classList.add('fa-spin');
+                    await loadDashboardNotifications();
+                    setTimeout(() => icon.classList.remove('fa-spin'), 500);
+                });
+            }
+
+            // Botão de marcar todas como lidas
+            const markAllBtn = document.getElementById('dashboard-mark-all-read');
+            if (markAllBtn) {
+                markAllBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    await NotificationSystem.markAllAsRead();
+                    await loadDashboardNotifications();
+                });
+            }
+
+            // Botão ver todas
+            const viewAllBtn = document.getElementById('dashboard-view-all-notifications');
+            if (viewAllBtn) {
+                viewAllBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    NotificationSystem.showAllNotificationsModal();
+                });
+            }
+        }
+
+        async function loadDashboardNotifications() {
+            const container = document.getElementById('dashboard-notifications-list');
+            if (!container) return;
+
+            try {
+                const response = await fetch('/api/Notificacoes/ativas?limite=10');
+                if (!response.ok) throw new Error('Erro ao carregar notificações');
+
+                const notificacoes = await response.json();
+                renderDashboardNotifications(notificacoes, container);
+            } catch (error) {
+                console.error('Erro ao carregar notificações do dashboard:', error);
+                container.innerHTML = `
+                    <div class="list-group-item border-0 px-4 py-4 text-center">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-2 d-block text-warning"></i>
+                        <small class="text-muted">Erro ao carregar notificações</small>
+                    </div>
+                `;
+            }
+        }
+
+        function renderDashboardNotifications(notificacoes, container) {
+            if (notificacoes.length === 0) {
+                container.innerHTML = `
+                    <div class="list-group-item border-0 px-4 py-5 text-center">
+                        <i class="fas fa-bell-slash fa-3x mb-3 d-block" style="color: var(--bs-secondary-color);"></i>
+                        <h6 class="fw-bold">Nenhuma Notificação</h6>
+                        <p class="text-muted mb-0 small">Você está em dia com tudo!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = notificacoes.map(n => createDashboardNotificationItem(n)).join('');
+        }
+
+        function createDashboardNotificationItem(notif) {
+            const iconMap = {
+                'danger': { icon: 'exclamation-triangle', class: 'text-danger', bg: 'bg-danger' },
+                'warning': { icon: 'exclamation-circle', class: 'text-warning', bg: 'bg-warning' },
+                'info': { icon: 'info-circle', class: 'text-info', bg: 'bg-info' },
+                'success': { icon: 'check-circle', class: 'text-success', bg: 'bg-success' }
+            };
+
+            const iconData = iconMap[notif.tipo] || iconMap['info'];
+            const priorityBadge = notif.prioridade >= 3 ? '<span class="badge bg-danger ms-2">Alta Prioridade</span>' : '';
+
+            return `
+                <div class="list-group-item border-0 px-4 py-3 list-group-item-action" data-id="${notif.id}">
+                    <div class="d-flex align-items-start">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="rounded-circle ${iconData.bg} bg-opacity-10 p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="fas fa-${iconData.icon} ${iconData.class}"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1" style="min-width: 0;">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <h6 class="mb-0 fw-semibold text-truncate">${notif.titulo}${priorityBadge}</h6>
+                                <small class="text-muted ms-2 flex-shrink-0">${notif.tempoDecorrido}</small>
+                            </div>
+                            <p class="mb-2 small text-muted" style="line-height: 1.4;">${notif.mensagem}</p>
+                            <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                                ${notif.categoria ? `<span class="badge bg-secondary">${notif.categoria}</span>` : '<div></div>'}
+                                <div class="btn-group btn-group-sm" role="group">
+                                    ${notif.linkAcao ? `<a href="${notif.linkAcao}" class="btn btn-outline-primary btn-sm">${notif.textoLinkAcao || 'Ver'}</a>` : ''}
+                                    <button class="btn btn-outline-secondary btn-sm" data-notification-id="${notif.id}" title="Marcar como lida">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
 
         // Export for global access
         window.DashboardManager = DashboardManager;
