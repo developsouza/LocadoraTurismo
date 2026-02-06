@@ -3,9 +3,9 @@
     ViewData["Title"] = "Editar Cliente";
 }
 
-<div class="row">
+<div class="row mb-4" style="margin-top: 1rem;">
     <div class="col-12">
-        <h2 class="text-gradient">
+        <h2 class="text-gradient mb-2">
             <i class="fas fa-user-edit me-2"></i>Editar Cliente
         </h2>
         <nav aria-label="breadcrumb">
@@ -122,6 +122,34 @@
                     <h6 class="text-primary border-bottom pb-2 mb-3 mt-4">
                         <i class="fas fa-id-card-alt me-2"></i>Carteira Nacional de Habilitação
                     </h6>
+
+                    @* Mostrar documento CNH enviado no pré-cadastro se existir *@
+                    @if (!string.IsNullOrEmpty(Model.CNHPath))
+                    {
+                        <div class="alert alert-info alert-dismissible fade show mb-3" role="alert">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-file-image fa-2x text-primary me-3"></i>
+                                <div class="flex-grow-1">
+                                    <h6 class="alert-heading mb-2">
+                                        <i class="fas fa-check-circle me-1"></i>Documento CNH Enviado
+                                    </h6>
+                                    <p class="mb-2">
+                                        O cliente anexou um documento durante o pré-cadastro. 
+                                        <strong>Verifique o documento e preencha os dados da CNH abaixo.</strong>
+                                    </p>
+                                    <div class="d-flex gap-2 mt-2">
+                                        <button type="button" class="btn btn-sm btn-primary" onclick="visualizarCNHEdit()">
+                                            <i class="fas fa-eye me-1"></i>Visualizar Documento
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="downloadCNHEdit()">
+                                            <i class="fas fa-download me-1"></i>Baixar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
 
                     @if (Model.CNHValida)
                     {
@@ -387,22 +415,196 @@
                 $('#telefoneInput').trigger('input');
                 $('#cepInput').trigger('input');
             }, 100);
+
+            // Se veio de validação de pré-cadastro, destacar o alerta
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('fromValidation') === 'true') {
+                // Aguardar a página carregar completamente
+                setTimeout(() => {
+                    const cnhSection = document.querySelector('h6:has(.fa-id-card-alt)');
+                    if (cnhSection) {
+                        // Calcular posição com offset para não cortar o topo
+                        const offset = 100; // Espaço do header/navbar
+                        const elementPosition = cnhSection.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+                        // Scroll suave até a seção, mas sem esconder o topo
+                        window.scrollTo({
+                            top: Math.max(0, offsetPosition), // Não permitir scroll negativo
+                            behavior: 'smooth'
+                        });
+                        
+                        // Destacar o alerta por alguns segundos
+                        const alert = document.querySelector('.alert-info.alert-dismissible');
+                        if (alert) {
+                            alert.style.animation = 'pulse 0.5s ease-in-out 3';
+                        }
+                    }
+
+                    // Mostrar notificação
+                    if (window.NotificationSystem) {
+                        window.NotificationSystem.info('Verifique o documento CNH e preencha os dados abaixo', 5000);
+                    }
+                }, 800); // Aumentado para 800ms para garantir que a página carregou
+            }
         });
+
+        // Funções para visualizar e baixar CNH
+        var clienteId = @Model.Id;
+        var clienteNome = '@Html.Raw(Html.Encode(Model.Nome))';
+        var cnhPath = '@Html.Raw(Model.CNHPath ?? "")';
+
+        function visualizarCNHEdit() {
+            if (!cnhPath) {
+                if (window.NotificationSystem) {
+                    window.NotificationSystem.warning('Nenhum documento CNH encontrado.');
+                }
+                return;
+            }
+
+            const fileExtension = cnhPath.split('.').pop().toLowerCase();
+            const fileUrl = `/Clientes/GetCNHFile?id=${clienteId}`;
+
+            if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(fileExtension)) {
+                // Mostrar imagem em modal
+                const modalHtml = `
+                    <div class="modal fade" id="cnhModalEdit" tabindex="-1">
+                        <div class="modal-dialog modal-xl modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title">
+                                        <i class="fas fa-id-card me-2"></i>CNH Enviada - ${clienteNome}
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body text-center p-3" style="background-color: #f8f9fa;">
+                                    <div class="spinner-border text-primary mb-3" role="status">
+                                        <span class="visually-hidden">Carregando...</span>
+                                    </div>
+                                    <p class="text-muted">Carregando imagem...</p>
+                                    <img src="${fileUrl}" class="img-fluid rounded shadow d-none" alt="CNH" 
+                                         style="max-height: 75vh; max-width: 100%; object-fit: contain;"
+                                         onload="this.classList.remove('d-none'); this.previousElementSibling.previousElementSibling.classList.add('d-none'); this.previousElementSibling.classList.add('d-none');"
+                                         onerror="this.onerror=null; this.alt='Erro ao carregar imagem'; this.previousElementSibling.innerHTML='<i class=\\'fas fa-exclamation-triangle text-danger fa-3x\\'></i><p class=\\'text-danger mt-3\\'>Erro ao carregar a imagem</p>'; this.previousElementSibling.previousElementSibling.classList.add('d-none');">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="downloadCNHEdit()">
+                                        <i class="fas fa-download me-1"></i>Baixar
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Remover modal anterior se existir
+                $('#cnhModalEdit').remove();
+                
+                // Adicionar e mostrar novo modal
+                $('body').append(modalHtml);
+                const modal = new bootstrap.Modal(document.getElementById('cnhModalEdit'));
+                modal.show();
+                
+            } else if (fileExtension === 'pdf') {
+                // Para PDF, abrir em nova aba
+                window.open(fileUrl, '_blank');
+            } else {
+                // Para outros tipos, forçar download
+                downloadCNHEdit();
+            }
+        }
+
+        function downloadCNHEdit() {
+            if (!cnhPath) {
+                if (window.NotificationSystem) {
+                    window.NotificationSystem.warning('Nenhum documento CNH encontrado.');
+                }
+                return;
+            }
+
+            const fileUrl = `/Clientes/GetCNHFile?id=${clienteId}`;
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.download = `CNH_${clienteNome.replace(/\s+/g, '_')}.jpg`;
+            link.style.display = 'none';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            if (window.NotificationSystem) {
+                window.NotificationSystem.success('Download iniciado!');
+            }
+        }
     </script>
 }
 
 <style>
-    .required::after {
-        content: " *";
-        color: red;
-    }
+/* Ajustar padding para evitar corte do título */
+.content-wrapper {
+    padding-top: 2rem !important;
+}
 
+/* Garantir espaço adicional no topo quando houver alerts */
+.row:first-child {
+    margin-top: 1rem;
+}
+
+/* Se houver alert visível, aumentar margem */
+.alert:not(.alert-dismissible) ~ .row:first-of-type,
+.alert-dismissible ~ .row:first-of-type {
+    margin-top: 1.5rem !important;
+}
+
+/* Marcador de campo obrigatório */
+.required::after {
+    content: " *";
+    color: red;
+}
+
+    /* Campo inválido */
     .is-invalid {
         border-color: #dc3545 !important;
     }
 
+    /* Mensagem de erro */
     .text-danger.small {
         display: block;
         margin-top: 0.25rem;
+    }
+
+    /* Animação de destaque para validação */
+    @@keyframes pulse {
+        0%, 100% { 
+            transform: scale(1); 
+        }
+        50% { 
+            transform: scale(1.02); 
+            box-shadow: 0 0 20px rgba(13, 110, 253, 0.5); 
+        }
+    }
+
+    /* Garantir scroll suave */
+    html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 80px;
+    }
+
+    /* Ajustar modal para CNH */
+    .modal-xl {
+        max-width: 90%;
+    }
+
+    /* Responsividade */
+    @@media (max-width: 768px) {
+        .modal-xl {
+            max-width: 95%;
+            margin: 0.5rem auto;
+        }
+
+        h2.text-gradient {
+            font-size: 1.5rem;
+        }
     }
 </style>

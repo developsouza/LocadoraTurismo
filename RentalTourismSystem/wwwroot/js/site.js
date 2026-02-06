@@ -421,25 +421,25 @@ class NotificationSystem {
         const icon = iconMap[notif.tipo] || iconMap['info'];
 
         return `
-            <div class="dropdown-item notification-item" data-id="${notif.id}">
-                <div class="d-flex">
+            <div class="notification-item" data-id="${notif.id}">
+                <div class="d-flex align-items-start">
                     <div class="flex-shrink-0 me-3">
-                        <i class="fas fa-${icon}"></i>
+                        <i class="fas fa-${icon} fa-lg"></i>
                     </div>
-                    <div class="flex-grow-1">
-                        <h6 class="mb-1">${notif.titulo}</h6>
-                        <p class="mb-1 small text-muted">${notif.mensagem}</p>
-                        <div class="d-flex justify-content-between align-items-center">
+                    <div class="flex-grow-1" style="min-width: 0;">
+                        <h6 class="mb-1 text-truncate">${notif.titulo}</h6>
+                        <p class="mb-2 small text-muted" style="line-height: 1.4;">${notif.mensagem}</p>
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                             <small class="text-muted">${notif.tempoDecorrido}</small>
                             ${notif.linkAcao ? `<a href="${notif.linkAcao}" class="btn btn-sm btn-outline-primary">${notif.textoLinkAcao || 'Ver'}</a>` : ''}
                         </div>
                     </div>
-                    <button class="btn btn-sm btn-link text-muted" onclick="NotificationSystem.markAsRead(${notif.id})" title="Marcar como lida">
+                    <button class="btn btn-sm btn-link text-muted p-1 ms-2" onclick="NotificationSystem.markAsRead(${notif.id})" title="Marcar como lida">
                         <i class="fas fa-check"></i>
                     </button>
                 </div>
             </div>
-            <div class="dropdown-divider"></div>
+            <div class="dropdown-divider m-0"></div>
         `;
     }
 

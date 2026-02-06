@@ -52,7 +52,7 @@
                         <div class="nav-section-title">Principal</div>
                         <ul class="nav flex-column">
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                <a class="nav-link" asp-controller="Home" asp-action="Index" title="Dashboard">
                                     <i class="fas fa-chart-line"></i>
                                     <span class="nav-link-text">Dashboard</span>
                                 </a>
@@ -67,19 +67,19 @@
                             <div class="nav-section-title">Locação</div>
                             <ul class="nav flex-column">
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Clientes" asp-action="Index">
+                                    <a class="nav-link" asp-controller="Clientes" asp-action="Index" title="Clientes">
                                         <i class="fas fa-users"></i>
                                         <span class="nav-link-text">Clientes</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Veiculos" asp-action="Index">
+                                    <a class="nav-link" asp-controller="Veiculos" asp-action="Index" title="Veículos">
                                         <i class="fas fa-car"></i>
                                         <span class="nav-link-text">Veículos</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link nav-dropdown" href="#locacaoSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="false">
+                                    <a class="nav-link nav-dropdown" href="#locacaoSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="false" title="Locações">
                                         <i class="fas fa-file-contract"></i>
                                         <span class="nav-link-text">Locações</span>
                                         <i class="fas fa-chevron-right nav-dropdown-arrow"></i>
@@ -94,7 +94,7 @@
                                     </div>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link nav-dropdown" href="#manutencaoSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="false">
+                                    <a class="nav-link nav-dropdown" href="#manutencaoSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="false" title="Manutenções">
                                         <i class="fas fa-tools"></i>
                                         <span class="nav-link-text">Manutenções</span>
                                         <i class="fas fa-chevron-right nav-dropdown-arrow"></i>
@@ -125,13 +125,13 @@
                             <div class="nav-section-title">Turismo</div>
                             <ul class="nav flex-column">
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="PacotesViagens" asp-action="Index">
+                                    <a class="nav-link" asp-controller="PacotesViagens" asp-action="Index" title="Pacotes de Viagem">
                                         <i class="fas fa-suitcase-rolling"></i>
                                         <span class="nav-link-text">Pacotes</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link nav-dropdown" href="#turismoSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="false">
+                                    <a class="nav-link nav-dropdown" href="#turismoSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="false" title="Reservas de Viagem">
                                         <i class="fas fa-calendar-check"></i>
                                         <span class="nav-link-text">Reservas</span>
                                         <i class="fas fa-chevron-right nav-dropdown-arrow"></i>
@@ -156,19 +156,19 @@
                             <div class="nav-section-title">Análises</div>
                             <ul class="nav flex-column">
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Relatorios" asp-action="Index">
+                                    <a class="nav-link" asp-controller="Relatorios" asp-action="Index" title="Relatórios">
                                         <i class="fas fa-chart-bar"></i>
                                         <span class="nav-link-text">Relatórios</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Relatorios" asp-action="VeiculosMaisAlugados">
+                                    <a class="nav-link" asp-controller="Relatorios" asp-action="VeiculosMaisAlugados" title="Veículos Mais Alugados">
                                         <i class="fas fa-trophy"></i>
                                         <span class="nav-link-text">Top Veículos</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Relatorios" asp-action="PacotesMaisVendidos">
+                                    <a class="nav-link" asp-controller="Relatorios" asp-action="PacotesMaisVendidos" title="Pacotes Mais Vendidos">
                                         <i class="fas fa-trophy"></i>
                                         <span class="nav-link-text">Top Viagens</span>
                                     </a>
@@ -184,13 +184,13 @@
                             <div class="nav-section-title">Administração</div>
                             <ul class="nav flex-column">
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Agencias" asp-action="Index">
+                                    <a class="nav-link" asp-controller="Agencias" asp-action="Index" title="Agências">
                                         <i class="fas fa-building"></i>
                                         <span class="nav-link-text">Agências</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Funcionarios" asp-action="Index">
+                                    <a class="nav-link" asp-controller="Funcionarios" asp-action="Index" title="Funcionários">
                                         <i class="fas fa-user-tie"></i>
                                         <span class="nav-link-text">Funcionários</span>
                                     </a>
@@ -198,7 +198,7 @@
                                 @if (User.IsInRole("Admin"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link nav-dropdown" href="#adminSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="false">
+                                        <a class="nav-link nav-dropdown" href="#adminSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="false" title="Configurações">
                                             <i class="fas fa-cogs"></i>
                                             <span class="nav-link-text">Configurações</span>
                                             <i class="fas fa-chevron-right nav-dropdown-arrow"></i>
@@ -227,13 +227,13 @@
                             <div class="nav-section-title">Modelos de Documentos</div>
                             <ul class="nav flex-column">
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Documentos" asp-action="ContratoLocacaoTemplate" target="_blank">
+                                    <a class="nav-link" asp-controller="Documentos" asp-action="ContratoLocacaoTemplate" target="_blank" title="Contrato de Locação">
                                         <i class="fas fa-file-contract"></i>
                                         <span class="nav-link-text">Contrato de Locação</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Documentos" asp-action="LaudoVistoriaTemplate" target="_blank">
+                                    <a class="nav-link" asp-controller="Documentos" asp-action="LaudoVistoriaTemplate" target="_blank" title="Laudo de Vistoria">
                                         <i class="fas fa-clipboard-check"></i>
                                         <span class="nav-link-text">Laudo de Vistoria</span>
                                     </a>
@@ -247,13 +247,13 @@
                         <div class="nav-section-title">Ajuda</div>
                         <ul class="nav flex-column">
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Documentacao" asp-action="Index">
+                                <a class="nav-link" asp-controller="Documentacao" asp-action="Index" title="Documentação">
                                     <i class="fas fa-book"></i>
                                     <span class="nav-link-text">Documentação</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Documentacao" asp-action="GuiaRapido">
+                                <a class="nav-link" asp-controller="Documentacao" asp-action="GuiaRapido" title="Guia Rápido">
                                     <i class="fas fa-rocket"></i>
                                     <span class="nav-link-text">Guia Rápido</span>
                                 </a>
@@ -320,22 +320,22 @@
                                     0
                                 </span>
                             </button>
-                            <div class="dropdown-menu dropdown-menu-end notification-dropdown" style="width: 380px; max-height: 500px; overflow-y: auto;">
-                                <div class="dropdown-header d-flex justify-content-between align-items-center">
+                            <div class="dropdown-menu dropdown-menu-end notification-dropdown">
+                                <div class="notification-dropdown-header d-flex justify-content-between align-items-center">
                                     <span><i class="fas fa-bell me-2"></i>Notificações</span>
                                     <button class="btn btn-sm btn-link text-primary p-0" id="mark-all-read-btn" title="Marcar todas como lidas">
                                         <i class="fas fa-check-double"></i>
                                     </button>
                                 </div>
-                                <div class="dropdown-divider"></div>
-                                <div id="notifications-list">
+                                <div class="dropdown-divider m-0"></div>
+                                <div id="notifications-list" class="notification-list-container">
                                     <div class="dropdown-item text-center text-muted py-4">
                                         <i class="fas fa-spinner fa-spin fa-2x mb-2 d-block"></i>
                                         <small>Carregando...</small>
                                     </div>
                                 </div>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-center small text-primary" href="#" id="ver-todas-notificacoes">
+                                <div class="dropdown-divider m-0"></div>
+                                <a class="dropdown-item text-center small text-primary notification-footer" href="#" id="ver-todas-notificacoes">
                                     <i class="fas fa-eye me-1"></i>Ver todas as notificações
                                 </a>
                             </div>
@@ -491,6 +491,9 @@
     <!-- Scripts - ORDEM OTIMIZADA PARA SISTEMA CONSOLIDADO -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- SweetAlert2 para dialogs modernos -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Sistema Principal Consolidado - CARREGA PRIMEIRO -->
     <script src="~/js/site.js" asp-append-version="true"></script>

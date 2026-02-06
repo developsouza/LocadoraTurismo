@@ -119,6 +119,38 @@ app.UseSecurityHeaders();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+// Configuração adicional para servir arquivos da pasta uploads
+var uploadsPath = Path.Combine(builder.Environment.ContentRootPath, "uploads");
+
+// Criar pasta uploads se não existir
+if (!Directory.Exists(uploadsPath))
+{
+    Directory.CreateDirectory(uploadsPath);
+    Log.Information("Pasta uploads criada em: {UploadsPath}", uploadsPath);
+
+    // Criar subpastas
+    Directory.CreateDirectory(Path.Combine(uploadsPath, "cnh"));
+    Directory.CreateDirectory(Path.Combine(uploadsPath, "documentos"));
+    Log.Information("Subpastas de uploads criadas com sucesso");
+}
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads",
+    OnPrepareResponse = ctx =>
+    {
+        // Adicionar headers de cache para imagens
+        if (ctx.File.Name.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+            ctx.File.Name.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+            ctx.File.Name.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+            ctx.File.Name.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+        {
+            ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=3600");
+        }
+    }
+});
+
 // Roteamento
 app.UseRouting();
 

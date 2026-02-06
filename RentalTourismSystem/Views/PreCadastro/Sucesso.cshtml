@@ -1,0 +1,552 @@
+@{
+    ViewData["Title"] = "Pré-Cadastro Realizado com Sucesso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+            <!-- Card de Sucesso -->
+            <div class="success-card-dark">
+                <div class="success-card-body">
+                    <!-- Ícone de Sucesso -->
+                    <div class="mb-4 text-center">
+                        <div class="success-icon">
+                            <i class="fas fa-check-circle fa-5x text-success"></i>
+                        </div>
+                    </div>
+
+                    <!-- Título -->
+                    <h1 class="success-title text-center mb-3">
+                        Pré-Cadastro Realizado!
+                    </h1>
+
+                    <!-- Mensagem -->
+                    <p class="success-subtitle text-center mb-4">
+                        Seu pré-cadastro e solicitação de reserva foram recebidos com sucesso!
+                    </p>
+
+                    @if (TempData["NomeCliente"] != null)
+                    {
+                        <!-- Resumo da Solicitação -->
+                        <div class="summary-card-dark mb-4">
+                            <div class="summary-card-header">
+                                <i class="fas fa-calendar-check me-2"></i>Resumo da Sua Solicitação
+                            </div>
+                            <div class="summary-card-body">
+                                <div class="summary-item">
+                                    <i class="fas fa-user me-2 icon-cyan"></i>
+                                    <strong>Cliente:</strong> @TempData["NomeCliente"]
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-6 mb-2">
+                                        <div class="summary-item">
+                                            <i class="fas fa-calendar-alt me-2 text-success"></i>
+                                            <strong>Início:</strong> @TempData["PeriodoInicio"]
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="summary-item">
+                                            <i class="fas fa-calendar-alt me-2 text-danger"></i>
+                                            <strong>Término:</strong> @TempData["PeriodoFim"]
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="period-badge mt-3">
+                                    <i class="fas fa-clock me-2"></i>
+                                    <strong>Período total:</strong> @TempData["QuantidadeDias"] dia(s)
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Próximos Passos -->
+                    <div class="steps-card-dark mb-4">
+                        <div class="steps-card-header">
+                            <i class="fas fa-info-circle me-2"></i>Próximos Passos
+                        </div>
+                        <div class="steps-card-body">
+                            <ol class="steps-list-success">
+                                <li>
+                                    <strong>Verificação:</strong> Nossa equipe irá verificar seus dados, documentos e disponibilidade para o período solicitado.
+                                </li>
+                                <li>
+                                    <strong>Contato:</strong> Entraremos em contato através do telefone informado em até 24 horas úteis.
+                                </li>
+                                <li>
+                                    <strong>Finalização:</strong> Você receberá instruções para completar seu cadastro e confirmar a reserva.
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Tempo de Processamento -->
+            <div class="processing-card-dark mt-4">
+                <div class="processing-card-header">
+                    <i class="fas fa-clock me-2"></i>Tempo de Processamento
+                </div>
+                <div class="processing-card-body">
+                    Em média, processamos novos cadastros e verificamos disponibilidade em <strong>1 a 2 dias úteis</strong>.
+                    Você receberá uma notificação assim que seu cadastro for aprovado e a reserva confirmada.
+                </div>
+            </div>
+
+            <!-- Card: Precisa de Ajuda -->
+            <div class="help-card-dark mt-4">
+                <div class="help-card-header">
+                    <i class="fas fa-headset me-2"></i>Precisa de Ajuda?
+                </div>
+                <div class="help-card-body">
+                    <p class="mb-3">Se tiver alguma dúvida, entre em contato conosco:</p>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope me-2"></i>
+                        <strong>Email:</strong> locadoralitoralsul@gmail.com
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone me-2"></i>
+                        <strong>Telefone:</strong> (83) 99901-5407
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="d-grid gap-3 mt-4">
+                <a href="/" class="btn-primary-gradient">
+                    <i class="fas fa-home me-2"></i>Voltar ao Início
+                </a>
+                <a href="/PreCadastro" class="btn-secondary-dark">
+                    <i class="fas fa-plus me-2"></i>Fazer Outro Pré-Cadastro
+                </a>
+            </div>
+
+            <!-- Card de Dica -->
+            <div class="tip-card-dark mt-4">
+                <div class="tip-card-body">
+                    <i class="fas fa-mobile-alt fa-2x me-3 text-warning"></i>
+                    <div>
+                        <strong>Mantenha seu telefone disponível!</strong><br>
+                        <small>Nossa equipe entrará em contato para confirmar a disponibilidade do veículo no período solicitado, seus dados e fornecer instruções para finalizar o cadastro e reserva.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    /* ============================================
+       TEMA DARK/LIGHT - PÁGINA DE SUCESSO
+       ============================================ */
+    
+    :root {
+        --bg-dark: #2b3544;
+        --bg-card: #313b4c;
+        --bg-darker: #1e2530;
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --text-light: #e0e6ed;
+        --text-muted: #8b95a5;
+        --border-color: #3d4a5c;
+        --success-color: #10b981;
+        --icon-cyan: #06b6d4;
+        --icon-primary: #5b7cff;
+    }
+
+    /* Animação do ícone de sucesso */
+    .success-icon {
+        animation: scaleIn 0.5s ease-in-out;
+    }
+
+    @@keyframes scaleIn {
+        from {
+            transform: scale(0);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    /* Card Principal de Sucesso */
+    .success-card-dark {
+        background-color: var(--bg-card);
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .success-card-body {
+        padding: 40px 30px;
+    }
+
+    .success-title {
+        color: var(--success-color);
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .success-subtitle {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+    }
+
+    /* Card de Resumo */
+    .summary-card-dark {
+        background-color: rgba(6, 182, 212, 0.1);
+        border: 1px solid rgba(6, 182, 212, 0.3);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .summary-card-header {
+        background-color: rgba(6, 182, 212, 0.15);
+        color: var(--icon-cyan);
+        padding: 12px 20px;
+        font-weight: 600;
+        border-bottom: 1px solid rgba(6, 182, 212, 0.3);
+    }
+
+    .summary-card-body {
+        padding: 20px;
+        color: var(--text-light);
+    }
+
+    .summary-item {
+        color: var(--text-light);
+        margin-bottom: 8px;
+    }
+
+    .icon-cyan {
+        color: var(--icon-cyan);
+    }
+
+    .period-badge {
+        background-color: rgba(91, 124, 255, 0.15);
+        border: 1px solid rgba(91, 124, 255, 0.3);
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: var(--text-light);
+        text-align: center;
+    }
+
+    /* Card de Passos */
+    .steps-card-dark {
+        background-color: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .steps-card-header {
+        background-color: rgba(16, 185, 129, 0.15);
+        color: var(--success-color);
+        padding: 12px 20px;
+        font-weight: 600;
+        border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .steps-card-body {
+        padding: 20px;
+        color: var(--text-light);
+    }
+
+    .steps-list-success {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .steps-list-success li {
+        margin-bottom: 12px;
+        color: var(--text-light);
+        line-height: 1.6;
+    }
+
+    .steps-list-success li:last-child {
+        margin-bottom: 0;
+    }
+
+    .steps-list-success strong {
+        color: var(--success-color);
+    }
+
+    /* Card de Processamento - AJUSTADO PARA DARK/LIGHT */
+    .processing-card-dark {
+        background-color: rgba(91, 124, 255, 0.05);
+        border: 1px solid rgba(91, 124, 255, 0.3);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .processing-card-header {
+        background-color: rgba(91, 124, 255, 0.1);
+        color: var(--icon-primary);
+        padding: 12px 20px;
+        font-weight: 600;
+        border-bottom: 1px solid rgba(91, 124, 255, 0.3);
+    }
+
+    .processing-card-body {
+        padding: 20px;
+        color: var(--text-light);
+        line-height: 1.6;
+    }
+
+    .processing-card-body strong {
+        color: var(--icon-primary);
+    }
+
+    /* Card de Ajuda */
+    .help-card-dark {
+        background-color: var(--bg-darker);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .help-card-header {
+        background-color: rgba(91, 124, 255, 0.1);
+        color: var(--icon-primary);
+        padding: 12px 20px;
+        font-weight: 600;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .help-card-body {
+        padding: 20px;
+        color: var(--text-light);
+    }
+
+    .contact-item {
+        margin-bottom: 8px;
+        color: var(--text-light);
+    }
+
+    .contact-item i {
+        color: var(--icon-primary);
+    }
+
+    /* Card de Dica */
+    .tip-card-dark {
+        background-color: rgba(251, 191, 36, 0.08);
+        border: 1px solid rgba(251, 191, 36, 0.3);
+        border-radius: 12px;
+        padding: 18px 20px;
+    }
+
+    .tip-card-body {
+        display: flex;
+        align-items: center;
+        color: var(--text-light);
+    }
+
+    .tip-card-body strong {
+        color: var(--text-light);
+    }
+
+    .tip-card-body small {
+        color: var(--text-muted);
+    }
+
+    /* Botões */
+    .btn-primary-gradient {
+        background: var(--primary-gradient);
+        color: white;
+        font-weight: 600;
+        font-size: 1.1rem;
+        padding: 16px 32px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+
+    .btn-primary-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(91, 124, 255, 0.4);
+        color: white;
+    }
+
+    .btn-secondary-dark {
+        background-color: transparent;
+        color: var(--text-light);
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 14px 32px;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+
+    .btn-secondary-dark:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        border-color: var(--icon-primary);
+        color: var(--text-light);
+    }
+
+    /* Responsivo */
+    @@media (max-width: 768px) {
+        .success-card-body {
+            padding: 30px 20px;
+        }
+
+        .success-title {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* Light Mode Support - Otimizado */
+    @@media (prefers-color-scheme: light) {
+        :root {
+            --bg-dark: #f5f7fa;
+            --bg-card: #ffffff;
+            --bg-darker: #ffffff;
+            --text-light: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #d1d5db;
+            --success-color: #10b981;
+            --icon-cyan: #06b6d4;
+            --icon-primary: #5b7cff;
+        }
+
+        body {
+            background-color: #f5f7fa !important;
+        }
+
+        .success-card-dark {
+            background-color: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-color: #e5e7eb;
+        }
+
+        .success-card-body {
+            background-color: #ffffff;
+        }
+
+        .success-title {
+            color: var(--success-color);
+        }
+
+        .success-subtitle {
+            color: #6b7280;
+        }
+
+        .summary-card-dark {
+            background-color: rgba(6, 182, 212, 0.08);
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+
+        .summary-card-header {
+            background-color: rgba(6, 182, 212, 0.12);
+            border-bottom-color: rgba(6, 182, 212, 0.3);
+        }
+
+        .summary-card-body {
+            color: #1f2937;
+        }
+
+        .summary-item {
+            color: #1f2937;
+        }
+
+        .period-badge {
+            background-color: rgba(91, 124, 255, 0.1);
+            border-color: rgba(91, 124, 255, 0.3);
+            color: #1f2937;
+        }
+
+        .steps-card-dark {
+            background-color: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .steps-card-header {
+            background-color: rgba(16, 185, 129, 0.12);
+            border-bottom-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .steps-card-body {
+            color: #1f2937;
+        }
+
+        .steps-list-success li {
+            color: #1f2937;
+        }
+
+        .processing-card-dark {
+            background-color: rgba(91, 124, 255, 0.06);
+            border-color: rgba(91, 124, 255, 0.3);
+        }
+
+        .processing-card-header {
+            background-color: rgba(91, 124, 255, 0.1);
+            border-bottom-color: rgba(91, 124, 255, 0.3);
+        }
+
+        .processing-card-body {
+            color: #1f2937;
+        }
+
+        .help-card-dark {
+            background-color: #ffffff;
+            border-color: #e5e7eb;
+        }
+
+        .help-card-header {
+            background-color: rgba(91, 124, 255, 0.08);
+            border-bottom-color: #e5e7eb;
+        }
+
+        .help-card-body {
+            color: #1f2937;
+        }
+
+        .contact-item {
+            color: #1f2937;
+        }
+
+        .tip-card-dark {
+            background-color: rgba(251, 191, 36, 0.08);
+            border-color: rgba(251, 191, 36, 0.3);
+        }
+
+        .tip-card-body {
+            color: #1f2937;
+        }
+
+        .tip-card-body strong {
+            color: #1f2937;
+        }
+
+        .tip-card-body small {
+            color: #6b7280;
+        }
+
+        .btn-secondary-dark {
+            color: #1f2937;
+            border-color: #d1d5db;
+        }
+
+        .btn-secondary-dark:hover {
+            background-color: #f9fafb;
+            border-color: var(--icon-primary);
+            color: #1f2937;
+        }
+    }
+</style>
+

@@ -70,6 +70,10 @@ namespace RentalTourismSystem.Models
         [Display(Name = "Categoria CNH")]
         public string? CategoriaCNH { get; set; }
 
+        [StringLength(500)]
+        [Display(Name = "Caminho da CNH")]
+        public string? CNHPath { get; set; }
+
         [Display(Name = "Data de Cadastro")]
         public DateTime DataCadastro { get; set; } = DateTime.Now;
 

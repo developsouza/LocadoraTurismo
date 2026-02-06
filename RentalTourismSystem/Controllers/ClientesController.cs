@@ -354,6 +354,66 @@ namespace RentalTourismSystem.Controllers
         }
 
         /// <summary>
+        /// Endpoint para servir arquivo CNH do cliente de forma segura
+        /// </summary>
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetCNHFile(int id)
+        {
+            try
+            {
+                var cliente = await _context.Clientes.FindAsync(id);
+
+                if (cliente == null)
+                {
+                    _logger.LogWarning("Cliente {ClienteId} não encontrado ao tentar acessar CNH", id);
+                    return NotFound(new { message = "Cliente não encontrado" });
+                }
+
+                if (string.IsNullOrEmpty(cliente.CNHPath))
+                {
+                    _logger.LogWarning("Cliente {ClienteId} não possui CNH cadastrada", id);
+                    return NotFound(new { message = "Cliente não possui CNH cadastrada" });
+                }
+
+                // Construir caminho completo do arquivo
+                // Remove a barra inicial se existir para Path.Combine funcionar corretamente
+                var relativePath = cliente.CNHPath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString());
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+
+                if (!System.IO.File.Exists(filePath))
+                {
+                    _logger.LogError("Arquivo CNH não encontrado no caminho: {FilePath} (CNHPath no banco: {CNHPath})", filePath, cliente.CNHPath);
+                    return NotFound(new { message = "Arquivo CNH não encontrado no servidor" });
+                }
+
+                // Determinar o tipo de conteúdo baseado na extensão
+                var extension = Path.GetExtension(filePath).ToLowerInvariant();
+                var contentType = extension switch
+                {
+                    ".jpg" or ".jpeg" => "image/jpeg",
+                    ".png" => "image/png",
+                    ".gif" => "image/gif",
+                    ".bmp" => "image/bmp",
+                    ".pdf" => "application/pdf",
+                    _ => "application/octet-stream"
+                };
+
+                var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                var fileName = Path.GetFileName(filePath);
+
+                _logger.LogInformation("Arquivo CNH do cliente {ClienteId} servido com sucesso para {User}", id, User.Identity?.Name);
+
+                return File(fileBytes, contentType, fileName);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao servir arquivo CNH do cliente {ClienteId}", id);
+                return StatusCode(500, new { message = "Erro ao carregar arquivo CNH" });
+            }
+        }
+
+        /// <summary>
         /// ✅ NOVO: Limpa e formata dados do cliente ANTES da validação
         /// </summary>
         private void LimparDadosCliente(Cliente cliente)

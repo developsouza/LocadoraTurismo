@@ -348,7 +348,7 @@
     </div>
 </div>
 
-<!-- Modal de Confirmação Final - CORRIGIDO -->
+<!-- Modal de Confirmação Final - TOTALMENTE ADAPTATIVO -->
 @if (podeExcluir)
 {
     <div class="modal fade" id="modalConfirmacaoFinal" tabindex="-1" data-bs-backdrop="static">
@@ -359,69 +359,97 @@
                         <i class="fas fa-exclamation-triangle me-2"></i>CONFIRMAÇÃO FINAL DE EXCLUSÃO
                     </h5>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body bg-adaptive-surface">
+                    <!-- Seção de Aviso Principal -->
                     <div class="text-center mb-4">
-                        <i class="fas fa-exclamation-triangle fa-4x text-danger mb-3"></i>
-                        <h4 class="text-danger">ÚLTIMA CHANCE!</h4>
-                        <p class="lead">Você está prestes a excluir permanentemente:</p>
+                        <i class="fas fa-exclamation-triangle fa-4x text-danger mb-3 opacity-75"></i>
+                        <h4 class="text-danger fw-bold mb-3">ÚLTIMA CHANCE!</h4>
+                        <p class="text-adaptive-primary fw-semibold fs-5 mb-0">
+                            Você está prestes a excluir permanentemente:
+                        </p>
                     </div>
 
-                    <div class="alert alert-danger text-center">
-                        <h5 class="mb-3">
-                            <strong>"@Model.Nome"</strong><br>
-                            <code>@Model.CPF</code>
-                        </h5>
-
-                        @if (totalTransacoes > 0)
-                        {
-                            <div class="border-top pt-3">
-                                <p class="mb-1">
-                                    <strong>@totalTransacoes transações</strong> no valor de <strong>@valorTotalHistorico.ToString("C")</strong>
-                                </p>
-                                <p class="mb-0 small text-muted">
-                                    Relacionamento de @((DateTime.Now - Model.DataCadastro).Days) dias será perdido
-                                </p>
+                    <!-- Box de Informações do Cliente - ADAPTATIVO -->
+                    <div class="bg-danger bg-opacity-10 border border-danger border-2 rounded p-4 mb-4">
+                        <div class="text-center">
+                            <h5 class="text-adaptive-primary fw-bold mb-3 fs-4">"@Model.Nome"</h5>
+                            <div class="mb-3">
+                                <code class="text-danger px-3 py-2 rounded fs-6 fw-bold border border-danger">
+                                    @Model.CPF
+                                </code>
                             </div>
-                        }
+
+                            @if (totalTransacoes > 0)
+                            {
+                                <div class="border-top border-danger border-opacity-25 pt-3 mt-3">
+                                    <p class="text-adaptive-primary fw-semibold mb-2">
+                                        <strong class="text-danger">@totalTransacoes transações</strong> no valor de 
+                                        <strong class="text-danger">@valorTotalHistorico.ToString("C")</strong>
+                                    </p>
+                                    <p class="text-adaptive-secondary small mb-0">
+                                        <i class="fas fa-clock me-1"></i>
+                                        Relacionamento de <strong>@((DateTime.Now - Model.DataCadastro).Days) dias</strong> será perdido
+                                    </p>
+                                </div>
+                            }
+                        </div>
                     </div>
 
-                    <div class="checklist-confirmacao">
-                        <h6 class="mb-3">Para prosseguir, confirme que você:</h6>
+                    <!-- Checklist de Confirmação - ADAPTATIVO -->
+                    <div class="bg-adaptive-surface border border-adaptive rounded p-3 mb-3 shadow-sm">
+                        <h6 class="text-adaptive-primary fw-bold mb-3">
+                            <i class="fas fa-clipboard-check me-2"></i>Para prosseguir, confirme que você:
+                        </h6>
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="checkbox" id="confirmData">
-                            <label class="form-check-label" for="confirmData">
+                            <label class="form-check-label text-adaptive-primary fw-medium" for="confirmData">
                                 Verificou que todos os dados estão corretos
                             </label>
                         </div>
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="checkbox" id="confirmUndo">
-                            <label class="form-check-label" for="confirmUndo">
-                                Entendo que esta ação <strong>NÃO PODE ser desfeita</strong>
+                            <label class="form-check-label text-adaptive-primary fw-medium" for="confirmUndo">
+                                Entendo que esta ação <strong class="text-danger fw-bold">NÃO PODE ser desfeita</strong>
                             </label>
                         </div>
-                        <div class="form-check mb-3">
+                        <div class="form-check mb-0">
                             <input class="form-check-input" type="checkbox" id="confirmResponsibility">
-                            <label class="form-check-label" for="confirmResponsibility">
+                            <label class="form-check-label text-adaptive-primary fw-medium" for="confirmResponsibility">
                                 Assumo total responsabilidade por esta exclusão
                             </label>
                         </div>
                     </div>
 
-                    <div class="final-confirmation bg-dark text-white p-3 rounded">
-                        <h6 class="text-center mb-3">CONFIRMAÇÃO TEXTUAL OBRIGATÓRIA</h6>
-                        <p class="text-center mb-2 small">
-                            Digite <strong>"EXCLUIR"</strong> para confirmar:
-                        </p>
-                        <input type="text" id="confirmationText" class="form-control text-center"
-                               placeholder="Digite aqui..." autocomplete="off">
+                    <!-- Confirmação Textual - ADAPTATIVO -->
+                    <div class="bg-adaptive-surface-secondary border border-danger border-2 p-4 rounded shadow">
+                        <div class="text-center">
+                            <h6 class="text-danger fw-bold text-uppercase mb-3">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Confirmação Textual Obrigatória
+                                <i class="fas fa-exclamation-triangle ms-2"></i>
+                            </h6>
+                            <p class="text-adaptive-primary fw-semibold mb-3">
+                                Digite <strong class="text-danger fs-4 fw-bold px-2">"EXCLUIR"</strong> para confirmar:
+                            </p>
+                            <input type="text" 
+                                   id="confirmationText" 
+                                   class="form-control form-control-lg text-center text-adaptive-primary border-danger border-2 fw-bold shadow-sm"
+                                   placeholder="Digite EXCLUIR aqui..." 
+                                   autocomplete="off" 
+                                   style="font-size: 1.2rem; letter-spacing: 2px; background-color: var(--bg-surface);">
+                            <small class="text-adaptive-secondary d-block mt-2">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Atenção: maiúsculas e minúsculas fazem diferença
+                            </small>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-1"></i>Cancelar
+                <div class="modal-footer justify-content-between border-top border-adaptive" style="background-color: var(--bg-surface);">
+                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancelar
                     </button>
-                    <button type="button" class="btn btn-danger" id="btnConfirmarFinalModal" disabled>
-                        <i class="fas fa-trash-alt me-1"></i>EXCLUIR PERMANENTEMENTE
+                    <button type="button" class="btn btn-danger btn-lg" id="btnConfirmarFinalModal" disabled>
+                        <i class="fas fa-trash-alt me-2"></i>EXCLUIR PERMANENTEMENTE
                     </button>
                 </div>
             </div>
