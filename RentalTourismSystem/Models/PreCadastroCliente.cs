@@ -40,6 +40,11 @@ namespace RentalTourismSystem.Models
         [DataMaiorQue("DataInicioLocacao", ErrorMessage = "A data final deve ser posterior à data inicial")]
         public DateTime DataFinalLocacao { get; set; } = DateTime.Now.AddDays(8);
 
+        [Required(ErrorMessage = "Selecione um veículo")]
+        [Display(Name = "Veículo Desejado")]
+        [Range(1, int.MaxValue, ErrorMessage = "Selecione um veículo válido")]
+        public int VeiculoId { get; set; }
+
         [Required(ErrorMessage = "Você deve confirmar que não é um robô")]
         [Display(Name = "Não sou um robô")]
         [Range(typeof(bool), "true", "true", ErrorMessage = "Você deve confirmar que não é um robô")]

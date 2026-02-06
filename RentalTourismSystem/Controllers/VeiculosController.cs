@@ -589,15 +589,8 @@ namespace RentalTourismSystem.Controllers
                     return NotFound(new { message = "Veículo não encontrado" });
                 }
 
-                if (veiculo.StatusCarro.Status != "Disponível")
-                {
-                    return Json(new
-                    {
-                        disponivel = false,
-                        motivo = $"Veículo está com status '{veiculo.StatusCarro.Status}'"
-                    });
-                }
-
+                // ✅ ATUALIZADO: Verificar se há reservas ou locações ativas no período
+                // Considera tanto locações ativas quanto reservas futuras
                 var conflito = await _context.Locacoes
                     .Where(l => l.VeiculoId == veiculoId && l.DataDevolucaoReal == null)
                     .AnyAsync(l => (dataInicio < l.DataDevolucao && dataFim > l.DataRetirada));
@@ -607,10 +600,22 @@ namespace RentalTourismSystem.Controllers
                     return Json(new
                     {
                         disponivel = false,
-                        motivo = "Veículo já está reservado para o período solicitado"
+                        motivo = "Veículo já está reservado ou alugado para o período solicitado"
                     });
                 }
 
+                // ✅ NOVO: Considerar status do veículo
+                // Se o status for Manutenção ou Indisponível, não permitir reserva
+                if (veiculo.StatusCarro.Status == "Manutenção" || veiculo.StatusCarro.Status == "Indisponível")
+                {
+                    return Json(new
+                    {
+                        disponivel = false,
+                        motivo = $"Veículo está com status '{veiculo.StatusCarro.Status}'"
+                    });
+                }
+
+                // ✅ ATUALIZADO: Disponível, Reservado ou Alugado sem conflito de datas
                 return Json(new
                 {
                     disponivel = true,
@@ -630,9 +635,11 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
+                // ✅ ATUALIZADO: Incluir veículos com status "Disponível" ou "Reservado"
+                // Reservados podem estar disponíveis para novas reservas em períodos diferentes
                 var query = _context.Veiculos
                     .Include(v => v.StatusCarro)
-                    .Where(v => v.StatusCarro.Status == "Disponível");
+                    .Where(v => v.StatusCarro.Status == "Disponível" || v.StatusCarro.Status == "Reservado");
 
                 if (!string.IsNullOrWhiteSpace(termo))
                 {
@@ -650,7 +657,8 @@ namespace RentalTourismSystem.Controllers
                         placa = v.Placa,
                         ano = v.Ano,
                         valorDiaria = v.ValorDiaria,
-                        descricao = $"{v.Marca} {v.Modelo} ({v.Placa}) - R$ {v.ValorDiaria:N2}/dia"
+                        status = v.StatusCarro.Status,
+                        descricao = $"{v.Marca} {v.Modelo} ({v.Placa}) - R$ {v.ValorDiaria:N2}/dia - {v.StatusCarro.Status}"
                     })
                     .Take(20)
                     .ToListAsync();
@@ -680,6 +688,151 @@ namespace RentalTourismSystem.Controllers
             {
                 _logger.LogError(ex, "Erro ao obter lista de status de carros por {User}", User.Identity?.Name);
                 return Json(new List<object>());
+            }
+        }
+
+        /// <summary>
+        /// ✅ NOVO: Retorna eventos do calendário de disponibilidade do veículo
+        /// Formato compatível com FullCalendar.js
+        /// </summary>
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetCalendarioDisponibilidade(int veiculoId, DateTime? start = null, DateTime? end = null)
+        {
+            try
+            {
+                _logger.LogInformation("Calendário de disponibilidade solicitado para veículo {VeiculoId}", veiculoId);
+
+                // Definir período padrão (90 dias para frente e 30 para trás)
+                var dataInicio = start ?? DateTime.Now.AddDays(-30).Date;
+                var dataFim = end ?? DateTime.Now.AddDays(90).Date;
+
+                // Buscar veículo com locações no período
+                var veiculo = await _context.Veiculos
+                    .Include(v => v.StatusCarro)
+                    .Include(v => v.Locacoes.Where(l => l.DataRetirada.Date <= dataFim && l.DataDevolucao.Date >= dataInicio))
+                        .ThenInclude(l => l.Cliente)
+                    .FirstOrDefaultAsync(v => v.Id == veiculoId);
+
+                if (veiculo == null)
+                {
+                    return NotFound(new { message = "Veículo não encontrado" });
+                }
+
+                var eventos = new List<object>();
+                var dataAtual = DateTime.Now.Date;
+
+                // Adicionar locações/reservas como eventos
+                foreach (var locacao in veiculo.Locacoes)
+                {
+                    var isReservaFutura = locacao.DataRetirada.Date > dataAtual && locacao.DataDevolucaoReal == null;
+                    var isLocacaoAtiva = locacao.DataRetirada.Date <= dataAtual && locacao.DataDevolucaoReal == null;
+                    var isLocacaoFinalizada = locacao.DataDevolucaoReal.HasValue;
+                    var isAtrasada = isLocacaoAtiva && locacao.DataDevolucao.Date < dataAtual;
+
+                    // Definir cor e tipo do evento
+                    string cor, tipo, icone;
+                    if (isAtrasada)
+                    {
+                        cor = "#dc3545"; // Vermelho
+                        tipo = "Atrasada";
+                        icone = "⚠️";
+                    }
+                    else if (isLocacaoAtiva)
+                    {
+                        cor = "#ffc107"; // Amarelo
+                        tipo = "Alugado";
+                        icone = "🚗";
+                    }
+                    else if (isReservaFutura)
+                    {
+                        cor = "#0dcaf0"; // Azul claro
+                        tipo = "Reservado";
+                        icone = "📅";
+                    }
+                    else if (isLocacaoFinalizada)
+                    {
+                        cor = "#6c757d"; // Cinza
+                        tipo = "Finalizada";
+                        icone = "✓";
+                    }
+                    else
+                    {
+                        cor = "#198754"; // Verde
+                        tipo = "Disponível";
+                        icone = "✓";
+                    }
+
+                    var diasAteRetirada = (locacao.DataRetirada.Date - dataAtual).Days;
+                    var duracaoDias = (int)Math.Ceiling((locacao.DataDevolucao - locacao.DataRetirada).TotalDays);
+
+                    eventos.Add(new
+                    {
+                        id = locacao.Id,
+                        title = $"{icone} {locacao.Cliente?.Nome ?? "Cliente N/A"}",
+                        start = locacao.DataRetirada.ToString("yyyy-MM-dd"),
+                        end = locacao.DataDevolucao.AddDays(1).ToString("yyyy-MM-dd"), // FullCalendar usa end exclusivo
+                        backgroundColor = cor,
+                        borderColor = cor,
+                        textColor = "#ffffff",
+                        classNames = new[] { $"evento-{tipo.ToLower()}" },
+                        extendedProps = new
+                        {
+                            locacaoId = locacao.Id,
+                            clienteNome = locacao.Cliente?.Nome ?? "N/A",
+                            clienteTelefone = locacao.Cliente?.Telefone ?? "",
+                            clienteEmail = locacao.Cliente?.Email ?? "",
+                            dataRetirada = locacao.DataRetirada.ToString("dd/MM/yyyy HH:mm"),
+                            dataDevolucao = locacao.DataDevolucao.ToString("dd/MM/yyyy HH:mm"),
+                            dataDevolucaoReal = locacao.DataDevolucaoReal?.ToString("dd/MM/yyyy HH:mm"),
+                            valorTotal = locacao.ValorTotal.ToString("C"),
+                            status = tipo,
+                            diasAteRetirada = diasAteRetirada,
+                            duracaoDias = duracaoDias,
+                            observacoes = locacao.Observacoes ?? "",
+                            isReserva = isReservaFutura,
+                            isAtiva = isLocacaoAtiva,
+                            isFinalizada = isLocacaoFinalizada,
+                            isAtrasada = isAtrasada
+                        }
+                    });
+                }
+
+                // Adicionar evento de status atual do veículo (hoje)
+                eventos.Add(new
+                {
+                    id = "status-atual",
+                    title = $"📍 Status: {veiculo.StatusCarro.Status}",
+                    start = dataAtual.ToString("yyyy-MM-dd"),
+                    allDay = true,
+                    backgroundColor = veiculo.StatusCarro.Status switch
+                    {
+                        "Disponível" => "#198754",
+                        "Alugado" => "#ffc107",
+                        "Reservado" => "#0dcaf0",
+                        "Manutenção" => "#dc3545",
+                        _ => "#6c757d"
+                    },
+                    borderColor = "#000000",
+                    textColor = "#ffffff",
+                    classNames = new[] { "evento-status-atual" },
+                    extendedProps = new
+                    {
+                        isStatusAtual = true,
+                        statusNome = veiculo.StatusCarro.Status,
+                        veiculoMarca = veiculo.Marca,
+                        veiculoModelo = veiculo.Modelo,
+                        veiculoPlaca = veiculo.Placa
+                    }
+                });
+
+                _logger.LogInformation("{QtdEventos} eventos retornados para o veículo {VeiculoId}", eventos.Count, veiculoId);
+                return Json(eventos);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter calendário de disponibilidade do veículo {VeiculoId}", veiculoId);
+                return StatusCode(500, new { message = "Erro ao carregar calendário" });
             }
         }
     }

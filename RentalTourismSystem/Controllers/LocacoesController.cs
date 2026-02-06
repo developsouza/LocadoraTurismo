@@ -223,14 +223,27 @@ namespace RentalTourismSystem.Controllers
                             throw new InvalidOperationException(validacaoCNH.ErrorMessage);
                         }
 
-                        // Atualizar status do veículo para Alugado
-                        var statusAlugado = await _context.StatusCarros.FirstOrDefaultAsync(s => s.Status == "Alugado");
+                        // ✅ NOVO: Determinar status do veículo baseado na data de retirada
                         var veiculo = await _context.Veiculos.FirstOrDefaultAsync(v => v.Id == locacao.VeiculoId);
-
-                        if (statusAlugado != null && veiculo != null)
+                        
+                        if (veiculo != null)
                         {
-                            veiculo.StatusCarroId = statusAlugado.Id;
-                            _context.Veiculos.Update(veiculo);
+                            var dataRetiradaLocal = locacao.DataRetirada.Date;
+                            var dataAtual = DateTime.Now.Date;
+                            
+                            // Se a retirada é hoje ou no passado, marca como Alugado
+                            // Se a retirada é no futuro, marca como Reservado
+                            var novoStatusNome = dataRetiradaLocal <= dataAtual ? "Alugado" : "Reservado";
+                            var novoStatus = await _context.StatusCarros.FirstOrDefaultAsync(s => s.Status == novoStatusNome);
+                            
+                            if (novoStatus != null)
+                            {
+                                veiculo.StatusCarroId = novoStatus.Id;
+                                _context.Veiculos.Update(veiculo);
+                                
+                                _logger.LogInformation("Veículo {VeiculoId} marcado como '{Status}' (retirada: {DataRetirada}, hoje: {DataAtual})",
+                                    veiculo.Id, novoStatusNome, dataRetiradaLocal, dataAtual);
+                            }
                         }
 
                         _context.Locacoes.Add(locacao);
@@ -456,16 +469,15 @@ namespace RentalTourismSystem.Controllers
                                 : $"{locacao.Observacoes}\n\nDevolução: {observacoesDevolucao}";
                         }
 
-                        // Alterar status do veículo para Disponível
-                        var statusDisponivel = await _context.StatusCarros.FirstOrDefaultAsync(s => s.Status == "Disponível");
-                        if (statusDisponivel != null)
-                        {
-                            locacao.Veiculo.StatusCarroId = statusDisponivel.Id;
-                        }
-
+                        // ✅ ATUALIZADO: Usar método inteligente para atualizar status
+                        // Verifica se há outras locações ativas ou reservas futuras
                         _context.Update(locacao);
                         _context.Update(locacao.Veiculo);
                         await _context.SaveChangesAsync();
+                        
+                        // Atualizar status do veículo após devolução
+                        await AtualizarStatusVeiculoAposDevolucao(locacao.VeiculoId);
+                        
                         await transaction.CommitAsync();
 
                         _logger.LogInformation("Locação {LocacaoId} finalizada por {User}", id, User.Identity?.Name);
@@ -685,6 +697,124 @@ namespace RentalTourismSystem.Controllers
             if (totalDias <= 0) return 0;
             return totalDias * veiculo.ValorDiaria;
         }
+
+        /// <summary>
+        /// ✅ NOVO: Ativa reservas que chegaram na data de retirada
+        /// Este método deve ser chamado periodicamente (pode ser via job agendado)
+        /// </summary>
+        [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> AtivarReservasPendentes()
+        {
+            try
+            {
+                var dataAtual = DateTime.Now.Date;
+                
+                // Buscar veículos com status "Reservado" que têm locações para hoje ou datas passadas
+                var veiculosReservados = await _context.Veiculos
+                    .Include(v => v.StatusCarro)
+                    .Include(v => v.Locacoes)
+                    .Where(v => v.StatusCarro.Status == "Reservado")
+                    .ToListAsync();
+
+                var statusAlugado = await _context.StatusCarros.FirstOrDefaultAsync(s => s.Status == "Alugado");
+                if (statusAlugado == null)
+                {
+                    return Json(new { success = false, message = "Status 'Alugado' não encontrado" });
+                }
+
+                var ativadas = 0;
+                foreach (var veiculo in veiculosReservados)
+                {
+                    // Verificar se há locação ativa (não devolvida) com data de retirada hoje ou no passado
+                    var locacaoParaAtivar = veiculo.Locacoes
+                        .Where(l => l.DataDevolucaoReal == null && l.DataRetirada.Date <= dataAtual)
+                        .OrderBy(l => l.DataRetirada)
+                        .FirstOrDefault();
+
+                    if (locacaoParaAtivar != null)
+                    {
+                        veiculo.StatusCarroId = statusAlugado.Id;
+                        _context.Veiculos.Update(veiculo);
+                        ativadas++;
+                        
+                        _logger.LogInformation("Reserva ativada: Veículo {VeiculoId} ({Placa}) alterado de 'Reservado' para 'Alugado' - Locação {LocacaoId}",
+                            veiculo.Id, veiculo.Placa, locacaoParaAtivar.Id);
+                    }
+                }
+
+                if (ativadas > 0)
+                {
+                    await _context.SaveChangesAsync();
+                }
+
+                _logger.LogInformation("{Quantidade} reserva(s) ativada(s) por {User}", ativadas, User.Identity?.Name);
+                return Json(new { success = true, message = $"{ativadas} reserva(s) ativada(s) com sucesso", quantidade = ativadas });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao ativar reservas pendentes por {User}", User.Identity?.Name);
+                return Json(new { success = false, message = "Erro ao ativar reservas" });
+            }
+        }
+
+        /// <summary>
+        /// ✅ NOVO: Verifica e atualiza o status do veículo após devolução
+        /// </summary>
+        private async Task AtualizarStatusVeiculoAposDevolucao(int veiculoId)
+        {
+            try
+            {
+                var veiculo = await _context.Veiculos
+                    .Include(v => v.StatusCarro)
+                    .Include(v => v.Locacoes)
+                    .FirstOrDefaultAsync(v => v.Id == veiculoId);
+
+                if (veiculo == null) return;
+
+                var dataAtual = DateTime.Now.Date;
+
+                // Verificar se há outras locações ativas para este veículo
+                var temOutraLocacaoAtiva = veiculo.Locacoes
+                    .Any(l => l.DataDevolucaoReal == null && l.VeiculoId == veiculoId);
+
+                if (!temOutraLocacaoAtiva)
+                {
+                    // Verificar se há reserva futura
+                    var proximaReserva = veiculo.Locacoes
+                        .Where(l => l.DataDevolucaoReal == null && l.DataRetirada.Date > dataAtual)
+                        .OrderBy(l => l.DataRetirada)
+                        .FirstOrDefault();
+
+                    StatusCarro? novoStatus;
+                    if (proximaReserva != null)
+                    {
+                        // Há reserva futura - marcar como Reservado
+                        novoStatus = await _context.StatusCarros.FirstOrDefaultAsync(s => s.Status == "Reservado");
+                        _logger.LogInformation("Veículo {VeiculoId} tem reserva futura para {DataRetirada}, marcando como Reservado",
+                            veiculoId, proximaReserva.DataRetirada);
+                    }
+                    else
+                    {
+                        // Não há reservas - marcar como Disponível
+                        novoStatus = await _context.StatusCarros.FirstOrDefaultAsync(s => s.Status == "Disponível");
+                        _logger.LogInformation("Veículo {VeiculoId} sem reservas, marcando como Disponível", veiculoId);
+                    }
+
+                    if (novoStatus != null)
+                    {
+                        veiculo.StatusCarroId = novoStatus.Id;
+                        _context.Veiculos.Update(veiculo);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar status do veículo {VeiculoId} após devolução", veiculoId);
+            }
+        }
+
 
         /// <summary>
         /// Obtém o funcionário logado com base no usuário Identity autenticado

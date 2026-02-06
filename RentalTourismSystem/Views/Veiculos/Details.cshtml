@@ -11,6 +11,14 @@
     var locacoesAtivas = locacoes.Where(l => l.DataDevolucaoReal == null).Count();
     var locacoesFinalizadas = locacoes.Where(l => l.DataDevolucaoReal != null).Count();
     
+    // ✅ NOVO: Identificar reservas futuras (locações não devolvidas com data de retirada no futuro)
+    var dataAtual = DateTime.Now.Date;
+    var reservasFuturas = locacoes
+        .Where(l => l.DataDevolucaoReal == null && l.DataRetirada.Date > dataAtual)
+        .OrderBy(l => l.DataRetirada)
+        .ToList();
+    var temReservas = reservasFuturas.Any();
+    
     // Cálculos financeiros seguros
     var valorTotalGerado = locacoes.Sum(l => l.ValorTotal);
     var valorMedioLocacao = totalLocacoes > 0 ? valorTotalGerado / totalLocacoes : 0;
@@ -154,6 +162,205 @@
                 <h3 class="stat-number">@Model.Quilometragem.ToString("N0")</h3>
                 <p class="stat-label mb-0">Quilometragem</p>
                 <small class="opacity-75">km rodados</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ NOVO: Seção de Reservas Futuras -->
+@if (temReservas)
+{
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-info border-info shadow-sm" style="border-left: 4px solid var(--info);">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-calendar-check fa-2x text-info"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h5 class="alert-heading mb-1">
+                            <i class="fas fa-bookmark me-2"></i>Reservas Futuras
+                        </h5>
+                        <p class="mb-0 small">
+                            Este veículo possui <strong>@reservasFuturas.Count reserva(s)</strong> confirmada(s) para as próximas datas.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    @foreach (var reserva in reservasFuturas)
+                    {
+                        var diasAteRetirada = (reserva.DataRetirada.Date - dataAtual).Days;
+                        var duracaoDias = (int)Math.Ceiling((reserva.DataDevolucao - reserva.DataRetirada).TotalDays);
+                        var isProximaReserva = reserva == reservasFuturas.First();
+                        
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card @(isProximaReserva ? "border-warning" : "border-secondary") h-100">
+                                @if (isProximaReserva)
+                                {
+                                    <div class="card-header bg-warning text-dark py-1">
+                                        <small><i class="fas fa-star me-1"></i><strong>Próxima Reserva</strong></small>
+                                    </div>
+                                }
+                                <div class="card-body p-3">
+                                    <!-- Cliente -->
+                                    <div class="mb-2">
+                                        <i class="fas fa-user text-primary me-2"></i>
+                                        <strong>@(reserva.Cliente?.Nome ?? "Cliente N/A")</strong>
+                                    </div>
+
+                                    <!-- Telefone -->
+                                    @if (!string.IsNullOrEmpty(reserva.Cliente?.Telefone))
+                                    {
+                                        <div class="mb-2">
+                                            <i class="fas fa-phone text-success me-2"></i>
+                                            <a href="tel:@reserva.Cliente.Telefone" class="text-decoration-none">
+                                                @reserva.Cliente.Telefone
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary ms-1 p-0 px-1" 
+                                                    onclick="copiarTexto('@reserva.Cliente.Telefone')" 
+                                                    title="Copiar telefone">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    }
+
+                                    <!-- Email -->
+                                    @if (!string.IsNullOrEmpty(reserva.Cliente?.Email))
+                                    {
+                                        <div class="mb-2">
+                                            <i class="fas fa-envelope text-info me-2"></i>
+                                            <a href="mailto:@reserva.Cliente.Email" class="text-decoration-none small">
+                                                @reserva.Cliente.Email
+                                            </a>
+                                        </div>
+                                    }
+
+                                    <hr class="my-2">
+
+                                    <!-- Data de Retirada -->
+                                    <div class="mb-1">
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar-plus text-primary me-1"></i>
+                                            <strong>Retirada:</strong>
+                                        </small>
+                                        <br>
+                                        <span class="badge bg-primary">
+                                            @reserva.DataRetirada.ToString("dd/MM/yyyy HH:mm")
+                                        </span>
+                                        <small class="text-muted ms-1">
+                                            (em @diasAteRetirada dia@(diasAteRetirada != 1 ? "s" : ""))
+                                        </small>
+                                    </div>
+
+                                    <!-- Data de Devolução -->
+                                    <div class="mb-2">
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar-minus text-danger me-1"></i>
+                                            <strong>Devolução:</strong>
+                                        </small>
+                                        <br>
+                                        <span class="badge bg-secondary">
+                                            @reserva.DataDevolucao.ToString("dd/MM/yyyy HH:mm")
+                                        </span>
+                                        <small class="text-muted ms-1">
+                                            (@duracaoDias dia@(duracaoDias != 1 ? "s" : ""))
+                                        </small>
+                                    </div>
+
+                                    <!-- Valor -->
+                                    <div class="mb-2">
+                                        <i class="fas fa-dollar-sign text-success me-2"></i>
+                                        <strong class="text-success">@reserva.ValorTotal.ToString("C")</strong>
+                                    </div>
+
+                                    <!-- Ações -->
+                                    <div class="d-grid gap-1 mt-3">
+                                        <a href="#" onclick="verDetalhesLocacao(@reserva.Id)" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye me-1"></i>Ver Detalhes
+                                        </a>
+                                        @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Employee"))
+                                        {
+                                            <button type="button" class="btn btn-sm btn-outline-info" 
+                                                    onclick="contatarCliente('@(reserva.Cliente?.Nome ?? "")', '@(reserva.Cliente?.Telefone ?? "")', '@(reserva.Cliente?.Email ?? "")')">
+                                                <i class="fas fa-comments me-1"></i>Contatar Cliente
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                                @if (isProximaReserva && diasAteRetirada <= 3)
+                                {
+                                    <div class="card-footer bg-warning text-dark py-1">
+                                        <small>
+                                            <i class="fas fa-exclamation-triangle me-1"></i>
+                                            Retirada em breve!
+                                        </small>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Informação Adicional -->
+                <div class="mt-3 p-2 bg-light rounded">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        <strong>Status Atual:</strong> 
+                        <span class="badge bg-info">@statusAtual</span>
+                        O veículo será automaticamente marcado como <strong>"Alugado"</strong> na data de retirada da reserva.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- ✅ NOVO: Calendário de Disponibilidade -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-calendar-alt me-2"></i>Calendário de Disponibilidade
+                    </h5>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-light" onclick="calendario.changeView('dayGridMonth')">
+                            <i class="fas fa-calendar me-1"></i>Mês
+                        </button>
+                        <button type="button" class="btn btn-outline-light" onclick="calendario.changeView('timeGridWeek')">
+                            <i class="fas fa-calendar-week me-1"></i>Semana
+                        </button>
+                        <button type="button" class="btn btn-outline-light" onclick="calendario.changeView('listMonth')">
+                            <i class="fas fa-list me-1"></i>Lista
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div id="calendarioDisponibilidade"></div>
+            </div>
+            <div class="card-footer bg-light">
+                <div class="row g-2 small">
+                    <div class="col-md-3 col-6">
+                        <span class="badge" style="background-color: #0dcaf0;">📅</span>
+                        <span class="ms-1">Reservado</span>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <span class="badge" style="background-color: #ffc107;">🚗</span>
+                        <span class="ms-1">Alugado</span>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <span class="badge" style="background-color: #dc3545;">⚠️</span>
+                        <span class="ms-1">Atrasada</span>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <span class="badge" style="background-color: #6c757d;">✓</span>
+                        <span class="ms-1">Finalizada</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -516,7 +723,33 @@
                         <i class="fas fa-circle @(locacoesAtivas > 0 ? "text-warning" : "text-success") me-2"></i>
                         <span>@(locacoesAtivas > 0 ? $"Possui {locacoesAtivas} locação(ões) ativa(s)" : "Sem pendências")</span>
                     </div>
+                    <!-- ✅ NOVO: Indicador de reservas futuras -->
+                    @if (temReservas)
+                    {
+                        <div class="status-item d-flex align-items-center mb-2">
+                            <i class="fas fa-circle text-info me-2"></i>
+                            <span><strong>@reservasFuturas.Count reserva(s) futura(s)</strong></span>
+                        </div>
+                    }
                 </div>
+
+                @if (temReservas)
+                {
+                    <hr>
+                    <div class="alert alert-info small mb-3">
+                        <i class="fas fa-bookmark me-1"></i>
+                        <strong>Reservas Confirmadas:</strong>
+                        @foreach (var reserva in reservasFuturas.Take(2))
+                        {
+                            var diasAte = (reserva.DataRetirada.Date - dataAtual).Days;
+                            <br><span>&bull; @reserva.Cliente?.Nome - em @diasAte dia@(diasAte != 1 ? "s" : "")</span>
+                        }
+                        @if (reservasFuturas.Count > 2)
+                        {
+                            <br><span>&bull; <em>+ @(reservasFuturas.Count - 2) outra(s)...</em></span>
+                        }
+                    </div>
+                }
 
                 @if (locacoesAtivas > 0)
                 {
@@ -709,11 +942,71 @@
 
         // Placeholder functions para ações que podem não ter controllers implementados
         function verDetalhesLocacao(id) {
-            NotificationSystem.info('Função para ver detalhes da locação será implementada quando o controller estiver disponível');
+            window.location.href = `/Locacoes/Details/${id}`;
         }
 
         function verTodasLocacoes() {
-            NotificationSystem.info('Função para ver todas as locações será implementada quando o controller estiver disponível');
+            window.location.href = '/Locacoes/Index';
+        }
+
+        // ✅ NOVO: Contatar cliente da reserva
+        function contatarCliente(nomeCliente, telefone, email) {
+            const modal = `
+                <div class="modal fade" id="modalContatarCliente" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">
+                                    <i class="fas fa-comments me-2"></i>Contatar Cliente
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-user me-2"></i>
+                                    <strong>${nomeCliente}</strong>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    ${telefone ? `
+                                        <a href="tel:${telefone}" class="btn btn-success btn-lg">
+                                            <i class="fas fa-phone me-2"></i>Ligar: ${telefone}
+                                        </a>
+                                        <a href="https://wa.me/55${telefone.replace(/\D/g, '')}" target="_blank" class="btn btn-outline-success btn-lg">
+                                            <i class="fab fa-whatsapp me-2"></i>WhatsApp
+                                        </a>
+                                    ` : ''}
+                                    
+                                    ${email ? `
+                                        <a href="mailto:${email}" class="btn btn-outline-primary btn-lg">
+                                            <i class="fas fa-envelope me-2"></i>Email: ${email}
+                                        </a>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remover modal anterior se existir
+            const oldModal = document.getElementById('modalContatarCliente');
+            if (oldModal) oldModal.remove();
+            
+            // Adicionar novo modal
+            document.body.insertAdjacentHTML('beforeend', modal);
+            
+            // Mostrar modal
+            const modalElement = new bootstrap.Modal(document.getElementById('modalContatarCliente'));
+            modalElement.show();
+            
+            // Remover modal do DOM quando fechado
+            document.getElementById('modalContatarCliente').addEventListener('hidden.bs.modal', function() {
+                this.remove();
+            });
         }
 
         // Gerar relatório do veículo
@@ -791,5 +1084,338 @@
             font-weight: 600;
             border-radius: 50%;
         }
+
+        /* ✅ NOVO: Estilos do Calendário */
+        #calendarioDisponibilidade {
+            padding: 20px;
+            min-height: 600px;
+        }
+
+        /* Customização do FullCalendar */
+        .fc {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .fc-toolbar-title {
+            font-size: 1.5rem !important;
+            font-weight: 600 !important;
+            color: #667eea !important;
+        }
+
+        .fc-button-primary {
+            background-color: #667eea !important;
+            border-color: #667eea !important;
+        }
+
+        .fc-button-primary:hover {
+            background-color: #764ba2 !important;
+            border-color: #764ba2 !important;
+        }
+
+        .fc-button-primary:not(:disabled).fc-button-active,
+        .fc-button-primary:not(:disabled):active {
+            background-color: #764ba2 !important;
+            border-color: #764ba2 !important;
+        }
+
+        .fc-event {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px !important;
+            padding: 2px 4px;
+            font-size: 0.85rem;
+        }
+
+        .fc-event:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 999;
+        }
+
+        .fc-daygrid-event {
+            white-space: normal !important;
+            align-items: center !important;
+        }
+
+        .fc-event-title {
+            font-weight: 500;
+        }
+
+        .fc-day-today {
+            background-color: rgba(102, 126, 234, 0.1) !important;
+        }
+
+        .fc-daygrid-day-number {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* Eventos específicos */
+        .evento-reservado {
+            border-left: 4px solid #0dcaf0 !important;
+        }
+
+        .evento-alugado {
+            border-left: 4px solid #ffc107 !important;
+        }
+
+        .evento-atrasada {
+            border-left: 4px solid #dc3545 !important;
+            animation: pulse 2s infinite;
+        }
+
+        .evento-finalizada {
+            opacity: 0.7;
+            border-left: 4px solid #6c757d !important;
+        }
+
+        .evento-status-atual {
+            font-weight: bold;
+            border: 2px dashed #000000 !important;
+        }
+
+        @@keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Modal de detalhes do evento */
+        .modal-evento-detalhes .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .info-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin: 0.25rem;
+        }
     </style>
+}
+
+@section Scripts {
+    <!-- FullCalendar CSS e JS -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/locales/pt-br.global.min.js'></script>
+
+    <script>
+        // Variável global para o calendário
+        let calendario;
+
+        // ✅ NOVO: Inicializar calendário de disponibilidade
+        function inicializarCalendario() {
+            const calendarEl = document.getElementById('calendarioDisponibilidade');
+            
+            if (!calendarEl) {
+                console.error('Elemento do calendário não encontrado');
+                return;
+            }
+
+            calendario = new FullCalendar.Calendar(calendarEl, {
+                locale: 'pt-br',
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,listMonth'
+                },
+                buttonText: {
+                    today: 'Hoje',
+                    month: 'Mês',
+                    week: 'Semana',
+                    list: 'Lista'
+                },
+                height: 'auto',
+                contentHeight: 600,
+                aspectRatio: 1.8,
+                expandRows: true,
+                slotMinTime: '06:00:00',
+                slotMaxTime: '22:00:00',
+                allDaySlot: true,
+                nowIndicator: true,
+                navLinks: true,
+                businessHours: {
+                    daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+                    startTime: '08:00',
+                    endTime: '18:00'
+                },
+                events: function(info, successCallback, failureCallback) {
+                    // Carregar eventos do servidor
+                    fetch(`/Veiculos/GetCalendarioDisponibilidade?veiculoId=${veiculoId}&start=${info.startStr}&end=${info.endStr}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Eventos carregados:', data);
+                            successCallback(data);
+                        })
+                        .catch(error => {
+                            console.error('Erro ao carregar eventos:', error);
+                            NotificationSystem.error('Erro ao carregar calendário');
+                            failureCallback(error);
+                        });
+                },
+                eventClick: function(info) {
+                    mostrarDetalhesEvento(info.event);
+                },
+                eventMouseEnter: function(info) {
+                    info.el.style.zIndex = '999';
+                },
+                eventMouseLeave: function(info) {
+                    info.el.style.zIndex = '';
+                },
+                loading: function(isLoading) {
+                    if (isLoading) {
+                        showLoadingOverlay();
+                    } else {
+                        hideLoadingOverlay();
+                    }
+                }
+            });
+
+            calendario.render();
+            console.log('Calendário inicializado com sucesso');
+        }
+
+        // ✅ NOVO: Mostrar detalhes do evento em modal
+        function mostrarDetalhesEvento(evento) {
+            const props = evento.extendedProps;
+            
+            // Se for o status atual, mostrar informações do veículo
+            if (props.isStatusAtual) {
+                NotificationSystem.info(`Status atual do veículo: ${props.statusNome}`);
+                return;
+            }
+
+            const modalHtml = `
+                <div class="modal fade modal-evento-detalhes" id="modalEventoDetalhes" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    <i class="fas fa-calendar-check me-2"></i>
+                                    Detalhes da ${props.isReserva ? 'Reserva' : 'Locação'}
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Status Badge -->
+                                <div class="text-center mb-3">
+                                    <span class="info-badge" style="background-color: ${evento.backgroundColor}; color: white;">
+                                        <i class="fas fa-circle me-1"></i>${props.status}
+                                    </span>
+                                    ${props.isAtrasada ? '<span class="info-badge bg-danger text-white"><i class="fas fa-exclamation-triangle me-1"></i>ATRASADA</span>' : ''}
+                                </div>
+
+                                <!-- Informações do Cliente -->
+                                <div class="card mb-3 border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <i class="fas fa-user me-2"></i>Cliente
+                                    </div>
+                                    <div class="card-body">
+                                        <h6 class="mb-2">${props.clienteNome}</h6>
+                                        ${props.clienteTelefone ? `
+                                            <p class="mb-1">
+                                                <i class="fas fa-phone text-success me-2"></i>
+                                                <a href="tel:${props.clienteTelefone}">${props.clienteTelefone}</a>
+                                                <button class="btn btn-sm btn-outline-success ms-2" onclick="window.open('https://wa.me/55${props.clienteTelefone.replace(/\D/g, '')}', '_blank')">
+                                                    <i class="fab fa-whatsapp"></i> WhatsApp
+                                                </button>
+                                            </p>
+                                        ` : ''}
+                                        ${props.clienteEmail ? `
+                                            <p class="mb-0">
+                                                <i class="fas fa-envelope text-info me-2"></i>
+                                                <a href="mailto:${props.clienteEmail}">${props.clienteEmail}</a>
+                                            </p>
+                                        ` : ''}
+                                    </div>
+                                </div>
+
+                                <!-- Período da Locação -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="card border-success">
+                                            <div class="card-body">
+                                                <h6 class="card-subtitle mb-2 text-muted">
+                                                    <i class="fas fa-calendar-plus text-success"></i> Retirada
+                                                </h6>
+                                                <p class="card-text mb-0">${props.dataRetirada}</p>
+                                                ${props.isReserva ? `<small class="text-muted">Em ${props.diasAteRetirada} dias</small>` : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card border-danger">
+                                            <div class="card-body">
+                                                <h6 class="card-subtitle mb-2 text-muted">
+                                                    <i class="fas fa-calendar-minus text-danger"></i> Devolução
+                                                </h6>
+                                                <p class="card-text mb-0">${props.dataDevolucao}</p>
+                                                <small class="text-muted">${props.duracaoDias} dias</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                ${props.dataDevolucaoReal ? `
+                                    <div class="alert alert-success">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        <strong>Devolvido em:</strong> ${props.dataDevolucaoReal}
+                                    </div>
+                                ` : ''}
+
+                                <!-- Valor -->
+                                <div class="card border-success mb-3">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-muted mb-1">Valor Total</h6>
+                                        <h3 class="text-success mb-0">${props.valorTotal}</h3>
+                                    </div>
+                                </div>
+
+                                <!-- Observações -->
+                                ${props.observacoes ? `
+                                    <div class="card border-info">
+                                        <div class="card-body">
+                                            <h6 class="card-subtitle mb-2 text-muted">
+                                                <i class="fas fa-comment-alt text-info"></i> Observações
+                                            </h6>
+                                            <p class="card-text mb-0">${props.observacoes}</p>
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                <a href="/Locacoes/Details/${props.locacaoId}" class="btn btn-primary">
+                                    <i class="fas fa-eye me-1"></i>Ver Detalhes Completos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Remover modal anterior
+            const oldModal = document.getElementById('modalEventoDetalhes');
+            if (oldModal) oldModal.remove();
+
+            // Adicionar e mostrar novo modal
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = new bootstrap.Modal(document.getElementById('modalEventoDetalhes'));
+            modal.show();
+
+            // Limpar modal após fechar
+            document.getElementById('modalEventoDetalhes').addEventListener('hidden.bs.modal', function() {
+                this.remove();
+            });
+        }
+
+        // Inicializar calendário quando a página carregar
+        $(document).ready(function() {
+            inicializarCalendario();
+        });
+    </script>
 }

@@ -73,13 +73,27 @@ public static class DatabaseExtensions
                 throw new InvalidOperationException("Database connection failed");
             }
 
-            // Aplicar migrations pendentes
-            var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
-            if (pendingMigrations.Any())
+            // Verificar se o banco de dados existe e criar se necessário
+            var databaseExists = await context.Database.CanConnectAsync();
+            if (databaseExists)
             {
-                logger.LogInformation("Aplicando {Count} migrations pendentes", pendingMigrations.Count());
-                await context.Database.MigrateAsync();
-                logger.LogInformation("Migrations aplicadas com sucesso");
+                // Aplicar migrations pendentes
+                var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
+                var appliedMigrations = await context.Database.GetAppliedMigrationsAsync();
+                
+                if (!appliedMigrations.Any() && !pendingMigrations.Any())
+                {
+                    // Nenhuma migration existe - criar banco do zero
+                    logger.LogWarning("Nenhuma migration encontrada. Criando banco de dados...");
+                    await context.Database.EnsureCreatedAsync();
+                    logger.LogInformation("Banco de dados criado com sucesso");
+                }
+                else if (pendingMigrations.Any())
+                {
+                    logger.LogInformation("Aplicando {Count} migrations pendentes", pendingMigrations.Count());
+                    await context.Database.MigrateAsync();
+                    logger.LogInformation("Migrations aplicadas com sucesso");
+                }
             }
 
             // Seed de dados

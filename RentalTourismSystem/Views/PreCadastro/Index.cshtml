@@ -4,198 +4,233 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5 mb-5">
-<div class="row justify-content-center">
-    <div class="col-lg-8 col-xl-7">
-        <!-- Cabeçalho -->
-        <div class="text-center mb-4">
-            <div class="mb-3">
-                <i class="fas fa-user-plus fa-3x" style="color: var(--icon-primary);"></i>
+<div class="precadastro-hero">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-9">
+                <!-- Cabeçalho Premium -->
+                <div class="text-center mb-5 hero-content">
+                    <div class="hero-icon-wrapper mb-4">
+                        <div class="icon-circle">
+                            <i class="fas fa-car fa-3x"></i>
+                        </div>
+                        <div class="icon-sparkle"></div>
+                    </div>
+                    <h1 class="hero-title mb-3">Inicie Sua Jornada Conosco</h1>
+                    <p class="hero-subtitle">
+                        Faça seu pré-cadastro e garanta o melhor veículo para sua viagem.<br>
+                        <strong>Processo rápido, simples e 100% seguro.</strong>
+                    </p>
+                    <div class="trust-badges mt-4">
+                        <span class="badge-item">
+                            <i class="fas fa-shield-alt"></i> Seguro
+                        </span>
+                        <span class="badge-item">
+                            <i class="fas fa-clock"></i> Rápido
+                        </span>
+                        <span class="badge-item">
+                            <i class="fas fa-star"></i> Confiável
+                        </span>
+                    </div>
+                </div>
             </div>
-            <h1 class="title-gradient mb-2">Pré-Cadastro de Cliente</h1>
-            <p class="subtitle-text">
-                Preencha os dados abaixo para iniciar seu cadastro em nosso sistema.<br>
-                Nossa equipe entrará em contato para concluir o processo.
-            </p>
         </div>
+    </div>
+</div>
 
-        <!-- Card do Formulário -->
-        <div class="card-precadastro shadow-lg">
+<div class="container pb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+            <!-- Card do Formulário -->
+            <div class="form-card shadow-premium">
                 <!-- Header -->
-                <div class="card-precadastro-header">
-                    <i class="fas fa-clipboard-list me-2"></i>Dados Básicos
+                <div class="form-card-header">
+                    <div class="header-content">
+                        <i class="fas fa-clipboard-list me-2"></i>
+                        <span>Preencha Seus Dados</span>
+                    </div>
+                    <div class="header-decoration"></div>
                 </div>
 
                 <!-- Body -->
-                <div class="card-precadastro-body">
+                <div class="form-card-body">
                     <form asp-action="Index" method="post" enctype="multipart/form-data" id="formPreCadastro">
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                         <!-- Nome Completo -->
-                        <div class="form-group-dark mb-4">
-                            <label asp-for="Nome" class="form-label-dark">
-                                <i class="fas fa-user me-2 icon-primary"></i>
-                                Nome Completo <span class="text-danger">*</span>
+                        <div class="form-group-modern mb-4">
+                            <label asp-for="Nome" class="form-label-modern">
+                                <i class="fas fa-user me-2"></i>
+                                Nome Completo <span class="required">*</span>
                             </label>
                             <input asp-for="Nome" 
-                                   class="form-control-dark" 
+                                   class="form-control-modern" 
                                    placeholder="Digite seu nome completo"
                                    autofocus />
                             <span asp-validation-for="Nome" class="text-danger small d-block mt-1"></span>
                         </div>
 
                         <!-- CPF -->
-                        <div class="form-group-dark mb-4">
-                            <label asp-for="CPF" class="form-label-dark">
-                                <i class="fas fa-id-card me-2 icon-primary"></i>
-                                CPF <span class="text-danger">*</span>
+                        <div class="form-group-modern mb-4">
+                            <label asp-for="CPF" class="form-label-modern">
+                                <i class="fas fa-id-card me-2"></i>
+                                CPF <span class="required">*</span>
                             </label>
                             <input asp-for="CPF" 
-                                   class="form-control-dark" 
+                                   class="form-control-modern" 
                                    id="cpfInput"
                                    placeholder="000.000.000-00"
                                    maxlength="14" />
                             <span asp-validation-for="CPF" class="text-danger small d-block mt-1"></span>
-                            <small class="form-text-muted">
+                            <small class="form-hint">
                                 <i class="fas fa-info-circle me-1"></i>Será usado para identificação no sistema
                             </small>
                         </div>
 
                         <!-- Telefone -->
-                        <div class="form-group-dark mb-4">
-                            <label asp-for="Telefone" class="form-label-dark">
-                                <i class="fas fa-phone me-2 icon-primary"></i>
-                                Telefone <span class="text-danger">*</span>
+                        <div class="form-group-modern mb-4">
+                            <label asp-for="Telefone" class="form-label-modern">
+                                <i class="fas fa-phone me-2"></i>
+                                Telefone <span class="required">*</span>
                             </label>
                             <input asp-for="Telefone" 
-                                   class="form-control-dark" 
+                                   class="form-control-modern" 
                                    id="telefoneInput"
                                    placeholder="(00) 00000-0000"
                                    maxlength="15" />
                             <span asp-validation-for="Telefone" class="text-danger small d-block mt-1"></span>
-                            <small class="form-text-muted">
+                            <small class="form-hint">
                                 <i class="fas fa-info-circle me-1"></i>Para contato e confirmação do cadastro
                             </small>
                         </div>
 
                         <!-- Upload da CNH -->
-                        <div class="form-group-dark mb-4">
-                            <label asp-for="CNHUpload" class="form-label-dark">
-                                <i class="fas fa-id-card-alt me-2 icon-primary"></i>
-                                Foto da CNH <span class="text-danger">*</span>
+                        <div class="form-group-modern mb-4">
+                            <label asp-for="CNHUpload" class="form-label-modern">
+                                <i class="fas fa-id-card-alt me-2"></i>
+                                Foto da CNH <span class="required">*</span>
                             </label>
-                            <div class="file-upload-wrapper">
+                            <div class="file-upload-modern">
                                 <input asp-for="CNHUpload" 
                                        type="file" 
-                                       class="file-upload-input" 
+                                       class="file-input-hidden" 
                                        id="cnhUploadInput"
                                        accept=".jpg,.jpeg,.png,.pdf" />
                                 <label class="file-upload-label" for="cnhUploadInput">
-                                    <span class="file-upload-text">Escolher Arquivo</span>
-                                    <span class="file-upload-name">Nenhum arquivo escolhido</span>
-                                    <span class="file-upload-icon">
-                                        <i class="fas fa-upload"></i>
-                                    </span>
+                                    <div class="file-upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <div class="file-upload-text">
+                                        <span class="file-upload-title">Clique para selecionar o arquivo</span>
+                                        <span class="file-upload-subtitle">ou arraste e solte aqui</span>
+                                    </div>
+                                    <span class="file-upload-name">Nenhum arquivo selecionado</span>
                                 </label>
                             </div>
                             <span asp-validation-for="CNHUpload" class="text-danger small d-block mt-1"></span>
-                            <small class="form-text-muted">
+                            <small class="form-hint">
                                 <i class="fas fa-info-circle me-1"></i>Formatos aceitos: JPG, JPEG, PNG ou PDF (máx. 5MB)
                             </small>
                             
                             <!-- Preview da imagem -->
                             <div id="imagePreview" class="mt-3" style="display: none;">
-                                <div class="preview-card">
+                                <div class="preview-container">
                                     <div class="preview-header">
                                         <i class="fas fa-eye me-2"></i>Pré-visualização
                                     </div>
                                     <div class="preview-body">
-                                        <img id="previewImage" src="" alt="Preview CNH" class="img-fluid" />
+                                        <img id="previewImage" src="" alt="Preview CNH" class="preview-image" />
                                     </div>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Seleção de Veículo -->
+                        <div class="form-group-modern mb-4">
+                            <label asp-for="VeiculoId" class="form-label-modern">
+                                <i class="fas fa-car me-2"></i>
+                                Veículo Desejado <span class="required">*</span>
+                            </label>
+                            <select asp-for="VeiculoId" 
+                                    class="form-control-modern" 
+                                    asp-items="ViewBag.Veiculos">
+                                <option value="">-- Selecione um veículo --</option>
+                            </select>
+                            <span asp-validation-for="VeiculoId" class="text-danger small d-block mt-1"></span>
+                            <small class="form-hint">
+                                <i class="fas fa-info-circle me-1"></i>Escolha o veículo que deseja alugar
+                            </small>
+                        </div>
+
                         <!-- Período de Locação -->
-                        <div class="form-group-dark mb-4">
-                            <div class="section-title-dark mb-3">
-                                <i class="fas fa-calendar-alt me-2 icon-primary"></i>
+                        <div class="form-group-modern mb-4">
+                            <div class="section-title mb-3">
+                                <i class="fas fa-calendar-alt me-2"></i>
                                 Período de Locação Desejado
                             </div>
                             
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label asp-for="DataInicioLocacao" class="form-label-dark">
+                                    <label asp-for="DataInicioLocacao" class="form-label-modern">
                                         <i class="fas fa-calendar-check me-2 text-success"></i>
-                                        Data Inicial <span class="text-danger">*</span>
+                                        Data Inicial <span class="required">*</span>
                                     </label>
-                                    <div class="input-with-icon">
-                                        <input asp-for="DataInicioLocacao" 
-                                               class="form-control-dark" 
-                                               type="date" 
-                                               id="dataInicioInput" />
-                                        <i class="fas fa-calendar input-icon"></i>
-                                    </div>
+                                    <input asp-for="DataInicioLocacao" 
+                                           class="form-control-modern" 
+                                           type="date" 
+                                           id="dataInicioInput" />
                                     <span asp-validation-for="DataInicioLocacao" class="text-danger small d-block mt-1"></span>
-                                    <small class="form-text-muted">
-                                        <i class="fas fa-info-circle me-1"></i>Data de retirada do veículo
-                                    </small>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label asp-for="DataFinalLocacao" class="form-label-dark">
+                                    <label asp-for="DataFinalLocacao" class="form-label-modern">
                                         <i class="fas fa-calendar-times me-2 text-danger"></i>
-                                        Data Final <span class="text-danger">*</span>
+                                        Data Final <span class="required">*</span>
                                     </label>
-                                    <div class="input-with-icon">
-                                        <input asp-for="DataFinalLocacao" 
-                                               class="form-control-dark" 
-                                               type="date" 
-                                               id="dataFinalInput" />
-                                        <i class="fas fa-calendar input-icon"></i>
-                                    </div>
+                                    <input asp-for="DataFinalLocacao" 
+                                           class="form-control-modern" 
+                                           type="date" 
+                                           id="dataFinalInput" />
                                     <span asp-validation-for="DataFinalLocacao" class="text-danger small d-block mt-1"></span>
-                                    <small class="form-text-muted">
-                                        <i class="fas fa-info-circle me-1"></i>Data de devolução do veículo
-                                    </small>
                                 </div>
                             </div>
 
                             <!-- Resumo do Período -->
-                            <div class="alert-info-dark" id="resumoPeriodo" style="display: none;">
-                                <i class="fas fa-info-circle fa-2x me-3"></i>
-                                <div>
+                            <div class="period-summary" id="resumoPeriodo" style="display: none;">
+                                <div class="period-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="period-content">
                                     <strong>Período Selecionado:</strong>
-                                    <br>
-                                    <span id="resumoTexto"></span>
+                                    <div id="resumoTexto"></div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Verificação Anti-Bot -->
-                        <div class="form-group-dark mb-4">
-                            <div class="captcha-box-dark">
-                                <div class="captcha-content-dark">
+                        <div class="form-group-modern mb-4">
+                            <div class="captcha-box">
+                                <div class="captcha-content">
                                     <input asp-for="ConfirmarHumano" 
-                                           class="captcha-checkbox-dark" 
+                                           class="captcha-checkbox" 
                                            type="checkbox" 
                                            id="confirmarHumano" />
-                                    <label class="captcha-label-dark" for="confirmarHumano">
-                                        <i class="fas fa-robot"></i>
+                                    <label class="captcha-label" for="confirmarHumano">
+                                        <i class="fas fa-shield-alt"></i>
                                     </label>
-                                    <span class="captcha-text-dark">Não sou um robô</span>
-                                    <span class="text-danger ms-1">*</span>
+                                    <span class="captcha-text">Não sou um robô</span>
+                                    <span class="required ms-1">*</span>
                                 </div>
                                 <span asp-validation-for="ConfirmarHumano" class="text-danger small d-block mt-2"></span>
                             </div>
                         </div>
 
                          <!-- Botões -->
-                        <div class="d-grid gap-3 mt-4">
-                            <button type="submit" class="btn-primary-gradient">
+                        <div class="button-group mt-4">
+                            <button type="submit" class="btn-primary-modern">
                                 <i class="fas fa-paper-plane me-2"></i>Enviar Pré-Cadastro
                             </button>
-                            <a href="/" class="btn-secondary-dark">
+                            <a href="/" class="btn-secondary-modern">
                                 <i class="fas fa-arrow-left me-2"></i>Voltar ao Início
                             </a>
                         </div>
@@ -204,40 +239,55 @@
             </div>
 
             <!-- Cards Informativos -->
-            <div class="row mt-4">
+            <div class="row mt-5">
                 <!-- Card: Próximos Passos -->
-                <div class="col-12 mb-3">
-                    <div class="info-card-dark">
-                        <div class="info-card-header">
-                            <i class="fas fa-info-circle me-2"></i>
-                            Próximos Passos
+                <div class="col-md-6 mb-4">
+                    <div class="info-card">
+                        <div class="info-card-icon">
+                            <i class="fas fa-clipboard-check"></i>
                         </div>
-                        <div class="info-card-body">
-                            <ol class="steps-list">
-                                <li>
-                                    <strong>Envie o formulário</strong> - Preencha todos os campos obrigatórios incluindo o período desejado
-                                </li>
-                                <li>
-                                    <strong>Aguarde nosso contato</strong> - Nossa equipe verificará disponibilidade e seus dados
-                                </li>
-                                <li>
-                                    <strong>Complete o cadastro</strong> - Você receberá instruções para finalizar e confirmar a reserva
-                                </li>
-                            </ol>
-                        </div>
+                        <h3 class="info-card-title">Próximos Passos</h3>
+                        <ol class="info-card-list">
+                            <li><strong>Envie o formulário</strong> - Preencha todos os campos obrigatórios</li>
+                            <li><strong>Aguarde nosso contato</strong> - Verificaremos seus dados</li>
+                            <li><strong>Complete o cadastro</strong> - Finalize e confirme a reserva</li>
+                        </ol>
                     </div>
                 </div>
 
-                <!-- Card: Informações de Segurança -->
-                <div class="col-12">
-                    <div class="info-card-dark security-card">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-shield-alt fa-2x me-3" style="color: var(--icon-primary);"></i>
-                            <div>
-                                <strong>Seus dados estão seguros!</strong><br>
-                                <small>Todas as informações são criptografadas e armazenadas com segurança.</small>
-                            </div>
+                <!-- Card: Por que escolher nossos serviços -->
+                <div class="col-md-6 mb-4">
+                    <div class="info-card highlight-card">
+                        <div class="info-card-icon">
+                            <i class="fas fa-star"></i>
                         </div>
+                        <h3 class="info-card-title">Por Que Nos Escolher?</h3>
+                        <ul class="benefits-list">
+                            <li><i class="fas fa-check-circle"></i> Frota moderna e bem conservada</li>
+                            <li><i class="fas fa-check-circle"></i> Preços competitivos</li>
+                            <li><i class="fas fa-check-circle"></i> Atendimento personalizado</li>
+                            <li><i class="fas fa-check-circle"></i> Segurança e confiabilidade</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banner de Segurança e LGPD -->
+            <div class="security-banner">
+                <div class="security-content">
+                    <div class="security-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="security-text">
+                        <strong>Seus dados estão 100% seguros e protegidos!</strong>
+                        <p>
+                            Utilizamos criptografia de ponta para proteger todas as suas informações pessoais.
+                            <br>
+                            <span class="lgpd-badge">
+                                <i class="fas fa-check-circle me-1"></i>
+                                <strong>Em conformidade com a LGPD</strong> - Lei Geral de Proteção de Dados (Lei nº 13.709/2018)
+                            </span>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -373,8 +423,8 @@
                         const finalFormatado = final.toLocaleDateString('pt-BR');
                         
                         $('#resumoTexto').html(
-                            `<strong>${dias}</strong> dia(s) de locação<br>` +
-                            `De <strong>${inicioFormatado}</strong> até <strong>${finalFormatado}</strong>`
+                            `<div class="period-days">${dias} dia(s)</div>` +
+                            `<div class="period-dates">${inicioFormatado} até ${finalFormatado}</div>`
                         );
                         $('#resumoPeriodo').fadeIn();
                     } else {
@@ -459,141 +509,297 @@
 
 <style>
     /* ============================================
-       TEMA DARK/LIGHT - PRÉ-CADASTRO
+       DESIGN MODERNO E PROFISSIONAL
        ============================================ */
     
     :root {
-        --bg-dark: #2b3544;
-        --bg-darker: #1e2530;
-        --bg-card: #313b4c;
-        --primary-blue: #5b7cff;
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --text-light: #e0e6ed;
-        --text-muted: #8b95a5;
-        --border-color: #3d4a5c;
-        --input-bg: rgba(255, 255, 255, 0.05);
-        --icon-primary: #5b7cff;
+        --primary-blue: #0066FF;
+        --primary-dark: #0052CC;
+        --secondary-green: #10B981;
+        --accent-gold: #F59E0B;
+        --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --bg-light: #F8FAFC;
+        --bg-white: #FFFFFF;
+        --text-dark: #1E293B;
+        --text-gray: #64748B;
+        --text-light: #94A3B8;
+        --border-color: #E2E8F0;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --shadow-premium: 0 20px 60px rgba(0, 0, 0, 0.12);
     }
 
-    /* Cabeçalho */
-    .title-gradient {
-        background: var(--primary-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-size: 2rem;
-        font-weight: 700;
+    body {
+        background: var(--bg-light);
+        color: var(--text-dark);
     }
 
-    .subtitle-text {
-        color: var(--text-muted);
-        font-size: 1rem;
-        line-height: 1.6;
-    }
-
-    /* Card Principal */
-    .card-precadastro {
-        background-color: var(--bg-card);
-        border-radius: 16px;
+    /* ============================================
+       HERO SECTION
+       ============================================ */
+    
+    .precadastro-hero {
+        background: linear-gradient(to top, rgba(135, 206, 250, 0.4), rgba(0, 119, 190, 0.6)), url('/img/fundologin.png');
+        background-size: cover;
+        background-position: center;
+        padding: 60px 0 80px;
+        position: relative;
         overflow: hidden;
-        border: none;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     }
 
-    .card-precadastro-header {
-        background: var(--primary-gradient);
+    .precadastro-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+        opacity: 0.2;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-icon-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .icon-circle {
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(15px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
         color: white;
-        padding: 20px 30px;
-        font-size: 1.25rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+        animation: float 3s ease-in-out infinite;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+    }
+
+    @@keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .icon-sparkle {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        width: 30px;
+        height: 30px;
+        background: var(--accent-gold);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.5);
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.95);
+        line-height: 1.7;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .hero-subtitle strong {
+        color: white;
         font-weight: 600;
-        text-align: left;
-        border-radius: 16px 16px 0 0;
     }
 
-    .card-precadastro-body {
-        background-color: var(--bg-dark);
-        padding: 30px;
-        border-radius: 0 0 16px 16px;
+    .trust-badges {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
     }
 
-    /* Grupos de Formulário */
-    .form-group-dark {
+    .badge-item {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(15px);
+        color: white;
+        padding: 10px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* ============================================
+       FORM CARD
+       ============================================ */
+    
+    .form-card {
+        background: var(--bg-white);
+        border-radius: 24px;
+        overflow: hidden;
+        margin-top: -40px;
+        position: relative;
+        z-index: 10;
+        border: none;
+    }
+
+    .shadow-premium {
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-card-header {
+        background: linear-gradient(135deg, #0066FF 0%, #00C9FF 100%);
+        padding: 30px 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .form-card-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 700;
+        position: relative;
+        z-index: 2;
+    }
+
+    .header-decoration {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, 
+            var(--accent-gold) 0%, 
+            var(--secondary-green) 50%, 
+            var(--primary-blue) 100%);
+    }
+
+    .form-card-body {
+        padding: 40px;
+    }
+
+    /* ============================================
+       FORM ELEMENTS
+       ============================================ */
+    
+    .form-group-modern {
         margin-bottom: 1.5rem;
     }
 
-    .form-label-dark {
-        color: var(--text-light);
+    .form-label-modern {
+        color: var(--text-dark);
         font-weight: 600;
         font-size: 0.95rem;
         margin-bottom: 0.75rem;
-        display: block;
+        display: flex;
+        align-items: center;
     }
 
-    .icon-primary {
-        color: var(--icon-primary);
+    .form-label-modern i {
+        color: var(--primary-blue);
     }
 
-    /* Inputs */
-    .form-control-dark {
-        background-color: var(--input-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        color: var(--text-light);
-        padding: 14px 16px;
+    .required {
+        color: #EF4444;
+        font-weight: 700;
+    }
+
+    .form-control-modern {
+        background-color: #FAFBFC;
+        border: none;
+        border-radius: 12px;
+        color: var(--text-dark);
+        padding: 16px 20px;
         font-size: 1rem;
         transition: all 0.3s ease;
         width: 100%;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), inset 0 1px 3px rgba(0, 0, 0, 0.02);
     }
 
-    .form-control-dark::placeholder {
-        color: var(--text-muted);
-        opacity: 0.7;
+    .form-control-modern::placeholder {
+        color: #A0AEC0;
     }
 
-    .form-control-dark:focus {
-        background-color: rgba(255, 255, 255, 0.08);
-        border-color: var(--icon-primary);
+    .form-control-modern:focus {
+        background-color: var(--bg-white);
+        border: none;
         outline: none;
-        box-shadow: 0 0 0 3px rgba(91, 124, 255, 0.1);
-        color: var(--text-light);
+        box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.08), 0 4px 12px rgba(0, 102, 255, 0.15);
+        transform: translateY(-2px);
     }
 
-    /* Input com ícone */
-    .input-with-icon {
-        position: relative;
+    .form-control-modern:hover:not(:focus) {
+        background-color: var(--bg-white);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transform: translateY(-1px);
     }
 
-    .input-with-icon .input-icon {
-        position: absolute;
-        right: 16px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--text-muted);
-        pointer-events: none;
-    }
-
-    /* Textos de ajuda */
-    .form-text-muted {
-        color: var(--text-muted);
+    .form-hint {
+        color: var(--text-gray);
         font-size: 0.85rem;
         margin-top: 0.5rem;
         display: block;
     }
 
-    /* Seção de título */
-    .section-title-dark {
-        color: var(--icon-primary);
-        font-weight: 600;
-        font-size: 1.1rem;
-        margin-bottom: 1rem;
+    .form-hint i {
+        color: var(--primary-blue);
     }
 
-    /* Upload de Arquivo */
-    .file-upload-wrapper {
+    .section-title {
+        color: var(--primary-blue);
+        font-weight: 700;
+        font-size: 1.15rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    /* ============================================
+       FILE UPLOAD
+       ============================================ */
+    
+    .file-upload-modern {
         position: relative;
     }
 
-    .file-upload-input {
+    .file-input-hidden {
         position: absolute;
         opacity: 0;
         width: 0;
@@ -601,140 +807,208 @@
     }
 
     .file-upload-label {
-        display: flex;
-        align-items: center;
-        background-color: var(--input-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        padding: 14px 16px;
+        display: block;
+        background: #FAFBFC;
+        border: 2px dashed rgba(0, 102, 255, 0.2);
+        border-radius: 16px;
+        padding: 40px;
         cursor: pointer;
         transition: all 0.3s ease;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
 
     .file-upload-label:hover {
-        background-color: rgba(255, 255, 255, 0.08);
-        border-color: var(--icon-primary);
-    }
-
-    .file-upload-text {
-        background-color: rgba(255, 255, 255, 0.1);
-        color: var(--text-light);
-        padding: 8px 20px;
-        border-radius: 6px;
-        font-weight: 500;
-        margin-right: 15px;
-    }
-
-    .file-upload-name {
-        color: var(--text-muted);
-        flex: 1;
+        border-color: rgba(0, 102, 255, 0.4);
+        background: linear-gradient(135deg, #F0F7FF 0%, #E6F2FF 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 102, 255, 0.12);
     }
 
     .file-upload-icon {
-        background-color: rgba(91, 124, 255, 0.2);
-        color: var(--icon-primary);
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 6px;
-        margin-left: auto;
+        font-size: 3rem;
+        color: var(--primary-blue);
+        margin-bottom: 15px;
     }
 
-    /* Preview de imagem */
-    .preview-card {
-        background-color: var(--bg-darker);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
+    .file-upload-text {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .file-upload-title {
+        display: block;
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+    }
+
+    .file-upload-subtitle {
+        display: block;
+        color: var(--text-gray);
+        font-size: 0.9rem;
+    }
+
+    .file-upload-name {
+        display: block;
+        color: var(--text-gray);
+        font-size: 0.9rem;
+        font-style: italic;
+        margin-top: 10px;
+    }
+
+    /* Preview */
+    .preview-container {
+        background: var(--bg-light);
+        border: none;
+        border-radius: 16px;
         overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     }
 
     .preview-header {
-        background-color: rgba(255, 255, 255, 0.05);
-        color: var(--text-muted);
-        padding: 10px 15px;
-        font-size: 0.85rem;
+        background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+        color: var(--primary-blue);
+        padding: 14px 24px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-bottom: none;
     }
 
     .preview-body {
         padding: 20px;
         text-align: center;
-        background-color: var(--bg-card);
+        background: var(--bg-white);
     }
 
-    .preview-body img {
+    .preview-image {
         max-height: 300px;
         border-radius: 8px;
+        box-shadow: var(--shadow-md);
     }
 
-    /* Alert Info Dark */
-    .alert-info-dark {
-        background-color: rgba(91, 124, 255, 0.1);
-        border: 1px solid rgba(91, 124, 255, 0.3);
-        border-radius: 8px;
-        padding: 16px;
+    /* ============================================
+       PERIOD SUMMARY
+       ============================================ */
+    
+    .period-summary {
+        background: linear-gradient(135deg, #F0F7FF 0%, #E6F2FF 100%);
+        border: none;
+        border-radius: 16px;
+        padding: 24px;
         display: flex;
         align-items: center;
-        color: var(--text-light);
+        gap: 20px;
+        margin-top: 20px;
+        box-shadow: 0 4px 16px rgba(0, 102, 255, 0.08);
     }
 
-    /* Captcha Box Dark */
-    .captcha-box-dark {
-        background-color: rgba(255, 255, 255, 0.03);
-        border: 2px solid var(--border-color);
-        border-radius: 8px;
-        padding: 18px 20px;
+    .period-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-blue) 0%, #00C9FF 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+    }
+
+    .period-content {
+        flex: 1;
+        color: var(--text-dark);
+    }
+
+    .period-content strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 1rem;
+    }
+
+    .period-days {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-blue);
+        margin-bottom: 5px;
+    }
+
+    .period-dates {
+        color: var(--text-gray);
+        font-size: 0.95rem;
+    }
+
+    /* ============================================
+       CAPTCHA
+       ============================================ */
+    
+    .captcha-box {
+        background: #FAFBFC;
+        border: none;
+        border-radius: 16px;
+        padding: 24px 28px;
         transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), inset 0 1px 3px rgba(0, 0, 0, 0.02);
     }
 
-    .captcha-box-dark:hover {
-        border-color: var(--icon-primary);
-        background-color: rgba(255, 255, 255, 0.05);
+    .captcha-box:hover {
+        background: var(--bg-white);
+        box-shadow: 0 4px 12px rgba(0, 102, 255, 0.08);
+        transform: translateY(-1px);
     }
 
-    .captcha-content-dark {
+    .captcha-content {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 15px;
     }
 
-    .captcha-checkbox-dark {
-        width: 28px;
-        height: 28px;
+    .captcha-checkbox {
+        width: 26px;
+        height: 26px;
         cursor: pointer;
-        accent-color: var(--icon-primary);
-        border: 2px solid var(--border-color);
-        border-radius: 4px;
+        accent-color: var(--primary-blue);
+        border: none;
     }
 
-    .captcha-label-dark {
+    .captcha-label {
         margin: 0;
-        font-size: 1.8rem;
-        color: var(--icon-primary);
+        font-size: 2rem;
+        color: var(--primary-blue);
         cursor: pointer;
         transition: transform 0.2s ease;
     }
 
-    .captcha-label-dark:hover {
+    .captcha-label:hover {
         transform: scale(1.1);
     }
 
-    .captcha-text-dark {
-        color: var(--text-light);
-        font-weight: 500;
+    .captcha-text {
+        color: var(--text-dark);
+        font-weight: 600;
         font-size: 1rem;
     }
 
-    /* Botões */
-    .btn-primary-gradient {
-        background: var(--primary-gradient);
+    /* ============================================
+       BUTTONS
+       ============================================ */
+    
+    .button-group {
+        display: grid;
+        gap: 15px;
+    }
+
+    .btn-primary-modern {
+        background: linear-gradient(135deg, #0066FF 0%, #00C9FF 100%);
         color: white;
-        font-weight: 600;
+        font-weight: 700;
         font-size: 1.1rem;
         padding: 16px 32px;
         border: none;
-        border-radius: 8px;
+        border-radius: 12px;
         cursor: pointer;
         transition: all 0.3s ease;
         width: 100%;
@@ -742,21 +1016,26 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        box-shadow: 0 4px 15px rgba(0, 102, 255, 0.3);
     }
 
-    .btn-primary-gradient:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(91, 124, 255, 0.4);
+    .btn-primary-modern:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 102, 255, 0.4);
     }
 
-    .btn-secondary-dark {
-        background-color: transparent;
-        color: var(--text-light);
+    .btn-primary-modern:active {
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary-modern {
+        background: #FAFBFC;
+        color: var(--text-dark);
         font-weight: 600;
         font-size: 1rem;
-        padding: 14px 32px;
-        border: 2px solid var(--border-color);
-        border-radius: 8px;
+        padding: 16px 32px;
+        border: none;
+        border-radius: 12px;
         cursor: pointer;
         transition: all 0.3s ease;
         width: 100%;
@@ -765,245 +1044,253 @@
         align-items: center;
         justify-content: center;
         text-decoration: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
 
-    .btn-secondary-dark:hover {
-        background-color: rgba(255, 255, 255, 0.05);
-        border-color: var(--icon-primary);
-        color: var(--text-light);
+    .btn-secondary-modern:hover {
+        background: var(--bg-white);
+        color: var(--primary-blue);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 102, 255, 0.12);
     }
 
-    /* Cards Informativos */
-    .info-card-dark {
-        background-color: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        overflow: hidden;
+    /* ============================================
+       INFO CARDS
+       ============================================ */
+    
+    .info-card {
+        background: var(--bg-white);
+        border: none;
+        border-radius: 20px;
+        padding: 32px;
+        height: 100%;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     }
 
-    .info-card-header {
-        background-color: rgba(91, 124, 255, 0.1);
-        color: var(--icon-primary);
-        padding: 12px 20px;
-        font-weight: 600;
-        font-size: 1rem;
-        border-bottom: 1px solid var(--border-color);
+    .info-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
     }
 
-    .info-card-body {
-        padding: 20px;
-        color: var(--text-light);
+    .info-card-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: var(--primary-blue);
+        margin-bottom: 20px;
     }
 
-    .steps-list {
+    .info-card-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 20px;
+    }
+
+    .info-card-list {
         margin: 0;
         padding-left: 20px;
+        list-style: none;
+        counter-reset: steps;
     }
 
-    .steps-list li {
-        margin-bottom: 12px;
-        color: var(--text-light);
+    .info-card-list li {
+        margin-bottom: 15px;
+        color: var(--text-gray);
         line-height: 1.6;
+        counter-increment: steps;
+        position: relative;
+        padding-left: 35px;
     }
 
-    .steps-list li:last-child {
+    .info-card-list li::before {
+        content: counter(steps);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 26px;
+        height: 26px;
+        background: var(--primary-blue);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+    .info-card-list li:last-child {
         margin-bottom: 0;
     }
 
-    .steps-list strong {
-        color: var(--icon-primary);
+    .info-card-list strong {
+        color: var(--text-dark);
     }
 
-    .security-card {
-        background-color: rgba(91, 124, 255, 0.05);
-        border-color: rgba(91, 124, 255, 0.3);
-        padding: 16px 20px;
+    .highlight-card {
+        background: linear-gradient(135deg, #FFF9E6 0%, #FFF3CC 100%);
+        border: none;
     }
 
-    .security-card strong {
-        color: var(--text-light);
+    .highlight-card .info-card-icon {
+        background: linear-gradient(135deg, #FEF3C7 0%, #FCD34D 100%);
+        color: #D97706;
+    }
+
+    .benefits-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .benefits-list li {
+        margin-bottom: 12px;
+        color: var(--text-dark);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .benefits-list li i {
+        color: var(--secondary-green);
+        font-size: 1.2rem;
+    }
+
+    /* ============================================
+       SECURITY BANNER
+       ============================================ */
+    
+    .security-banner {
+        background: linear-gradient(135deg, #E6F9F0 0%, #CCF3E0 100%);
+        border: none;
+        border-radius: 20px;
+        padding: 28px 32px;
+        margin-top: 30px;
+        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.12);
+    }
+
+    .security-content {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .security-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, var(--secondary-green) 0%, #059669 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        flex-shrink: 0;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .security-text {
+        flex: 1;
+    }
+
+    .security-text strong {
+        display: block;
+        color: var(--text-dark);
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+
+    .security-text p {
+        color: var(--text-gray);
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.8;
+    }
+
+    .lgpd-badge {
+        display: inline-flex;
+        align-items: center;
+        margin-top: 8px;
+        padding: 8px 16px;
+        background: rgba(16, 185, 129, 0.15);
+        border-radius: 8px;
+        color: #059669;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .lgpd-badge i {
+        color: var(--secondary-green);
         font-size: 1rem;
     }
 
-    .security-card small {
-        color: var(--text-muted);
+    .lgpd-badge strong {
+        display: inline;
+        font-size: 0.9rem;
+        color: #059669;
+        margin: 0;
     }
 
-    /* Responsivo */
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    
     @@media (max-width: 768px) {
-        .card-precadastro-body {
-            padding: 20px;
+        .hero-title {
+            font-size: 2rem;
         }
 
-        .form-control-dark {
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+
+        .form-card-body {
+            padding: 25px;
+        }
+
+        .trust-badges {
+            gap: 15px;
+        }
+
+        .badge-item {
+            font-size: 0.85rem;
+            padding: 8px 16px;
+        }
+
+        .icon-circle {
+            width: 100px;
+            height: 100px;
+        }
+
+        .security-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .form-control-modern {
             font-size: 16px; /* Evitar zoom no iOS */
         }
     }
 
-    /* Light mode support - Otimizado */
-    @@media (prefers-color-scheme: light) {
-        :root {
-            --bg-dark: #f5f7fa;
-            --bg-darker: #ffffff;
-            --bg-card: #ffffff;
-            --text-light: #1f2937;
-            --text-muted: #6b7280;
-            --border-color: #d1d5db;
-            --input-bg: #ffffff;
-            --icon-primary: #5b7cff;
+    @@media (max-width: 576px) {
+        .precadastro-hero {
+            padding: 40px 0 60px;
         }
 
-        body {
-            background-color: #f5f7fa !important;
+        .header-content {
+            font-size: 1.2rem;
         }
 
-        .subtitle-text {
-            color: #6b7280;
-        }
-
-        .card-precadastro {
-            background-color: #ffffff;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e5e7eb;
-        }
-
-        .card-precadastro-body {
-            background-color: #ffffff;
-        }
-
-        .form-control-dark {
-            background-color: #ffffff;
-            border-color: #d1d5db;
-            color: #1f2937;
-        }
-
-        .form-control-dark:focus {
-            background-color: #ffffff;
-            border-color: var(--icon-primary);
-            color: #1f2937;
-        }
-
-        .form-control-dark::placeholder {
-            color: #9ca3af;
-        }
-
-        .form-label-dark {
-            color: #1f2937;
-        }
-
-        .form-text-muted {
-            color: #6b7280;
-        }
-
-        .section-title-dark {
-            color: var(--icon-primary);
-        }
-
-        .file-upload-label {
-            background-color: #ffffff;
-            border-color: #d1d5db;
-        }
-
-        .file-upload-label:hover {
-            background-color: #f9fafb;
-            border-color: var(--icon-primary);
-        }
-
-        .file-upload-text {
-            background-color: #f3f4f6;
-            color: #1f2937;
-        }
-
-        .file-upload-name {
-            color: #6b7280;
-        }
-
-        .file-upload-icon {
-            background-color: rgba(91, 124, 255, 0.15);
-        }
-
-        .preview-card {
-            background-color: #ffffff;
-            border-color: #e5e7eb;
-        }
-
-        .preview-header {
-            background-color: #f9fafb;
-            color: #6b7280;
-        }
-
-        .preview-body {
-            background-color: #ffffff;
-        }
-
-        .alert-info-dark {
-            background-color: rgba(91, 124, 255, 0.08);
-            border-color: rgba(91, 124, 255, 0.3);
-            color: #1f2937;
-        }
-
-        .captcha-box-dark {
-            background-color: #f9fafb;
-            border-color: #d1d5db;
-        }
-
-        .captcha-box-dark:hover {
-            border-color: var(--icon-primary);
-            background-color: #f3f4f6;
-        }
-
-        .captcha-text-dark {
-            color: #1f2937;
-        }
-
-        .captcha-label-dark {
-            color: var(--icon-primary);
-        }
-
-        .btn-secondary-dark {
-            color: #1f2937;
-            border-color: #d1d5db;
-        }
-
-        .btn-secondary-dark:hover {
-            background-color: #f9fafb;
-            border-color: var(--icon-primary);
-            color: #1f2937;
-        }
-
-        .info-card-dark {
-            background-color: #ffffff;
-            border-color: #e5e7eb;
-        }
-
-        .info-card-header {
-            background-color: rgba(91, 124, 255, 0.08);
-            border-bottom-color: #e5e7eb;
-        }
-
-        .info-card-body {
-            color: #1f2937;
-        }
-
-        .steps-list li {
-            color: #1f2937;
-        }
-
-        .security-card {
-            background-color: rgba(91, 124, 255, 0.05);
-            border-color: rgba(91, 124, 255, 0.2);
-        }
-
-        .security-card strong {
-            color: #1f2937;
-        }
-
-        .security-card small {
-            color: #6b7280;
-        }
-
-        .input-with-icon .input-icon {
-            color: #9ca3af;
+        .form-card-header {
+            padding: 20px 25px;
         }
     }
 </style>

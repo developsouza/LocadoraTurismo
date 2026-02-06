@@ -312,7 +312,8 @@ namespace RentalTourismSystem.Data
                 new StatusCarro { Id = 1, Status = "Disponível" },
                 new StatusCarro { Id = 2, Status = "Alugado" },
                 new StatusCarro { Id = 3, Status = "Manutenção" },
-                new StatusCarro { Id = 4, Status = "Indisponível" }
+                new StatusCarro { Id = 4, Status = "Indisponível" },
+                new StatusCarro { Id = 5, Status = "Reservado" }
             );
 
             // Status de Reservas de Viagem
