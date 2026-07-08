@@ -370,5 +370,33 @@
                 padding-top: 0.75rem;
             }
         }
+
+        /* Refinamento visual: leitura, contraste e foco */
+        .login-container {
+            position: relative;
+            background: linear-gradient(120deg, rgba(4, 47, 46, .9), rgba(15, 118, 110, .48)), url('/img/fundologin.png');
+        }
+        .login-container::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: radial-gradient(circle at 72% 18%, rgba(212, 167, 44, .18), transparent 32%);
+        }
+        .login-card {
+            position: relative; max-width: 440px; padding: 2.25rem;
+            background: rgba(255, 255, 255, .94); border: 1px solid rgba(255, 255, 255, .7);
+            border-radius: 24px; box-shadow: 0 28px 70px rgba(3, 25, 28, .28);
+        }
+        .logo-wrapper { max-width: 164px; margin-bottom: 1.25rem; }
+        .brand-title { color: #142a2b; text-shadow: none; letter-spacing: -.035em; }
+        .brand-subtitle { color: #5a6b6d; opacity: 1; font-weight: 500; }
+        .form-control { background: #fff; border: 1px solid #d8e0e1; color: #142a2b; backdrop-filter: none; }
+        .form-control:focus { background: #fff; border-color: #0f766e; box-shadow: 0 0 0 4px rgba(15, 118, 110, .12); color: #142a2b; }
+        .form-floating > label { color: #657477; }
+        .form-floating > .form-control:focus ~ label,
+        .form-floating > .form-control:not(:placeholder-shown) ~ label { color: #0f766e; }
+        .form-check-input { border: 1px solid #b7c4c5; background: #fff; }
+        .form-check-input:checked { background-color: #0f766e; border-color: #0f766e; }
+        .btn-login { background: #0f766e; border: 1px solid #0f766e; color: #fff; text-shadow: none; box-shadow: 0 10px 24px rgba(15, 118, 110, .22); }
+        .btn-login:hover { background: #0d655e; border-color: #0d655e; color: #fff; box-shadow: 0 14px 28px rgba(15, 118, 110, .28); }
+        .login-footer { border-top: 1px solid #e3e8e9; color: #647477; }
     </style>
 }

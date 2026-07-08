@@ -1,23 +1,23 @@
 @model IEnumerable<dynamic>
 @{
-    ViewData["Title"] = "Gerenciar Usu·rios";
+    ViewData["Title"] = "Gerenciar Usu√°rios";
 }
 
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 mb-md-4 gap-2 gap-md-3">
     <h2 class="mb-0 d-flex align-items-center">
         <i class="fas fa-users me-2"></i>
-        <span class="d-none d-sm-inline">Gerenciar Usu·rios</span>
-        <span class="d-inline d-sm-none">Usu·rios</span>
+        <span class="d-none d-sm-inline">Gerenciar Usu√°rios</span>
+        <span class="d-inline d-sm-none">Usu√°rios</span>
     </h2>
     <a asp-action="Register" class="btn btn-success">
         <i class="fas fa-user-plus"></i>
-        <span class="ms-1">Novo Usu·rio</span>
+        <span class="ms-1">Novo Usu√°rio</span>
     </a>
 </div>
 
 <div class="card shadow-sm">
     <div class="card-body p-0 p-md-3">
-        <!-- Vers„o Desktop/Tablet Grande: Tabela -->
+        <!-- Vers√£o Desktop/Tablet Grande: Tabela -->
         <div class="table-responsive d-none d-xl-block">
             <table class="table table-hover mb-0" id="usersTable">
                 <thead class="table-light">
@@ -25,11 +25,11 @@
                         <th>Nome</th>
                         <th>Email</th>
                         <th>Cargo</th>
-                        <th>AgÍncia</th>
-                        <th>Permissıes</th>
+                        <th>Ag√™ncia</th>
+                        <th>Permiss√µes</th>
                         <th>Status</th>
                         <th>Data Cadastro</th>
-                        <th style="min-width: 220px;">AÁıes</th>
+                        <th style="min-width: 220px;">A√ß√µes</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,7 +66,7 @@
                                 <div class="d-flex gap-1 flex-nowrap">
                                     <a asp-action="EditUser" asp-route-id="@user.Id" 
                                        class="btn btn-sm btn-primary"
-                                       title="Editar usu·rio">
+                                       title="Editar usu√°rio">
                                         <i class="fas fa-edit"></i>
                                         <span class="d-none d-xxl-inline ms-1">Editar</span>
                                     </a>
@@ -76,8 +76,8 @@
                                         @if (user.Ativo)
                                         {
                                             <button type="submit" class="btn btn-sm btn-warning"
-                                                    onclick="return confirm('Desativar usu·rio?')"
-                                                    title="Desativar usu·rio">
+                                                    data-confirm="Desativar este usu√°rio?" data-confirm-detail="O acesso ao sistema ser√° bloqueado at√© uma nova ativa√ß√£o." data-confirm-label="Desativar"
+                                                    title="Desativar usu√°rio">
                                                 <i class="fas fa-user-lock"></i>
                                                 <span class="d-none d-xxl-inline ms-1">Desativar</span>
                                             </button>
@@ -85,8 +85,8 @@
                                         else
                                         {
                                             <button type="submit" class="btn btn-sm btn-success"
-                                                    onclick="return confirm('Ativar usu·rio?')"
-                                                    title="Ativar usu·rio">
+                                                    data-confirm="Ativar este usu√°rio?" data-confirm-detail="O acesso ao sistema ser√° restaurado." data-confirm-label="Ativar"
+                                                    title="Ativar usu√°rio">
                                                 <i class="fas fa-user-check"></i>
                                                 <span class="d-none d-xxl-inline ms-1">Ativar</span>
                                             </button>
@@ -96,9 +96,9 @@
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-secondary dropdown-toggle"
                                                 type="button" data-bs-toggle="dropdown"
-                                                title="Alterar permiss„o">
+                                                title="Alterar permiss√£o">
                                             <i class="fas fa-user-tag"></i>
-                                            <span class="d-none d-xxl-inline ms-1">Permiss„o</span>
+                                            <span class="d-none d-xxl-inline ms-1">Permiss√£o</span>
                                         </button>
                                         <ul class="dropdown-menu">
                                             <li>
@@ -106,7 +106,7 @@
                                                     <input type="hidden" name="userId" value="@user.Id" />
                                                     <input type="hidden" name="role" value="Employee" />
                                                     <button type="submit" class="dropdown-item">
-                                                        <i class="fas fa-user me-2"></i>Funcion·rio
+                                                        <i class="fas fa-user me-2"></i>Funcion√°rio
                                                     </button>
                                                 </form>
                                             </li>
@@ -133,7 +133,7 @@
 
                                     <a asp-action="DeleteUser" asp-route-id="@user.Id" 
                                        class="btn btn-sm btn-danger"
-                                       title="Excluir usu·rio">
+                                       title="Excluir usu√°rio">
                                         <i class="fas fa-trash"></i>
                                         <span class="d-none d-xxl-inline ms-1">Excluir</span>
                                     </a>
@@ -145,7 +145,7 @@
             </table>
         </div>
 
-        <!-- Vers„o Mobile/Tablet: Cards -->
+        <!-- Vers√£o Mobile/Tablet: Cards -->
         <div class="d-xl-none px-2 px-md-0">
             @foreach (var user in Model)
             {
@@ -184,7 +184,7 @@
                             <div class="col-6">
                                 <div class="info-item">
                                     <small class="text-muted d-block mb-1">
-                                        <i class="fas fa-building me-1"></i>AgÍncia
+                                        <i class="fas fa-building me-1"></i>Ag√™ncia
                                     </small>
                                     <strong class="d-block text-truncate" title="@user.Agencia">@user.Agencia</strong>
                                 </div>
@@ -192,7 +192,7 @@
                             <div class="col-6">
                                 <div class="info-item">
                                     <small class="text-muted d-block mb-1">
-                                        <i class="fas fa-user-shield me-1"></i>Permiss„o
+                                        <i class="fas fa-user-shield me-1"></i>Permiss√£o
                                     </small>
                                     <span class="badge bg-info">@user.Roles</span>
                                 </div>
@@ -219,7 +219,7 @@
                                 @if (user.Ativo)
                                 {
                                     <button type="submit" class="btn btn-sm btn-warning w-100"
-                                            onclick="return confirm('Desativar usu·rio?')">
+                                            data-confirm="Desativar este usu√°rio?" data-confirm-detail="O acesso ao sistema ser√° bloqueado at√© uma nova ativa√ß√£o." data-confirm-label="Desativar">
                                         <i class="fas fa-user-lock"></i>
                                         <span class="ms-1">Desativar</span>
                                     </button>
@@ -227,7 +227,7 @@
                                 else
                                 {
                                     <button type="submit" class="btn btn-sm btn-success w-100"
-                                            onclick="return confirm('Ativar usu·rio?')">
+                                            data-confirm="Ativar este usu√°rio?" data-confirm-detail="O acesso ao sistema ser√° restaurado." data-confirm-label="Ativar">
                                         <i class="fas fa-user-check"></i>
                                         <span class="ms-1">Ativar</span>
                                     </button>
@@ -240,7 +240,7 @@
                                 <button class="btn btn-sm btn-secondary dropdown-toggle w-100"
                                         type="button" data-bs-toggle="dropdown">
                                     <i class="fas fa-user-tag"></i>
-                                    <span class="ms-1">Permiss„o</span>
+                                    <span class="ms-1">Permiss√£o</span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
@@ -248,7 +248,7 @@
                                             <input type="hidden" name="userId" value="@user.Id" />
                                             <input type="hidden" name="role" value="Employee" />
                                             <button type="submit" class="dropdown-item">
-                                                <i class="fas fa-user me-2"></i>Funcion·rio
+                                                <i class="fas fa-user me-2"></i>Funcion√°rio
                                             </button>
                                         </form>
                                     </li>

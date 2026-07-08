@@ -3,24 +3,24 @@ using RentalTourismSystem.Services;
 namespace RentalTourismSystem.Extensions;
 
 /// <summary>
-/// Extensões para otimizações de performance
+/// ExtensÃµes para otimizaÃ§Ãµes de performance
 /// </summary>
 public static class PerformanceExtensions
 {
     /// <summary>
-    /// Adiciona configurações de performance e otimizações
+    /// Adiciona configuraÃ§Ãµes de performance e otimizaÃ§Ãµes
     /// </summary>
     public static IServiceCollection AddPerformanceOptimizations(this IServiceCollection services)
     {
         // Output Caching (ASP.NET Core 7+)
         services.AddOutputCache(options =>
         {
-            // Cache padrão de 60 segundos
+            // Cache padrÃ£o de 60 segundos
             options.AddBasePolicy(builder => builder
                 .Expire(TimeSpan.FromSeconds(60))
                 .Tag("default"));
 
-            // Cache para páginas públicas
+            // Cache para pÃ¡ginas pÃºblicas
             options.AddPolicy("PublicPages", builder => builder
                 .Expire(TimeSpan.FromMinutes(5))
                 .SetVaryByQuery("page", "pageSize")
@@ -32,7 +32,7 @@ public static class PerformanceExtensions
                 .SetVaryByQuery("*")
                 .Tag("api"));
 
-            // Cache para relatórios (mais longo)
+            // Cache para relatÃ³rios (mais longo)
             options.AddPolicy("Reports", builder => builder
                 .Expire(TimeSpan.FromMinutes(30))
                 .Tag("reports"));
@@ -48,18 +48,18 @@ public static class PerformanceExtensions
         // HTTP Client Factory para performance
         services.AddHttpClient();
 
-        // Configurações de threading otimizadas
+        // ConfiguraÃ§Ãµes de threading otimizadas
         ThreadPool.SetMinThreads(50, 50);
 
         return services;
     }
 
     /// <summary>
-    /// Registra todos os serviços da aplicação
+    /// Registra todos os serviÃ§os da aplicaÃ§Ã£o
     /// </summary>
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        // Serviços principais
+        // ServiÃ§os principais
         services.AddScoped<IRelatorioService, RelatorioService>();
         services.AddScoped<ILocacaoService, LocacaoService>();
         services.AddScoped<IVeiculoService, VeiculoService>();

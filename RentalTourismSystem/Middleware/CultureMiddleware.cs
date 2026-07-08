@@ -3,7 +3,7 @@ using System.Globalization;
 namespace RentalTourismSystem.Middleware;
 
 /// <summary>
-/// Middleware para garantir cultura brasileira em todas as requisições
+/// Middleware para garantir cultura brasileira em todas as requisiÃ§Ãµes
 /// </summary>
 public class CultureMiddleware
 {

@@ -28,7 +28,7 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
-                _logger.LogInformation("Dashboard acessado por usu·rio {User}", User.Identity?.Name);
+                _logger.LogInformation("Dashboard acessado por usu√°rio {User}", User.Identity?.Name);
 
                 var hoje = DateTime.Now;
                 var inicioMes = new DateTime(hoje.Year, hoje.Month, 1);
@@ -44,12 +44,12 @@ namespace RentalTourismSystem.Controllers
                     ? (int)Math.Round(((clientesMesAtual - clientesMesAnterior) / (double)clientesMesAnterior) * 100)
                     : 0;
 
-                // ========== VEÕCULOS ==========
+                // ========== VE√çCULOS ==========
                 ViewBag.TotalVeiculos = await _context.Veiculos.CountAsync();
 
                 ViewBag.VeiculosDisponiveis = await _context.Veiculos
                     .Include(v => v.StatusCarro)
-                    .CountAsync(v => v.StatusCarro != null && v.StatusCarro.Status == "DisponÌvel");
+                    .CountAsync(v => v.StatusCarro != null && v.StatusCarro.Status == "Dispon√≠vel");
 
                 ViewBag.VeiculosAlugados = await _context.Veiculos
                     .Include(v => v.StatusCarro)
@@ -57,14 +57,14 @@ namespace RentalTourismSystem.Controllers
 
                 ViewBag.VeiculosManutencao = await _context.Veiculos
                     .Include(v => v.StatusCarro)
-                    .CountAsync(v => v.StatusCarro != null && v.StatusCarro.Status == "ManutenÁ„o");
+                    .CountAsync(v => v.StatusCarro != null && v.StatusCarro.Status == "Manuten√ß√£o");
 
                 var totalVeiculos = (int)ViewBag.TotalVeiculos;
                 ViewBag.TaxaDisponibilidade = totalVeiculos > 0
                     ? (int)Math.Round(((int)ViewBag.VeiculosDisponiveis / (double)totalVeiculos) * 100)
                     : 0;
 
-                // ========== LOCA«’ES ==========
+                // ========== LOCA√á√ïES ==========
                 ViewBag.TotalLocacoes = await _context.Locacoes.CountAsync();
 
                 ViewBag.LocacoesAtivas = await _context.Locacoes
@@ -83,7 +83,7 @@ namespace RentalTourismSystem.Controllers
                     ? (int)Math.Round((((int)ViewBag.LocacoesMes - locacoesMesAnterior) / (double)locacoesMesAnterior) * 100)
                     : 0;
 
-                // ========== RECEITA DE LOCA«’ES - M S ==========
+                // ========== RECEITA DE LOCA√á√ïES - M√äS ==========
                 var receitaLocacoesMes = await _context.Locacoes
                     .Where(l => l.DataRetirada >= inicioMes && l.DataRetirada <= fimMes)
                     .SumAsync(l => (decimal?)l.ValorTotal) ?? 0;
@@ -100,22 +100,22 @@ namespace RentalTourismSystem.Controllers
                                    r.StatusReservaViagem != null &&
                                    r.StatusReservaViagem.Status == "Confirmada");
 
-                // ========== RECEITA DE TURISMO - M S (COM SERVI«OS ADICIONAIS) ==========
-                // CORRE«√O PRINCIPAL: Buscar reservas confirmadas com serviÁos adicionais
+                // ========== RECEITA DE TURISMO - M√äS (COM SERVI√áOS ADICIONAIS) ==========
+                // CORRE√á√ÉO PRINCIPAL: Buscar reservas confirmadas com servi√ßos adicionais
                 var reservasConfirmadasMes = await _context.ReservasViagens
                     .Include(r => r.StatusReservaViagem)
-                    .Include(r => r.ServicosAdicionais) // INCLUIR SERVI«OS
+                    .Include(r => r.ServicosAdicionais) // INCLUIR SERVI√áOS
                     .Where(r => r.DataReserva >= inicioMes && r.DataReserva <= fimMes &&
                                r.StatusReservaViagem != null &&
                                r.StatusReservaViagem.Status == "Confirmada")
                     .ToListAsync();
 
-                // Calcular receita REAL incluindo serviÁos adicionais
+                // Calcular receita REAL incluindo servi√ßos adicionais
                 var receitaReservasMes = reservasConfirmadasMes.Sum(r => r.ObterValorTotalComServicos());
 
                 ViewBag.ReceitaTotalMes = receitaLocacoesMes + receitaReservasMes;
 
-                // ========== OCUPA«√O ==========
+                // ========== OCUPA√á√ÉO ==========
                 var totalVeiculosCalc = totalVeiculos > 0 ? totalVeiculos : 1;
                 ViewBag.TaxaOcupacao = (int)Math.Round(((int)ViewBag.VeiculosAlugados / (double)totalVeiculosCalc) * 100);
 
@@ -137,7 +137,7 @@ namespace RentalTourismSystem.Controllers
                     ViewBag.MediaPessoasPorReserva = 0;
                 }
 
-                // ========== TICKET M…DIO ==========
+                // ========== TICKET M√âDIO ==========
                 var totalTransacoes = (int)ViewBag.LocacoesMes + (int)ViewBag.ReservasMes;
                 ViewBag.TicketMedio = totalTransacoes > 0
                     ? ViewBag.ReceitaTotalMes / totalTransacoes
@@ -157,7 +157,7 @@ namespace RentalTourismSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar dashboard para usu·rio {User}", User.Identity?.Name);
+                _logger.LogError(ex, "Erro ao carregar dashboard para usu√°rio {User}", User.Identity?.Name);
                 TempData["Erro"] = "Erro ao carregar o dashboard. Tente novamente.";
                 return View();
             }
@@ -177,7 +177,7 @@ namespace RentalTourismSystem.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        // ========== M…TODO AUXILIAR PARA VERIFICAR PERMISS’ES ==========
+        // ========== M√âTODO AUXILIAR PARA VERIFICAR PERMISS√ïES ==========
         private bool UserCanAccessFinancialData()
         {
             return User.IsInRole("Admin") || User.IsInRole("Manager");
@@ -201,7 +201,7 @@ namespace RentalTourismSystem.Controllers
                     TotalVeiculos = await _context.Veiculos.CountAsync(),
                     VeiculosDisponiveis = await _context.Veiculos
                         .Include(v => v.StatusCarro)
-                        .CountAsync(v => v.StatusCarro.Status == "DisponÌvel"),
+                        .CountAsync(v => v.StatusCarro.Status == "Dispon√≠vel"),
                     LocacoesAtivas = await _context.Locacoes
                         .CountAsync(l => l.DataDevolucaoReal == null),
                     ReservasAtivas = await _context.ReservasViagens
@@ -214,24 +214,24 @@ namespace RentalTourismSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao obter estatÌsticas do dashboard via API");
-                return Json(new { error = "Erro ao carregar estatÌsticas" });
+                _logger.LogError(ex, "Erro ao obter estat√≠sticas do dashboard via API");
+                return Json(new { error = "Erro ao carregar estat√≠sticas" });
             }
         }
 
-        // ========== API PARA DADOS DO GR¡FICO DE PERFORMANCE ==========
+        // ========== API PARA DADOS DO GR√ÅFICO DE PERFORMANCE ==========
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetPerformanceChartData(int dias = 7)
         {
             try
             {
-                _logger.LogInformation("SolicitaÁ„o de dados do gr·fico para {Dias} dias", dias);
+                _logger.LogInformation("Solicita√ß√£o de dados do gr√°fico para {Dias} dias", dias);
 
                 var dataFim = DateTime.Now.Date;
                 var dataInicio = dataFim.AddDays(-dias + 1);
 
-                _logger.LogInformation("PerÌodo: {DataInicio} atÈ {DataFim}", dataInicio, dataFim);
+                _logger.LogInformation("Per√≠odo: {DataInicio} at√© {DataFim}", dataInicio, dataFim);
 
                 var dados = new List<object>();
 
@@ -239,7 +239,7 @@ namespace RentalTourismSystem.Controllers
                 {
                     var dataProxima = data.AddDays(1);
 
-                    // LocaÁıes do dia
+                    // Loca√ß√µes do dia
                     var locacoesDia = await _context.Locacoes
                         .Where(l => l.DataRetirada >= data && l.DataRetirada < dataProxima)
                         .CountAsync();
@@ -248,7 +248,7 @@ namespace RentalTourismSystem.Controllers
                         .Where(l => l.DataRetirada >= data && l.DataRetirada < dataProxima)
                         .SumAsync(l => (decimal?)l.ValorTotal) ?? 0;
 
-                    // Reservas do dia (simplificado - sem dependÍncia da extens„o)
+                    // Reservas do dia (simplificado - sem depend√™ncia da extens√£o)
                     var reservasDia = await _context.ReservasViagens
                         .Include(r => r.StatusReservaViagem)
                         .Where(r => r.DataReserva >= data && r.DataReserva < dataProxima &&
@@ -262,7 +262,7 @@ namespace RentalTourismSystem.Controllers
                                    r.StatusReservaViagem.Status == "Confirmada")
                         .SumAsync(r => (decimal?)r.ValorTotal) ?? 0;
 
-                    // Soma dos serviÁos adicionais
+                    // Soma dos servi√ßos adicionais
                     var servicosAdicionaisDia = await _context.ReservasViagens
                         .Where(r => r.DataReserva >= data && r.DataReserva < dataProxima &&
                                    r.StatusReservaViagem != null &&
@@ -285,16 +285,16 @@ namespace RentalTourismSystem.Controllers
                     });
                 }
 
-                _logger.LogInformation("Retornando {Count} dias de dados do gr·fico", dados.Count);
+                _logger.LogInformation("Retornando {Count} dias de dados do gr√°fico", dados.Count);
 
                 // Log de debug para ver os dados
-                _logger.LogDebug("Dados do gr·fico: {@Dados}", dados);
+                _logger.LogDebug("Dados do gr√°fico: {@Dados}", dados);
 
                 return Json(new { success = true, dados = dados });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao obter dados do gr·fico de performance");
+                _logger.LogError(ex, "Erro ao obter dados do gr√°fico de performance");
                 return Json(new { success = false, error = ex.Message, details = ex.ToString() });
             }
         }
@@ -306,12 +306,12 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
-                _logger.LogInformation("SolicitaÁ„o de dados mensais para {Dias} dias", dias);
+                _logger.LogInformation("Solicita√ß√£o de dados mensais para {Dias} dias", dias);
 
                 var dataFim = DateTime.Now.Date;
                 var dataInicio = dataFim.AddDays(-dias + 1);
 
-                _logger.LogInformation("PerÌodo mensal: {DataInicio} atÈ {DataFim}", dataInicio, dataFim);
+                _logger.LogInformation("Per√≠odo mensal: {DataInicio} at√© {DataFim}", dataInicio, dataFim);
 
                 var dados = new List<object>();
 
@@ -425,13 +425,13 @@ namespace RentalTourismSystem.Controllers
                 _logger.LogInformation("Retornando {Count} pontos de dados mensais", dados.Count);
 
                 // Log de debug
-                _logger.LogDebug("Dados mensais do gr·fico: {@Dados}", dados);
+                _logger.LogDebug("Dados mensais do gr√°fico: {@Dados}", dados);
 
                 return Json(new { success = true, dados = dados });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao obter dados mensais do gr·fico");
+                _logger.LogError(ex, "Erro ao obter dados mensais do gr√°fico");
                 return Json(new { success = false, error = ex.Message, details = ex.ToString() });
             }
         }

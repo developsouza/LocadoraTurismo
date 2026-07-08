@@ -3,23 +3,23 @@ using System.ComponentModel.DataAnnotations;
 namespace RentalTourismSystem.Models
 {
     /// <summary>
-    /// Representa o status de uma manutenção veicular
+    /// Representa o status de uma manutenÃ§Ã£o veicular
     /// </summary>
     public class StatusManutencao
     {
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "O status é obrigatório")]
+        [Required(ErrorMessage = "O status Ã© obrigatÃ³rio")]
         [StringLength(30)]
         [Display(Name = "Status")]
         public string Status { get; set; } = string.Empty;
 
         [StringLength(100)]
-        [Display(Name = "Descrição")]
+        [Display(Name = "DescriÃ§Ã£o")]
         public string? Descricao { get; set; }
 
-        // Navegação
+        // NavegaÃ§Ã£o
         public virtual ICollection<ManutencaoVeiculo> Manutencoes { get; set; } = new List<ManutencaoVeiculo>();
     }
 }

@@ -1,34 +1,34 @@
 namespace RentalTourismSystem.Configuration;
 
 /// <summary>
-/// Configurações da aplicação fortemente tipadas
+/// ConfiguraÃ§Ãµes da aplicaÃ§Ã£o fortemente tipadas
 /// </summary>
 public class ApplicationConfiguration
 {
     public const string SectionName = "ApplicationSettings";
 
     /// <summary>
-    /// Configurações de logging
+    /// ConfiguraÃ§Ãµes de logging
     /// </summary>
     public LoggingSettings Logging { get; set; } = new();
 
     /// <summary>
-    /// Configurações de segurança
+    /// ConfiguraÃ§Ãµes de seguranÃ§a
     /// </summary>
     public SecuritySettings Security { get; set; } = new();
 
     /// <summary>
-    /// Configurações de upload de arquivos
+    /// ConfiguraÃ§Ãµes de upload de arquivos
     /// </summary>
     public FileUploadSettings FileUpload { get; set; } = new();
 
     /// <summary>
-    /// Configurações de email
+    /// ConfiguraÃ§Ãµes de email
     /// </summary>
     public EmailSettings Email { get; set; } = new();
 
     /// <summary>
-    /// Configurações de performance
+    /// ConfiguraÃ§Ãµes de performance
     /// </summary>
     public PerformanceSettings Performance { get; set; } = new();
 }
@@ -74,7 +74,7 @@ public class PerformanceSettings
 }
 
 /// <summary>
-/// Extension methods para registrar configurações
+/// Extension methods para registrar configuraÃ§Ãµes
 /// </summary>
 public static class ConfigurationExtensions
 {
@@ -82,7 +82,7 @@ public static class ConfigurationExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        // Bind e registra as configurações
+        // Bind e registra as configuraÃ§Ãµes
         var appConfig = new ApplicationConfiguration();
         configuration.GetSection(ApplicationConfiguration.SectionName).Bind(appConfig);
 

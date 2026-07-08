@@ -3,7 +3,7 @@ using System.Diagnostics;
 namespace RentalTourismSystem.Middleware;
 
 /// <summary>
-/// Middleware para logging detalhado de requisições de API
+/// Middleware para logging detalhado de requisiÃ§Ãµes de API
 /// </summary>
 public class ApiLoggingMiddleware
 {
@@ -18,7 +18,7 @@ public class ApiLoggingMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // Verifica se é uma requisição de API
+        // Verifica se Ã© uma requisiÃ§Ã£o de API
         if (!context.Request.Path.StartsWithSegments("/api"))
         {
             await _next(context);
@@ -31,7 +31,7 @@ public class ApiLoggingMiddleware
         // Adiciona o RequestId ao contexto
         context.Items["RequestId"] = requestId;
 
-        // Log da requisição
+        // Log da requisiÃ§Ã£o
         _logger.LogInformation(
             "API Request [{RequestId}]: {Method} {Path} from {RemoteIP} - User: {User}",
             requestId,

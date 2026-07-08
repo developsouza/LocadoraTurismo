@@ -31,7 +31,7 @@
 <div class="row g-4 mb-5">
     <!-- Total de Clientes -->
     <div class="col-xl-3 col-lg-6 col-md-6">
-        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);" role="button" onclick="window.location.href='@Url.Action("Index", "Clientes")'">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);" role="link" tabindex="0" aria-label="Abrir clientes" onclick="window.location.href='@Url.Action("Index", "Clientes")'">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
@@ -65,7 +65,7 @@
 
     <!-- Frota Total -->
     <div class="col-xl-3 col-lg-6 col-md-6">
-        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, var(--success) 0%, var(--success-hover) 100%);" role="button" onclick="window.location.href='@Url.Action("Index", "Veiculos")'">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, var(--success) 0%, var(--success-hover) 100%);" role="link" tabindex="0" aria-label="Abrir veículos" onclick="window.location.href='@Url.Action("Index", "Veiculos")'">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
@@ -99,7 +99,7 @@
 
     <!-- Veículos Disponíveis -->
     <div class="col-xl-3 col-lg-6 col-md-6">
-        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, var(--warning) 0%, var(--warning-hover) 100%);" role="button" onclick="window.location.href='@Url.Action("Create", "Locacoes")'">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, var(--warning) 0%, var(--warning-hover) 100%);" role="link" tabindex="0" aria-label="Criar uma locação" onclick="window.location.href='@Url.Action("Create", "Locacoes")'">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
@@ -128,7 +128,7 @@
 
     <!-- Locações Ativas -->
     <div class="col-xl-3 col-lg-6 col-md-6">
-        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, var(--info) 0%, var(--info-hover) 100%);" role="button" onclick="window.location.href='@Url.Action("Index", "Locacoes")'">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, var(--info) 0%, var(--info-hover) 100%);" role="link" tabindex="0" aria-label="Abrir locações" onclick="window.location.href='@Url.Action("Index", "Locacoes")'">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
@@ -165,7 +165,7 @@
 <div class="row g-4 mb-5">
     <!-- Receita do Mês -->
     <div class="col-xl-3 col-lg-6 col-md-6">
-        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" role="button" onclick="window.location.href='@Url.Action("Index", "Relatorios")'">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" role="link" tabindex="0" aria-label="Abrir relatórios" onclick="window.location.href='@Url.Action("Index", "Relatorios")'">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
@@ -194,7 +194,7 @@
 
     <!-- Taxa de Ocupação -->
     <div class="col-xl-3 col-lg-6 col-md-6">
-        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" role="button">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
@@ -228,7 +228,7 @@
 
     <!-- Locações/Mês -->
     <div class="col-xl-3 col-lg-6 col-md-6">
-        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" role="button" onclick="window.location.href='@Url.Action("Create", "Locacoes")'">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" role="link" tabindex="0" aria-label="Criar uma locação" onclick="window.location.href='@Url.Action("Create", "Locacoes")'">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
@@ -262,7 +262,7 @@
 
     <!-- Reservas Turismo -->
     <div class="col-xl-3 col-lg-6 col-md-6">
-        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" role="button" onclick="window.location.href='@Url.Action("Index", "ReservasViagens")'">
+        <div class="card dashboard-card h-100" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" role="link" tabindex="0" aria-label="Abrir reservas de turismo" onclick="window.location.href='@Url.Action("Index", "ReservasViagens")'">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
@@ -1437,6 +1437,12 @@
                 card.addEventListener('click', (e) => {
                     const statLabel = card.querySelector('.stat-label')?.textContent;
                     console.log(`Dashboard card clicked: ${statLabel}`);
+                });
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.click();
+                    }
                 });
             });
 

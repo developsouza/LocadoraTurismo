@@ -108,11 +108,6 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <a class="dropdown-item" href="#" onclick="exportarLocacoes()">
-                                <i class="fas fa-download me-2"></i>Exportar Lista
-                            </a>
-                        </li>
-                        <li>
                             <a class="dropdown-item" href="#" onclick="imprimirLista()">
                                 <i class="fas fa-print me-2"></i>Imprimir
                             </a>
@@ -516,12 +511,15 @@
         }
 
         function showLoadingOverlay() {
-            if (!document.querySelector('.loading-overlay')) {
+            let overlay = document.querySelector('.loading-overlay');
+            if (!overlay) {
                 const overlay = document.createElement('div');
                 overlay.className = 'loading-overlay';
                 overlay.innerHTML = '<div class="spinner-modern"></div>';
                 document.body.appendChild(overlay);
             }
+            overlay = document.querySelector('.loading-overlay');
+            if (overlay) overlay.style.display = 'flex';
         }
 
         // Funções de notificação usando sistema consolidado

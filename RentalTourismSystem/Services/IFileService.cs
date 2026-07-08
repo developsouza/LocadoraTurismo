@@ -9,7 +9,7 @@ namespace RentalTourismSystem.Services
             IFormFile arquivo,
             string pastaDestino,
             string[]? extensoesPermitidas = null,
-            long tamanhoMaximoBytes = 10485760); // 10MB padr„o
+            long tamanhoMaximoBytes = 10485760); // 10MB padr√£o
 
         /// <summary>
         /// Exclui um arquivo do sistema
@@ -17,17 +17,17 @@ namespace RentalTourismSystem.Services
         Task<bool> ExcluirArquivoAsync(string caminhoArquivo);
 
         /// <summary>
-        /// ObtÈm um arquivo para download
+        /// Obt√©m um arquivo para download
         /// </summary>
         Task<(bool Success, byte[]? FileBytes, string? ContentType, string? FileName)> ObterArquivoAsync(string caminhoArquivo);
 
         /// <summary>
-        /// Valida se o arquivo È permitido
+        /// Valida se o arquivo √© permitido
         /// </summary>
         bool ValidarArquivo(IFormFile arquivo, string[] extensoesPermitidas, long tamanhoMaximoBytes);
 
         /// <summary>
-        /// ObtÈm o caminho completo do arquivo
+        /// Obt√©m o caminho completo do arquivo
         /// </summary>
         string ObterCaminhoCompleto(string caminhoRelativo);
     }

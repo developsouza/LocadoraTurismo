@@ -4,50 +4,50 @@ using System.ComponentModel.DataAnnotations;
 namespace RentalTourismSystem.Models
 {
     /// <summary>
-    /// Modelo para prÈ-cadastro p˙blico de clientes
+    /// Modelo para pr√©-cadastro p√∫blico de clientes
     /// </summary>
     public class PreCadastroCliente
     {
-        [Required(ErrorMessage = "O nome completo È obrigatÛrio")]
+        [Required(ErrorMessage = "O nome completo √© obrigat√≥rio")]
         [StringLength(100, MinimumLength = 3, ErrorMessage = "O nome deve ter entre 3 e 100 caracteres")]
         [Display(Name = "Nome Completo")]
         public string Nome { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "O CPF È obrigatÛrio")]
-        [CpfValidation(ErrorMessage = "CPF inv·lido")]
+        [Required(ErrorMessage = "O CPF √© obrigat√≥rio")]
+        [CpfValidation(ErrorMessage = "CPF inv√°lido")]
         [StringLength(14)]
         [Display(Name = "CPF")]
         public string CPF { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "O telefone È obrigatÛrio")]
+        [Required(ErrorMessage = "O telefone √© obrigat√≥rio")]
         [StringLength(20)]
         [Display(Name = "Telefone")]
-        [RegularExpression(@"^\(\d{2}\)\s?\d{4,5}-?\d{4}$", ErrorMessage = "Telefone inv·lido. Use o formato (00) 00000-0000")]
+        [RegularExpression(@"^\(\d{2}\)\s?\d{4,5}-?\d{4}$", ErrorMessage = "Telefone inv√°lido. Use o formato (00) 00000-0000")]
         public string Telefone { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "O upload da CNH È obrigatÛrio")]
+        [Required(ErrorMessage = "O upload da CNH √© obrigat√≥rio")]
         [Display(Name = "Foto da CNH")]
         public IFormFile? CNHUpload { get; set; }
 
-        [Required(ErrorMessage = "A data inicial da locaÁ„o È obrigatÛria")]
+        [Required(ErrorMessage = "A data inicial da loca√ß√£o √© obrigat√≥ria")]
         [DataType(DataType.Date)]
-        [Display(Name = "Data Inicial da LocaÁ„o")]
+        [Display(Name = "Data Inicial da Loca√ß√£o")]
         public DateTime DataInicioLocacao { get; set; } = DateTime.Now.AddDays(1);
 
-        [Required(ErrorMessage = "A data final da locaÁ„o È obrigatÛria")]
+        [Required(ErrorMessage = "A data final da loca√ß√£o √© obrigat√≥ria")]
         [DataType(DataType.Date)]
-        [Display(Name = "Data Final da LocaÁ„o")]
-        [DataMaiorQue("DataInicioLocacao", ErrorMessage = "A data final deve ser posterior ‡ data inicial")]
+        [Display(Name = "Data Final da Loca√ß√£o")]
+        [DataMaiorQue("DataInicioLocacao", ErrorMessage = "A data final deve ser posterior √† data inicial")]
         public DateTime DataFinalLocacao { get; set; } = DateTime.Now.AddDays(8);
 
-        [Required(ErrorMessage = "Selecione um veÌculo")]
-        [Display(Name = "VeÌculo Desejado")]
-        [Range(1, int.MaxValue, ErrorMessage = "Selecione um veÌculo v·lido")]
+        [Required(ErrorMessage = "Selecione um ve√≠culo")]
+        [Display(Name = "Ve√≠culo Desejado")]
+        [Range(1, int.MaxValue, ErrorMessage = "Selecione um ve√≠culo v√°lido")]
         public int VeiculoId { get; set; }
 
-        [Required(ErrorMessage = "VocÍ deve confirmar que n„o È um robÙ")]
-        [Display(Name = "N„o sou um robÙ")]
-        [Range(typeof(bool), "true", "true", ErrorMessage = "VocÍ deve confirmar que n„o È um robÙ")]
+        [Required(ErrorMessage = "Voc√™ deve confirmar que n√£o √© um rob√¥")]
+        [Display(Name = "N√£o sou um rob√¥")]
+        [Range(typeof(bool), "true", "true", ErrorMessage = "Voc√™ deve confirmar que n√£o √© um rob√¥")]
         public bool ConfirmarHumano { get; set; }
 
         // Propriedades calculadas
@@ -56,7 +56,7 @@ namespace RentalTourismSystem.Models
     }
 
     /// <summary>
-    /// ValidaÁ„o customizada para verificar se uma data È maior que outra
+    /// Valida√ß√£o customizada para verificar se uma data √© maior que outra
     /// </summary>
     public class DataMaiorQueAttribute : ValidationAttribute
     {
@@ -73,13 +73,13 @@ namespace RentalTourismSystem.Models
             var propertyInfo = validationContext.ObjectType.GetProperty(_dataInicialProperty);
 
             if (propertyInfo == null)
-                return new ValidationResult($"Propriedade {_dataInicialProperty} n„o encontrada");
+                return new ValidationResult($"Propriedade {_dataInicialProperty} n√£o encontrada");
 
             var dataInicial = (DateTime?)propertyInfo.GetValue(validationContext.ObjectInstance);
 
             if (dataFinal.HasValue && dataInicial.HasValue && dataFinal.Value <= dataInicial.Value)
             {
-                return new ValidationResult(ErrorMessage ?? "A data final deve ser posterior ‡ data inicial");
+                return new ValidationResult(ErrorMessage ?? "A data final deve ser posterior √† data inicial");
             }
 
             return ValidationResult.Success;

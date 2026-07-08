@@ -24,21 +24,21 @@ namespace RentalTourismSystem.Models
         public string TipoDocumento { get; set; } = string.Empty;
 
         [StringLength(100)]
-        [Display(Name = "Tipo de Conte˙do")]
+        [Display(Name = "Tipo de Conte√∫do")]
         public string? ContentType { get; set; }
 
         [Display(Name = "Tamanho (bytes)")]
         public long TamanhoBytes { get; set; }
 
         [StringLength(500)]
-        [Display(Name = "DescriÁ„o")]
+        [Display(Name = "Descri√ß√£o")]
         public string? Descricao { get; set; }
 
         [Display(Name = "Data de Upload")]
         public DateTime DataUpload { get; set; } = DateTime.Now;
 
         [StringLength(100)]
-        [Display(Name = "Usu·rio que fez Upload")]
+        [Display(Name = "Usu√°rio que fez Upload")]
         public string? UsuarioUpload { get; set; }
 
         // Relacionamentos - Um documento pode pertencer a diferentes entidades
@@ -46,15 +46,15 @@ namespace RentalTourismSystem.Models
         public int? ClienteId { get; set; }
         public virtual Cliente? Cliente { get; set; }
 
-        [Display(Name = "VeÌculo")]
+        [Display(Name = "Ve√≠culo")]
         public int? VeiculoId { get; set; }
         public virtual Veiculo? Veiculo { get; set; }
 
-        [Display(Name = "Funcion·rio")]
+        [Display(Name = "Funcion√°rio")]
         public int? FuncionarioId { get; set; }
         public virtual Funcionario? Funcionario { get; set; }
 
-        [Display(Name = "Usu·rio do Sistema")]
+        [Display(Name = "Usu√°rio do Sistema")]
         public string? ApplicationUserId { get; set; }
         public virtual ApplicationUser? ApplicationUser { get; set; }
 
@@ -78,19 +78,19 @@ namespace RentalTourismSystem.Models
         }
 
         [NotMapped]
-        [Display(Name = "Extens„o")]
+        [Display(Name = "Extens√£o")]
         public string Extensao => Path.GetExtension(NomeArquivo).ToLower();
 
         [NotMapped]
-        [Display(Name = "… Imagem")]
+        [Display(Name = "√â Imagem")]
         public bool EhImagem => new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" }.Contains(Extensao);
 
         [NotMapped]
-        [Display(Name = "… PDF")]
+        [Display(Name = "√â PDF")]
         public bool EhPdf => Extensao == ".pdf";
 
         [NotMapped]
-        [Display(Name = "Õcone")]
+        [Display(Name = "√çcone")]
         public string IconeFont
         {
             get
@@ -102,7 +102,7 @@ namespace RentalTourismSystem.Models
         }
 
         [NotMapped]
-        [Display(Name = "Cor do Õcone")]
+        [Display(Name = "Cor do √çcone")]
         public string IconeColor
         {
             get
@@ -114,23 +114,23 @@ namespace RentalTourismSystem.Models
         }
     }
 
-    // EnumeraÁ„o para tipos de documentos
+    // Enumera√ß√£o para tipos de documentos
     public static class TipoDocumentoEnum
     {
         public const string CNH = "CNH";
         public const string RG = "RG";
         public const string CPF = "CPF";
-        public const string ComprovanteResidencia = "Comprovante de ResidÍncia";
+        public const string ComprovanteResidencia = "Comprovante de Resid√™ncia";
         public const string FotoPerfil = "Foto de Perfil";
 
-        // Documentos de VeÌculos
+        // Documentos de Ve√≠culos
         public const string CRLV = "CRLV";
         public const string NotaFiscal = "Nota Fiscal";
         public const string Seguro = "Seguro";
         public const string IPVA = "IPVA";
-        public const string FotoVeiculo = "Foto do VeÌculo";
+        public const string FotoVeiculo = "Foto do Ve√≠culo";
 
-        // Documentos de Funcion·rios
+        // Documentos de Funcion√°rios
         public const string ContratoTrabalho = "Contrato de Trabalho";
         public const string CarteiraTrabalho = "Carteira de Trabalho";
 

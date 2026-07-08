@@ -28,8 +28,8 @@ namespace RentalTourismSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar lista de documentaÁ„o");
-                TempData["Erro"] = "Erro ao carregar documentaÁ„o";
+                _logger.LogError(ex, "Erro ao carregar lista de documenta√ß√£o");
+                TempData["Erro"] = "Erro ao carregar documenta√ß√£o";
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -39,7 +39,7 @@ namespace RentalTourismSystem.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                TempData["Erro"] = "Documento n„o especificado";
+                TempData["Erro"] = "Documento n√£o especificado";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -49,7 +49,7 @@ namespace RentalTourismSystem.Controllers
 
                 if (documento == null)
                 {
-                    TempData["Erro"] = "Documento n„o encontrado";
+                    TempData["Erro"] = "Documento n√£o encontrado";
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -79,7 +79,7 @@ namespace RentalTourismSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao buscar na documentaÁ„o: {Termo}", termo);
+                _logger.LogError(ex, "Erro ao buscar na documenta√ß√£o: {Termo}", termo);
                 TempData["Erro"] = "Erro ao realizar busca";
                 return RedirectToAction(nameof(Index));
             }
@@ -90,7 +90,7 @@ namespace RentalTourismSystem.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                TempData["Erro"] = "Documento n„o especificado";
+                TempData["Erro"] = "Documento n√£o especificado";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -100,7 +100,7 @@ namespace RentalTourismSystem.Controllers
 
                 if (conteudo == null)
                 {
-                    TempData["Erro"] = "Documento n„o encontrado";
+                    TempData["Erro"] = "Documento n√£o encontrado";
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -114,13 +114,13 @@ namespace RentalTourismSystem.Controllers
             }
         }
 
-        // GET: Documentacao/GuiaRapido - Atalho para o guia de inÌcio r·pido
+        // GET: Documentacao/GuiaRapido - Atalho para o guia de in√≠cio r√°pido
         public IActionResult GuiaRapido()
         {
             return RedirectToAction(nameof(Visualizar), new { id = "GUIA_INICIO_RAPIDO" });
         }
 
-        // GET: Documentacao/ReferenciaTecnica - Atalho para referÍncia tÈcnica
+        // GET: Documentacao/ReferenciaTecnica - Atalho para refer√™ncia t√©cnica
         public IActionResult ReferenciaTecnica()
         {
             return RedirectToAction(nameof(Visualizar), new { id = "REFERENCIA_TECNICA" });
@@ -138,7 +138,7 @@ namespace RentalTourismSystem.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao carregar documentos por perfil: {Perfil}", perfil);
-                TempData["Erro"] = "Erro ao carregar documentaÁ„o";
+                TempData["Erro"] = "Erro ao carregar documenta√ß√£o";
                 return RedirectToAction(nameof(Index));
             }
         }

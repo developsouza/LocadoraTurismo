@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "PrÈ-Cadastro Realizado com Sucesso";
+    ViewData["Title"] = "Pr√©-Cadastro Realizado com Sucesso";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -9,29 +9,29 @@
             <!-- Card de Sucesso -->
             <div class="success-card-dark">
                 <div class="success-card-body">
-                    <!-- Õcone de Sucesso -->
+                    <!-- √çcone de Sucesso -->
                     <div class="mb-4 text-center">
                         <div class="success-icon">
                             <i class="fas fa-check-circle fa-5x text-success"></i>
                         </div>
                     </div>
 
-                    <!-- TÌtulo -->
+                    <!-- T√≠tulo -->
                     <h1 class="success-title text-center mb-3">
-                        PrÈ-Cadastro Realizado!
+                        Pr√©-Cadastro Realizado!
                     </h1>
 
                     <!-- Mensagem -->
                     <p class="success-subtitle text-center mb-4">
-                        Seu prÈ-cadastro e solicitaÁ„o de reserva foram recebidos com sucesso!
+                        Seu pr√©-cadastro e solicita√ß√£o de reserva foram recebidos com sucesso!
                     </p>
 
                     @if (TempData["NomeCliente"] != null)
                     {
-                        <!-- Resumo da SolicitaÁ„o -->
+                        <!-- Resumo da Solicita√ß√£o -->
                         <div class="summary-card-dark mb-4">
                             <div class="summary-card-header">
-                                <i class="fas fa-calendar-check me-2"></i>Resumo da Sua SolicitaÁ„o
+                                <i class="fas fa-calendar-check me-2"></i>Resumo da Sua Solicita√ß√£o
                             </div>
                             <div class="summary-card-body">
                                 <div class="summary-item">
@@ -42,46 +42,46 @@
                                 {
                                     <div class="summary-item mt-3">
                                         <i class="fas fa-car me-2 icon-primary"></i>
-                                        <strong>VeÌculo:</strong> @TempData["VeiculoDescricao"]
+                                        <strong>Ve√≠culo:</strong> @TempData["VeiculoDescricao"]
                                     </div>
                                 }
                                 <div class="row mt-3">
                                     <div class="col-md-6 mb-2">
                                         <div class="summary-item">
                                             <i class="fas fa-calendar-alt me-2 text-success"></i>
-                                            <strong>InÌcio:</strong> @TempData["PeriodoInicio"]
+                                            <strong>In√≠cio:</strong> @TempData["PeriodoInicio"]
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-2">
                                         <div class="summary-item">
                                             <i class="fas fa-calendar-alt me-2 text-danger"></i>
-                                            <strong>TÈrmino:</strong> @TempData["PeriodoFim"]
+                                            <strong>T√©rmino:</strong> @TempData["PeriodoFim"]
                                         </div>
                                     </div>
                                 </div>
                                 <div class="period-badge mt-3">
                                     <i class="fas fa-clock me-2"></i>
-                                    <strong>PerÌodo total:</strong> @TempData["QuantidadeDias"] dia(s)
+                                    <strong>Per√≠odo total:</strong> @TempData["QuantidadeDias"] dia(s)
                                 </div>
                             </div>
                         </div>
                     }
 
-                    <!-- PrÛximos Passos -->
+                    <!-- Pr√≥ximos Passos -->
                     <div class="steps-card-dark mb-4">
                         <div class="steps-card-header">
-                            <i class="fas fa-info-circle me-2"></i>PrÛximos Passos
+                            <i class="fas fa-info-circle me-2"></i>Pr√≥ximos Passos
                         </div>
                         <div class="steps-card-body">
                             <ol class="steps-list-success">
                                 <li>
-                                    <strong>VerificaÁ„o:</strong> Nossa equipe ir· verificar seus dados, documentos e disponibilidade para o perÌodo solicitado.
+                                    <strong>Verifica√ß√£o:</strong> Nossa equipe ir√° verificar seus dados, documentos e disponibilidade para o per√≠odo solicitado.
                                 </li>
                                 <li>
-                                    <strong>Contato:</strong> Entraremos em contato atravÈs do telefone informado em atÈ 24 horas ˙teis.
+                                    <strong>Contato:</strong> Entraremos em contato atrav√©s do telefone informado em at√© 24 horas √∫teis.
                                 </li>
                                 <li>
-                                    <strong>FinalizaÁ„o:</strong> VocÍ receber· instruÁıes para completar seu cadastro e confirmar a reserva.
+                                    <strong>Finaliza√ß√£o:</strong> Voc√™ receber√° instru√ß√µes para completar seu cadastro e confirmar a reserva.
                                 </li>
                             </ol>
                         </div>
@@ -95,8 +95,8 @@
                     <i class="fas fa-clock me-2"></i>Tempo de Processamento
                 </div>
                 <div class="processing-card-body">
-                    Em mÈdia, processamos novos cadastros e verificamos disponibilidade em <strong>1 a 2 dias ˙teis</strong>.
-                    VocÍ receber· uma notificaÁ„o assim que seu cadastro for aprovado e a reserva confirmada.
+                    Em m√©dia, processamos novos cadastros e verificamos disponibilidade em <strong>1 a 2 dias √∫teis</strong>.
+                    Voc√™ receber√° uma notifica√ß√£o assim que seu cadastro for aprovado e a reserva confirmada.
                 </div>
             </div>
 
@@ -106,7 +106,7 @@
                     <i class="fas fa-headset me-2"></i>Precisa de Ajuda?
                 </div>
                 <div class="help-card-body">
-                    <p class="mb-3">Se tiver alguma d˙vida, entre em contato conosco:</p>
+                    <p class="mb-3">Se tiver alguma d√∫vida, entre em contato conosco:</p>
                     <div class="contact-item">
                         <i class="fas fa-envelope me-2"></i>
                         <strong>Email:</strong> locadoralitoralsul@gmail.com
@@ -118,13 +118,13 @@
                 </div>
             </div>
 
-            <!-- Botıes de AÁ„o -->
+            <!-- Bot√µes de A√ß√£o -->
             <div class="d-grid gap-3 mt-4">
                 <a href="/" class="btn-primary-gradient">
-                    <i class="fas fa-home me-2"></i>Voltar ao InÌcio
+                    <i class="fas fa-home me-2"></i>Voltar ao In√≠cio
                 </a>
                 <a href="/PreCadastro" class="btn-secondary-dark">
-                    <i class="fas fa-plus me-2"></i>Fazer Outro PrÈ-Cadastro
+                    <i class="fas fa-plus me-2"></i>Fazer Outro Pr√©-Cadastro
                 </a>
             </div>
 
@@ -133,8 +133,8 @@
                 <div class="tip-card-body">
                     <i class="fas fa-mobile-alt fa-2x me-3 text-warning"></i>
                     <div>
-                        <strong>Mantenha seu telefone disponÌvel!</strong><br>
-                        <small>Nossa equipe entrar· em contato para confirmar a disponibilidade do veÌculo no perÌodo solicitado, seus dados e fornecer instruÁıes para finalizar o cadastro e reserva.</small>
+                        <strong>Mantenha seu telefone dispon√≠vel!</strong><br>
+                        <small>Nossa equipe entrar√° em contato para confirmar a disponibilidade do ve√≠culo no per√≠odo solicitado, seus dados e fornecer instru√ß√µes para finalizar o cadastro e reserva.</small>
                     </div>
                 </div>
             </div>
@@ -145,7 +145,7 @@
 
 <style>
     /* ============================================
-       TEMA DARK/LIGHT - P¡GINA DE SUCESSO
+       TEMA DARK/LIGHT - P√ÅGINA DE SUCESSO
        ============================================ */
     
     :root {
@@ -161,7 +161,7 @@
         --icon-primary: #5b7cff;
     }
 
-    /* AnimaÁ„o do Ìcone de sucesso */
+    /* Anima√ß√£o do √≠cone de sucesso */
     .success-icon {
         animation: scaleIn 0.5s ease-in-out;
     }
@@ -357,7 +357,7 @@
         color: var(--text-muted);
     }
 
-    /* Botıes */
+    /* Bot√µes */
     .btn-primary-gradient {
         background: var(--primary-gradient);
         color: white;

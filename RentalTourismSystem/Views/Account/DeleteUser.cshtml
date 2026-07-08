@@ -1,12 +1,12 @@
 @model RentalTourismSystem.Models.ApplicationUser
 @{
-    ViewData["Title"] = "Excluir Usu·rio";
+    ViewData["Title"] = "Excluir Usu√°rio";
     var hasImpedimentos = ViewBag.Impedimentos != null && ((List<string>)ViewBag.Impedimentos).Any();
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0 text-danger">
-        <i class="fas fa-user-times me-2"></i>Excluir Usu·rio
+        <i class="fas fa-user-times me-2"></i>Excluir Usu√°rio
     </h2>
     <a asp-action="ManageUsers" class="btn btn-secondary">
         <i class="fas fa-arrow-left"></i> Voltar
@@ -17,9 +17,9 @@
 {
     <div class="alert alert-warning" role="alert">
         <h5 class="alert-heading">
-            <i class="fas fa-exclamation-triangle me-2"></i>AtenÁ„o!
+            <i class="fas fa-exclamation-triangle me-2"></i>Aten√ß√£o!
         </h5>
-        <p>Este usu·rio possui registros vinculados:</p>
+        <p>Este usu√°rio possui registros vinculados:</p>
         <ul class="mb-0">
             @foreach (var impedimento in (List<string>)ViewBag.Impedimentos)
             {
@@ -28,7 +28,7 @@
         </ul>
         <hr />
         <p class="mb-0">
-            <strong>RecomendaÁ„o:</strong> Em vez de excluir, considere desativar o usu·rio.
+            <strong>Recomenda√ß√£o:</strong> Em vez de excluir, considere desativar o usu√°rio.
         </p>
     </div>
 }
@@ -38,12 +38,12 @@
         <div class="card shadow-sm border-danger">
             <div class="card-header bg-danger text-white">
                 <h5 class="mb-0">
-                    <i class="fas fa-exclamation-circle me-2"></i>Confirmar Exclus„o
+                    <i class="fas fa-exclamation-circle me-2"></i>Confirmar Exclus√£o
                 </h5>
             </div>
             <div class="card-body">
                 <div class="alert alert-danger" role="alert">
-                    <strong>AtenÁ„o!</strong> Esta aÁ„o n„o pode ser desfeita.
+                    <strong>Aten√ß√£o!</strong> Esta a√ß√£o n√£o pode ser desfeita.
                 </div>
 
                 <dl class="row mb-0">
@@ -54,15 +54,15 @@
                     <dd class="col-sm-8">@Model.Email</dd>
 
                     <dt class="col-sm-4">CPF:</dt>
-                    <dd class="col-sm-8">@(Model.Cpf ?? "N„o informado")</dd>
+                    <dd class="col-sm-8">@(Model.Cpf ?? "N√£o informado")</dd>
 
                     <dt class="col-sm-4">Cargo:</dt>
-                    <dd class="col-sm-8">@(Model.Cargo ?? "N„o informado")</dd>
+                    <dd class="col-sm-8">@(Model.Cargo ?? "N√£o informado")</dd>
 
-                    <dt class="col-sm-4">AgÍncia:</dt>
-                    <dd class="col-sm-8">@(Model.Agencia?.Nome ?? "N„o vinculado")</dd>
+                    <dt class="col-sm-4">Ag√™ncia:</dt>
+                    <dd class="col-sm-8">@(Model.Agencia?.Nome ?? "N√£o vinculado")</dd>
 
-                    <dt class="col-sm-4">Permiss„o:</dt>
+                    <dt class="col-sm-4">Permiss√£o:</dt>
                     <dd class="col-sm-8">
                         <span class="badge bg-info">@ViewBag.UserRole</span>
                     </dd>
@@ -87,8 +87,8 @@
                 {
                     <div class="alert alert-info mt-3" role="alert">
                         <i class="fas fa-info-circle me-2"></i>
-                        <strong>Nota:</strong> Ao excluir este usu·rio, os registros vinculados ser„o mantidos,
-                        mas ficar„o sem referÍncia ao usu·rio excluÌdo.
+                        <strong>Nota:</strong> Ao excluir este usu√°rio, os registros vinculados ser√£o mantidos,
+                        mas ficar√£o sem refer√™ncia ao usu√°rio exclu√≠do.
                     </div>
                 }
 
@@ -98,9 +98,9 @@
                         <a asp-action="ManageUsers" class="btn btn-secondary flex-fill">
                             <i class="fas fa-times"></i> Cancelar
                         </a>
-                        <button type="submit" class="btn btn-danger flex-fill"
-                                onclick="return confirm('Tem certeza que deseja excluir este usu·rio? Esta aÁ„o n„o pode ser desfeita!')">
-                            <i class="fas fa-trash"></i> Confirmar Exclus„o
+                        <button type="submit" class="btn btn-danger flex-fill delete-confirm"
+                                data-item-name="este usu√°rio" data-confirm-detail="Esta a√ß√£o √© permanente e n√£o poder√° ser desfeita." data-confirm-label="Excluir usu√°rio">
+                            <i class="fas fa-trash"></i> Confirmar Exclus√£o
                         </button>
                     </div>
                 </form>
@@ -115,21 +115,21 @@
                         <i class="fas fa-check-circle me-2"></i>Alternativa Recomendada
                     </h6>
                     <p class="mb-0">
-                        Em vez de excluir, vocÍ pode <strong>desativar</strong> o usu·rio.
-                        Isso mantÈm o histÛrico completo e permite reativar no futuro se necess·rio.
+                        Em vez de excluir, voc√™ pode <strong>desativar</strong> o usu√°rio.
+                        Isso mant√©m o hist√≥rico completo e permite reativar no futuro se necess√°rio.
                     </p>
                     <form asp-action="ToggleUserStatus" method="post" class="mt-3">
                         <input type="hidden" name="userId" value="@Model.Id" />
                         @if (Model.Ativo)
                         {
                             <button type="submit" class="btn btn-warning">
-                                <i class="fas fa-user-lock"></i> Desativar Usu·rio
+                                <i class="fas fa-user-lock"></i> Desativar Usu√°rio
                             </button>
                         }
                         else
                         {
                             <button type="submit" class="btn btn-success">
-                                <i class="fas fa-user-check"></i> Ativar Usu·rio
+                                <i class="fas fa-user-check"></i> Ativar Usu√°rio
                             </button>
                         }
                     </form>

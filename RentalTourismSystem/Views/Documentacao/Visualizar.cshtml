@@ -15,7 +15,7 @@
                     <li class="breadcrumb-item">
                         <a asp-action="Index">
                             <i class="fas fa-book me-1"></i>
-                            DocumentaÁ„o
+                            Documenta√ß√£o
                         </a>
                     </li>
                     <li class="breadcrumb-item">@Model.Categoria</li>
@@ -26,17 +26,17 @@
     </div>
 
     <div class="row">
-        <!-- Sidebar com Õndice (Desktop) -->
+        <!-- Sidebar com √çndice (Desktop) -->
         <div class="col-lg-3 mb-4 d-none d-lg-block">
             <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
                 <div class="card-header bg-primary text-white">
                     <h6 class="mb-0">
                         <i class="fas fa-list me-2"></i>
-                        NavegaÁ„o
+                        Navega√ß√£o
                     </h6>
                 </div>
                 <div class="card-body">
-                    <!-- InformaÁıes do Documento -->
+                    <!-- Informa√ß√µes do Documento -->
                     <div class="mb-3 pb-3 border-bottom">
                         <div class="d-flex align-items-center text-muted small mb-2">
                             <i class="fas fa-clock me-2"></i>
@@ -51,10 +51,10 @@
                         }
                     </div>
 
-                    <!-- Õndice do Documento -->
+                    <!-- √çndice do Documento -->
                     <div id="docToc" class="toc-container"></div>
 
-                    <!-- AÁıes -->
+                    <!-- A√ß√µes -->
                     <div class="mt-3 pt-3 border-top">
                         <div class="d-grid gap-2">
                             <a asp-action="Download" asp-route-id="@Model.Id" 
@@ -76,7 +76,7 @@
             </div>
         </div>
 
-        <!-- Conte˙do Principal -->
+        <!-- Conte√∫do Principal -->
         <div class="col-lg-9">
             <!-- Info Mobile -->
             <div class="d-lg-none mb-3">
@@ -100,7 +100,7 @@
                 </div>
             </div>
 
-            <!-- Conte˙do do Documento -->
+            <!-- Conte√∫do do Documento -->
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-light border-0 py-3">
                     <div class="d-flex align-items-center">
@@ -139,7 +139,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <a asp-action="Index" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-2"></i>
-                            Voltar para DocumentaÁ„o
+                            Voltar para Documenta√ß√£o
                         </a>
                         
                         @if (Model.Tags.Any())
@@ -156,7 +156,7 @@
                 </div>
             </div>
 
-            <!-- Bot„o de Voltar ao Topo (Mobile) -->
+            <!-- Bot√£o de Voltar ao Topo (Mobile) -->
             <button id="backToTop" class="btn btn-primary rounded-circle position-fixed d-lg-none" 
                     style="bottom: 20px; right: 20px; width: 50px; height: 50px; display: none; z-index: 1000;">
                 <i class="fas fa-arrow-up"></i>
@@ -166,7 +166,7 @@
 </div>
 
 <style>
-    /* Estilos para o Conte˙do Markdown */
+    /* Estilos para o Conte√∫do Markdown */
     .markdown-content {
         font-size: 1rem;
         line-height: 1.8;
@@ -284,7 +284,7 @@
         border-top: 1px solid #e9ecef;
     }
 
-    /* Õndice Lateral */
+    /* √çndice Lateral */
     .toc-container {
         font-size: 0.9rem;
     }
@@ -322,16 +322,16 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Gerar Õndice (TOC)
+            // Gerar √çndice (TOC)
             generateTableOfContents();
 
             // Scroll Spy para TOC
             setupScrollSpy();
 
-            // Bot„o Voltar ao Topo
+            // Bot√£o Voltar ao Topo
             setupBackToTop();
 
-            // Copiar cÛdigo ao clicar
+            // Copiar c√≥digo ao clicar
             setupCodeCopy();
         });
 
@@ -344,7 +344,7 @@
             const headings = content.querySelectorAll('h2, h3, h4');
             
             if (headings.length === 0) {
-                toc.innerHTML = '<p class="text-muted small">Sem Ìndice disponÌvel</p>';
+                toc.innerHTML = '<p class="text-muted small">Sem √≠ndice dispon√≠vel</p>';
                 return;
             }
 
@@ -432,7 +432,7 @@
                 button.style.top = '10px';
                 button.style.right = '10px';
                 button.innerHTML = '<i class="fas fa-copy"></i>';
-                button.title = 'Copiar cÛdigo';
+                button.title = 'Copiar c√≥digo';
                 
                 block.style.position = 'relative';
                 block.appendChild(button);

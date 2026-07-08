@@ -1626,11 +1626,29 @@ function initializeTooltips() {
 }
 
 function setupDeleteConfirmations() {
-    document.querySelectorAll('.btn-delete, .delete-confirm').forEach(button => {
-        button.addEventListener('click', function (e) {
+    document.querySelectorAll('.btn-delete, .delete-confirm, [data-confirm]').forEach(button => {
+        if (button.dataset.confirmReady === 'true') return;
+        button.dataset.confirmReady = 'true';
+        button.addEventListener('click', async function (e) {
             e.preventDefault();
             const itemName = this.getAttribute('data-item-name') || 'este item';
-            const confirmed = confirm(`Tem certeza que deseja excluir ${itemName}?\nEsta ação não pode ser desfeita.`);
+            const message = this.getAttribute('data-confirm') || `Tem certeza que deseja excluir ${itemName}?`;
+            const detail = this.getAttribute('data-confirm-detail') || 'Revise a ação antes de continuar.';
+            const confirmLabel = this.getAttribute('data-confirm-label') || 'Confirmar';
+            const isDanger = this.matches('.btn-delete, .delete-confirm, [data-confirm-danger="true"]');
+            let confirmed;
+
+            if (typeof Swal !== 'undefined') {
+                const result = await Swal.fire({
+                    title: message, text: detail, icon: isDanger ? 'warning' : 'question',
+                    showCancelButton: true, confirmButtonText: confirmLabel, cancelButtonText: 'Cancelar',
+                    confirmButtonColor: isDanger ? '#dc2626' : '#0f766e', cancelButtonColor: '#64748b',
+                    reverseButtons: true, focusCancel: isDanger
+                });
+                confirmed = result.isConfirmed;
+            } else {
+                confirmed = window.confirm(`${message}\n${detail}`);
+            }
             if (confirmed) {
                 if (this.tagName === 'A') {
                     window.location.href = this.href;

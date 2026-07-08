@@ -4,7 +4,7 @@ using RentalTourismSystem.Data;
 namespace RentalTourismSystem.Extensions;
 
 /// <summary>
-/// Extensıes para configuraÁ„o de banco de dados
+/// Extens√µes para configura√ß√£o de banco de dados
 /// </summary>
 public static class DatabaseExtensions
 {
@@ -32,7 +32,7 @@ public static class DatabaseExtensions
                 sqlServerOptions.MigrationsAssembly(typeof(RentalTourismContext).Assembly.FullName);
             });
 
-            // ConfiguraÁıes de ambiente
+            // Configura√ß√µes de ambiente
             if (environment.IsProduction())
             {
                 options.EnableSensitiveDataLogging(false);
@@ -65,15 +65,15 @@ public static class DatabaseExtensions
             var context = services.GetRequiredService<RentalTourismContext>();
             var logger = services.GetRequiredService<ILogger<RentalTourismContext>>();
 
-            // Verificar conex„o
+            // Verificar conex√£o
             var canConnect = await context.Database.CanConnectAsync();
             if (!canConnect)
             {
-                logger.LogError("N„o foi possÌvel conectar ao banco de dados");
+                logger.LogError("N√£o foi poss√≠vel conectar ao banco de dados");
                 throw new InvalidOperationException("Database connection failed");
             }
 
-            // Verificar se o banco de dados existe e criar se necess·rio
+            // Verificar se o banco de dados existe e criar se necess√°rio
             var databaseExists = await context.Database.CanConnectAsync();
             if (databaseExists)
             {

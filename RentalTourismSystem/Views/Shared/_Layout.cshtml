@@ -10,6 +10,7 @@
     <!-- Preload fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- CSS Dependencies -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -23,6 +24,7 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body data-theme="light">
+    <a class="skip-link" href="#mainContent">Ir para o conteúdo principal</a>
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <div class="spinner-modern"></div>
@@ -33,14 +35,14 @@
         <!-- App Wrapper - Apenas para usuários autenticados -->
         <div class="app-wrapper">
             <!-- Sidebar -->
-            <aside class="sidebar" id="sidebar">
+            <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
                 <!-- Sidebar Header -->
                 <div class="sidebar-header">
                     <a class="sidebar-brand" asp-controller="Home" asp-action="Index">
                         <img src="/img/logo-litoral-sul.png" alt="Litoral Sul" class="sidebar-logo">
                         <span class="sidebar-brand-text">
                             Litoral Sul
-                            <div style="font-size: 0.75rem; font-weight: 400; line-height: 1;">Locadora e Turismo</div>
+                            <span class="sidebar-brand-subtitle">Locadora e Turismo</span>
                         </span>
                     </a>
                 </div>
@@ -207,12 +209,6 @@
                                             <a class="nav-link" asp-controller="Account" asp-action="ManageUsers">
                                                 <span class="nav-link-text">Usuários do Sistema</span>
                                             </a>
-                                            <a class="nav-link" href="#backup">
-                                                <span class="nav-link-text">Backup</span>
-                                            </a>
-                                            <a class="nav-link" href="#sistema">
-                                                <span class="nav-link-text">Sistema</span>
-                                            </a>
                                         </div>
                                     </li>
                                 }
@@ -297,15 +293,16 @@
             <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
             <!-- Main Content -->
-            <main class="main-content">
+            <main class="main-content" id="mainContent" tabindex="-1">
                 <!-- Top Bar -->
                 <div class="topbar">
                     <div class="d-flex align-items-center">
-                        <button class="sidebar-toggle" id="sidebarToggle" type="button">
+                        <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Abrir ou recolher menu" aria-controls="sidebar">
                             <i class="fas fa-bars"></i>
                         </button>
-                        <div class="d-none d-md-block">
-                            <h1 class="h5 mb-0 text-gradient">@ViewData["Title"]</h1>
+                        <div class="page-heading d-none d-md-block">
+                            <span class="page-context">Litoral Sul · Gestão integrada</span>
+                            <h1 class="topbar-title">@ViewData["Title"]</h1>
                         </div>
                     </div>
 
@@ -313,7 +310,7 @@
                         <!-- Notifications -->
                         <div class="dropdown">
                             <button class="btn btn-outline-secondary position-relative" type="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false" title="Notificações">
+                                    data-bs-toggle="dropdown" aria-expanded="false" title="Notificações" aria-label="Abrir notificações">
                                 <i class="fas fa-bell"></i>
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                                       id="notification-badge" style="display: none;">
@@ -342,13 +339,13 @@
                         </div>
 
                         <!-- Theme Toggle -->
-                        <button class="theme-toggle" id="themeToggle" type="button" title="Alternar Tema">
+                        <button class="theme-toggle" id="themeToggle" type="button" title="Alternar tema" aria-label="Alternar tema claro ou escuro">
                             <i class="fas fa-sun" id="themeIcon"></i>
                         </button>
 
                         <!-- User Menu - Agora com dados reais -->
                         <div class="dropdown">
-                            <button class="btn btn-outline-secondary d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-outline-secondary user-menu-trigger d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir menu do usuário">
                                 <div class="user-avatar" style="width: 32px; height: 32px; margin-right: 0.5rem;">
                                     <i class="fas fa-user"></i>
                                 </div>
@@ -400,7 +397,10 @@
                                 }
                                 <li>
                                     <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                        <button type="submit" class="dropdown-item d-flex align-items-center text-danger" onclick="return confirm('Deseja realmente sair do sistema?')">
+                                        <button type="submit" class="dropdown-item d-flex align-items-center text-danger"
+                                                data-confirm="Deseja sair do sistema?"
+                                                data-confirm-detail="Sua sessão atual será encerrada com segurança."
+                                                data-confirm-label="Sim, sair">
                                             <i class="fas fa-sign-out-alt me-2"></i>
                                             <span>Sair do Sistema</span>
                                         </button>
@@ -448,7 +448,9 @@
                     }
 
                     <!-- Page Content -->
-                    @RenderBody()
+                    <div class="page-shell">
+                        @RenderBody()
+                    </div>
                 </div>
             </main>
         </div>
@@ -537,13 +539,17 @@
 
                 setupNavigation: function() {
                     // Marcar item ativo baseado na URL atual
-                    const currentPath = window.location.pathname.toLowerCase();
+                    const normalizePath = value => (value || '/').replace(/\/+$/, '') || '/';
+                    const currentPath = normalizePath(window.location.pathname.toLowerCase());
                     const navLinks = document.querySelectorAll('.sidebar .nav-link:not(.nav-dropdown)');
 
                     navLinks.forEach(link => {
                         link.classList.remove('active');
-                        const href = link.getAttribute('href');
-                        if (href && currentPath.includes(href.toLowerCase())) {
+                        const href = normalizePath(link.getAttribute('href')?.split('?')[0].toLowerCase());
+                        const isActive = href === '/'
+                            ? currentPath === '/'
+                            : currentPath === href || currentPath.startsWith(`${href}/`);
+                        if (href && isActive) {
                             link.classList.add('active');
 
                             // Se for item de submenu, expandir o pai

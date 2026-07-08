@@ -1,47 +1,52 @@
 @model IEnumerable<RentalTourismSystem.Models.ManutencaoVeiculo>
 
 @{
-    ViewData["Title"] = "Manutenções de Veículos";
+    ViewData["Title"] = "ManutenÃ§Ãµes de VeÃ­culos";
 }
 
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-md-12">
-            <h2><i class="fas fa-tools"></i> Manutenções de Veículos</h2>
+            <h2><i class="fas fa-tools"></i> ManutenÃ§Ãµes de VeÃ­culos</h2>
+            <p class="text-muted mb-0">Acompanhe serviÃ§os, prazos, custos e disponibilidade da frota.</p>
         </div>
     </div>
 
-    <!-- Estatísticas -->
-    <div class="row mb-4">
+    <!-- EstatÃ­sticas -->
+    <div class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="card bg-primary text-white">
+            <div class="card dashboard-card h-100">
                 <div class="card-body">
-                    <h5 class="card-title"><i class="fas fa-list"></i> Total de Manutenções</h5>
-                    <h3>@ViewBag.TotalManutencoes</h3>
+                    <i class="fas fa-list fa-2x mb-2"></i>
+                    <h3 class="stat-number">@ViewBag.TotalManutencoes</h3>
+                    <p class="stat-label mb-0">Total de ManutenÃ§Ãµes</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-warning text-white">
+            <div class="card dashboard-card h-100">
                 <div class="card-body">
-                    <h5 class="card-title"><i class="fas fa-calendar-check"></i> Agendadas</h5>
-                    <h3>@ViewBag.ManutencoesAgendadas</h3>
+                    <i class="fas fa-calendar-check fa-2x mb-2"></i>
+                    <h3 class="stat-number">@ViewBag.ManutencoesAgendadas</h3>
+                    <p class="stat-label mb-0">Agendadas</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-info text-white">
+            <div class="card dashboard-card h-100">
                 <div class="card-body">
-                    <h5 class="card-title"><i class="fas fa-cog"></i> Em Andamento</h5>
-                    <h3>@ViewBag.ManutencoesEmAndamento</h3>
+                    <i class="fas fa-cog fa-2x mb-2"></i>
+                    <h3 class="stat-number">@ViewBag.ManutencoesEmAndamento</h3>
+                    <p class="stat-label mb-0">Em Andamento</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-success text-white">
+            <div class="card dashboard-card h-100">
                 <div class="card-body">
-                    <h5 class="card-title"><i class="fas fa-money-bill-wave"></i> Custo Total</h5>
-                    <h3>@ViewBag.CustoTotal.ToString("C")</h3>
+                    <i class="fas fa-money-bill-wave fa-2x mb-2"></i>
+                    <h3 class="stat-number">@ViewBag.CustoTotal.ToString("C")</h3>
+                    <p class="stat-label mb-0">Custo Total</p>
                 </div>
             </div>
         </div>
@@ -54,51 +59,50 @@
         </div>
         <div class="card-body">
             <form asp-action="Index" method="get">
-                <div class="row">
+                <div class="row g-3 align-items-end">
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Veículo</label>
-                            <select name="veiculoId" class="form-control" asp-items="ViewBag.VeiculoIdFiltro">
-                                <option value="">Todos os veículos</option>
+                            <label for="filtroVeiculo" class="form-label">VeÃ­culo</label>
+                            <select id="filtroVeiculo" name="veiculoId" class="form-select" asp-items="ViewBag.VeiculoIdFiltro">
+                                <option value="">Todos os veÃ­culos</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Status</label>
-                            <select name="statusId" class="form-control" asp-items="ViewBag.StatusIdFiltro">
+                            <label for="filtroStatus" class="form-label">Status</label>
+                            <select id="filtroStatus" name="statusId" class="form-select" asp-items="ViewBag.StatusIdFiltro">
                                 <option value="">Todos os status</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Tipo</label>
-                            <select name="tipoId" class="form-control" asp-items="ViewBag.TipoIdFiltro">
+                            <label for="filtroTipo" class="form-label">Tipo</label>
+                            <select id="filtroTipo" name="tipoId" class="form-select" asp-items="ViewBag.TipoIdFiltro">
                                 <option value="">Todos os tipos</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Data Início</label>
-                            <input type="date" name="dataInicio" class="form-control" value="@ViewBag.DataInicio" />
+                            <label for="filtroInicio" class="form-label">Data InÃ­cio</label>
+                            <input id="filtroInicio" type="date" name="dataInicio" class="form-control" value="@ViewBag.DataInicio" />
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Data Fim</label>
-                            <input type="date" name="dataFim" class="form-control" value="@ViewBag.DataFim" />
+                            <label for="filtroFim" class="form-label">Data Fim</label>
+                            <input id="filtroFim" type="date" name="dataFim" class="form-control" value="@ViewBag.DataFim" />
                         </div>
                     </div>
                     <div class="col-md-1">
                         <div class="form-group">
-                            <label>&nbsp;</label>
-                            <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-search"></i></button>
+                            <button type="submit" class="btn btn-primary w-100" aria-label="Aplicar filtros"><i class="fas fa-search"></i></button>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row g-3 align-items-center mt-1">
                     <div class="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="preventiva" value="true" @(ViewBag.Preventiva == true ? "checked" : "") />
@@ -111,7 +115,7 @@
                             <label class="form-check-label">Apenas Urgentes</label>
                         </div>
                     </div>
-                    <div class="col-md-6 text-right">
+                    <div class="col-md-6 text-end">
                         <a asp-action="Index" class="btn btn-secondary"><i class="fas fa-eraser"></i> Limpar Filtros</a>
                     </div>
                 </div>
@@ -119,16 +123,16 @@
         </div>
     </div>
 
-    <!-- Botões de Ação -->
+    <!-- BotÃµes de AÃ§Ã£o -->
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {
         <div class="mb-3">
-            <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i> Nova Manutenção</a>
-            <a asp-action="Relatorio" class="btn btn-info"><i class="fas fa-chart-bar"></i> Relatório</a>
+            <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i> Nova ManutenÃ§Ã£o</a>
+            <a asp-action="Relatorio" class="btn btn-info"><i class="fas fa-chart-bar"></i> RelatÃ³rio</a>
         </div>
     }
 
-    <!-- Tabela de Manutenções -->
+    <!-- Tabela de ManutenÃ§Ãµes -->
     <div class="card">
         <div class="card-body">
             @if (Model.Any())
@@ -137,14 +141,14 @@
                     <table class="table table-striped table-hover">
                         <thead class="thead-dark">
                             <tr>
-                                <th>Veículo</th>
+                                <th>VeÃ­culo</th>
                                 <th>Tipo</th>
                                 <th>Status</th>
                                 <th>Data Agendada</th>
                                 <th>Quilometragem</th>
                                 <th>Custo Total</th>
                                 <th>Marcadores</th>
-                                <th>Ações</th>
+                                <th>AÃ§Ãµes</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -159,23 +163,23 @@
                                     <td>
                                         @if (item.StatusManutencao?.Status == "Agendada")
                                         {
-                                            <span class="badge badge-warning">@item.StatusManutencao?.Status</span>
+                                            <span class="badge bg-warning text-dark">@item.StatusManutencao?.Status</span>
                                         }
                                         else if (item.StatusManutencao?.Status == "Em Andamento")
                                         {
-                                            <span class="badge badge-info">@item.StatusManutencao?.Status</span>
+                                            <span class="badge bg-info text-dark">@item.StatusManutencao?.Status</span>
                                         }
-                                        else if (item.StatusManutencao?.Status == "Concluída")
+                                        else if (item.StatusManutencao?.Status == "ConcluÃ­da")
                                         {
-                                            <span class="badge badge-success">@item.StatusManutencao?.Status</span>
+                                            <span class="badge bg-success">@item.StatusManutencao?.Status</span>
                                         }
                                         else if (item.StatusManutencao?.Status == "Cancelada")
                                         {
-                                            <span class="badge badge-danger">@item.StatusManutencao?.Status</span>
+                                            <span class="badge bg-danger">@item.StatusManutencao?.Status</span>
                                         }
                                         else
                                         {
-                                            <span class="badge badge-secondary">@item.StatusManutencao?.Status</span>
+                                            <span class="badge bg-secondary">@item.StatusManutencao?.Status</span>
                                         }
                                     </td>
                                     <td>
@@ -200,15 +204,15 @@
                                     <td>
                                         @if (item.Preventiva)
                                         {
-                                            <span class="badge badge-primary" title="Manutenção Preventiva"><i class="fas fa-shield-alt"></i> Preventiva</span>
+                                            <span class="badge bg-primary" title="ManutenÃ§Ã£o Preventiva"><i class="fas fa-shield-alt"></i> Preventiva</span>
                                         }
                                         @if (item.Urgente)
                                         {
-                                            <span class="badge badge-danger" title="Urgente"><i class="fas fa-exclamation-triangle"></i> Urgente</span>
+                                            <span class="badge bg-danger" title="Urgente"><i class="fas fa-exclamation-triangle"></i> Urgente</span>
                                         }
                                         @if (item.EmGarantia)
                                         {
-                                            <span class="badge badge-success" title="Em Garantia"><i class="fas fa-certificate"></i> Garantia</span>
+                                            <span class="badge bg-success" title="Em Garantia"><i class="fas fa-certificate"></i> Garantia</span>
                                         }
                                     </td>
                                     <td>
@@ -239,7 +243,7 @@
             else
             {
                 <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> Nenhuma manutenção encontrada com os filtros aplicados.
+                    <i class="fas fa-info-circle"></i> Nenhuma manutenÃ§Ã£o encontrada com os filtros aplicados.
                 </div>
             }
         </div>

@@ -1,27 +1,27 @@
 @model IEnumerable<RentalTourismSystem.Models.ManutencaoVeiculo>
 
 @{
-    ViewData["Title"] = "Relatório de Manutenções";
+    ViewData["Title"] = "RelatÃ³rio de ManutenÃ§Ãµes";
 }
 
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-md-12">
-            <h2><i class="fas fa-chart-bar"></i> Relatório de Manutenções</h2>
+            <h2><i class="fas fa-chart-bar"></i> RelatÃ³rio de ManutenÃ§Ãµes</h2>
         </div>
     </div>
 
     <!-- Filtros -->
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="fas fa-filter"></i> Filtros do Relatório</h5>
+            <h5 class="mb-0"><i class="fas fa-filter"></i> Filtros do RelatÃ³rio</h5>
         </div>
         <div class="card-body">
             <form asp-action="Relatorio" method="get">
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Data Início</label>
+                            <label>Data InÃ­cio</label>
                             <input type="date" name="dataInicio" class="form-control" value="@ViewBag.DataInicio" required />
                         </div>
                     </div>
@@ -33,9 +33,9 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Veículo</label>
+                            <label>VeÃ­culo</label>
                             <select name="veiculoId" class="form-control" asp-items="ViewBag.VeiculoIdFiltro">
-                                <option value="">Todos os veículos</option>
+                                <option value="">Todos os veÃ­culos</option>
                             </select>
                         </div>
                     </div>
@@ -58,14 +58,14 @@
         </div>
     </div>
 
-    <!-- Estatísticas Resumidas -->
+    <!-- EstatÃ­sticas Resumidas -->
     <div class="row mb-4">
         <div class="col-md-3">
             <div class="card bg-primary text-white">
                 <div class="card-body text-center">
                     <h2><i class="fas fa-tools"></i></h2>
                     <h4>@ViewBag.TotalManutencoes</h4>
-                    <p class="mb-0">Total de Manutenções</p>
+                    <p class="mb-0">Total de ManutenÃ§Ãµes</p>
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
                 <div class="card-body text-center">
                     <h2><i class="fas fa-chart-line"></i></h2>
                     <h4>@ViewBag.MediaCusto.ToString("C")</h4>
-                    <p class="mb-0">Custo Médio</p>
+                    <p class="mb-0">Custo MÃ©dio</p>
                 </div>
             </div>
         </div>
@@ -103,7 +103,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="fas fa-cog"></i> Peças</h5>
+                    <h5 class="mb-0"><i class="fas fa-cog"></i> PeÃ§as</h5>
                 </div>
                 <div class="card-body text-center">
                     <h3>@ViewBag.TotalPecas.ToString("C")</h3>
@@ -113,7 +113,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="fas fa-user-hard-hat"></i> Mão de Obra</h5>
+                    <h5 class="mb-0"><i class="fas fa-user-hard-hat"></i> MÃ£o de Obra</h5>
                 </div>
                 <div class="card-body text-center">
                     <h3>@ViewBag.TotalMaoObra.ToString("C")</h3>
@@ -132,10 +132,10 @@
         </div>
     </div>
 
-    <!-- Manutenções por Tipo -->
+    <!-- ManutenÃ§Ãµes por Tipo -->
     <div class="card mb-4">
         <div class="card-header bg-success text-white">
-            <h5 class="mb-0"><i class="fas fa-chart-pie"></i> Manutenções por Tipo</h5>
+            <h5 class="mb-0"><i class="fas fa-chart-pie"></i> ManutenÃ§Ãµes por Tipo</h5>
         </div>
         <div class="card-body">
             @if (ViewBag.ManutencoesPorTipo != null && ((IEnumerable<dynamic>)ViewBag.ManutencoesPorTipo).Any())
@@ -144,7 +144,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Tipo de Manutenção</th>
+                                <th>Tipo de ManutenÃ§Ã£o</th>
                                 <th class="text-center">Quantidade</th>
                                 <th class="text-right">Custo Total</th>
                                 <th class="text-right">% do Total</th>
@@ -175,15 +175,15 @@
             }
             else
             {
-                <div class="alert alert-info">Nenhum dado disponível para o período selecionado.</div>
+                <div class="alert alert-info">Nenhum dado disponÃ­vel para o perÃ­odo selecionado.</div>
             }
         </div>
     </div>
 
-    <!-- Manutenções por Veículo -->
+    <!-- ManutenÃ§Ãµes por VeÃ­culo -->
     <div class="card mb-4">
         <div class="card-header bg-warning text-dark">
-            <h5 class="mb-0"><i class="fas fa-car"></i> Custos por Veículo</h5>
+            <h5 class="mb-0"><i class="fas fa-car"></i> Custos por VeÃ­culo</h5>
         </div>
         <div class="card-body">
             @if (ViewBag.ManutencoesPorVeiculo != null && ((IEnumerable<dynamic>)ViewBag.ManutencoesPorVeiculo).Any())
@@ -192,10 +192,10 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Veículo</th>
+                                <th>VeÃ­culo</th>
                                 <th class="text-center">Quantidade</th>
                                 <th class="text-right">Custo Total</th>
-                                <th class="text-right">Custo Médio</th>
+                                <th class="text-right">Custo MÃ©dio</th>
                                 <th class="text-right">% do Total</th>
                             </tr>
                         </thead>
@@ -208,7 +208,7 @@
                                     <td>
                                         <strong>@item.Descricao</strong>
                                         <a asp-action="HistoricoVeiculo" asp-route-id="@item.VeiculoId" class="btn btn-sm btn-outline-info ml-2">
-                                            <i class="fas fa-history"></i> Ver Histórico
+                                            <i class="fas fa-history"></i> Ver HistÃ³rico
                                         </a>
                                     </td>
                                     <td class="text-center">@item.Quantidade</td>
@@ -223,15 +223,15 @@
             }
             else
             {
-                <div class="alert alert-info">Nenhum dado disponível para o período selecionado.</div>
+                <div class="alert alert-info">Nenhum dado disponÃ­vel para o perÃ­odo selecionado.</div>
             }
         </div>
     </div>
 
-    <!-- Lista Detalhada de Manutenções -->
+    <!-- Lista Detalhada de ManutenÃ§Ãµes -->
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0"><i class="fas fa-list"></i> Detalhamento de Manutenções</h5>
+            <h5 class="mb-0"><i class="fas fa-list"></i> Detalhamento de ManutenÃ§Ãµes</h5>
         </div>
         <div class="card-body">
             @if (Model.Any())
@@ -241,10 +241,10 @@
                         <thead class="thead-dark">
                             <tr>
                                 <th>Data</th>
-                                <th>Veículo</th>
+                                <th>VeÃ­culo</th>
                                 <th>Tipo</th>
                                 <th>Status</th>
-                                <th>Descrição</th>
+                                <th>DescriÃ§Ã£o</th>
                                 <th class="text-right">Custo</th>
                                 <th>Marcadores</th>
                             </tr>
@@ -257,7 +257,7 @@
                                     <td>@item.Veiculo?.Marca @item.Veiculo?.Modelo<br /><small>@item.Veiculo?.Placa</small></td>
                                     <td>@item.TipoManutencao?.Nome</td>
                                     <td>
-                                        @if (item.StatusManutencao?.Status == "Concluída")
+                                        @if (item.StatusManutencao?.Status == "ConcluÃ­da")
                                         {
                                             <span class="badge badge-success">@item.StatusManutencao?.Status</span>
                                         }
@@ -300,7 +300,7 @@
             else
             {
                 <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> Nenhuma manutenção encontrada para o período selecionado.
+                    <i class="fas fa-info-circle"></i> Nenhuma manutenÃ§Ã£o encontrada para o perÃ­odo selecionado.
                 </div>
             }
         </div>
@@ -308,7 +308,7 @@
 
     <div class="mt-3">
         <button onclick="window.print()" class="btn btn-primary">
-            <i class="fas fa-print"></i> Imprimir Relatório
+            <i class="fas fa-print"></i> Imprimir RelatÃ³rio
         </button>
         <a asp-action="Index" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Voltar

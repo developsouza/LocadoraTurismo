@@ -3,26 +3,26 @@ using System.ComponentModel.DataAnnotations;
 namespace RentalTourismSystem.Models
 {
     /// <summary>
-    /// Representa os tipos de manutenção que podem ser realizadas nos veículos
+    /// Representa os tipos de manutenÃ§Ã£o que podem ser realizadas nos veÃ­culos
     /// </summary>
     public class TipoManutencao
     {
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "O nome do tipo é obrigatório")]
+        [Required(ErrorMessage = "O nome do tipo Ã© obrigatÃ³rio")]
         [StringLength(50)]
-        [Display(Name = "Tipo de Manutenção")]
+        [Display(Name = "Tipo de ManutenÃ§Ã£o")]
         public string Nome { get; set; } = string.Empty;
 
         [StringLength(200)]
-        [Display(Name = "Descrição")]
+        [Display(Name = "DescriÃ§Ã£o")]
         public string? Descricao { get; set; }
 
         [Display(Name = "Ativo")]
         public bool Ativo { get; set; } = true;
 
-        // Navegação
+        // NavegaÃ§Ã£o
         public virtual ICollection<ManutencaoVeiculo> Manutencoes { get; set; } = new List<ManutencaoVeiculo>();
     }
 }

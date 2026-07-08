@@ -4,12 +4,12 @@ using System.Globalization;
 namespace RentalTourismSystem.Extensions;
 
 /// <summary>
-/// Extensıes para configuraÁ„o de localizaÁ„o e cultura brasileira
+/// Extens√µes para configura√ß√£o de localiza√ß√£o e cultura brasileira
 /// </summary>
 public static class LocalizationExtensions
 {
     /// <summary>
-    /// Adiciona configuraÁ„o de localizaÁ„o para pt-BR
+    /// Adiciona configura√ß√£o de localiza√ß√£o para pt-BR
     /// </summary>
     public static IServiceCollection AddBrazilianLocalization(this IServiceCollection services)
     {
@@ -35,14 +35,14 @@ public static class LocalizationExtensions
             options.FallBackToParentUICultures = true;
         });
 
-        // Configurar cultura padr„o do sistema
+        // Configurar cultura padr√£o do sistema
         ConfigureBrazilianCulture();
 
         return services;
     }
 
     /// <summary>
-    /// Configura a cultura brasileira como padr„o
+    /// Configura a cultura brasileira como padr√£o
     /// </summary>
     private static void ConfigureBrazilianCulture()
     {

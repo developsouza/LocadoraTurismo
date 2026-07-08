@@ -1,17 +1,17 @@
 @model RentalTourismSystem.Models.ManutencaoVeiculo
 
 @{
-    ViewData["Title"] = "Nova Manutenção";
+    ViewData["Title"] = "Nova ManutenÃ§Ã£o";
 }
 
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-md-12">
-            <h2><i class="fas fa-plus"></i> Nova Manutenção de Veículo</h2>
+            <h2><i class="fas fa-plus"></i> Nova ManutenÃ§Ã£o de VeÃ­culo</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a asp-action="Index">Manutenções</a></li>
-                    <li class="breadcrumb-item active">Nova Manutenção</li>
+                    <li class="breadcrumb-item"><a asp-action="Index">ManutenÃ§Ãµes</a></li>
+                    <li class="breadcrumb-item active">Nova ManutenÃ§Ã£o</li>
                 </ol>
             </nav>
         </div>
@@ -21,25 +21,25 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="fas fa-tools"></i> Cadastrar Nova Manutenção</h5>
+                    <h5 class="mb-0"><i class="fas fa-tools"></i> Cadastrar Nova ManutenÃ§Ã£o</h5>
                 </div>
                 <div class="card-body">
                     <form asp-action="Create" method="post">
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                         <div class="row">
-                            <!-- Veículo -->
+                            <!-- VeÃ­culo -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label asp-for="VeiculoId" class="control-label"></label>
                                     <select asp-for="VeiculoId" class="form-control" asp-items="ViewBag.VeiculoId" required>
-                                        <option value="">Selecione um veículo</option>
+                                        <option value="">Selecione um veÃ­culo</option>
                                     </select>
                                     <span asp-validation-for="VeiculoId" class="text-danger"></span>
                                 </div>
                             </div>
 
-                            <!-- Tipo de Manutenção -->
+                            <!-- Tipo de ManutenÃ§Ã£o -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label asp-for="TipoManutencaoId" class="control-label"></label>
@@ -63,12 +63,12 @@
                                 </div>
                             </div>
 
-                            <!-- Responsável -->
+                            <!-- ResponsÃ¡vel -->
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label asp-for="FuncionarioId" class="control-label"></label>
                                     <select asp-for="FuncionarioId" class="form-control" asp-items="ViewBag.FuncionarioId">
-                                        <option value="">Não atribuído</option>
+                                        <option value="">NÃ£o atribuÃ­do</option>
                                     </select>
                                     <span asp-validation-for="FuncionarioId" class="text-danger"></span>
                                 </div>
@@ -94,7 +94,7 @@
                                 </div>
                             </div>
 
-                            <!-- Data Início -->
+                            <!-- Data InÃ­cio -->
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label asp-for="DataInicio" class="control-label"></label>
@@ -103,7 +103,7 @@
                                 </div>
                             </div>
 
-                            <!-- Data Conclusão -->
+                            <!-- Data ConclusÃ£o -->
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label asp-for="DataConclusao" class="control-label"></label>
@@ -123,13 +123,13 @@
                                 </div>
                             </div>
 
-                            <!-- Próxima Quilometragem -->
+                            <!-- PrÃ³xima Quilometragem -->
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label asp-for="ProximaQuilometragem" class="control-label"></label>
                                     <input asp-for="ProximaQuilometragem" type="number" class="form-control" />
                                     <span asp-validation-for="ProximaQuilometragem" class="text-danger"></span>
-                                    <small class="form-text text-muted">Quilometragem para próxima manutenção preventiva</small>
+                                    <small class="form-text text-muted">Quilometragem para prÃ³xima manutenÃ§Ã£o preventiva</small>
                                 </div>
                             </div>
 
@@ -139,7 +139,7 @@
                                     <label asp-for="GarantiaDias" class="control-label"></label>
                                     <input asp-for="GarantiaDias" type="number" class="form-control" />
                                     <span asp-validation-for="GarantiaDias" class="text-danger"></span>
-                                    <small class="form-text text-muted">Dias de garantia da manutenção</small>
+                                    <small class="form-text text-muted">Dias de garantia da manutenÃ§Ã£o</small>
                                 </div>
                             </div>
                         </div>
@@ -154,7 +154,7 @@
                                 </div>
                             </div>
 
-                            <!-- Custo Peças -->
+                            <!-- Custo PeÃ§as -->
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label asp-for="CustoPecas" class="control-label"></label>
@@ -163,7 +163,7 @@
                                 </div>
                             </div>
 
-                            <!-- Custo Mão de Obra -->
+                            <!-- Custo MÃ£o de Obra -->
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label asp-for="CustoMaoObra" class="control-label"></label>
@@ -174,11 +174,11 @@
                         </div>
 
                         <div class="row">
-                            <!-- Descrição -->
+                            <!-- DescriÃ§Ã£o -->
                             <div class="col-md-8">
                                 <div class="form-group">
                                     <label asp-for="Descricao" class="control-label"></label>
-                                    <textarea asp-for="Descricao" class="form-control" rows="3" required placeholder="Descreva o problema ou serviço a ser realizado"></textarea>
+                                    <textarea asp-for="Descricao" class="form-control" rows="3" required placeholder="Descreva o problema ou serviÃ§o a ser realizado"></textarea>
                                     <span asp-validation-for="Descricao" class="text-danger"></span>
                                 </div>
                             </div>
@@ -187,18 +187,18 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label asp-for="NotaFiscal" class="control-label"></label>
-                                    <input asp-for="NotaFiscal" class="form-control" placeholder="Número da NF" />
+                                    <input asp-for="NotaFiscal" class="form-control" placeholder="NÃºmero da NF" />
                                     <span asp-validation-for="NotaFiscal" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
-                            <!-- Observações -->
+                            <!-- ObservaÃ§Ãµes -->
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label asp-for="Observacoes" class="control-label"></label>
-                                    <textarea asp-for="Observacoes" class="form-control" rows="3" placeholder="Observações adicionais (opcional)"></textarea>
+                                    <textarea asp-for="Observacoes" class="form-control" rows="3" placeholder="ObservaÃ§Ãµes adicionais (opcional)"></textarea>
                                     <span asp-validation-for="Observacoes" class="text-danger"></span>
                                 </div>
                             </div>
@@ -210,7 +210,7 @@
                                 <div class="form-check mb-3">
                                     <input asp-for="Preventiva" class="form-check-input" />
                                     <label asp-for="Preventiva" class="form-check-label">
-                                        <i class="fas fa-shield-alt text-primary"></i> Manutenção Preventiva
+                                        <i class="fas fa-shield-alt text-primary"></i> ManutenÃ§Ã£o Preventiva
                                     </label>
                                 </div>
                             </div>
@@ -229,7 +229,7 @@
 
                         <div class="form-group">
                             <button type="submit" class="btn btn-success">
-                                <i class="fas fa-save"></i> Cadastrar Manutenção
+                                <i class="fas fa-save"></i> Cadastrar ManutenÃ§Ã£o
                             </button>
                             <a asp-action="Index" class="btn btn-secondary">
                                 <i class="fas fa-times"></i> Cancelar
@@ -247,14 +247,14 @@
     
     <script>
         $(document).ready(function () {
-            // Definir data agendada padrão como agora
+            // Definir data agendada padrÃ£o como agora
             if (!$('#DataAgendada').val()) {
                 var now = new Date();
                 now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
                 $('#DataAgendada').val(now.toISOString().slice(0, 16));
             }
 
-            // Quando selecionar um veículo, buscar quilometragem atual
+            // Quando selecionar um veÃ­culo, buscar quilometragem atual
             $('#VeiculoId').change(function () {
                 var veiculoId = $(this).val();
                 if (veiculoId) {

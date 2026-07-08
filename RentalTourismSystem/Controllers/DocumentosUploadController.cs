@@ -14,7 +14,7 @@ namespace RentalTourismSystem.Controllers
         private readonly IFileService _fileService;
         private readonly ILogger<DocumentosUploadController> _logger;
 
-        // ConfiguraÁıes de upload
+        // Configura√ß√µes de upload
         private readonly string[] _extensoesPermitidasImagem = { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
         private readonly string[] _extensoesPermitidasPdf = { ".pdf" };
         private readonly string[] _extensoesPermitidasTodas = { ".pdf", ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
@@ -42,7 +42,7 @@ namespace RentalTourismSystem.Controllers
 
             if (cliente == null)
             {
-                _logger.LogWarning("Cliente {ClienteId} n„o encontrado para upload", id);
+                _logger.LogWarning("Cliente {ClienteId} n√£o encontrado para upload", id);
                 return NotFound();
             }
 
@@ -69,7 +69,7 @@ namespace RentalTourismSystem.Controllers
                 var cliente = await _context.Clientes.FindAsync(clienteId);
                 if (cliente == null)
                 {
-                    return Json(new { success = false, message = "Cliente n„o encontrado" });
+                    return Json(new { success = false, message = "Cliente n√£o encontrado" });
                 }
 
                 // Validar arquivo
@@ -134,7 +134,7 @@ namespace RentalTourismSystem.Controllers
             }
         }
 
-        // ========== UPLOAD DE DOCUMENTOS DE VEÕCULOS ==========
+        // ========== UPLOAD DE DOCUMENTOS DE VE√çCULOS ==========
 
         [HttpGet]
         [Authorize(Roles = "Admin,Manager")]
@@ -146,7 +146,7 @@ namespace RentalTourismSystem.Controllers
 
             if (veiculo == null)
             {
-                _logger.LogWarning("VeÌculo {VeiculoId} n„o encontrado para upload", id);
+                _logger.LogWarning("Ve√≠culo {VeiculoId} n√£o encontrado para upload", id);
                 return NotFound();
             }
 
@@ -169,11 +169,11 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
-                // Validar veÌculo
+                // Validar ve√≠culo
                 var veiculo = await _context.Veiculos.FindAsync(veiculoId);
                 if (veiculo == null)
                 {
-                    return Json(new { success = false, message = "VeÌculo n„o encontrado" });
+                    return Json(new { success = false, message = "Ve√≠culo n√£o encontrado" });
                 }
 
                 // Validar arquivo
@@ -212,7 +212,7 @@ namespace RentalTourismSystem.Controllers
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation(
-                    "Documento {TipoDocumento} enviado para veÌculo {VeiculoId} por {Usuario}",
+                    "Documento {TipoDocumento} enviado para ve√≠culo {VeiculoId} por {Usuario}",
                     tipoDocumento, veiculoId, User.Identity?.Name);
 
                 return Json(new
@@ -233,7 +233,7 @@ namespace RentalTourismSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao fazer upload de documento para veÌculo {VeiculoId}", veiculoId);
+                _logger.LogError(ex, "Erro ao fazer upload de documento para ve√≠culo {VeiculoId}", veiculoId);
                 return Json(new { success = false, message = "Erro ao fazer upload do documento" });
             }
         }
@@ -249,15 +249,15 @@ namespace RentalTourismSystem.Controllers
 
                 if (documento == null)
                 {
-                    _logger.LogWarning("Documento {DocumentoId} n„o encontrado", id);
+                    _logger.LogWarning("Documento {DocumentoId} n√£o encontrado", id);
                     return NotFound();
                 }
 
-                // Verificar permissıes (simplificado - pode ser melhorado)
+                // Verificar permiss√µes (simplificado - pode ser melhorado)
                 if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
                 {
                     _logger.LogWarning(
-                        "Usu·rio {Usuario} sem permiss„o para acessar documento {DocumentoId}",
+                        "Usu√°rio {Usuario} sem permiss√£o para acessar documento {DocumentoId}",
                         User.Identity?.Name, id);
                     return Forbid();
                 }
@@ -266,8 +266,8 @@ namespace RentalTourismSystem.Controllers
 
                 if (!resultado.Success || resultado.FileBytes == null)
                 {
-                    _logger.LogError("Erro ao obter arquivo fÌsico do documento {DocumentoId}", id);
-                    TempData["Erro"] = "Arquivo n„o encontrado no servidor";
+                    _logger.LogError("Erro ao obter arquivo f√≠sico do documento {DocumentoId}", id);
+                    TempData["Erro"] = "Arquivo n√£o encontrado no servidor";
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -300,7 +300,7 @@ namespace RentalTourismSystem.Controllers
                     return NotFound();
                 }
 
-                // Verificar permissıes
+                // Verificar permiss√µes
                 if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
                 {
                     return Forbid();
@@ -340,10 +340,10 @@ namespace RentalTourismSystem.Controllers
 
                 if (documento == null)
                 {
-                    return Json(new { success = false, message = "Documento n„o encontrado" });
+                    return Json(new { success = false, message = "Documento n√£o encontrado" });
                 }
 
-                // Excluir arquivo fÌsico
+                // Excluir arquivo f√≠sico
                 await _fileService.ExcluirArquivoAsync(documento.CaminhoArquivo);
 
                 // Excluir registro do banco
@@ -351,10 +351,10 @@ namespace RentalTourismSystem.Controllers
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation(
-                    "Documento {DocumentoId} ({TipoDocumento}) excluÌdo por {Usuario}",
+                    "Documento {DocumentoId} ({TipoDocumento}) exclu√≠do por {Usuario}",
                     id, documento.TipoDocumento, User.Identity?.Name);
 
-                return Json(new { success = true, message = "Documento excluÌdo com sucesso!" });
+                return Json(new { success = true, message = "Documento exclu√≠do com sucesso!" });
             }
             catch (Exception ex)
             {
@@ -424,7 +424,7 @@ namespace RentalTourismSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao listar documentos do veÌculo {VeiculoId}", veiculoId);
+                _logger.LogError(ex, "Erro ao listar documentos do ve√≠culo {VeiculoId}", veiculoId);
                 return Json(new List<object>());
             }
         }

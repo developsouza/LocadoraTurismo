@@ -17,27 +17,27 @@ namespace RentalTourismSystem.Services
         // Mapeamento de documentos com metadados
         private static readonly Dictionary<string, DocumentoMetadata> _documentosMetadata = new()
         {
-            ["INDEX"] = new("INDEX.md", "?? Õndice Master da DocumentaÁ„o", "Õndice completo de toda a documentaÁ„o do sistema", "?? Õndice", "fas fa-book", 10, new[] { "Admin", "Manager", "Employee", "Developer" }),
-            ["README"] = new("README.md", "?? Guia Principal", "README e Ìndice geral de navegaÁ„o", "?? Õndice", "fas fa-home", 15, new[] { "Admin", "Manager", "Employee", "Developer" }),
-            ["GUIA_INICIO_RAPIDO"] = new("GUIA_INICIO_RAPIDO.md", "?? Guia de InÌcio R·pido", "15 minutos para estar operacional", "?? InÌcio R·pido", "fas fa-rocket", 15, new[] { "Admin", "Manager", "Employee" }),
-            ["AUTENTICACAO_GUIA_COMPLETO"] = new("AUTENTICACAO_GUIA_COMPLETO.md", "?? AutenticaÁ„o e SeguranÁa", "Controle de acesso e permissıes", "?? SeguranÁa", "fas fa-lock", 30, new[] { "Admin", "Manager" }),
-            ["CLIENTES_GUIA_COMPLETO"] = new("CLIENTES_GUIA_COMPLETO.md", "?? Gest„o de Clientes", "Cadastro e gerenciamento de clientes", "?? Gest„o", "fas fa-users", 20, new[] { "Admin", "Manager", "Employee" }),
-            ["VEICULOS_GUIA_COMPLETO"] = new("VEICULOS_GUIA_COMPLETO.md", "?? Gest„o de VeÌculos", "Controle completo da frota", "?? Gest„o", "fas fa-car", 25, new[] { "Admin", "Manager", "Employee" }),
-            ["LOCACOES_GUIA_COMPLETO"] = new("LOCACOES_GUIA_COMPLETO.md", "?? Sistema de LocaÁıes", "Processo completo de locaÁ„o", "?? Gest„o", "fas fa-file-contract", 30, new[] { "Admin", "Manager", "Employee" }),
-            ["MANUTENCAO_GUIA_ACESSO"] = new("MANUTENCAO_GUIA_ACESSO.md", "?? Sistema de ManutenÁıes", "Controle de manutenÁıes e custos", "?? Gest„o", "fas fa-tools", 20, new[] { "Admin", "Manager" }),
-            ["RESERVAS_VIAGEM_GUIA_COMPLETO"] = new("RESERVAS_VIAGEM_GUIA_COMPLETO.md", "?? Reservas de Viagem", "Gest„o de turismo e pacotes", "?? Gest„o", "fas fa-plane", 20, new[] { "Admin", "Manager", "Employee" }),
-            ["UPLOAD_DOCUMENTOS"] = new("UPLOAD_DOCUMENTOS.md", "?? Upload de Documentos", "Sistema de gest„o documental", "?? Gest„o", "fas fa-upload", 15, new[] { "Admin", "Manager", "Employee" }),
-            ["REFERENCIA_TECNICA"] = new("REFERENCIA_TECNICA.md", "?? ReferÍncia TÈcnica", "DocumentaÁ„o para desenvolvedores", "??? TÈcnico", "fas fa-code", 45, new[] { "Developer", "Admin" }),
+            ["INDEX"] = new("INDEX.md", "?? √çndice Master da Documenta√ß√£o", "√çndice completo de toda a documenta√ß√£o do sistema", "?? √çndice", "fas fa-book", 10, new[] { "Admin", "Manager", "Employee", "Developer" }),
+            ["README"] = new("README.md", "?? Guia Principal", "README e √≠ndice geral de navega√ß√£o", "?? √çndice", "fas fa-home", 15, new[] { "Admin", "Manager", "Employee", "Developer" }),
+            ["GUIA_INICIO_RAPIDO"] = new("GUIA_INICIO_RAPIDO.md", "?? Guia de In√≠cio R√°pido", "15 minutos para estar operacional", "?? In√≠cio R√°pido", "fas fa-rocket", 15, new[] { "Admin", "Manager", "Employee" }),
+            ["AUTENTICACAO_GUIA_COMPLETO"] = new("AUTENTICACAO_GUIA_COMPLETO.md", "?? Autentica√ß√£o e Seguran√ßa", "Controle de acesso e permiss√µes", "?? Seguran√ßa", "fas fa-lock", 30, new[] { "Admin", "Manager" }),
+            ["CLIENTES_GUIA_COMPLETO"] = new("CLIENTES_GUIA_COMPLETO.md", "?? Gest√£o de Clientes", "Cadastro e gerenciamento de clientes", "?? Gest√£o", "fas fa-users", 20, new[] { "Admin", "Manager", "Employee" }),
+            ["VEICULOS_GUIA_COMPLETO"] = new("VEICULOS_GUIA_COMPLETO.md", "?? Gest√£o de Ve√≠culos", "Controle completo da frota", "?? Gest√£o", "fas fa-car", 25, new[] { "Admin", "Manager", "Employee" }),
+            ["LOCACOES_GUIA_COMPLETO"] = new("LOCACOES_GUIA_COMPLETO.md", "?? Sistema de Loca√ß√µes", "Processo completo de loca√ß√£o", "?? Gest√£o", "fas fa-file-contract", 30, new[] { "Admin", "Manager", "Employee" }),
+            ["MANUTENCAO_GUIA_ACESSO"] = new("MANUTENCAO_GUIA_ACESSO.md", "?? Sistema de Manuten√ß√µes", "Controle de manuten√ß√µes e custos", "?? Gest√£o", "fas fa-tools", 20, new[] { "Admin", "Manager" }),
+            ["RESERVAS_VIAGEM_GUIA_COMPLETO"] = new("RESERVAS_VIAGEM_GUIA_COMPLETO.md", "?? Reservas de Viagem", "Gest√£o de turismo e pacotes", "?? Gest√£o", "fas fa-plane", 20, new[] { "Admin", "Manager", "Employee" }),
+            ["UPLOAD_DOCUMENTOS"] = new("UPLOAD_DOCUMENTOS.md", "?? Upload de Documentos", "Sistema de gest√£o documental", "?? Gest√£o", "fas fa-upload", 15, new[] { "Admin", "Manager", "Employee" }),
+            ["REFERENCIA_TECNICA"] = new("REFERENCIA_TECNICA.md", "?? Refer√™ncia T√©cnica", "Documenta√ß√£o para desenvolvedores", "??? T√©cnico", "fas fa-code", 45, new[] { "Developer", "Admin" }),
             ["GUIA_VISUAL_FLUXOGRAMAS"] = new("GUIA_VISUAL_FLUXOGRAMAS.md", "?? Guia Visual de Fluxogramas", "Diagramas e processos visuais", "?? Visual", "fas fa-project-diagram", 15, new[] { "Admin", "Manager", "Employee", "Developer" }),
-            ["RESUMO_DOCUMENTACAO"] = new("RESUMO_DOCUMENTACAO.md", "?? Resumo da DocumentaÁ„o", "Vis„o geral resumida", "?? Õndice", "fas fa-list-alt", 10, new[] { "Admin", "Manager", "Employee" }),
+            ["RESUMO_DOCUMENTACAO"] = new("RESUMO_DOCUMENTACAO.md", "?? Resumo da Documenta√ß√£o", "Vis√£o geral resumida", "?? √çndice", "fas fa-list-alt", 10, new[] { "Admin", "Manager", "Employee" }),
 
-            // Documentos sobre o sistema de documentaÁ„o
-            ["START_HERE"] = new("START_HERE.md", "? COMECE AQUI - Acesso R·pido", "InÌcio r·pido em 1 minuto", "?? InÌcio R·pido", "fas fa-star", 1, new[] { "Admin", "Manager", "Employee", "Developer" }),
-            ["SISTEMA_DOCUMENTACAO_README"] = new("SISTEMA_DOCUMENTACAO_README.md", "?? Sistema de DocumentaÁ„o - README", "Guia completo do sistema de documentaÁ„o integrado", "??? TÈcnico", "fas fa-book-reader", 20, new[] { "Developer", "Admin" }),
-            ["GUIA_RAPIDO_DOCUMENTACAO"] = new("GUIA_RAPIDO_DOCUMENTACAO.md", "?? Guia R·pido - DocumentaÁ„o", "Como usar o sistema de documentaÁ„o", "?? InÌcio R·pido", "fas fa-map-marked-alt", 10, new[] { "Admin", "Manager", "Employee", "Developer" }),
-            ["GALERIA_VISUAL_DOCUMENTACAO"] = new("GALERIA_VISUAL_DOCUMENTACAO.md", "?? Galeria Visual - DocumentaÁ„o", "Screenshots e exemplos visuais do sistema", "?? Visual", "fas fa-images", 15, new[] { "Admin", "Manager", "Employee", "Developer" }),
-            ["RESUMO_IMPLEMENTACAO"] = new("RESUMO_IMPLEMENTACAO.md", "? Resumo da ImplementaÁ„o", "Resumo executivo completo do projeto", "?? Õndice", "fas fa-check-circle", 15, new[] { "Admin", "Manager", "Developer" }),
-            ["INDEX_DOCUMENTACAO_SISTEMA"] = new("INDEX_DOCUMENTACAO_SISTEMA.md", "?? Õndice do Sistema de DocumentaÁ„o", "Õndice completo dos arquivos criados", "?? Õndice", "fas fa-list", 10, new[] { "Admin", "Manager", "Employee", "Developer" })
+            // Documentos sobre o sistema de documenta√ß√£o
+            ["START_HERE"] = new("START_HERE.md", "? COMECE AQUI - Acesso R√°pido", "In√≠cio r√°pido em 1 minuto", "?? In√≠cio R√°pido", "fas fa-star", 1, new[] { "Admin", "Manager", "Employee", "Developer" }),
+            ["SISTEMA_DOCUMENTACAO_README"] = new("SISTEMA_DOCUMENTACAO_README.md", "?? Sistema de Documenta√ß√£o - README", "Guia completo do sistema de documenta√ß√£o integrado", "??? T√©cnico", "fas fa-book-reader", 20, new[] { "Developer", "Admin" }),
+            ["GUIA_RAPIDO_DOCUMENTACAO"] = new("GUIA_RAPIDO_DOCUMENTACAO.md", "?? Guia R√°pido - Documenta√ß√£o", "Como usar o sistema de documenta√ß√£o", "?? In√≠cio R√°pido", "fas fa-map-marked-alt", 10, new[] { "Admin", "Manager", "Employee", "Developer" }),
+            ["GALERIA_VISUAL_DOCUMENTACAO"] = new("GALERIA_VISUAL_DOCUMENTACAO.md", "?? Galeria Visual - Documenta√ß√£o", "Screenshots e exemplos visuais do sistema", "?? Visual", "fas fa-images", 15, new[] { "Admin", "Manager", "Employee", "Developer" }),
+            ["RESUMO_IMPLEMENTACAO"] = new("RESUMO_IMPLEMENTACAO.md", "? Resumo da Implementa√ß√£o", "Resumo executivo completo do projeto", "?? √çndice", "fas fa-check-circle", 15, new[] { "Admin", "Manager", "Developer" }),
+            ["INDEX_DOCUMENTACAO_SISTEMA"] = new("INDEX_DOCUMENTACAO_SISTEMA.md", "?? √çndice do Sistema de Documenta√ß√£o", "√çndice completo dos arquivos criados", "?? √çndice", "fas fa-list", 10, new[] { "Admin", "Manager", "Employee", "Developer" })
         };
 
         public DocumentacaoService(IWebHostEnvironment env, ILogger<DocumentacaoService> logger)
@@ -79,7 +79,7 @@ namespace RentalTourismSystem.Services
                 }
             }
 
-            // Ordenar por categoria e tÌtulo
+            // Ordenar por categoria e t√≠tulo
             foreach (var categoria in resultado.DocumentosPorCategoria.Keys.ToList())
             {
                 resultado.DocumentosPorCategoria[categoria] =
@@ -95,7 +95,7 @@ namespace RentalTourismSystem.Services
         {
             if (!_documentosMetadata.TryGetValue(id.ToUpperInvariant(), out var metadata))
             {
-                _logger.LogWarning("Documento n„o encontrado no mapeamento: {DocumentoId}", id);
+                _logger.LogWarning("Documento n√£o encontrado no mapeamento: {DocumentoId}", id);
                 return null;
             }
 
@@ -103,7 +103,7 @@ namespace RentalTourismSystem.Services
 
             if (!File.Exists(caminhoCompleto))
             {
-                _logger.LogWarning("Arquivo de documento n„o encontrado: {Caminho}", caminhoCompleto);
+                _logger.LogWarning("Arquivo de documento n√£o encontrado: {Caminho}", caminhoCompleto);
                 return null;
             }
 
@@ -248,8 +248,8 @@ namespace RentalTourismSystem.Services
 
             // Extrair palavras-chave comuns
             var palavrasChave = new[] {
-                "login", "senha", "permiss„o", "cliente", "veÌculo", "locaÁ„o",
-                "manutenÁ„o", "reserva", "pacote", "relatÛrio", "upload", "documento"
+                "login", "senha", "permiss√£o", "cliente", "ve√≠culo", "loca√ß√£o",
+                "manuten√ß√£o", "reserva", "pacote", "relat√≥rio", "upload", "documento"
             };
 
             foreach (var palavra in palavrasChave)
@@ -268,15 +268,15 @@ namespace RentalTourismSystem.Services
             var relevancia = 0;
             var termoLower = termo.ToLowerInvariant();
 
-            // Busca no tÌtulo (peso maior)
+            // Busca no t√≠tulo (peso maior)
             if (metadata.Titulo.Contains(termo, StringComparison.OrdinalIgnoreCase))
                 relevancia += 100;
 
-            // Busca na descriÁ„o
+            // Busca na descri√ß√£o
             if (metadata.Descricao.Contains(termo, StringComparison.OrdinalIgnoreCase))
                 relevancia += 50;
 
-            // Contar ocorrÍncias no conte˙do
+            // Contar ocorr√™ncias no conte√∫do
             var ocorrencias = Regex.Matches(conteudo, Regex.Escape(termoLower), RegexOptions.IgnoreCase).Count;
             relevancia += Math.Min(ocorrencias * 5, 100);
 

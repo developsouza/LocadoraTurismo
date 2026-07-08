@@ -24,7 +24,7 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
-                _logger.LogInformation("Lista de manutenções acessada por usuário {User}", User.Identity?.Name);
+                _logger.LogInformation("Lista de manutenÃ§Ãµes acessada por usuÃ¡rio {User}", User.Identity?.Name);
 
                 var query = _context.ManutencoesVeiculos
                     .Include(m => m.Veiculo)
@@ -80,7 +80,7 @@ namespace RentalTourismSystem.Controllers
                     .OrderByDescending(m => m.DataAgendada)
                     .ToListAsync();
 
-                // Estatísticas
+                // EstatÃ­sticas
                 ViewBag.TotalManutencoes = manutencoes.Count;
                 ViewBag.ManutencoesAgendadas = manutencoes.Count(m => m.StatusManutencao?.Status == "Agendada");
                 ViewBag.ManutencoesEmAndamento = manutencoes.Count(m => m.StatusManutencao?.Status == "Em Andamento");
@@ -91,8 +91,8 @@ namespace RentalTourismSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar lista de manutenções para usuário {User}", User.Identity?.Name);
-                TempData["Erro"] = "Erro ao carregar lista de manutenções. Tente novamente.";
+                _logger.LogError(ex, "Erro ao carregar lista de manutenÃ§Ãµes para usuÃ¡rio {User}", User.Identity?.Name);
+                TempData["Erro"] = "Erro ao carregar lista de manutenÃ§Ãµes. Tente novamente.";
                 return View(new List<ManutencaoVeiculo>());
             }
         }
@@ -102,7 +102,7 @@ namespace RentalTourismSystem.Controllers
         {
             if (id == null)
             {
-                _logger.LogWarning("Tentativa de acesso a detalhes de manutenção com ID nulo por {User}", User.Identity?.Name);
+                _logger.LogWarning("Tentativa de acesso a detalhes de manutenÃ§Ã£o com ID nulo por {User}", User.Identity?.Name);
                 return NotFound();
             }
 
@@ -121,17 +121,17 @@ namespace RentalTourismSystem.Controllers
 
                 if (manutencao == null)
                 {
-                    _logger.LogWarning("Manutenção com ID {ManutencaoId} não encontrada. Acessado por {User}", id, User.Identity?.Name);
+                    _logger.LogWarning("ManutenÃ§Ã£o com ID {ManutencaoId} nÃ£o encontrada. Acessado por {User}", id, User.Identity?.Name);
                     return NotFound();
                 }
 
-                _logger.LogInformation("Detalhes da manutenção {ManutencaoId} acessados por {User}", id, User.Identity?.Name);
+                _logger.LogInformation("Detalhes da manutenÃ§Ã£o {ManutencaoId} acessados por {User}", id, User.Identity?.Name);
                 return View(manutencao);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar detalhes da manutenção {ManutencaoId} para usuário {User}", id, User.Identity?.Name);
-                TempData["Erro"] = "Erro ao carregar dados da manutenção.";
+                _logger.LogError(ex, "Erro ao carregar detalhes da manutenÃ§Ã£o {ManutencaoId} para usuÃ¡rio {User}", id, User.Identity?.Name);
+                TempData["Erro"] = "Erro ao carregar dados da manutenÃ§Ã£o.";
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -155,13 +155,13 @@ namespace RentalTourismSystem.Controllers
                     }
                 }
 
-                _logger.LogInformation("Formulário de criação de manutenção acessado por {User}", User.Identity?.Name);
+                _logger.LogInformation("FormulÃ¡rio de criaÃ§Ã£o de manutenÃ§Ã£o acessado por {User}", User.Identity?.Name);
                 return View(manutencao);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar formulário de criação de manutenção por {User}", User.Identity?.Name);
-                TempData["Erro"] = "Erro ao carregar formulário.";
+                _logger.LogError(ex, "Erro ao carregar formulÃ¡rio de criaÃ§Ã£o de manutenÃ§Ã£o por {User}", User.Identity?.Name);
+                TempData["Erro"] = "Erro ao carregar formulÃ¡rio.";
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -174,49 +174,49 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
-                // Validações customizadas
+                // ValidaÃ§Ãµes customizadas
                 if (manutencao.DataInicio.HasValue && manutencao.DataInicio.Value < manutencao.DataAgendada)
                 {
-                    ModelState.AddModelError("DataInicio", "A data de início não pode ser anterior à data agendada.");
+                    ModelState.AddModelError("DataInicio", "A data de inÃ­cio nÃ£o pode ser anterior Ã  data agendada.");
                 }
 
                 if (manutencao.DataConclusao.HasValue && manutencao.DataInicio.HasValue && manutencao.DataConclusao.Value < manutencao.DataInicio.Value)
                 {
-                    ModelState.AddModelError("DataConclusao", "A data de conclusão não pode ser anterior à data de início.");
+                    ModelState.AddModelError("DataConclusao", "A data de conclusÃ£o nÃ£o pode ser anterior Ã  data de inÃ­cio.");
                 }
 
                 if (manutencao.ProximaQuilometragem.HasValue && manutencao.ProximaQuilometragem.Value <= manutencao.QuilometragemAtual)
                 {
-                    ModelState.AddModelError("ProximaQuilometragem", "A próxima quilometragem deve ser maior que a quilometragem atual.");
+                    ModelState.AddModelError("ProximaQuilometragem", "A prÃ³xima quilometragem deve ser maior que a quilometragem atual.");
                 }
 
                 if (ModelState.IsValid)
                 {
                     manutencao.DataCadastro = DateTime.Now;
 
-                    // Atualizar status do veículo se a manutenção estiver em andamento
+                    // Atualizar status do veÃ­culo se a manutenÃ§Ã£o estiver em andamento
                     if (manutencao.StatusManutencaoId == 2) // Em Andamento
                     {
                         var veiculo = await _context.Veiculos.FindAsync(manutencao.VeiculoId);
-                        if (veiculo != null && veiculo.StatusCarroId != 3) // Se não estiver em manutenção
+                        if (veiculo != null && veiculo.StatusCarroId != 3) // Se nÃ£o estiver em manutenÃ§Ã£o
                         {
-                            veiculo.StatusCarroId = 3; // Manutenção
+                            veiculo.StatusCarroId = 3; // ManutenÃ§Ã£o
                         }
                     }
 
                     _context.Add(manutencao);
                     await _context.SaveChangesAsync();
 
-                    _logger.LogInformation("Nova manutenção criada para veículo {VeiculoId} por {User}", manutencao.VeiculoId, User.Identity?.Name);
+                    _logger.LogInformation("Nova manutenÃ§Ã£o criada para veÃ­culo {VeiculoId} por {User}", manutencao.VeiculoId, User.Identity?.Name);
 
-                    TempData["Sucesso"] = "Manutenção cadastrada com sucesso!";
+                    TempData["Sucesso"] = "ManutenÃ§Ã£o cadastrada com sucesso!";
                     return RedirectToAction(nameof(Details), new { id = manutencao.Id });
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao criar manutenção por {User}", User.Identity?.Name);
-                ModelState.AddModelError(string.Empty, "Erro ao salvar manutenção. Tente novamente.");
+                _logger.LogError(ex, "Erro ao criar manutenÃ§Ã£o por {User}", User.Identity?.Name);
+                ModelState.AddModelError(string.Empty, "Erro ao salvar manutenÃ§Ã£o. Tente novamente.");
             }
 
             await CarregarViewBags(manutencao.VeiculoId, manutencao.TipoManutencaoId, manutencao.StatusManutencaoId, manutencao.FuncionarioId);
@@ -229,7 +229,7 @@ namespace RentalTourismSystem.Controllers
         {
             if (id == null)
             {
-                _logger.LogWarning("Tentativa de edição de manutenção com ID nulo por {User}", User.Identity?.Name);
+                _logger.LogWarning("Tentativa de ediÃ§Ã£o de manutenÃ§Ã£o com ID nulo por {User}", User.Identity?.Name);
                 return NotFound();
             }
 
@@ -241,18 +241,18 @@ namespace RentalTourismSystem.Controllers
 
                 if (manutencao == null)
                 {
-                    _logger.LogWarning("Tentativa de edição de manutenção inexistente {ManutencaoId} por {User}", id, User.Identity?.Name);
+                    _logger.LogWarning("Tentativa de ediÃ§Ã£o de manutenÃ§Ã£o inexistente {ManutencaoId} por {User}", id, User.Identity?.Name);
                     return NotFound();
                 }
 
                 await CarregarViewBags(manutencao.VeiculoId, manutencao.TipoManutencaoId, manutencao.StatusManutencaoId, manutencao.FuncionarioId);
-                _logger.LogInformation("Formulário de edição da manutenção {ManutencaoId} acessado por {User}", id, User.Identity?.Name);
+                _logger.LogInformation("FormulÃ¡rio de ediÃ§Ã£o da manutenÃ§Ã£o {ManutencaoId} acessado por {User}", id, User.Identity?.Name);
                 return View(manutencao);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar formulário de edição da manutenção {ManutencaoId} por {User}", id, User.Identity?.Name);
-                TempData["Erro"] = "Erro ao carregar dados da manutenção para edição.";
+                _logger.LogError(ex, "Erro ao carregar formulÃ¡rio de ediÃ§Ã£o da manutenÃ§Ã£o {ManutencaoId} por {User}", id, User.Identity?.Name);
+                TempData["Erro"] = "Erro ao carregar dados da manutenÃ§Ã£o para ediÃ§Ã£o.";
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -265,26 +265,26 @@ namespace RentalTourismSystem.Controllers
         {
             if (id != manutencao.Id)
             {
-                _logger.LogWarning("Tentativa de edição com ID inconsistente {Id} != {ManutencaoId} por {User}", id, manutencao.Id, User.Identity?.Name);
+                _logger.LogWarning("Tentativa de ediÃ§Ã£o com ID inconsistente {Id} != {ManutencaoId} por {User}", id, manutencao.Id, User.Identity?.Name);
                 return NotFound();
             }
 
             try
             {
-                // Validações customizadas
+                // ValidaÃ§Ãµes customizadas
                 if (manutencao.DataInicio.HasValue && manutencao.DataInicio.Value < manutencao.DataAgendada)
                 {
-                    ModelState.AddModelError("DataInicio", "A data de início não pode ser anterior à data agendada.");
+                    ModelState.AddModelError("DataInicio", "A data de inÃ­cio nÃ£o pode ser anterior Ã  data agendada.");
                 }
 
                 if (manutencao.DataConclusao.HasValue && manutencao.DataInicio.HasValue && manutencao.DataConclusao.Value < manutencao.DataInicio.Value)
                 {
-                    ModelState.AddModelError("DataConclusao", "A data de conclusão não pode ser anterior à data de início.");
+                    ModelState.AddModelError("DataConclusao", "A data de conclusÃ£o nÃ£o pode ser anterior Ã  data de inÃ­cio.");
                 }
 
                 if (manutencao.ProximaQuilometragem.HasValue && manutencao.ProximaQuilometragem.Value <= manutencao.QuilometragemAtual)
                 {
-                    ModelState.AddModelError("ProximaQuilometragem", "A próxima quilometragem deve ser maior que a quilometragem atual.");
+                    ModelState.AddModelError("ProximaQuilometragem", "A prÃ³xima quilometragem deve ser maior que a quilometragem atual.");
                 }
 
                 if (ModelState.IsValid)
@@ -296,7 +296,7 @@ namespace RentalTourismSystem.Controllers
                         manutencao.DataCadastro = manutencaoOriginal.DataCadastro;
                     }
 
-                    // Atualizar status do veículo conforme status da manutenção
+                    // Atualizar status do veÃ­culo conforme status da manutenÃ§Ã£o
                     var veiculo = await _context.Veiculos.FindAsync(manutencao.VeiculoId);
                     if (veiculo != null)
                     {
@@ -304,24 +304,24 @@ namespace RentalTourismSystem.Controllers
                         {
                             if (veiculo.StatusCarroId != 3)
                             {
-                                veiculo.StatusCarroId = 3; // Manutenção
+                                veiculo.StatusCarroId = 3; // ManutenÃ§Ã£o
                             }
                         }
-                        else if (manutencao.StatusManutencaoId == 3) // Concluída
+                        else if (manutencao.StatusManutencaoId == 3) // ConcluÃ­da
                         {
-                            if (veiculo.StatusCarroId == 3) // Se estava em manutenção
+                            if (veiculo.StatusCarroId == 3) // Se estava em manutenÃ§Ã£o
                             {
-                                // Verificar se há outras manutenções em andamento
+                                // Verificar se hÃ¡ outras manutenÃ§Ãµes em andamento
                                 var outraManutencaoEmAndamento = await _context.ManutencoesVeiculos
                                     .AnyAsync(m => m.VeiculoId == manutencao.VeiculoId && m.Id != manutencao.Id && m.StatusManutencaoId == 2);
 
                                 if (!outraManutencaoEmAndamento)
                                 {
-                                    veiculo.StatusCarroId = 1; // Disponível
+                                    veiculo.StatusCarroId = 1; // DisponÃ­vel
                                 }
                             }
 
-                            // Atualizar quilometragem do veículo se a manutenção foi concluída
+                            // Atualizar quilometragem do veÃ­culo se a manutenÃ§Ã£o foi concluÃ­da
                             if (manutencao.QuilometragemAtual > veiculo.Quilometragem)
                             {
                                 veiculo.Quilometragem = manutencao.QuilometragemAtual;
@@ -332,9 +332,9 @@ namespace RentalTourismSystem.Controllers
                     _context.Update(manutencao);
                     await _context.SaveChangesAsync();
 
-                    _logger.LogInformation("Manutenção {ManutencaoId} atualizada por {User}", manutencao.Id, User.Identity?.Name);
+                    _logger.LogInformation("ManutenÃ§Ã£o {ManutencaoId} atualizada por {User}", manutencao.Id, User.Identity?.Name);
 
-                    TempData["Sucesso"] = "Manutenção atualizada com sucesso!";
+                    TempData["Sucesso"] = "ManutenÃ§Ã£o atualizada com sucesso!";
                     return RedirectToAction(nameof(Details), new { id = manutencao.Id });
                 }
             }
@@ -342,19 +342,19 @@ namespace RentalTourismSystem.Controllers
             {
                 if (!ManutencaoExists(manutencao.Id))
                 {
-                    _logger.LogWarning("Manutenção {ManutencaoId} não existe mais durante edição por {User}", manutencao.Id, User.Identity?.Name);
+                    _logger.LogWarning("ManutenÃ§Ã£o {ManutencaoId} nÃ£o existe mais durante ediÃ§Ã£o por {User}", manutencao.Id, User.Identity?.Name);
                     return NotFound();
                 }
                 else
                 {
-                    _logger.LogError(ex, "Erro de concorrência ao editar manutenção {ManutencaoId} por {User}", manutencao.Id, User.Identity?.Name);
+                    _logger.LogError(ex, "Erro de concorrÃªncia ao editar manutenÃ§Ã£o {ManutencaoId} por {User}", manutencao.Id, User.Identity?.Name);
                     throw;
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao editar manutenção {ManutencaoId} por {User}", manutencao.Id, User.Identity?.Name);
-                ModelState.AddModelError(string.Empty, "Erro ao salvar manutenção. Tente novamente.");
+                _logger.LogError(ex, "Erro ao editar manutenÃ§Ã£o {ManutencaoId} por {User}", manutencao.Id, User.Identity?.Name);
+                ModelState.AddModelError(string.Empty, "Erro ao salvar manutenÃ§Ã£o. Tente novamente.");
             }
 
             await CarregarViewBags(manutencao.VeiculoId, manutencao.TipoManutencaoId, manutencao.StatusManutencaoId, manutencao.FuncionarioId);
@@ -367,7 +367,7 @@ namespace RentalTourismSystem.Controllers
         {
             if (id == null)
             {
-                _logger.LogWarning("Tentativa de exclusão de manutenção com ID nulo por {User}", User.Identity?.Name);
+                _logger.LogWarning("Tentativa de exclusÃ£o de manutenÃ§Ã£o com ID nulo por {User}", User.Identity?.Name);
                 return NotFound();
             }
 
@@ -383,17 +383,17 @@ namespace RentalTourismSystem.Controllers
 
                 if (manutencao == null)
                 {
-                    _logger.LogWarning("Tentativa de exclusão de manutenção inexistente {ManutencaoId} por {User}", id, User.Identity?.Name);
+                    _logger.LogWarning("Tentativa de exclusÃ£o de manutenÃ§Ã£o inexistente {ManutencaoId} por {User}", id, User.Identity?.Name);
                     return NotFound();
                 }
 
-                _logger.LogInformation("Formulário de confirmação de exclusão da manutenção {ManutencaoId} acessado por {User}", id, User.Identity?.Name);
+                _logger.LogInformation("FormulÃ¡rio de confirmaÃ§Ã£o de exclusÃ£o da manutenÃ§Ã£o {ManutencaoId} acessado por {User}", id, User.Identity?.Name);
                 return View(manutencao);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar formulário de exclusão da manutenção {ManutencaoId} por {User}", id, User.Identity?.Name);
-                TempData["Erro"] = "Erro ao carregar dados da manutenção para exclusão.";
+                _logger.LogError(ex, "Erro ao carregar formulÃ¡rio de exclusÃ£o da manutenÃ§Ã£o {ManutencaoId} por {User}", id, User.Identity?.Name);
+                TempData["Erro"] = "Erro ao carregar dados da manutenÃ§Ã£o para exclusÃ£o.";
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -415,19 +415,19 @@ namespace RentalTourismSystem.Controllers
                     _context.ManutencoesVeiculos.Remove(manutencao);
                     await _context.SaveChangesAsync();
 
-                    _logger.LogInformation("Manutenção {ManutencaoId} excluída por {User}", id, User.Identity?.Name);
-                    TempData["Sucesso"] = "Manutenção excluída com sucesso!";
+                    _logger.LogInformation("ManutenÃ§Ã£o {ManutencaoId} excluÃ­da por {User}", id, User.Identity?.Name);
+                    TempData["Sucesso"] = "ManutenÃ§Ã£o excluÃ­da com sucesso!";
                 }
                 else
                 {
-                    _logger.LogWarning("Tentativa de exclusão de manutenção inexistente {ManutencaoId} por {User}", id, User.Identity?.Name);
-                    TempData["Erro"] = "Manutenção não encontrada.";
+                    _logger.LogWarning("Tentativa de exclusÃ£o de manutenÃ§Ã£o inexistente {ManutencaoId} por {User}", id, User.Identity?.Name);
+                    TempData["Erro"] = "ManutenÃ§Ã£o nÃ£o encontrada.";
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao excluir manutenção {ManutencaoId} por {User}", id, User.Identity?.Name);
-                TempData["Erro"] = "Erro ao excluir manutenção. Tente novamente.";
+                _logger.LogError(ex, "Erro ao excluir manutenÃ§Ã£o {ManutencaoId} por {User}", id, User.Identity?.Name);
+                TempData["Erro"] = "Erro ao excluir manutenÃ§Ã£o. Tente novamente.";
             }
 
             return RedirectToAction(nameof(Index));
@@ -438,7 +438,7 @@ namespace RentalTourismSystem.Controllers
         {
             if (id == null)
             {
-                _logger.LogWarning("Tentativa de acesso ao histórico com veículo ID nulo por {User}", User.Identity?.Name);
+                _logger.LogWarning("Tentativa de acesso ao histÃ³rico com veÃ­culo ID nulo por {User}", User.Identity?.Name);
                 return NotFound();
             }
 
@@ -451,7 +451,7 @@ namespace RentalTourismSystem.Controllers
 
                 if (veiculo == null)
                 {
-                    _logger.LogWarning("Veículo {VeiculoId} não encontrado por {User}", id, User.Identity?.Name);
+                    _logger.LogWarning("VeÃ­culo {VeiculoId} nÃ£o encontrado por {User}", id, User.Identity?.Name);
                     return NotFound();
                 }
 
@@ -470,13 +470,13 @@ namespace RentalTourismSystem.Controllers
                 ViewBag.MediaCusto = manutencoes.Any() ? manutencoes.Average(m => m.CustoTotal) : 0;
                 ViewBag.UltimaManutencao = manutencoes.FirstOrDefault()?.DataAgendada;
 
-                _logger.LogInformation("Histórico de manutenções do veículo {VeiculoId} acessado por {User}", id, User.Identity?.Name);
+                _logger.LogInformation("HistÃ³rico de manutenÃ§Ãµes do veÃ­culo {VeiculoId} acessado por {User}", id, User.Identity?.Name);
                 return View(manutencoes);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar histórico de manutenções do veículo {VeiculoId} por {User}", id, User.Identity?.Name);
-                TempData["Erro"] = "Erro ao carregar histórico de manutenções.";
+                _logger.LogError(ex, "Erro ao carregar histÃ³rico de manutenÃ§Ãµes do veÃ­culo {VeiculoId} por {User}", id, User.Identity?.Name);
+                TempData["Erro"] = "Erro ao carregar histÃ³rico de manutenÃ§Ãµes.";
                 return RedirectToAction("Index", "Veiculos");
             }
         }
@@ -509,7 +509,7 @@ namespace RentalTourismSystem.Controllers
 
                 var manutencoes = await query.ToListAsync();
 
-                // Estatísticas gerais
+                // EstatÃ­sticas gerais
                 ViewBag.DataInicio = dataInicio.Value.ToString("yyyy-MM-dd");
                 ViewBag.DataFim = dataFim.Value.ToString("yyyy-MM-dd");
                 ViewBag.TotalManutencoes = manutencoes.Count;
@@ -520,14 +520,14 @@ namespace RentalTourismSystem.Controllers
                 ViewBag.ManutencoesPreventivas = manutencoes.Count(m => m.Preventiva);
                 ViewBag.ManutencoesUrgentes = manutencoes.Count(m => m.Urgente);
 
-                // Manutenções por tipo
+                // ManutenÃ§Ãµes por tipo
                 ViewBag.ManutencoesPorTipo = manutencoes
-                    .GroupBy(m => m.TipoManutencao?.Nome ?? "Não especificado")
+                    .GroupBy(m => m.TipoManutencao?.Nome ?? "NÃ£o especificado")
                     .Select(g => new { Tipo = g.Key, Quantidade = g.Count(), Custo = g.Sum(m => m.CustoTotal) })
                     .OrderByDescending(x => x.Quantidade)
                     .ToList();
 
-                // Manutenções por veículo
+                // ManutenÃ§Ãµes por veÃ­culo
                 ViewBag.ManutencoesPorVeiculo = manutencoes
                     .GroupBy(m => new { m.VeiculoId, Descricao = $"{m.Veiculo?.Marca} {m.Veiculo?.Modelo} ({m.Veiculo?.Placa})" })
                     .Select(g => new { g.Key.VeiculoId, g.Key.Descricao, Quantidade = g.Count(), Custo = g.Sum(m => m.CustoTotal) })
@@ -536,18 +536,18 @@ namespace RentalTourismSystem.Controllers
 
                 await CarregarViewBagsFiltros(veiculoId, null, tipoId);
 
-                _logger.LogInformation("Relatório de manutenções acessado por {User}", User.Identity?.Name);
+                _logger.LogInformation("RelatÃ³rio de manutenÃ§Ãµes acessado por {User}", User.Identity?.Name);
                 return View(manutencoes);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao gerar relatório de manutenções por {User}", User.Identity?.Name);
-                TempData["Erro"] = "Erro ao gerar relatório.";
+                _logger.LogError(ex, "Erro ao gerar relatÃ³rio de manutenÃ§Ãµes por {User}", User.Identity?.Name);
+                TempData["Erro"] = "Erro ao gerar relatÃ³rio.";
                 return RedirectToAction(nameof(Index));
             }
         }
 
-        // ========== MÉTODOS AUXILIARES ==========
+        // ========== MÃ‰TODOS AUXILIARES ==========
 
         private bool ManutencaoExists(int id)
         {

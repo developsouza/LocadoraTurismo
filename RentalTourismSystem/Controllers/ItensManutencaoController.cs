@@ -23,7 +23,7 @@ namespace RentalTourismSystem.Controllers
         {
             if (manutencaoId == null)
             {
-                _logger.LogWarning("Tentativa de criar item sem manutenção ID por {User}", User.Identity?.Name);
+                _logger.LogWarning("Tentativa de criar item sem manutenÃ§Ã£o ID por {User}", User.Identity?.Name);
                 return NotFound();
             }
 
@@ -35,20 +35,20 @@ namespace RentalTourismSystem.Controllers
 
                 if (manutencao == null)
                 {
-                    _logger.LogWarning("Manutenção {ManutencaoId} não encontrada por {User}", manutencaoId, User.Identity?.Name);
+                    _logger.LogWarning("ManutenÃ§Ã£o {ManutencaoId} nÃ£o encontrada por {User}", manutencaoId, User.Identity?.Name);
                     return NotFound();
                 }
 
                 ViewBag.Manutencao = manutencao;
                 var item = new ItemManutencao { ManutencaoVeiculoId = manutencaoId.Value };
 
-                _logger.LogInformation("Formulário de criação de item de manutenção acessado por {User}", User.Identity?.Name);
+                _logger.LogInformation("FormulÃ¡rio de criaÃ§Ã£o de item de manutenÃ§Ã£o acessado por {User}", User.Identity?.Name);
                 return View(item);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar formulário de criação de item por {User}", User.Identity?.Name);
-                TempData["Erro"] = "Erro ao carregar formulário.";
+                _logger.LogError(ex, "Erro ao carregar formulÃ¡rio de criaÃ§Ã£o de item por {User}", User.Identity?.Name);
+                TempData["Erro"] = "Erro ao carregar formulÃ¡rio.";
                 return RedirectToAction("Details", "Manutencoes", new { id = manutencaoId });
             }
         }
@@ -65,7 +65,7 @@ namespace RentalTourismSystem.Controllers
                     _context.Add(item);
                     await _context.SaveChangesAsync();
 
-                    _logger.LogInformation("Item de manutenção criado para manutenção {ManutencaoId} por {User}",
+                    _logger.LogInformation("Item de manutenÃ§Ã£o criado para manutenÃ§Ã£o {ManutencaoId} por {User}",
                         item.ManutencaoVeiculoId, User.Identity?.Name);
 
                     TempData["Sucesso"] = "Item adicionado com sucesso!";
@@ -74,7 +74,7 @@ namespace RentalTourismSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao criar item de manutenção por {User}", User.Identity?.Name);
+                _logger.LogError(ex, "Erro ao criar item de manutenÃ§Ã£o por {User}", User.Identity?.Name);
                 ModelState.AddModelError(string.Empty, "Erro ao salvar item. Tente novamente.");
             }
 
@@ -91,7 +91,7 @@ namespace RentalTourismSystem.Controllers
         {
             if (id == null)
             {
-                _logger.LogWarning("Tentativa de edição de item com ID nulo por {User}", User.Identity?.Name);
+                _logger.LogWarning("Tentativa de ediÃ§Ã£o de item com ID nulo por {User}", User.Identity?.Name);
                 return NotFound();
             }
 
@@ -104,17 +104,17 @@ namespace RentalTourismSystem.Controllers
 
                 if (item == null)
                 {
-                    _logger.LogWarning("Item de manutenção {ItemId} não encontrado por {User}", id, User.Identity?.Name);
+                    _logger.LogWarning("Item de manutenÃ§Ã£o {ItemId} nÃ£o encontrado por {User}", id, User.Identity?.Name);
                     return NotFound();
                 }
 
                 ViewBag.Manutencao = item.ManutencaoVeiculo;
-                _logger.LogInformation("Formulário de edição do item {ItemId} acessado por {User}", id, User.Identity?.Name);
+                _logger.LogInformation("FormulÃ¡rio de ediÃ§Ã£o do item {ItemId} acessado por {User}", id, User.Identity?.Name);
                 return View(item);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar formulário de edição do item {ItemId} por {User}", id, User.Identity?.Name);
+                _logger.LogError(ex, "Erro ao carregar formulÃ¡rio de ediÃ§Ã£o do item {ItemId} por {User}", id, User.Identity?.Name);
                 TempData["Erro"] = "Erro ao carregar dados do item.";
                 return RedirectToAction("Index", "Manutencoes");
             }
@@ -127,7 +127,7 @@ namespace RentalTourismSystem.Controllers
         {
             if (id != item.Id)
             {
-                _logger.LogWarning("Tentativa de edição com ID inconsistente {Id} != {ItemId} por {User}",
+                _logger.LogWarning("Tentativa de ediÃ§Ã£o com ID inconsistente {Id} != {ItemId} por {User}",
                     id, item.Id, User.Identity?.Name);
                 return NotFound();
             }
@@ -139,7 +139,7 @@ namespace RentalTourismSystem.Controllers
                     _context.Update(item);
                     await _context.SaveChangesAsync();
 
-                    _logger.LogInformation("Item de manutenção {ItemId} atualizado por {User}", item.Id, User.Identity?.Name);
+                    _logger.LogInformation("Item de manutenÃ§Ã£o {ItemId} atualizado por {User}", item.Id, User.Identity?.Name);
 
                     TempData["Sucesso"] = "Item atualizado com sucesso!";
                     return RedirectToAction("Details", "Manutencoes", new { id = item.ManutencaoVeiculoId });
@@ -149,12 +149,12 @@ namespace RentalTourismSystem.Controllers
             {
                 if (!ItemExists(item.Id))
                 {
-                    _logger.LogWarning("Item {ItemId} não existe mais durante edição por {User}", item.Id, User.Identity?.Name);
+                    _logger.LogWarning("Item {ItemId} nÃ£o existe mais durante ediÃ§Ã£o por {User}", item.Id, User.Identity?.Name);
                     return NotFound();
                 }
                 else
                 {
-                    _logger.LogError(ex, "Erro de concorrência ao editar item {ItemId} por {User}", item.Id, User.Identity?.Name);
+                    _logger.LogError(ex, "Erro de concorrÃªncia ao editar item {ItemId} por {User}", item.Id, User.Identity?.Name);
                     throw;
                 }
             }
@@ -177,7 +177,7 @@ namespace RentalTourismSystem.Controllers
         {
             if (id == null)
             {
-                _logger.LogWarning("Tentativa de exclusão de item com ID nulo por {User}", User.Identity?.Name);
+                _logger.LogWarning("Tentativa de exclusÃ£o de item com ID nulo por {User}", User.Identity?.Name);
                 return NotFound();
             }
 
@@ -190,17 +190,17 @@ namespace RentalTourismSystem.Controllers
 
                 if (item == null)
                 {
-                    _logger.LogWarning("Item de manutenção {ItemId} não encontrado por {User}", id, User.Identity?.Name);
+                    _logger.LogWarning("Item de manutenÃ§Ã£o {ItemId} nÃ£o encontrado por {User}", id, User.Identity?.Name);
                     return NotFound();
                 }
 
                 ViewBag.Manutencao = item.ManutencaoVeiculo;
-                _logger.LogInformation("Formulário de confirmação de exclusão do item {ItemId} acessado por {User}", id, User.Identity?.Name);
+                _logger.LogInformation("FormulÃ¡rio de confirmaÃ§Ã£o de exclusÃ£o do item {ItemId} acessado por {User}", id, User.Identity?.Name);
                 return View(item);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao carregar formulário de exclusão do item {ItemId} por {User}", id, User.Identity?.Name);
+                _logger.LogError(ex, "Erro ao carregar formulÃ¡rio de exclusÃ£o do item {ItemId} por {User}", id, User.Identity?.Name);
                 TempData["Erro"] = "Erro ao carregar dados do item.";
                 return RedirectToAction("Index", "Manutencoes");
             }
@@ -223,13 +223,13 @@ namespace RentalTourismSystem.Controllers
                     _context.ItensManutencao.Remove(item);
                     await _context.SaveChangesAsync();
 
-                    _logger.LogInformation("Item de manutenção {ItemId} excluído por {User}", id, User.Identity?.Name);
-                    TempData["Sucesso"] = "Item excluído com sucesso!";
+                    _logger.LogInformation("Item de manutenÃ§Ã£o {ItemId} excluÃ­do por {User}", id, User.Identity?.Name);
+                    TempData["Sucesso"] = "Item excluÃ­do com sucesso!";
                 }
                 else
                 {
-                    _logger.LogWarning("Tentativa de exclusão de item inexistente {ItemId} por {User}", id, User.Identity?.Name);
-                    TempData["Erro"] = "Item não encontrado.";
+                    _logger.LogWarning("Tentativa de exclusÃ£o de item inexistente {ItemId} por {User}", id, User.Identity?.Name);
+                    TempData["Erro"] = "Item nÃ£o encontrado.";
                 }
             }
             catch (Exception ex)
@@ -246,7 +246,7 @@ namespace RentalTourismSystem.Controllers
             return RedirectToAction("Index", "Manutencoes");
         }
 
-        // ========== MÉTODOS AUXILIARES ==========
+        // ========== MÃ‰TODOS AUXILIARES ==========
 
         private bool ItemExists(int id)
         {
