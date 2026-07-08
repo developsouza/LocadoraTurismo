@@ -16,7 +16,7 @@
         <form method="get">
             <select name="statusId" class="form-select" onchange="this.form.submit()">
                 <option value="">Todos os status</option>
-                @foreach (var item in ViewBag.StatusId as SelectList)
+                @foreach (var item in (ViewBag.StatusId as SelectList) ?? Enumerable.Empty<SelectListItem>())
                 {
                     <option value="@item.Value" selected="@item.Selected">@item.Text</option>
                 }

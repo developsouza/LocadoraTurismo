@@ -821,7 +821,7 @@ namespace RentalTourismSystem.Controllers
                     extendedProps = new
                     {
                         isStatusAtual = true,
-                        statusNome = veiculo.StatusCarro.Status,
+                        statusNome = statusAtual,
                         veiculoMarca = veiculo.Marca,
                         veiculoModelo = veiculo.Modelo,
                         veiculoPlaca = veiculo.Placa

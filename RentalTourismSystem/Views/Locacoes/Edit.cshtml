@@ -44,7 +44,7 @@
                                 <i class="fas fa-check-circle fa-2x me-3"></i>
                                 <div>
                                     <h6 class="mb-1">Locação Finalizada</h6>
-                                    <p class="mb-0">Esta locação foi finalizada em @Model.DataDevolucaoReal.Value.ToString("dd/MM/yyyy HH:mm"). Algumas informações podem ter restrições de edição.</p>
+                                    <p class="mb-0">Esta locação foi finalizada em @(Model.DataDevolucaoReal?.ToString("dd/MM/yyyy HH:mm") ?? "data não informada"). Algumas informações podem ter restrições de edição.</p>
                                 </div>
                             </div>
                         </div>

@@ -73,7 +73,7 @@
                     </div>
                     <select name="statusId" class="form-select" style="max-width: 200px;">
                         <option value="">Todos os status</option>
-                        @foreach (var item in ViewBag.StatusId as SelectList)
+                        @foreach (var item in (ViewBag.StatusId as SelectList) ?? Enumerable.Empty<SelectListItem>())
                         {
                             <option value="@item.Value" selected="@item.Selected">@item.Text</option>
                         }

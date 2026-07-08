@@ -28,7 +28,7 @@
         <div class="spinner-modern"></div>
     </div>
 
-    @if (User.Identity.IsAuthenticated)
+    @if (User.Identity?.IsAuthenticated == true)
     {
         <!-- App Wrapper - Apenas para usuários autenticados -->
         <div class="app-wrapper">
@@ -508,7 +508,7 @@
     <!-- Scripts de Página Específica -->
     @await RenderSectionAsync("Scripts", required: false)
 
-    @if (User.Identity.IsAuthenticated)
+    @if (User.Identity?.IsAuthenticated == true)
     {
         <!-- Inicialização Global - Apenas para usuários autenticados -->
         <script>

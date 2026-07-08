@@ -17,7 +17,7 @@
             <input type="hidden" name="cargo" value="@ViewBag.Cargo" />
             <select name="agenciaId" class="form-select" onchange="this.form.submit()">
                 <option value="">Todas as agências</option>
-                @foreach (var item in ViewBag.AgenciaId as SelectList)
+                @foreach (var item in (ViewBag.AgenciaId as SelectList) ?? Enumerable.Empty<SelectListItem>())
                 {
                     <option value="@item.Value" selected="@item.Selected">@item.Text</option>
                 }

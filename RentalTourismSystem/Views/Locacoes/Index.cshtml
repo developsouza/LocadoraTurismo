@@ -563,10 +563,10 @@
 @functions {
     public class StatusInfo
     {
-        public string Status { get; set; }
-        public string Text { get; set; }
-        public string BadgeClass { get; set; }
-        public string Icon { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public string Text { get; set; } = string.Empty;
+        public string BadgeClass { get; set; } = string.Empty;
+        public string Icon { get; set; } = string.Empty;
     }
 
     private static StatusInfo GetStatusInfo(RentalTourismSystem.Models.Locacao locacao)

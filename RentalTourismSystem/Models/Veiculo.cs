@@ -68,12 +68,12 @@ namespace RentalTourismSystem.Models
         [Required]
         [Display(Name = "Status")]
         public int StatusCarroId { get; set; }
-        public virtual StatusCarro? StatusCarro { get; set; }
+        public virtual StatusCarro StatusCarro { get; set; } = null!;
 
         [Required]
         [Display(Name = "Agência")]
         public int AgenciaId { get; set; }
-        public virtual Agencia? Agencia { get; set; }
+        public virtual Agencia Agencia { get; set; } = null!;
 
         public virtual ICollection<Locacao> Locacoes { get; set; } = new List<Locacao>();
         public virtual ICollection<Documento> Documentos { get; set; } = new List<Documento>();

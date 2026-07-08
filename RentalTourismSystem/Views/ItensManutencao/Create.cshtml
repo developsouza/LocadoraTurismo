@@ -8,21 +8,21 @@
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-md-12">
-            <h2><i class="fas fa-plus"></i> Adicionar Item à Manutenção</h2>
+            <h2><i class="fas fa-plus"></i> Adicionar Item Ã  ManutenÃ§Ã£o</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a asp-controller="Manutencoes" asp-action="Index">Manutenções</a></li>
-                    <li class="breadcrumb-item"><a asp-controller="Manutencoes" asp-action="Details" asp-route-id="@manutencao.Id">Manutenção #@manutencao.Id</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Manutencoes" asp-action="Index">ManutenÃ§Ãµes</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Manutencoes" asp-action="Details" asp-route-id="@manutencao?.Id">ManutenÃ§Ã£o #@(manutencao?.Id.ToString() ?? "N/D")</a></li>
                     <li class="breadcrumb-item active">Adicionar Item</li>
                 </ol>
             </nav>
         </div>
     </div>
 
-    <!-- Informações da Manutenção -->
+    <!-- InformaÃ§Ãµes da ManutenÃ§Ã£o -->
     <div class="alert alert-info">
-        <strong><i class="fas fa-info-circle"></i> Manutenção:</strong>
-        @manutencao.TipoManutencao?.Nome - @manutencao.Veiculo?.Marca @manutencao.Veiculo?.Modelo (@manutencao.Veiculo?.Placa)
+        <strong><i class="fas fa-info-circle"></i> ManutenÃ§Ã£o:</strong>
+        @manutencao?.TipoManutencao?.Nome - @manutencao?.Veiculo?.Marca @manutencao?.Veiculo?.Modelo (@manutencao?.Veiculo?.Placa)
     </div>
 
     <div class="card">
@@ -41,19 +41,19 @@
                             <label asp-for="Tipo" class="control-label"></label>
                             <select asp-for="Tipo" class="form-control" required>
                                 <option value="">Selecione...</option>
-                                <option value="Peça">Peça</option>
-                                <option value="Serviço">Serviço</option>
+                                <option value="PeÃ§a">PeÃ§a</option>
+                                <option value="ServiÃ§o">ServiÃ§o</option>
                                 <option value="Outros">Outros</option>
                             </select>
                             <span asp-validation-for="Tipo" class="text-danger"></span>
                         </div>
                     </div>
 
-                    <!-- Descrição -->
+                    <!-- DescriÃ§Ã£o -->
                     <div class="col-md-9">
                         <div class="form-group">
                             <label asp-for="Descricao" class="control-label"></label>
-                            <input asp-for="Descricao" class="form-control" required placeholder="Ex: Óleo do motor 5W30" />
+                            <input asp-for="Descricao" class="form-control" required placeholder="Ex: Ã“leo do motor 5W30" />
                             <span asp-validation-for="Descricao" class="text-danger"></span>
                         </div>
                     </div>
@@ -69,7 +69,7 @@
                         </div>
                     </div>
 
-                    <!-- Valor Unitário -->
+                    <!-- Valor UnitÃ¡rio -->
                     <div class="col-md-3">
                         <div class="form-group">
                             <label asp-for="ValorUnitario" class="control-label"></label>
@@ -78,7 +78,7 @@
                         </div>
                     </div>
 
-                    <!-- Código/Número da Peça -->
+                    <!-- CÃ³digo/NÃºmero da PeÃ§a -->
                     <div class="col-md-3">
                         <div class="form-group">
                             <label asp-for="CodigoPeca" class="control-label"></label>
@@ -98,11 +98,11 @@
                 </div>
 
                 <div class="row">
-                    <!-- Observações -->
+                    <!-- ObservaÃ§Ãµes -->
                     <div class="col-md-12">
                         <div class="form-group">
                             <label asp-for="Observacoes" class="control-label"></label>
-                            <textarea asp-for="Observacoes" class="form-control" rows="2" placeholder="Observações adicionais (opcional)"></textarea>
+                            <textarea asp-for="Observacoes" class="form-control" rows="2" placeholder="ObservaÃ§Ãµes adicionais (opcional)"></textarea>
                             <span asp-validation-for="Observacoes" class="text-danger"></span>
                         </div>
                     </div>
@@ -114,7 +114,7 @@
                     <button type="submit" class="btn btn-success">
                         <i class="fas fa-save"></i> Adicionar Item
                     </button>
-                    <a asp-controller="Manutencoes" asp-action="Details" asp-route-id="@manutencao.Id" class="btn btn-secondary">
+                    <a asp-controller="Manutencoes" asp-action="Details" asp-route-id="@manutencao?.Id" class="btn btn-secondary">
                         <i class="fas fa-times"></i> Cancelar
                     </a>
                 </div>
@@ -128,7 +128,7 @@
     
     <script>
         $(document).ready(function() {
-            // Calcular valor total ao alterar quantidade ou valor unitário
+            // Calcular valor total ao alterar quantidade ou valor unitÃ¡rio
             function calcularTotal() {
                 var quantidade = parseFloat($('#Quantidade').val()) || 0;
                 var valorUnitario = parseFloat($('#ValorUnitario').val()) || 0;

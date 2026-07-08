@@ -1,61 +1,61 @@
 @model IEnumerable<RentalTourismSystem.Models.ManutencaoVeiculo>
 
 @{
-    ViewData["Title"] = "Histórico de Manutenções";
+    ViewData["Title"] = "HistÃ³rico de ManutenÃ§Ãµes";
     var veiculo = ViewBag.Veiculo as RentalTourismSystem.Models.Veiculo;
 }
 
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-md-12">
-            <h2><i class="fas fa-history"></i> Histórico de Manutenções do Veículo</h2>
+            <h2><i class="fas fa-history"></i> HistÃ³rico de ManutenÃ§Ãµes do VeÃ­culo</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a asp-controller="Veiculos" asp-action="Index">Veículos</a></li>
-                    <li class="breadcrumb-item"><a asp-controller="Veiculos" asp-action="Details" asp-route-id="@veiculo.Id">@veiculo.Marca @veiculo.Modelo</a></li>
-                    <li class="breadcrumb-item active">Histórico de Manutenções</li>
+                    <li class="breadcrumb-item"><a asp-controller="Veiculos" asp-action="Index">VeÃ­culos</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Veiculos" asp-action="Details" asp-route-id="@veiculo?.Id">@(veiculo == null ? "VeÃ­culo" : $"{veiculo.Marca} {veiculo.Modelo}")</a></li>
+                    <li class="breadcrumb-item active">HistÃ³rico de ManutenÃ§Ãµes</li>
                 </ol>
             </nav>
         </div>
     </div>
 
-    <!-- Informações do Veículo -->
+    <!-- InformaÃ§Ãµes do VeÃ­culo -->
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="fas fa-car"></i> Informações do Veículo</h5>
+            <h5 class="mb-0"><i class="fas fa-car"></i> InformaÃ§Ãµes do VeÃ­culo</h5>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-3">
-                    <strong>Veículo:</strong><br />
-                    @veiculo.Marca @veiculo.Modelo (@veiculo.Ano)
+                    <strong>VeÃ­culo:</strong><br />
+                    @veiculo?.Marca @veiculo?.Modelo (@veiculo?.Ano)
                 </div>
                 <div class="col-md-2">
                     <strong>Placa:</strong><br />
-                    @veiculo.Placa
+                    @veiculo?.Placa
                 </div>
                 <div class="col-md-2">
                     <strong>Quilometragem:</strong><br />
-                    @veiculo.Quilometragem.ToString("N0") km
+                    @(veiculo?.Quilometragem.ToString("N0") ?? "N/D") km
                 </div>
                 <div class="col-md-2">
                     <strong>Status:</strong><br />
-                    @veiculo.StatusCarro?.Status
+                    @veiculo?.StatusCarro?.Status
                 </div>
                 <div class="col-md-3">
-                    <strong>Agência:</strong><br />
-                    @veiculo.Agencia?.Nome
+                    <strong>AgÃªncia:</strong><br />
+                    @veiculo?.Agencia?.Nome
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Estatísticas -->
+    <!-- EstatÃ­sticas -->
     <div class="row mb-4">
         <div class="col-md-3">
             <div class="card bg-info text-white">
                 <div class="card-body">
-                    <h5 class="card-title"><i class="fas fa-wrench"></i> Total de Manutenções</h5>
+                    <h5 class="card-title"><i class="fas fa-wrench"></i> Total de ManutenÃ§Ãµes</h5>
                     <h3>@ViewBag.TotalManutencoes</h3>
                 </div>
             </div>
@@ -71,7 +71,7 @@
         <div class="col-md-3">
             <div class="card bg-success text-white">
                 <div class="card-body">
-                    <h5 class="card-title"><i class="fas fa-chart-line"></i> Custo Médio</h5>
+                    <h5 class="card-title"><i class="fas fa-chart-line"></i> Custo MÃ©dio</h5>
                     <h3>@ViewBag.MediaCusto.ToString("C")</h3>
                 </div>
             </div>
@@ -79,27 +79,27 @@
         <div class="col-md-3">
             <div class="card bg-warning text-white">
                 <div class="card-body">
-                    <h5 class="card-title"><i class="fas fa-calendar"></i> Última Manutenção</h5>
+                    <h5 class="card-title"><i class="fas fa-calendar"></i> Ãšltima ManutenÃ§Ã£o</h5>
                     <h3>@(ViewBag.UltimaManutencao != null ? ((DateTime)ViewBag.UltimaManutencao).ToString("dd/MM/yyyy") : "N/A")</h3>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Botão para nova manutenção -->
+    <!-- BotÃ£o para nova manutenÃ§Ã£o -->
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {
         <div class="mb-3">
-            <a asp-action="Create" asp-route-veiculoId="@veiculo.Id" class="btn btn-success">
-                <i class="fas fa-plus"></i> Nova Manutenção para este Veículo
+            <a asp-action="Create" asp-route-veiculoId="@veiculo?.Id" class="btn btn-success">
+                <i class="fas fa-plus"></i> Nova ManutenÃ§Ã£o para este VeÃ­culo
             </a>
         </div>
     }
 
-    <!-- Lista de Manutenções -->
+    <!-- Lista de ManutenÃ§Ãµes -->
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0"><i class="fas fa-list"></i> Histórico Completo</h5>
+            <h5 class="mb-0"><i class="fas fa-list"></i> HistÃ³rico Completo</h5>
         </div>
         <div class="card-body">
             @if (Model.Any())
@@ -111,11 +111,11 @@
                                 <th>Data Agendada</th>
                                 <th>Tipo</th>
                                 <th>Status</th>
-                                <th>Descrição</th>
+                                <th>DescriÃ§Ã£o</th>
                                 <th>Km</th>
                                 <th>Custo</th>
                                 <th>Marcadores</th>
-                                <th>Ações</th>
+                                <th>AÃ§Ãµes</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -136,7 +136,7 @@
                                         {
                                             <span class="badge badge-info">@item.StatusManutencao?.Status</span>
                                         }
-                                        else if (item.StatusManutencao?.Status == "Concluída")
+                                        else if (item.StatusManutencao?.Status == "ConcluÃ­da")
                                         {
                                             <span class="badge badge-success">@item.StatusManutencao?.Status</span>
                                         }
@@ -203,18 +203,18 @@
             else
             {
                 <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> Este veículo ainda não possui histórico de manutenções.
+                    <i class="fas fa-info-circle"></i> Este veÃ­culo ainda nÃ£o possui histÃ³rico de manutenÃ§Ãµes.
                 </div>
             }
         </div>
     </div>
 
     <div class="mt-3">
-        <a asp-controller="Veiculos" asp-action="Details" asp-route-id="@veiculo.Id" class="btn btn-info">
-            <i class="fas fa-car"></i> Voltar ao Veículo
+        <a asp-controller="Veiculos" asp-action="Details" asp-route-id="@veiculo?.Id" class="btn btn-info">
+            <i class="fas fa-car"></i> Voltar ao VeÃ­culo
         </a>
         <a asp-action="Index" class="btn btn-secondary">
-            <i class="fas fa-list"></i> Ver Todas as Manutenções
+            <i class="fas fa-list"></i> Ver Todas as ManutenÃ§Ãµes
         </a>
     </div>
 </div>

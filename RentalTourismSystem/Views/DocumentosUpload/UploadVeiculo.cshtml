@@ -8,11 +8,11 @@
 <div class="row mb-4">
     <div class="col-12">
         <h2 class="text-gradient">
-            <i class="fas fa-file-upload me-2"></i>Upload de Documentos do VeÌculo
+            <i class="fas fa-file-upload me-2"></i>Upload de Documentos do Ve√≠culo
         </h2>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a asp-controller="Veiculos" asp-action="Index">VeÌculos</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Veiculos" asp-action="Index">Ve√≠culos</a></li>
                 <li class="breadcrumb-item"><a asp-controller="Veiculos" asp-action="Details" asp-route-id="@veiculoId">@ViewBag.VeiculoInfo</a></li>
                 <li class="breadcrumb-item active">Upload de Documentos</li>
             </ol>
@@ -21,7 +21,7 @@
 </div>
 
 <div class="row">
-    <!-- Formul·rio de Upload -->
+    <!-- Formul√°rio de Upload -->
     <div class="col-lg-5">
         <div class="card">
             <div class="card-header bg-primary text-white">
@@ -38,7 +38,7 @@
                         <label for="tipoDocumento" class="form-label required">Tipo de Documento:</label>
                         <select class="form-select" id="tipoDocumento" name="tipoDocumento" required>
                             <option value="">Selecione o tipo...</option>
-                            @foreach (var tipo in tiposDocumento)
+                            @foreach (var tipo in tiposDocumento ?? Enumerable.Empty<string>())
                             {
                                 <option value="@tipo">@tipo</option>
                             }
@@ -51,14 +51,14 @@
                                accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp" required />
                         <div class="form-text">
                             <i class="fas fa-info-circle me-1"></i>
-                            Formatos aceitos: PDF, JPG, PNG, GIF, BMP (Tamanho m·ximo: 10MB)
+                            Formatos aceitos: PDF, JPG, PNG, GIF, BMP (Tamanho m√°ximo: 10MB)
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="descricao" class="form-label">DescriÁ„o (opcional):</label>
+                        <label for="descricao" class="form-label">Descri√ß√£o (opcional):</label>
                         <textarea class="form-control" id="descricao" name="descricao" rows="3"
-                                  placeholder="Adicione observaÁıes sobre o documento..."></textarea>
+                                  placeholder="Adicione observa√ß√µes sobre o documento..."></textarea>
                     </div>
 
                     <!-- Preview do arquivo -->
@@ -78,27 +78,27 @@
                             <i class="fas fa-upload me-1"></i>Enviar Documento
                         </button>
                         <a asp-controller="Veiculos" asp-action="Details" asp-route-id="@veiculoId" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left me-1"></i>Voltar para VeÌculo
+                            <i class="fas fa-arrow-left me-1"></i>Voltar para Ve√≠culo
                         </a>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- InformaÁıes -->
+        <!-- Informa√ß√µes -->
         <div class="card mt-3 border-info">
             <div class="card-header bg-info text-white">
-                <h6 class="mb-0"><i class="fas fa-info-circle me-1"></i>InformaÁıes</h6>
+                <h6 class="mb-0"><i class="fas fa-info-circle me-1"></i>Informa√ß√µes</h6>
             </div>
             <div class="card-body">
-                <p class="small mb-2"><strong>VeÌculo:</strong> @ViewBag.VeiculoInfo</p>
+                <p class="small mb-2"><strong>Ve√≠culo:</strong> @ViewBag.VeiculoInfo</p>
                 <p class="small mb-2"><strong>Documentos permitidos:</strong></p>
                 <ul class="small mb-0">
-                    <li>CRLV (Certificado de Registro e Licenciamento do VeÌculo)</li>
+                    <li>CRLV (Certificado de Registro e Licenciamento do Ve√≠culo)</li>
                     <li>Nota Fiscal</li>
-                    <li>ApÛlice de Seguro</li>
+                    <li>Ap√≥lice de Seguro</li>
                     <li>Comprovante de IPVA</li>
-                    <li>Fotos do VeÌculo</li>
+                    <li>Fotos do Ve√≠culo</li>
                     <li>Outros documentos relevantes</li>
                 </ul>
             </div>
@@ -182,7 +182,7 @@
                         <div class="text-center py-5 empty-state">
                             <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
                             <h5 class="text-muted">Nenhum documento enviado</h5>
-                            <p class="text-muted">Envie o primeiro documento usando o formul·rio ao lado.</p>
+                            <p class="text-muted">Envie o primeiro documento usando o formul√°rio ao lado.</p>
                         </div>
                     }
                 </div>
@@ -216,7 +216,7 @@
                 }
             });
 
-            // Submit do formul·rio via AJAX
+            // Submit do formul√°rio via AJAX
             $('#formUpload').on('submit', async function(e) {
                 e.preventDefault();
 
@@ -224,7 +224,7 @@
                 const btnEnviar = $('#btnEnviar');
                 const textoOriginal = btnEnviar.html();
 
-                // Desabilitar bot„o e mostrar loading
+                // Desabilitar bot√£o e mostrar loading
                 btnEnviar.prop('disabled', true)
                          .html('<i class="fas fa-spinner fa-spin me-1"></i>Enviando...');
 
@@ -239,7 +239,7 @@
                     if (resultado.success) {
                         showNotification('success', resultado.message);
                         
-                        // Limpar formul·rio
+                        // Limpar formul√°rio
                         $('#formUpload')[0].reset();
                         $('#preview').hide();
                         
@@ -304,7 +304,7 @@
                         <div class="text-center py-5 empty-state">
                             <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
                             <h5 class="text-muted">Nenhum documento enviado</h5>
-                            <p class="text-muted">Envie o primeiro documento usando o formul·rio ao lado.</p>
+                            <p class="text-muted">Envie o primeiro documento usando o formul√°rio ao lado.</p>
                         </div>
                     `);
                 } else {
@@ -369,7 +369,7 @@
                     <div class="text-center py-5 empty-state">
                         <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
                         <h5 class="text-muted">Nenhum documento enviado</h5>
-                        <p class="text-muted">Envie o primeiro documento usando o formul·rio ao lado.</p>
+                        <p class="text-muted">Envie o primeiro documento usando o formul√°rio ao lado.</p>
                     </div>
                 `);
             }

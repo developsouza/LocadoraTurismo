@@ -21,7 +21,7 @@
 </div>
 
 <div class="row">
-    <!-- Formul·rio de Upload -->
+    <!-- Formul√°rio de Upload -->
     <div class="col-lg-5">
         <div class="card">
             <div class="card-header bg-primary text-white">
@@ -38,7 +38,7 @@
                         <label for="tipoDocumento" class="form-label required">Tipo de Documento:</label>
                         <select class="form-select" id="tipoDocumento" name="tipoDocumento" required>
                             <option value="">Selecione o tipo...</option>
-                            @foreach (var tipo in tiposDocumento)
+                            @foreach (var tipo in tiposDocumento ?? Enumerable.Empty<string>())
                             {
                                 <option value="@tipo">@tipo</option>
                             }
@@ -51,14 +51,14 @@
                                accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp" required />
                         <div class="form-text">
                             <i class="fas fa-info-circle me-1"></i>
-                            Formatos aceitos: PDF, JPG, PNG, GIF, BMP (Tamanho m·ximo: 10MB)
+                            Formatos aceitos: PDF, JPG, PNG, GIF, BMP (Tamanho m√°ximo: 10MB)
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="descricao" class="form-label">DescriÁ„o (opcional):</label>
+                        <label for="descricao" class="form-label">Descri√ß√£o (opcional):</label>
                         <textarea class="form-control" id="descricao" name="descricao" rows="3"
-                                  placeholder="Adicione observaÁıes sobre o documento..."></textarea>
+                                  placeholder="Adicione observa√ß√µes sobre o documento..."></textarea>
                     </div>
 
                     <!-- Preview do arquivo -->
@@ -85,19 +85,19 @@
             </div>
         </div>
 
-        <!-- InformaÁıes -->
+        <!-- Informa√ß√µes -->
         <div class="card mt-3 border-info">
             <div class="card-header bg-info text-white">
-                <h6 class="mb-0"><i class="fas fa-info-circle me-1"></i>InformaÁıes</h6>
+                <h6 class="mb-0"><i class="fas fa-info-circle me-1"></i>Informa√ß√µes</h6>
             </div>
             <div class="card-body">
                 <p class="small mb-2"><strong>Cliente:</strong> @ViewBag.ClienteNome</p>
                 <p class="small mb-2"><strong>Documentos permitidos:</strong></p>
                 <ul class="small mb-0">
-                    <li>CNH (Carteira Nacional de HabilitaÁ„o)</li>
+                    <li>CNH (Carteira Nacional de Habilita√ß√£o)</li>
                     <li>RG (Registro Geral)</li>
                     <li>CPF</li>
-                    <li>Comprovante de ResidÍncia</li>
+                    <li>Comprovante de Resid√™ncia</li>
                     <li>Foto de Perfil</li>
                     <li>Outros documentos relevantes</li>
                 </ul>
@@ -182,7 +182,7 @@
                         <div class="text-center py-5 empty-state">
                             <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
                             <h5 class="text-muted">Nenhum documento enviado</h5>
-                            <p class="text-muted">Envie o primeiro documento usando o formul·rio ao lado.</p>
+                            <p class="text-muted">Envie o primeiro documento usando o formul√°rio ao lado.</p>
                         </div>
                     }
                 </div>
@@ -216,7 +216,7 @@
                 }
             });
 
-            // Submit do formul·rio via AJAX
+            // Submit do formul√°rio via AJAX
             $('#formUpload').on('submit', async function(e) {
                 e.preventDefault();
 
@@ -224,7 +224,7 @@
                 const btnEnviar = $('#btnEnviar');
                 const textoOriginal = btnEnviar.html();
 
-                // Desabilitar bot„o e mostrar loading
+                // Desabilitar bot√£o e mostrar loading
                 btnEnviar.prop('disabled', true)
                          .html('<i class="fas fa-spinner fa-spin me-1"></i>Enviando...');
 
@@ -239,7 +239,7 @@
                     if (resultado.success) {
                         showNotification('success', resultado.message);
                         
-                        // Limpar formul·rio
+                        // Limpar formul√°rio
                         $('#formUpload')[0].reset();
                         $('#preview').hide();
                         
@@ -304,7 +304,7 @@
                         <div class="text-center py-5 empty-state">
                             <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
                             <h5 class="text-muted">Nenhum documento enviado</h5>
-                            <p class="text-muted">Envie o primeiro documento usando o formul·rio ao lado.</p>
+                            <p class="text-muted">Envie o primeiro documento usando o formul√°rio ao lado.</p>
                         </div>
                     `);
                 } else {
@@ -369,7 +369,7 @@
                     <div class="text-center py-5 empty-state">
                         <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
                         <h5 class="text-muted">Nenhum documento enviado</h5>
-                        <p class="text-muted">Envie o primeiro documento usando o formul·rio ao lado.</p>
+                        <p class="text-muted">Envie o primeiro documento usando o formul√°rio ao lado.</p>
                     </div>
                 `);
             }

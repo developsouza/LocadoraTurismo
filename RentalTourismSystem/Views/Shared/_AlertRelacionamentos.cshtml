@@ -190,7 +190,7 @@ else
 {
     <div class="alert alert-danger">
         <i class="fas fa-id-card me-1"></i>
-        <strong>CNH Vencida!</strong> A habilitação deste cliente venceu em @Model.ValidadeCNH.Value.ToString("dd/MM/yyyy").
+        <strong>CNH Vencida!</strong> A habilitação deste cliente venceu em @(Model.ValidadeCNH?.ToString("dd/MM/yyyy") ?? "data não informada").
         Não permita locações até a regularização.
     </div>
 }
@@ -198,7 +198,7 @@ else if (cnhProximaVencimento && !cnhVencida)
 {
     <div class="alert alert-warning">
         <i class="fas fa-clock me-1"></i>
-        <strong>CNH próxima do vencimento!</strong> A habilitação vence em @Model.ValidadeCNH.Value.ToString("dd/MM/yyyy").
+        <strong>CNH próxima do vencimento!</strong> A habilitação vence em @(Model.ValidadeCNH?.ToString("dd/MM/yyyy") ?? "data não informada").
         Oriente o cliente a renovar.
     </div>
 }

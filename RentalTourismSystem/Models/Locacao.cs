@@ -36,24 +36,24 @@ namespace RentalTourismSystem.Models
         public int ClienteId { get; set; }
 
         [ValidateNever]
-        public virtual Cliente? Cliente { get; set; }
+        public virtual Cliente Cliente { get; set; } = null!;
 
         [Range(1, int.MaxValue, ErrorMessage = "Selecione um veículo válido")]
         public int VeiculoId { get; set; }
 
         [ValidateNever]
-        public virtual Veiculo? Veiculo { get; set; }
+        public virtual Veiculo Veiculo { get; set; } = null!;
 
         [Range(1, int.MaxValue, ErrorMessage = "Selecione um funcionário válido")]
         public int FuncionarioId { get; set; }
 
         [ValidateNever]
-        public virtual Funcionario? Funcionario { get; set; }
+        public virtual Funcionario Funcionario { get; set; } = null!;
 
         [Range(1, int.MaxValue, ErrorMessage = "Selecione uma agência válida")]
         public int AgenciaId { get; set; }
 
         [ValidateNever]
-        public virtual Agencia? Agencia { get; set; }
+        public virtual Agencia Agencia { get; set; } = null!;
     }
 }

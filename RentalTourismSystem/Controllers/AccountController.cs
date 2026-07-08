@@ -349,7 +349,7 @@ namespace RentalTourismSystem.Controllers
                 {
                     Id = user.Id,
                     NomeCompleto = user.NomeCompleto,
-                    Email = user.Email,
+                    Email = user.Email ?? string.Empty,
                     Cpf = user.Cpf,
                     Cargo = user.Cargo,
                     AgenciaId = user.AgenciaId,

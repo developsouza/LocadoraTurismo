@@ -168,7 +168,7 @@
                     {
                         <p class="mb-0">
                             <strong>Locação Finalizada</strong><br>
-                            <small>Devolvido em @Model.DataDevolucaoReal.Value.ToString("dd/MM/yyyy HH:mm")</small>
+                            <small>Devolvido em @(Model.DataDevolucaoReal?.ToString("dd/MM/yyyy HH:mm") ?? "data não informada")</small>
                         </p>
                     }
                 </div>

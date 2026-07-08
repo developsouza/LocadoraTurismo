@@ -4,54 +4,54 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace RentalTourismSystem.Models
 {
     /// <summary>
-    /// Representa uma manutenÁ„o realizada ou agendada em um veÌculo
+    /// Representa uma manuten√ß√£o realizada ou agendada em um ve√≠culo
     /// </summary>
     public class ManutencaoVeiculo
     {
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "O veÌculo È obrigatÛrio")]
-        [Display(Name = "VeÌculo")]
+        [Required(ErrorMessage = "O ve√≠culo √© obrigat√≥rio")]
+        [Display(Name = "Ve√≠culo")]
         public int VeiculoId { get; set; }
 
-        [Required(ErrorMessage = "O tipo de manutenÁ„o È obrigatÛrio")]
-        [Display(Name = "Tipo de ManutenÁ„o")]
+        [Required(ErrorMessage = "O tipo de manuten√ß√£o √© obrigat√≥rio")]
+        [Display(Name = "Tipo de Manuten√ß√£o")]
         public int TipoManutencaoId { get; set; }
 
-        [Required(ErrorMessage = "O status È obrigatÛrio")]
+        [Required(ErrorMessage = "O status √© obrigat√≥rio")]
         [Display(Name = "Status")]
         public int StatusManutencaoId { get; set; }
 
-        [Required(ErrorMessage = "A data de agendamento È obrigatÛria")]
+        [Required(ErrorMessage = "A data de agendamento √© obrigat√≥ria")]
         [DataType(DataType.DateTime)]
         [Display(Name = "Data Agendada")]
         public DateTime DataAgendada { get; set; }
 
         [DataType(DataType.DateTime)]
-        [Display(Name = "Data de InÌcio")]
+        [Display(Name = "Data de In√≠cio")]
         public DateTime? DataInicio { get; set; }
 
         [DataType(DataType.DateTime)]
-        [Display(Name = "Data de Conclus„o")]
+        [Display(Name = "Data de Conclus√£o")]
         public DateTime? DataConclusao { get; set; }
 
-        [Required(ErrorMessage = "A quilometragem atual È obrigatÛria")]
+        [Required(ErrorMessage = "A quilometragem atual √© obrigat√≥ria")]
         [Range(0, int.MaxValue, ErrorMessage = "Quilometragem deve ser maior ou igual a zero")]
         [Display(Name = "Quilometragem Atual")]
         public int QuilometragemAtual { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Quilometragem deve ser maior ou igual a zero")]
-        [Display(Name = "PrÛxima Quilometragem")]
+        [Display(Name = "Pr√≥xima Quilometragem")]
         public int? ProximaQuilometragem { get; set; }
 
-        [Required(ErrorMessage = "A descriÁ„o È obrigatÛria")]
+        [Required(ErrorMessage = "A descri√ß√£o √© obrigat√≥ria")]
         [StringLength(500)]
-        [Display(Name = "DescriÁ„o")]
+        [Display(Name = "Descri√ß√£o")]
         public string Descricao { get; set; } = string.Empty;
 
         [StringLength(1000)]
-        [Display(Name = "ObservaÁıes")]
+        [Display(Name = "Observa√ß√µes")]
         public string? Observacoes { get; set; }
 
         [StringLength(200)]
@@ -60,19 +60,19 @@ namespace RentalTourismSystem.Models
 
         [Column(TypeName = "decimal(10,2)")]
         [Range(0, 999999.99, ErrorMessage = "O custo deve estar entre R$ 0,00 e R$ 999.999,99")]
-        [Display(Name = "Custo da ManutenÁ„o")]
+        [Display(Name = "Custo da Manuten√ß√£o")]
         [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = false)]
         public decimal? Custo { get; set; }
 
         [Column(TypeName = "decimal(10,2)")]
-        [Range(0, 999999.99, ErrorMessage = "O valor de peÁas deve estar entre R$ 0,00 e R$ 999.999,99")]
-        [Display(Name = "Custo de PeÁas")]
+        [Range(0, 999999.99, ErrorMessage = "O valor de pe√ßas deve estar entre R$ 0,00 e R$ 999.999,99")]
+        [Display(Name = "Custo de Pe√ßas")]
         [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = false)]
         public decimal? CustoPecas { get; set; }
 
         [Column(TypeName = "decimal(10,2)")]
-        [Range(0, 999999.99, ErrorMessage = "O valor de m„o de obra deve estar entre R$ 0,00 e R$ 999.999,99")]
-        [Display(Name = "Custo de M„o de Obra")]
+        [Range(0, 999999.99, ErrorMessage = "O valor de m√£o de obra deve estar entre R$ 0,00 e R$ 999.999,99")]
+        [Display(Name = "Custo de M√£o de Obra")]
         [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = false)]
         public decimal? CustoMaoObra { get; set; }
 
@@ -80,13 +80,13 @@ namespace RentalTourismSystem.Models
         [Range(0, 3650, ErrorMessage = "Garantia deve estar entre 0 e 3650 dias (10 anos)")]
         public int? GarantiaDias { get; set; }
 
-        [Display(Name = "ManutenÁ„o Preventiva")]
+        [Display(Name = "Manuten√ß√£o Preventiva")]
         public bool Preventiva { get; set; } = false;
 
         [Display(Name = "Urgente")]
         public bool Urgente { get; set; } = false;
 
-        [Display(Name = "Respons·vel")]
+        [Display(Name = "Respons√°vel")]
         public int? FuncionarioId { get; set; }
 
         [Display(Name = "Data de Cadastro")]
@@ -96,17 +96,17 @@ namespace RentalTourismSystem.Models
         [Display(Name = "Nota Fiscal")]
         public string? NotaFiscal { get; set; }
 
-        // NavegaÁ„o
-        [Display(Name = "VeÌculo")]
-        public virtual Veiculo? Veiculo { get; set; }
+        // Navega√ß√£o
+        [Display(Name = "Ve√≠culo")]
+        public virtual Veiculo Veiculo { get; set; } = null!;
 
-        [Display(Name = "Tipo de ManutenÁ„o")]
-        public virtual TipoManutencao? TipoManutencao { get; set; }
+        [Display(Name = "Tipo de Manuten√ß√£o")]
+        public virtual TipoManutencao TipoManutencao { get; set; } = null!;
 
         [Display(Name = "Status")]
-        public virtual StatusManutencao? StatusManutencao { get; set; }
+        public virtual StatusManutencao StatusManutencao { get; set; } = null!;
 
-        [Display(Name = "Respons·vel")]
+        [Display(Name = "Respons√°vel")]
         public virtual Funcionario? Funcionario { get; set; }
 
         public virtual ICollection<ItemManutencao> Itens { get; set; } = new List<ItemManutencao>();
@@ -121,7 +121,7 @@ namespace RentalTourismSystem.Models
         public int DiasAteAgendamento => (DataAgendada.Date - DateTime.Now.Date).Days;
 
         [NotMapped]
-        [Display(Name = "DuraÁ„o (horas)")]
+        [Display(Name = "Dura√ß√£o (horas)")]
         public double? DuracaoHoras
         {
             get

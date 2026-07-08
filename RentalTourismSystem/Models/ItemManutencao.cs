@@ -4,36 +4,36 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace RentalTourismSystem.Models
 {
     /// <summary>
-    /// Representa um item individual (peça/serviço) de uma manutenção
+    /// Representa um item individual (peÃ§a/serviÃ§o) de uma manutenÃ§Ã£o
     /// </summary>
     public class ItemManutencao
     {
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "A manutenção é obrigatória")]
-        [Display(Name = "Manutenção")]
+        [Required(ErrorMessage = "A manutenÃ§Ã£o Ã© obrigatÃ³ria")]
+        [Display(Name = "ManutenÃ§Ã£o")]
         public int ManutencaoVeiculoId { get; set; }
 
-        [Required(ErrorMessage = "A descrição do item é obrigatória")]
+        [Required(ErrorMessage = "A descriÃ§Ã£o do item Ã© obrigatÃ³ria")]
         [StringLength(200)]
-        [Display(Name = "Descrição")]
+        [Display(Name = "DescriÃ§Ã£o")]
         public string Descricao { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "O tipo de item é obrigatório")]
+        [Required(ErrorMessage = "O tipo de item Ã© obrigatÃ³rio")]
         [StringLength(20)]
         [Display(Name = "Tipo")]
-        public string Tipo { get; set; } = "Peça"; // Peça, Serviço, Outros
+        public string Tipo { get; set; } = "PeÃ§a"; // PeÃ§a, ServiÃ§o, Outros
 
-        [Required(ErrorMessage = "A quantidade é obrigatória")]
+        [Required(ErrorMessage = "A quantidade Ã© obrigatÃ³ria")]
         [Range(1, 1000, ErrorMessage = "Quantidade deve estar entre 1 e 1000")]
         [Display(Name = "Quantidade")]
         public int Quantidade { get; set; } = 1;
 
-        [Required(ErrorMessage = "O valor unitário é obrigatório")]
+        [Required(ErrorMessage = "O valor unitÃ¡rio Ã© obrigatÃ³rio")]
         [Column(TypeName = "decimal(10,2)")]
         [Range(0.01, 99999.99, ErrorMessage = "Valor deve estar entre R$ 0,01 e R$ 99.999,99")]
-        [Display(Name = "Valor Unitário")]
+        [Display(Name = "Valor UnitÃ¡rio")]
         [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = false)]
         public decimal ValorUnitario { get; set; }
 
@@ -42,16 +42,16 @@ namespace RentalTourismSystem.Models
         public string? Fornecedor { get; set; }
 
         [StringLength(50)]
-        [Display(Name = "Código/Número de Peça")]
+        [Display(Name = "CÃ³digo/NÃºmero de PeÃ§a")]
         public string? CodigoPeca { get; set; }
 
         [StringLength(500)]
-        [Display(Name = "Observações")]
+        [Display(Name = "ObservaÃ§Ãµes")]
         public string? Observacoes { get; set; }
 
-        // Navegação
-        [Display(Name = "Manutenção")]
-        public virtual ManutencaoVeiculo? ManutencaoVeiculo { get; set; }
+        // NavegaÃ§Ã£o
+        [Display(Name = "ManutenÃ§Ã£o")]
+        public virtual ManutencaoVeiculo ManutencaoVeiculo { get; set; } = null!;
 
         // Propriedades calculadas
         [NotMapped]

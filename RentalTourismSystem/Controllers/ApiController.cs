@@ -318,7 +318,7 @@ namespace RentalTourismSystem.Controllers
                     DataFim = dataFim,
                     Disponivel = disponivel,
                     Motivo = motivo,
-                    StatusVeiculo = veiculo.StatusCarro.Status
+                    StatusVeiculo = veiculo.StatusCarro?.Status ?? "Desconhecido"
                 };
 
                 return Ok(resultado);
