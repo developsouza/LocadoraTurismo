@@ -3,7 +3,7 @@
     public class ItemVistoria
     {
         public int Numero { get; set; }
-        public string Descricao { get; set; }
+        public string Descricao { get; set; } = string.Empty;
 
         // Para itens com Funcionando/Não Funciona
         public bool Funcionando { get; set; }
@@ -30,6 +30,6 @@
         public bool Trincado { get; set; }
         public bool RiscadoAmassado { get; set; }
 
-        public string Comentario { get; set; }
+        public string Comentario { get; set; } = string.Empty;
     }
 }

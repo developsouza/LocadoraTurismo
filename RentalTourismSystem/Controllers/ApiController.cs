@@ -125,11 +125,11 @@ namespace RentalTourismSystem.Controllers
                         Cor = v.Cor,
                         ValorDiaria = v.ValorDiaria,
                         Quilometragem = v.Quilometragem,
-                        Status = v.StatusCarro.Status,
+                        Status = v.StatusCarro != null ? v.StatusCarro.Status : "Desconhecido",
                         StatusId = v.StatusCarroId,
-                        Agencia = v.Agencia.Nome,
+                        Agencia = v.Agencia != null ? v.Agencia.Nome : "Não vinculada",
                         AgenciaId = v.AgenciaId,
-                        Disponivel = v.StatusCarro.Status == "Disponível",
+                        Disponivel = v.StatusCarro != null && v.StatusCarro.Status == "Disponível",
                         TotalLocacoes = v.Locacoes.Count(),
                         ReceitaTotal = v.Locacoes.Sum(l => l.ValorTotal),
                         UltimaLocacao = v.Locacoes.Any() ? v.Locacoes.Max(l => l.DataRetirada) : (DateTime?)null
@@ -292,10 +292,10 @@ namespace RentalTourismSystem.Controllers
                 var motivo = "Veículo disponível para o período";
 
                 // Verificar status do veículo
-                if (veiculo.StatusCarro.Status != "Disponível")
+                if (veiculo.StatusCarro?.Status != "Disponível")
                 {
                     disponivel = false;
-                    motivo = $"Veículo está com status '{veiculo.StatusCarro.Status}'";
+                    motivo = $"Veículo está com status '{veiculo.StatusCarro?.Status ?? "Desconhecido"}'";
                 }
                 else
                 {
@@ -465,7 +465,7 @@ namespace RentalTourismSystem.Controllers
                 _logger.LogInformation("Relatório de receita mensal {Ano} solicitado via API por {User}", ano, User.Identity?.Name);
 
                 var cacheKey = $"receita_mensal_{ano}";
-                if (_cache.TryGetValue(cacheKey, out ReceitaMensalResponseDto cachedData))
+                if (_cache.TryGetValue(cacheKey, out ReceitaMensalResponseDto? cachedData) && cachedData != null)
                 {
                     return Ok(cachedData);
                 }
@@ -578,7 +578,7 @@ namespace RentalTourismSystem.Controllers
                     }
                 }
 
-                var statusAnterior = veiculo.StatusCarro.Status;
+                var statusAnterior = veiculo.StatusCarro?.Status ?? "Desconhecido";
                 veiculo.StatusCarroId = request.NovoStatusId;
 
                 await _context.SaveChangesAsync();

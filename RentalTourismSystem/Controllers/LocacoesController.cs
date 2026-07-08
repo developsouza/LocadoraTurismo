@@ -100,7 +100,7 @@ namespace RentalTourismSystem.Controllers
                 var locacao = await _context.Locacoes
                     .Include(l => l.Cliente)
                     .Include(l => l.Veiculo)
-                        .ThenInclude(v => v.StatusCarro)
+                        .ThenInclude(v => v!.StatusCarro)
                     .Include(l => l.Funcionario)
                     .Include(l => l.Agencia)
                     .FirstOrDefaultAsync(m => m.Id == id);
@@ -371,6 +371,8 @@ namespace RentalTourismSystem.Controllers
                         try
                         {
                             var locacaoOriginal = await _context.Locacoes.AsNoTracking().FirstOrDefaultAsync(l => l.Id == id);
+                            if (locacaoOriginal == null)
+                                throw new InvalidOperationException("Locação original não encontrada durante a atualização");
 
                             // Se foi finalizada agora, liberar o veículo
                             if (!locacaoOriginal.DataDevolucaoReal.HasValue && locacao.DataDevolucaoReal.HasValue)
@@ -635,7 +637,7 @@ namespace RentalTourismSystem.Controllers
                     .AsNoTracking()
                     .Include(v => v.StatusCarro)
                     .Include(v => v.Agencia)
-                    .Where(v => v.StatusCarro.Status == "Disponível" ||
+                    .Where(v => (v.StatusCarro != null && v.StatusCarro.Status == "Disponível") ||
                                (locacao != null && v.Id == locacao.VeiculoId) ||
                                (veiculoPreSelecionado.HasValue && v.Id == veiculoPreSelecionado.Value))
                     .OrderBy(v => v.Marca)
@@ -729,7 +731,7 @@ namespace RentalTourismSystem.Controllers
                 var veiculosReservados = await _context.Veiculos
                     .Include(v => v.StatusCarro)
                     .Include(v => v.Locacoes)
-                    .Where(v => v.StatusCarro.Status == "Reservado")
+                    .Where(v => v.StatusCarro != null && v.StatusCarro.Status == "Reservado")
                     .ToListAsync();
 
                 var statusAlugado = await _context.StatusCarros.FirstOrDefaultAsync(s => s.Status == "Alugado");
@@ -973,7 +975,7 @@ namespace RentalTourismSystem.Controllers
                     cor = veiculo.Cor,
                     valorDiaria = veiculo.ValorDiaria,
                     quilometragem = veiculo.Quilometragem,
-                    status = veiculo.StatusCarro.Status
+                    status = veiculo.StatusCarro?.Status ?? "Desconhecido"
                 });
             }
             catch (Exception ex)
@@ -1011,13 +1013,13 @@ namespace RentalTourismSystem.Controllers
                     cor = veiculo.Cor,
                     valorDiaria = veiculo.ValorDiaria,
                     quilometragem = veiculo.Quilometragem,
-                    status = veiculo.StatusCarro.Status,
+                    status = veiculo.StatusCarro?.Status ?? "Desconhecido",
                     statusId = veiculo.StatusCarroId,
-                    disponivel = veiculo.StatusCarro.Status == "Disponível" && !locacoesAtivas.Any(),
+                    disponivel = veiculo.StatusCarro?.Status == "Disponível" && !locacoesAtivas.Any(),
                     agencia = new
                     {
-                        id = veiculo.Agencia.Id,
-                        nome = veiculo.Agencia.Nome
+                        id = veiculo.Agencia?.Id,
+                        nome = veiculo.Agencia?.Nome ?? "Não vinculada"
                     },
                     locacoesAtivas = locacoesAtivas.Select(l => new
                     {
@@ -1142,7 +1144,7 @@ namespace RentalTourismSystem.Controllers
                     query = query.Where(v => v.AgenciaId == request.AgenciaId.Value);
                 }
 
-                query = query.Where(v => v.StatusCarro.Status == "Disponível");
+                query = query.Where(v => v.StatusCarro != null && v.StatusCarro.Status == "Disponível");
 
                 var veiculos = await query.ToListAsync();
                 var veiculosDisponiveis = new List<object>();
@@ -1162,7 +1164,7 @@ namespace RentalTourismSystem.Controllers
                             ano = veiculo.Ano,
                             cor = veiculo.Cor,
                             valorDiaria = veiculo.ValorDiaria,
-                            agencia = veiculo.Agencia.Nome,
+                            agencia = veiculo.Agencia?.Nome ?? "Não vinculada",
                             valorTotal = await CalcularValorLocacao(veiculo.Id, request.DataInicio, request.DataFim)
                         });
                     }

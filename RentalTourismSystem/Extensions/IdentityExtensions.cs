@@ -61,7 +61,7 @@ public static class IdentityExtensions
         // Configurações de autenticação adicionais
         services.Configure<SecurityStampValidatorOptions>(options =>
         {
-            options.ValidationInterval = TimeSpan.FromMinutes(30);
+            options.ValidationInterval = TimeSpan.FromMinutes(5);
         });
 
         return services;

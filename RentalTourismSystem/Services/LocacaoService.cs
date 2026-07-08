@@ -112,6 +112,12 @@ namespace RentalTourismSystem.Services
                     return ServiceResult<Locacao>.ErrorResult("Locação já foi finalizada");
                 }
 
+                if (locacao.Cliente == null || locacao.Veiculo == null)
+                {
+                    return ServiceResult<Locacao>.ErrorResult(
+                        "Locação possui relacionamento inconsistente com cliente ou veículo");
+                }
+
                 // Definir data real de devolução
                 locacao.DataDevolucaoReal = dataRealDevolucao ?? DateTime.Now;
 
@@ -130,11 +136,8 @@ namespace RentalTourismSystem.Services
                 _context.Update(locacao);
 
                 // Liberar veículo (status = Disponível)
-                if (locacao.Veiculo != null)
-                {
-                    locacao.Veiculo.StatusCarroId = 1; // Disponível
-                    _context.Update(locacao.Veiculo);
-                }
+                locacao.Veiculo.StatusCarroId = 1; // Disponível
+                _context.Update(locacao.Veiculo);
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

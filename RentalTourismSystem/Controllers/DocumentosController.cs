@@ -32,9 +32,9 @@ namespace RentalTourismSystem.Controllers
                 var locacao = await _context.Locacoes
                     .Include(l => l.Cliente)
                     .Include(l => l.Veiculo)
-                        .ThenInclude(v => v.Agencia)
+                        .ThenInclude(v => v!.Agencia)
                     .Include(l => l.Veiculo)
-                        .ThenInclude(v => v.StatusCarro)
+                        .ThenInclude(v => v!.StatusCarro)
                     .Include(l => l.Funcionario)
                     .Include(l => l.Agencia)
                     .AsNoTracking()
@@ -105,9 +105,9 @@ namespace RentalTourismSystem.Controllers
                 var locacao = await _context.Locacoes
                     .Include(l => l.Cliente)
                     .Include(l => l.Veiculo)
-                        .ThenInclude(v => v.Agencia)
+                        .ThenInclude(v => v!.Agencia)
                     .Include(l => l.Veiculo)
-                        .ThenInclude(v => v.StatusCarro)
+                        .ThenInclude(v => v!.StatusCarro)
                     .Include(l => l.Funcionario)
                     .Include(l => l.Agencia)
                     .AsNoTracking()

@@ -9,7 +9,7 @@ namespace RentalTourismSystem.Models
 
         [Required]
         [StringLength(50)]
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
 
         public virtual ICollection<Veiculo> Veiculos { get; set; } = new List<Veiculo>();
     }

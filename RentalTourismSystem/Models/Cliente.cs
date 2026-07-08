@@ -11,31 +11,31 @@ namespace RentalTourismSystem.Models
         [Required(ErrorMessage = "O nome é obrigatório")]
         [StringLength(100, ErrorMessage = "O nome deve ter no máximo 100 caracteres")]
         [Display(Name = "Nome Completo")]
-        public string Nome { get; set; }
+        public string Nome { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "O CPF é obrigatório")]
         [CpfValidation]
         [StringLength(14)]
         [Display(Name = "CPF")]
-        public string CPF { get; set; }
+        public string CPF { get; set; } = string.Empty;
 
         // ✅ CORRIGIDO: Required adicionado, regex removida (validação no controller)
         [Required(ErrorMessage = "O telefone é obrigatório")]
         [StringLength(20)]
         [Display(Name = "Telefone")]
-        public string Telefone { get; set; }
+        public string Telefone { get; set; } = string.Empty;
 
         // ✅ CORRIGIDO: Required adicionado
         [Required(ErrorMessage = "O email é obrigatório")]
         [EmailAddress(ErrorMessage = "Email inválido")]
         [StringLength(100)]
         [Display(Name = "Email")]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "O endereço é obrigatório")]
         [StringLength(200)]
         [Display(Name = "Endereço")]
-        public string Endereco { get; set; }
+        public string Endereco { get; set; } = string.Empty;
 
         [StringLength(10)]
         [RegularExpression(@"^\d{5}-?\d{3}$", ErrorMessage = "CEP deve estar no formato 00000-000")]

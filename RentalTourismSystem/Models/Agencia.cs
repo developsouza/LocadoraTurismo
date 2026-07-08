@@ -10,7 +10,7 @@ namespace RentalTourismSystem.Models
         [Required(ErrorMessage = "O nome é obrigatório")]
         [StringLength(100)]
         [Display(Name = "Nome da Agência")]
-        public string Nome { get; set; }
+        public string Nome { get; set; } = string.Empty;
 
         [StringLength(20)]
         [Display(Name = "CNPJ")]
@@ -19,7 +19,7 @@ namespace RentalTourismSystem.Models
         [Required(ErrorMessage = "O endereço é obrigatório")]
         [StringLength(200)]
         [Display(Name = "Endereço")]
-        public string Endereco { get; set; }
+        public string Endereco { get; set; } = string.Empty;
 
         [StringLength(100)]
         [Display(Name = "Cidade")]
@@ -28,13 +28,13 @@ namespace RentalTourismSystem.Models
         [Required(ErrorMessage = "O telefone é obrigatório")]
         [StringLength(20)]
         [Display(Name = "Telefone")]
-        public string Telefone { get; set; }
+        public string Telefone { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "O email é obrigatório")]
         [EmailAddress(ErrorMessage = "Email inválido")]
         [StringLength(100)]
         [Display(Name = "Email")]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         public virtual ICollection<Funcionario> Funcionarios { get; set; } = new List<Funcionario>();
         public virtual ICollection<Veiculo> Veiculos { get; set; } = new List<Veiculo>();

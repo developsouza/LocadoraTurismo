@@ -82,7 +82,7 @@ namespace RentalTourismSystem.Controllers
                     .Sum(l => l.ValorTotal);
 
                 ViewBag.VeiculosDisponiveis = agencia.Veiculos
-                    .Where(v => v.StatusCarro.Status == "Disponível")
+                    .Where(v => v.StatusCarro?.Status == "Disponível")
                     .Count();
 
                 ViewBag.LocacoesAtivas = agencia.Locacoes
@@ -437,7 +437,7 @@ namespace RentalTourismSystem.Controllers
 
                 // Top funcionários do período
                 ViewBag.TopFuncionarios = locacoesPeriodo
-                    .GroupBy(l => new { l.FuncionarioId, l.Funcionario.Nome })
+                    .GroupBy(l => new { l.FuncionarioId, Nome = l.Funcionario != null ? l.Funcionario.Nome : "Não informado" })
                     .Select(g => new
                     {
                         Nome = g.Key.Nome,
@@ -490,8 +490,8 @@ namespace RentalTourismSystem.Controllers
                     email = agencia.Email,
                     totalFuncionarios = agencia.Funcionarios.Count,
                     totalVeiculos = agencia.Veiculos.Count,
-                    veiculosDisponiveis = agencia.Veiculos.Count(v => v.StatusCarro.Status == "Disponível"),
-                    veiculosAlugados = agencia.Veiculos.Count(v => v.StatusCarro.Status == "Alugado")
+                    veiculosDisponiveis = agencia.Veiculos.Count(v => v.StatusCarro?.Status == "Disponível"),
+                    veiculosAlugados = agencia.Veiculos.Count(v => v.StatusCarro?.Status == "Alugado")
                 };
 
                 return Json(resultado);
@@ -565,8 +565,8 @@ namespace RentalTourismSystem.Controllers
                 {
                     totalFuncionarios = agencia.Funcionarios.Count,
                     totalVeiculos = agencia.Veiculos.Count,
-                    veiculosDisponiveis = agencia.Veiculos.Count(v => v.StatusCarro.Status == "Disponível"),
-                    veiculosAlugados = agencia.Veiculos.Count(v => v.StatusCarro.Status == "Alugado"),
+                    veiculosDisponiveis = agencia.Veiculos.Count(v => v.StatusCarro?.Status == "Disponível"),
+                    veiculosAlugados = agencia.Veiculos.Count(v => v.StatusCarro?.Status == "Alugado"),
                     locacoesMes = agencia.Locacoes.Count(l => l.DataRetirada >= inicioMes),
                     receitaMes = agencia.Locacoes.Where(l => l.DataRetirada >= inicioMes).Sum(l => l.ValorTotal),
                     locacoesAtivas = agencia.Locacoes.Count(l => l.DataDevolucaoReal == null)

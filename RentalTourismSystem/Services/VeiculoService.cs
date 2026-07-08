@@ -49,6 +49,9 @@ namespace RentalTourismSystem.Services
                     }
                 }
 
+                if (veiculo.StatusCarro == null)
+                    return ServiceResult<Veiculo>.ErrorResult("Veículo possui status atual inconsistente");
+
                 var statusAnterior = veiculo.StatusCarro.Status;
                 veiculo.StatusCarroId = novoStatusId;
 

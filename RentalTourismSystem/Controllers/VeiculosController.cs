@@ -147,8 +147,8 @@ namespace RentalTourismSystem.Controllers
                 {
                     // Log dos erros
                     var errors = ModelState
-                        .Where(x => x.Value.Errors.Count > 0)
-                        .Select(x => new { Field = x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) });
+                        .Where(x => x.Value?.Errors.Count > 0)
+                        .Select(x => new { Field = x.Key, Errors = x.Value?.Errors.Select(e => e.ErrorMessage) ?? [] });
 
                     _logger.LogWarning("Validação falhou para veículo. Erros: {Errors}",
                         System.Text.Json.JsonSerializer.Serialize(errors));
@@ -250,8 +250,8 @@ namespace RentalTourismSystem.Controllers
                 {
                     // Log dos erros
                     var errors = ModelState
-                        .Where(x => x.Value.Errors.Count > 0)
-                        .Select(x => new { Field = x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) });
+                        .Where(x => x.Value?.Errors.Count > 0)
+                        .Select(x => new { Field = x.Key, Errors = x.Value?.Errors.Select(e => e.ErrorMessage) ?? [] });
 
                     _logger.LogWarning("Validação falhou para edição do veículo {VeiculoId}. Erros: {@Errors}", veiculo.Id, errors);
                 }
@@ -429,7 +429,7 @@ namespace RentalTourismSystem.Controllers
                     }
                 }
 
-                var statusAnterior = veiculo.StatusCarro.Status;
+                var statusAnterior = veiculo.StatusCarro?.Status ?? "Desconhecido";
                 veiculo.StatusCarroId = novoStatusId;
 
                 await _context.SaveChangesAsync();
@@ -556,11 +556,11 @@ namespace RentalTourismSystem.Controllers
                     cambio = veiculo.Cambio,
                     valorDiaria = veiculo.ValorDiaria,
                     quilometragem = veiculo.Quilometragem,
-                    status = veiculo.StatusCarro.Status,
+                    status = veiculo.StatusCarro?.Status ?? "Desconhecido",
                     statusId = veiculo.StatusCarroId,
-                    agencia = veiculo.Agencia.Nome,
+                    agencia = veiculo.Agencia?.Nome ?? "Não vinculada",
                     agenciaId = veiculo.AgenciaId,
-                    disponivel = veiculo.StatusCarro.Status == "Disponível"
+                    disponivel = veiculo.StatusCarro?.Status == "Disponível"
                 };
 
                 _logger.LogInformation("Dados do veículo {VeiculoId} retornados com sucesso", id);
@@ -606,7 +606,7 @@ namespace RentalTourismSystem.Controllers
 
                 // ✅ NOVO: Considerar status do veículo
                 // Se o status for Manutenção ou Indisponível, não permitir reserva
-                if (veiculo.StatusCarro.Status == "Manutenção" || veiculo.StatusCarro.Status == "Indisponível")
+                if (veiculo.StatusCarro?.Status is "Manutenção" or "Indisponível")
                 {
                     return Json(new
                     {
@@ -639,7 +639,8 @@ namespace RentalTourismSystem.Controllers
                 // Reservados podem estar disponíveis para novas reservas em períodos diferentes
                 var query = _context.Veiculos
                     .Include(v => v.StatusCarro)
-                    .Where(v => v.StatusCarro.Status == "Disponível" || v.StatusCarro.Status == "Reservado");
+                    .Where(v => v.StatusCarro != null &&
+                                (v.StatusCarro.Status == "Disponível" || v.StatusCarro.Status == "Reservado"));
 
                 if (!string.IsNullOrWhiteSpace(termo))
                 {
@@ -657,8 +658,8 @@ namespace RentalTourismSystem.Controllers
                         placa = v.Placa,
                         ano = v.Ano,
                         valorDiaria = v.ValorDiaria,
-                        status = v.StatusCarro.Status,
-                        descricao = $"{v.Marca} {v.Modelo} ({v.Placa}) - R$ {v.ValorDiaria:N2}/dia - {v.StatusCarro.Status}"
+                        status = v.StatusCarro != null ? v.StatusCarro.Status : "Desconhecido",
+                        descricao = $"{v.Marca} {v.Modelo} ({v.Placa}) - R$ {v.ValorDiaria:N2}/dia - {(v.StatusCarro != null ? v.StatusCarro.Status : "Desconhecido")}"
                     })
                     .Take(20)
                     .ToListAsync();
@@ -799,13 +800,14 @@ namespace RentalTourismSystem.Controllers
                 }
 
                 // Adicionar evento de status atual do veículo (hoje)
+                var statusAtual = veiculo.StatusCarro?.Status ?? "Desconhecido";
                 eventos.Add(new
                 {
                     id = "status-atual",
-                    title = $"📍 Status: {veiculo.StatusCarro.Status}",
+                    title = $"📍 Status: {statusAtual}",
                     start = dataAtual.ToString("yyyy-MM-dd"),
                     allDay = true,
-                    backgroundColor = veiculo.StatusCarro.Status switch
+                    backgroundColor = statusAtual switch
                     {
                         "Disponível" => "#198754",
                         "Alugado" => "#ffc107",

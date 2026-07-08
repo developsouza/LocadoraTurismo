@@ -130,8 +130,8 @@ namespace RentalTourismSystem.Controllers
                 {
                     // Log dos erros de validação
                     var errors = ModelState
-                        .Where(x => x.Value.Errors.Count > 0)
-                        .Select(x => new { Field = x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) });
+                        .Where(x => x.Value?.Errors.Count > 0)
+                        .Select(x => new { Field = x.Key, Errors = x.Value?.Errors.Select(e => e.ErrorMessage) ?? [] });
 
                     _logger.LogWarning("Validação falhou para cliente. Erros: {Errors}",
                         System.Text.Json.JsonSerializer.Serialize(errors));
@@ -223,8 +223,8 @@ namespace RentalTourismSystem.Controllers
                 else
                 {
                     var errors = ModelState
-                        .Where(x => x.Value.Errors.Count > 0)
-                        .Select(x => new { Field = x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) });
+                        .Where(x => x.Value?.Errors.Count > 0)
+                        .Select(x => new { Field = x.Key, Errors = x.Value?.Errors.Select(e => e.ErrorMessage) ?? [] });
 
                     _logger.LogWarning("Validação falhou para edição do cliente {ClienteId}. Erros: {@Errors}", cliente.Id, errors);
                 }

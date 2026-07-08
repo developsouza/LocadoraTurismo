@@ -858,10 +858,10 @@ namespace RentalTourismSystem.Controllers
                 var status = loc.DataDevolucaoReal == null ? "Ativa" : "Finalizada";
                 var dataDevolucaoReal = loc.DataDevolucaoReal?.ToString("dd/MM/yyyy") ?? "Não devolvido";
 
-                csv.AppendLine($"{loc.Id},{loc.Cliente.Nome},{loc.Cliente.CPF}," +
-                              $"{loc.Veiculo.Modelo},{loc.Veiculo.Placa},{loc.DataRetirada:dd/MM/yyyy}," +
-                              $"{loc.DataDevolucao:dd/MM/yyyy},{dataDevolucaoReal}," +
-                              $"{loc.ValorTotal:C},{status},{loc.Agencia.Nome},{loc.Funcionario.Nome}");
+                csv.AppendLine(CsvRow(loc.Id, loc.Cliente?.Nome, loc.Cliente?.CPF,
+                    loc.Veiculo?.Modelo, loc.Veiculo?.Placa, loc.DataRetirada.ToString("dd/MM/yyyy"),
+                    loc.DataDevolucao.ToString("dd/MM/yyyy"), dataDevolucaoReal, loc.ValorTotal.ToString("C"),
+                    status, loc.Agencia?.Nome, loc.Funcionario?.Nome));
             }
 
             return csv;
@@ -886,9 +886,10 @@ namespace RentalTourismSystem.Controllers
                 var valorServicos = res.ServicosAdicionais?.Sum(s => s.Preco) ?? 0;
                 var valorTotal = res.ValorTotal + valorServicos;
 
-                csv.AppendLine($"{res.Id},{res.Cliente.Nome},{res.Cliente.CPF},{res.PacoteViagem.Nome}," +
-                              $"{res.PacoteViagem.Destino},{res.DataReserva:dd/MM/yyyy},{res.DataViagem:dd/MM/yyyy}," +
-                              $"{res.Quantidade},{res.ValorTotal:C},{valorServicos:C},{valorTotal:C},{res.StatusReservaViagem.Status}");
+                csv.AppendLine(CsvRow(res.Id, res.Cliente?.Nome, res.Cliente?.CPF, res.PacoteViagem?.Nome,
+                    res.PacoteViagem?.Destino, res.DataReserva.ToString("dd/MM/yyyy"), res.DataViagem.ToString("dd/MM/yyyy"),
+                    res.Quantidade, res.ValorTotal.ToString("C"), valorServicos.ToString("C"), valorTotal.ToString("C"),
+                    res.StatusReservaViagem?.Status));
             }
 
             return csv;
@@ -919,11 +920,28 @@ namespace RentalTourismSystem.Controllers
 
                 var gastoTotal = gastoLocacoes + gastoReservas;
 
-                csv.AppendLine($"{cli.Id},{cli.Nome},{cli.CPF},{cli.Email},{cli.Telefone}," +
-                              $"{cli.DataNascimento:dd/MM/yyyy},{cli.Locacoes.Count},{cli.ReservasViagens.Count},{gastoTotal:C}");
+                csv.AppendLine(CsvRow(cli.Id, cli.Nome, cli.CPF, cli.Email, cli.Telefone,
+                    cli.DataNascimento.ToString("dd/MM/yyyy"), cli.Locacoes.Count, cli.ReservasViagens.Count,
+                    gastoTotal.ToString("C")));
             }
 
             return csv;
+        }
+
+        private static string CsvRow(params object?[] values) =>
+            string.Join(',', values.Select(EscapeCsvField));
+
+        private static string EscapeCsvField(object? value)
+        {
+            var text = value?.ToString() ?? string.Empty;
+            var trimmed = text.TrimStart();
+            if (trimmed.StartsWith('=') || trimmed.StartsWith('+') ||
+                trimmed.StartsWith('-') || trimmed.StartsWith('@'))
+            {
+                text = "'" + text;
+            }
+
+            return $"\"{text.Replace("\"", "\"\"")}\"";
         }
 
         #endregion

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using RentalTourismSystem.Data;
 using RentalTourismSystem.Models;
@@ -46,6 +47,7 @@ namespace RentalTourismSystem.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [EnableRateLimiting("LoginPolicy")]
         public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -223,7 +225,7 @@ namespace RentalTourismSystem.Controllers
                 {
                     Id = user.Id,
                     NomeCompleto = user.NomeCompleto,
-                    Email = user.Email,
+                    Email = user.Email ?? string.Empty,
                     Cargo = user.Cargo ?? "Não informado",
                     Agencia = user.Agencia?.Nome ?? "Não vinculado",
                     Roles = string.Join(", ", roles),
@@ -244,11 +246,24 @@ namespace RentalTourismSystem.Controllers
             if (user == null)
                 return NotFound();
 
+            if (user.Ativo && user.Id == _userManager.GetUserId(User))
+            {
+                TempData["Erro"] = "Você não pode desativar sua própria conta.";
+                return RedirectToAction(nameof(ManageUsers));
+            }
+
+            if (user.Ativo && await IsLastActiveAdminAsync(user))
+            {
+                TempData["Erro"] = "O último administrador ativo não pode ser desativado.";
+                return RedirectToAction(nameof(ManageUsers));
+            }
+
             user.Ativo = !user.Ativo;
             var result = await _userManager.UpdateAsync(user);
 
             if (result.Succeeded)
             {
+                await _userManager.UpdateSecurityStampAsync(user);
                 var status = user.Ativo ? "ativado" : "desativado";
                 _logger.LogInformation("Usuário {Email} foi {Status} por {Admin}",
                     user.Email, status, User.Identity?.Name);
@@ -276,12 +291,27 @@ namespace RentalTourismSystem.Controllers
             if (user == null)
                 return NotFound();
 
-            // Remover roles existentes
             var currentRoles = await _userManager.GetRolesAsync(user);
-            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            if (currentRoles.Contains("Admin") && role != "Admin" && await IsLastActiveAdminAsync(user))
+            {
+                TempData["Erro"] = "O último administrador ativo não pode ser rebaixado.";
+                return RedirectToAction(nameof(ManageUsers));
+            }
 
-            // Adicionar nova role
-            await _userManager.AddToRoleAsync(user, role);
+            if (!currentRoles.Contains(role))
+            {
+                var addResult = await _userManager.AddToRoleAsync(user, role);
+                if (!addResult.Succeeded)
+                {
+                    TempData["Erro"] = "Não foi possível alterar o perfil do usuário.";
+                    return RedirectToAction(nameof(ManageUsers));
+                }
+            }
+
+            var rolesToRemove = currentRoles.Where(r => r != role).ToArray();
+            if (rolesToRemove.Length > 0)
+                await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+            await _userManager.UpdateSecurityStampAsync(user);
 
             _logger.LogInformation("Role do usuário {Email} alterada para {Role} por {Admin}",
                 user.Email, role, User.Identity?.Name);
@@ -413,8 +443,16 @@ namespace RentalTourismSystem.Controllers
                     var currentRoles = await _userManager.GetRolesAsync(user);
                     if (!currentRoles.Contains(model.Role))
                     {
-                        await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                        if (currentRoles.Contains("Admin") && model.Role != "Admin" && await IsLastActiveAdminAsync(user))
+                        {
+                            ModelState.AddModelError("Role", "O último administrador ativo não pode ser rebaixado.");
+                            ViewBag.AgenciaId = new SelectList(await _context.Agencias.ToListAsync(), "Id", "Nome", model.AgenciaId);
+                            return View(model);
+                        }
+
                         await _userManager.AddToRoleAsync(user, model.Role);
+                        await _userManager.RemoveFromRolesAsync(user, currentRoles.Where(r => r != model.Role));
+                        await _userManager.UpdateSecurityStampAsync(user);
                         _logger.LogInformation("Role do usuário {Email} alterada para {Role} por {Admin}",
                             user.Email, model.Role, User.Identity?.Name);
                     }
@@ -523,6 +561,18 @@ namespace RentalTourismSystem.Controllers
                     return RedirectToAction(nameof(ManageUsers));
                 }
 
+                if (user.Id == _userManager.GetUserId(User))
+                {
+                    TempData["Erro"] = "Você não pode excluir sua própria conta.";
+                    return RedirectToAction(nameof(ManageUsers));
+                }
+
+                if (await IsLastActiveAdminAsync(user))
+                {
+                    TempData["Erro"] = "O último administrador ativo não pode ser excluído.";
+                    return RedirectToAction(nameof(ManageUsers));
+                }
+
                 // Verificar novamente os impedimentos (segurança extra)
                 if (user.Funcionario != null)
                 {
@@ -569,6 +619,15 @@ namespace RentalTourismSystem.Controllers
             }
 
             return RedirectToAction(nameof(ManageUsers));
+        }
+
+        private async Task<bool> IsLastActiveAdminAsync(ApplicationUser user)
+        {
+            if (!await _userManager.IsInRoleAsync(user, "Admin"))
+                return false;
+
+            var admins = await _userManager.GetUsersInRoleAsync("Admin");
+            return admins.Count(admin => admin.Ativo) <= 1;
         }
     }
 }

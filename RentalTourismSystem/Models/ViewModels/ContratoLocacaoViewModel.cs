@@ -2,7 +2,7 @@
 {
     public class ContratoLocacaoViewModel
     {
-        public Locacao Locacao { get; set; }
+        public Locacao Locacao { get; set; } = null!;
         public int DiasLocacao { get; set; }
         public decimal ValorDiaria { get; set; }
         public decimal ValorCaucao { get; set; }

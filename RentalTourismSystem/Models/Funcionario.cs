@@ -10,23 +10,23 @@ namespace RentalTourismSystem.Models
 
         [Required]
         [StringLength(100)]
-        public string Nome { get; set; }
+        public string Nome { get; set; } = string.Empty;
 
         [Required]
         [StringLength(14)]
-        public string Cpf { get; set; }
+        public string Cpf { get; set; } = string.Empty;
 
         [Required]
         [StringLength(20)]
-        public string Telefone { get; set; }
+        public string Telefone { get; set; } = string.Empty;
 
         [Required]
         [StringLength(100)]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         [Required]
         [StringLength(50)]
-        public string Cargo { get; set; }
+        public string Cargo { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "decimal(10,2)")]
@@ -40,7 +40,7 @@ namespace RentalTourismSystem.Models
 
         [Required]
         public int AgenciaId { get; set; }
-        public virtual Agencia Agencia { get; set; }
+        public virtual Agencia Agencia { get; set; } = null!;
 
         public virtual ICollection<Locacao> Locacoes { get; set; } = new List<Locacao>();
     }

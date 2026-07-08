@@ -12,12 +12,12 @@ namespace RentalTourismSystem.Models
         [Required(ErrorMessage = "A marca é obrigatória")]
         [StringLength(50)]
         [Display(Name = "Marca")]
-        public string Marca { get; set; }
+        public string Marca { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "O modelo é obrigatório")]
         [StringLength(50)]
         [Display(Name = "Modelo")]
-        public string Modelo { get; set; }
+        public string Modelo { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "O ano é obrigatório")]
         [Range(1990, 2030, ErrorMessage = "Ano deve estar entre 1990 e 2030")]
@@ -28,24 +28,24 @@ namespace RentalTourismSystem.Models
         [PlacaValidation]
         [StringLength(10)]
         [Display(Name = "Placa")]
-        public string Placa { get; set; }
+        public string Placa { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "A cor é obrigatória")]
         [StringLength(50)]
         [Display(Name = "Cor")]
-        public string Cor { get; set; }
+        public string Cor { get; set; } = string.Empty;
 
         // ✅ CORRIGIDO: Required mantido (campos agora estão no Bind do Controller)
         [Required(ErrorMessage = "O tipo de combustível é obrigatório")]
         [StringLength(30)]
         [Display(Name = "Combustível")]
-        public string Combustivel { get; set; }
+        public string Combustivel { get; set; } = string.Empty;
 
         // ✅ CORRIGIDO: Required mantido (campos agora estão no Bind do Controller)
         [Required(ErrorMessage = "O tipo de câmbio é obrigatório")]
         [StringLength(30)]
         [Display(Name = "Câmbio")]
-        public string Cambio { get; set; }
+        public string Cambio { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "O valor da diária é obrigatório")]
         [Column(TypeName = "decimal(10,2)")]

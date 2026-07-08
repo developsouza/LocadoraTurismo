@@ -1,7 +1,7 @@
 namespace RentalTourismSystem.Middleware;
 
 /// <summary>
-/// Middleware para adicionar headers de seguranÁa HTTP
+/// Middleware para adicionar headers de seguran√ßa HTTP
 /// </summary>
 public class SecurityHeadersMiddleware
 {
@@ -14,22 +14,25 @@ public class SecurityHeadersMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // Headers de seguranÁa
+        // Headers de seguran√ßa
         context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
         context.Response.Headers.Append("X-Frame-Options", "DENY");
-        context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
         context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
         context.Response.Headers.Append("X-Permitted-Cross-Domain-Policies", "none");
+        context.Response.Headers.Append("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=(), usb=()");
 
-        // Content Security Policy (b·sico)
+        // Content Security Policy (b√°sico)
         context.Response.Headers.Append("Content-Security-Policy",
             "default-src 'self'; " +
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
+            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
             "img-src 'self' data: https:; " +
             "font-src 'self' data: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
             "connect-src 'self'; " +
-            "frame-ancestors 'none';");
+            "frame-ancestors 'none'; " +
+            "base-uri 'self'; " +
+            "form-action 'self'; " +
+            "object-src 'none';");
 
         // HSTS apenas em HTTPS
         if (context.Request.IsHttps)
@@ -38,7 +41,7 @@ public class SecurityHeadersMiddleware
                 "max-age=31536000; includeSubDomains; preload");
         }
 
-        // Remove header de vers„o do servidor
+        // Remove header de vers√£o do servidor
         context.Response.Headers.Remove("Server");
         context.Response.Headers.Remove("X-Powered-By");
 

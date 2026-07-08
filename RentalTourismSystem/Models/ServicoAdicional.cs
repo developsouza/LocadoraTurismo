@@ -10,11 +10,11 @@ namespace RentalTourismSystem.Models
 
         [Required]
         [StringLength(100)]
-        public string Nome { get; set; }
+        public string Nome { get; set; } = string.Empty;
 
         [Required]
         [StringLength(500)]
-        public string Descricao { get; set; }
+        public string Descricao { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "decimal(10,2)")]
@@ -22,6 +22,6 @@ namespace RentalTourismSystem.Models
 
         [Required]
         public int ReservaViagemId { get; set; }
-        public virtual ReservaViagem ReservaViagem { get; set; }
+        public virtual ReservaViagem ReservaViagem { get; set; } = null!;
     }
 }

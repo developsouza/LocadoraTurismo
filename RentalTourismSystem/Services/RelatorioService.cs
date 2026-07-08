@@ -33,7 +33,7 @@ namespace RentalTourismSystem.Services
                 ["TotalVeiculos"] = await _context.Veiculos.CountAsync(),
                 ["VeiculosDisponiveis"] = await _context.Veiculos
                     .Include(v => v.StatusCarro)
-                    .CountAsync(v => v.StatusCarro.Status == "Disponível"),
+                    .CountAsync(v => v.StatusCarro != null && v.StatusCarro.Status == "Disponível"),
                 ["LocacoesMes"] = await _context.Locacoes
                     .CountAsync(l => l.DataRetirada >= inicioMes && l.DataRetirada <= fimMes),
                 ["ReservasMes"] = await _context.ReservasViagens

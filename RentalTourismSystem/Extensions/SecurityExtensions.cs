@@ -63,6 +63,17 @@ public static class SecurityExtensions
                         AutoReplenishment = true
                     }));
 
+            options.AddPolicy("LoginPolicy", httpContext =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 10,
+                        Window = TimeSpan.FromMinutes(5),
+                        QueueLimit = 0,
+                        AutoReplenishment = true
+                    }));
+
             // Política para validação de CPF
             options.AddFixedWindowLimiter("CpfValidationPolicy", limiterOptions =>
             {
