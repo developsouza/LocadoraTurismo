@@ -97,6 +97,9 @@ public static class DatabaseExtensions
             }
 
             // Seed de dados
+            // Garantir que o esquema exista (cenários sem migrations)
+            await context.Database.EnsureCreatedAsync();
+
             var userManager = services.GetRequiredService<Microsoft.AspNetCore.Identity.UserManager<Models.ApplicationUser>>();
             var roleManager = services.GetRequiredService<Microsoft.AspNetCore.Identity.RoleManager<Microsoft.AspNetCore.Identity.IdentityRole>>();
 
