@@ -228,8 +228,8 @@ Leia primeiro:
 ### 📚 Primeira Utilização do Sistema
 
 - [ ] **1. Fazer primeiro login**
-  - Usuário: admin@litoralsul.com.br
-  - Senha: Admin@123456
+  - Usuário: valor de `BootstrapAdmin__Email`
+  - Senha: valor secreto de `BootstrapAdmin__Password`
   
 - [ ] **2. Trocar senha padrão**
   - Menu ✅ Perfil ✅ Alterar Senha

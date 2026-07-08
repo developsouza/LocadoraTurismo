@@ -67,8 +67,8 @@ O sistema utiliza **ASP.NET Core Identity** para autenticação e autorização 
 
 **Usuário padrão:**
 ```
-Email: admin@litoralsul.com.br
-Senha: Admin@123456
+Email: valor de BootstrapAdmin__Email
+Senha: valor secreto de BootstrapAdmin__Password
 ```
 
 ### 📚 **Manager (Gerente)**
@@ -259,7 +259,7 @@ Função (Role):
 
 **Exemplo de senha válida:**
 ```
-✅ Admin@123456
+✅ Exemplo#Seguro2026
 ✅ Manager2024
 ✅ Employee123
 ```
@@ -517,7 +517,7 @@ Email: joao@litoralsul.com.br
 
 **Exemplos:**
 ```
-✅ Admin@123456    (válida)
+✅ Exemplo#Seguro2026 (válida)
 ✅ Manager2024     (válida)
 ✅ Employee123     (válida)
 ✅ admin           (muito fraca)
@@ -684,8 +684,8 @@ Confirmar Nova Senha:
 ```
 Sistema instalado, usar credenciais padrão:
 
-Email: admin@litoralsul.com.br
-Senha: Admin@123456
+Email: valor de BootstrapAdmin__Email
+Senha: valor secreto de BootstrapAdmin__Password
 
 ✅ Fazer login
 ✅ TROCAR SENHA imediatamente

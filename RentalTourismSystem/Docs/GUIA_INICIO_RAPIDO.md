@@ -22,8 +22,8 @@ Antes de começar, certifique-se que:
 1. Acesse o sistema pelo navegador
 2. Use as credenciais padrão:
    ```
-   Email: admin@litoralsul.com.br
-   Senha: Admin@123456
+   Email: valor configurado em BootstrapAdmin__Email
+   Senha: valor secreto configurado em BootstrapAdmin__Password
    ```
 3. Clique em **"Entrar"**
 
@@ -31,7 +31,7 @@ Antes de começar, certifique-se que:
 
 ```
 1. Menu ✅ Perfil ✅ Alterar Senha
-2. Senha Atual: Admin@123456
+2. Senha Atual: [senha configurada no ambiente]
 3. Nova Senha: [SuaSenhaForte123]
 4. Confirmar: [SuaSenhaForte123]
 5. Clicar "Salvar"

@@ -1,4 +1,4 @@
-﻿using RentalTourismSystem.Configuration;
+using RentalTourismSystem.Configuration;
 using RentalTourismSystem.Extensions;
 using RentalTourismSystem.HealthChecks;
 using RentalTourismSystem.Middleware;
@@ -75,8 +75,15 @@ var app = builder.Build();
 // ===== INICIALIZAÇÃO DO BANCO DE DADOS =====
 try
 {
-    await app.Services.InitializeDatabaseAsync();
-    Log.Information("Banco de dados inicializado com sucesso");
+    if (builder.Configuration.GetValue("Database:InitializeOnStartup", true))
+    {
+        await app.Services.InitializeDatabaseAsync();
+        Log.Information("Banco de dados inicializado com sucesso");
+    }
+    else
+    {
+        Log.Warning("Inicialização automática do banco desabilitada por configuração");
+    }
 }
 catch (Exception ex)
 {
@@ -119,7 +126,7 @@ app.UseSecurityHeaders();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-// Configuração adicional para servir arquivos da pasta uploads
+/* Documentos privados não devem ser expostos por Static Files. */
 var uploadsPath = Path.Combine(builder.Environment.ContentRootPath, "uploads");
 
 // Criar pasta uploads se não existir
@@ -134,22 +141,6 @@ if (!Directory.Exists(uploadsPath))
     Log.Information("Subpastas de uploads criadas com sucesso");
 }
 
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadsPath),
-    RequestPath = "/uploads",
-    OnPrepareResponse = ctx =>
-    {
-        // Adicionar headers de cache para imagens
-        if (ctx.File.Name.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
-            ctx.File.Name.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
-            ctx.File.Name.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-            ctx.File.Name.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
-        {
-            ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=3600");
-        }
-    }
-});
 
 // Roteamento
 app.UseRouting();
@@ -182,7 +173,7 @@ app.UseSerilogRequestLogging(options =>
         diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
         if (httpContext.User.Identity?.IsAuthenticated == true)
         {
-            diagnosticContext.Set("UserName", httpContext.User.Identity.Name);
+            diagnosticContext.Set("UserName", httpContext.User.Identity.Name ?? "unknown");
         }
     };
 });
@@ -218,7 +209,6 @@ try
     Log.Information("Swagger: {Status}", app.Environment.IsDevelopment() ? "Disponível em /api/docs" : "Desabilitado (Produção)");
     Log.Information("Health Checks: /health e /health/ready");
     Log.Information("Rate Limiting: Ativo");
-    Log.Information("Usuário Admin padrão: admin@litoralsul.com.br / Admin@123456");
     Log.Information("=== SISTEMA PRONTO ===");
 
     app.Run();

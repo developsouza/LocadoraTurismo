@@ -1,20 +1,20 @@
 using Asp.Versioning;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using RentalTourismSystem.ModelBinders;
 
 namespace RentalTourismSystem.Extensions;
 
 /// <summary>
-/// Extensıes para configuraÁ„o de API, Swagger e versionamento
+/// Extens√µes para configura√ß√£o de API, Swagger e versionamento
 /// </summary>
 public static class ApiExtensions
 {
     /// <summary>
-    /// Adiciona configuraÁ„o de API com versionamento e documentaÁ„o
+    /// Adiciona configura√ß√£o de API com versionamento e documenta√ß√£o
     /// </summary>
     public static IServiceCollection AddApiConfiguration(this IServiceCollection services)
     {
-        // ConfiguraÁ„o de Controllers
+        // Configura√ß√£o de Controllers
         services.AddControllersWithViews(options =>
         {
             options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
@@ -35,7 +35,7 @@ public static class ApiExtensions
 
                 var errorResponse = new
                 {
-                    Message = "Dados inv·lidos",
+                    Message = "Dados inv√°lidos",
                     Errors = errors,
                     Timestamp = DateTime.UtcNow
                 };
@@ -70,10 +70,10 @@ public static class ApiExtensions
             {
                 Title = "Rental Tourism System API",
                 Version = "v1",
-                Description = "API para Sistema de LocaÁ„o e Turismo Integrado - Litoral Sul",
+                Description = "API para Sistema de Loca√ß√£o e Turismo Integrado - Litoral Sul",
                 Contact = new OpenApiContact
                 {
-                    Name = "Suporte TÈcnico",
+                    Name = "Suporte T√©cnico",
                     Email = "suporte@litoralsul.com.br"
                 },
                 License = new OpenApiLicense
@@ -83,7 +83,7 @@ public static class ApiExtensions
                 }
             });
 
-            // Adicionar suporte para autenticaÁ„o JWT (futuro)
+            // Adicionar suporte para autentica√ß√£o JWT (futuro)
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Description = "JWT Authorization header usando o esquema Bearer. Exemplo: \"Authorization: Bearer {token}\"",
@@ -93,7 +93,7 @@ public static class ApiExtensions
                 Scheme = "Bearer"
             });
 
-            // Incluir coment·rios XML se existirem
+            // Incluir coment√°rios XML se existirem
             var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             if (File.Exists(xmlPath))
@@ -105,7 +105,7 @@ public static class ApiExtensions
             c.OrderActionsBy(apiDesc => apiDesc.RelativePath);
         });
 
-        // ConfiguraÁ„o de JSON
+        // Configura√ß√£o de JSON
         services.ConfigureHttpJsonOptions(options =>
         {
             options.SerializerOptions.PropertyNamingPolicy = null;
@@ -129,7 +129,7 @@ public static class ApiExtensions
             c.DisplayRequestDuration();
             c.EnableTryItOutByDefault();
             c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
-            c.DefaultModelsExpandDepth(-1); // Ocultar schemas por padr„o
+            c.DefaultModelsExpandDepth(-1); // Ocultar schemas por padr√£o
         });
 
         return app;

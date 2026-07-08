@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RentalTourismSystem.Data;
 using RentalTourismSystem.Models;
+using RentalTourismSystem.Services;
 
 namespace RentalTourismSystem.Controllers
 {
@@ -11,11 +12,13 @@ namespace RentalTourismSystem.Controllers
     {
         private readonly RentalTourismContext _context;
         private readonly ILogger<ClientesController> _logger;
+        private readonly IFileService _fileService;
 
-        public ClientesController(RentalTourismContext context, ILogger<ClientesController> logger)
+        public ClientesController(RentalTourismContext context, ILogger<ClientesController> logger, IFileService fileService)
         {
             _context = context;
             _logger = logger;
+            _fileService = fileService;
         }
 
         // GET: Clientes
@@ -378,8 +381,7 @@ namespace RentalTourismSystem.Controllers
 
                 // Construir caminho completo do arquivo
                 // Remove a barra inicial se existir para Path.Combine funcionar corretamente
-                var relativePath = cliente.CNHPath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString());
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+                var filePath = _fileService.ObterCaminhoCompleto(cliente.CNHPath);
 
                 if (!System.IO.File.Exists(filePath))
                 {

@@ -18,8 +18,8 @@ https://localhost:7000/Documentacao
 
 ### 3📚 Faça login
 ```
-Email: admin@litoralsul.com.br
-Senha: Admin@123456
+Email: valor configurado em `BootstrapAdmin__Email`
+Senha: valor secreto configurado em `BootstrapAdmin__Password`
 ```
 
 ### 4📚 Pronto! 📚

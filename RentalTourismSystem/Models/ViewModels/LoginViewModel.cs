@@ -33,7 +33,7 @@ namespace RentalTourismSystem.ViewModels
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Senha é obrigatória")]
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "A senha deve ter pelo menos 6 caracteres")]
+        [StringLength(100, MinimumLength = 10, ErrorMessage = "A senha deve ter pelo menos 10 caracteres")]
         [DataType(DataType.Password)]
         [Display(Name = "Senha")]
         public string Password { get; set; } = string.Empty;
@@ -106,7 +106,7 @@ namespace RentalTourismSystem.ViewModels
         public string CurrentPassword { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Nova senha é obrigatória")]
-        [StringLength(100, MinimumLength = 6)]
+        [StringLength(100, MinimumLength = 10, ErrorMessage = "A nova senha deve ter pelo menos 10 caracteres")]
         [DataType(DataType.Password)]
         [Display(Name = "Nova Senha")]
         public string NewPassword { get; set; } = string.Empty;

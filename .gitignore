@@ -1,6 +1,9 @@
 # Dependencies
 /bin/
 /obj/
+**/bin/
+**/obj/
+**/TestResults/
 /packages/
 *.nupkg
 
@@ -24,6 +27,9 @@ bld/
 [Bb]uild/
 [Ll]og/
 [Ll]ogs/
+uploads/
+RentalTourismSystem/uploads/
+RentalTourismSystem/wwwroot/uploads/
 
 # Visual Studio 2019 cache/options
 .vsconfig

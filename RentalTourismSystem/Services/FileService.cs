@@ -1,169 +1,120 @@
-namespace RentalTourismSystem.Services
+using Microsoft.AspNetCore.StaticFiles;
+
+namespace RentalTourismSystem.Services;
+
+public class FileService : IFileService
 {
-    public class FileService : IFileService
+    private readonly string _storageRoot;
+    private readonly ILogger<FileService> _logger;
+    private static readonly FileExtensionContentTypeProvider ContentTypes = new();
+
+    public FileService(IWebHostEnvironment environment, ILogger<FileService> logger)
     {
-        private readonly IWebHostEnvironment _environment;
-        private readonly ILogger<FileService> _logger;
+        _storageRoot = Path.GetFullPath(Path.Combine(environment.ContentRootPath, "uploads"));
+        _logger = logger;
+    }
 
-        public FileService(IWebHostEnvironment environment, ILogger<FileService> logger)
+    public async Task<(bool Success, string FilePath, string ErrorMessage)> SalvarArquivoAsync(
+        IFormFile arquivo, string pastaDestino, string[]? extensoesPermitidas = null,
+        long tamanhoMaximoBytes = 10 * 1024 * 1024)
+    {
+        if (arquivo is null || arquivo.Length <= 0)
+            return (false, string.Empty, "Nenhum arquivo foi enviado");
+        if (arquivo.Length > tamanhoMaximoBytes)
+            return (false, string.Empty, $"Arquivo muito grande. Tamanho m√°ximo: {tamanhoMaximoBytes / 1024d / 1024d:0.##} MB");
+
+        extensoesPermitidas ??= [".pdf", ".jpg", ".jpeg", ".png"];
+        var extensao = Path.GetExtension(arquivo.FileName).ToLowerInvariant();
+        if (!extensoesPermitidas.Contains(extensao, StringComparer.OrdinalIgnoreCase))
+            return (false, string.Empty, "Tipo de arquivo n√£o permitido");
+
+        try
         {
-            _environment = environment;
-            _logger = logger;
-        }
+            await using var input = arquivo.OpenReadStream();
+            if (!await AssinaturaValidaAsync(input, extensao))
+                return (false, string.Empty, "O conte√∫do do arquivo n√£o corresponde ao tipo informado");
 
-        public async Task<(bool Success, string FilePath, string ErrorMessage)> SalvarArquivoAsync(
-            IFormFile arquivo,
-            string pastaDestino,
-            string[]? extensoesPermitidas = null,
-            long tamanhoMaximoBytes = 10485760)
+            var pastaCompleta = ResolveSafePath(pastaDestino);
+            Directory.CreateDirectory(pastaCompleta);
+            var nome = $"{Guid.NewGuid():N}{extensao}";
+            var destino = Path.Combine(pastaCompleta, nome);
+            input.Position = 0;
+            await using var output = new FileStream(destino, FileMode.CreateNew, FileAccess.Write, FileShare.None, 81920, FileOptions.Asynchronous);
+            await input.CopyToAsync(output);
+
+            var relativo = Path.GetRelativePath(_storageRoot, destino).Replace('\\', '/');
+            _logger.LogInformation("Arquivo armazenado com seguran√ßa em {CaminhoRelativo}", relativo);
+            return (true, relativo, string.Empty);
+        }
+        catch (Exception ex)
         {
-            try
-            {
-                // ValidaÁıes
-                if (arquivo == null || arquivo.Length == 0)
-                {
-                    return (false, string.Empty, "Nenhum arquivo foi enviado");
-                }
-
-                // Validar extens„o
-                extensoesPermitidas ??= new[] { ".pdf", ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
-                var extensao = Path.GetExtension(arquivo.FileName).ToLower();
-
-                if (!extensoesPermitidas.Contains(extensao))
-                {
-                    return (false, string.Empty,
-                        $"Tipo de arquivo n„o permitido. Extensıes permitidas: {string.Join(", ", extensoesPermitidas)}");
-                }
-
-                // Validar tamanho
-                if (arquivo.Length > tamanhoMaximoBytes)
-                {
-                    var tamanhoMaxMB = tamanhoMaximoBytes / 1024.0 / 1024.0;
-                    return (false, string.Empty,
-                        $"Arquivo muito grande. Tamanho m·ximo: {tamanhoMaxMB:0.##} MB");
-                }
-
-                // Criar pasta se n„o existir
-                var pastaCompleta = Path.Combine(_environment.WebRootPath, "uploads", pastaDestino);
-                if (!Directory.Exists(pastaCompleta))
-                {
-                    Directory.CreateDirectory(pastaCompleta);
-                    _logger.LogInformation("Pasta criada: {Pasta}", pastaCompleta);
-                }
-
-                // Gerar nome ˙nico para o arquivo
-                var nomeArquivoUnico = $"{Guid.NewGuid()}{extensao}";
-                var caminhoCompleto = Path.Combine(pastaCompleta, nomeArquivoUnico);
-                var caminhoRelativo = Path.Combine("uploads", pastaDestino, nomeArquivoUnico).Replace("\\", "/");
-
-                // Salvar arquivo
-                using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
-                {
-                    await arquivo.CopyToAsync(stream);
-                }
-
-                _logger.LogInformation("Arquivo salvo com sucesso: {Caminho}", caminhoCompleto);
-                return (true, caminhoRelativo, string.Empty);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao salvar arquivo");
-                return (false, string.Empty, "Erro ao salvar arquivo no servidor");
-            }
+            _logger.LogError(ex, "Erro ao armazenar arquivo");
+            return (false, string.Empty, "Erro ao salvar arquivo no servidor");
         }
+    }
 
-        public async Task<bool> ExcluirArquivoAsync(string caminhoArquivo)
+    public Task<bool> ExcluirArquivoAsync(string caminhoArquivo)
+    {
+        try
         {
-            try
-            {
-                if (string.IsNullOrEmpty(caminhoArquivo))
-                {
-                    return false;
-                }
-
-                var caminhoCompleto = Path.Combine(_environment.WebRootPath, caminhoArquivo);
-
-                if (File.Exists(caminhoCompleto))
-                {
-                    await Task.Run(() => File.Delete(caminhoCompleto));
-                    _logger.LogInformation("Arquivo excluÌdo: {Caminho}", caminhoCompleto);
-                    return true;
-                }
-
-                _logger.LogWarning("Tentativa de excluir arquivo inexistente: {Caminho}", caminhoCompleto);
-                return false;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao excluir arquivo: {Caminho}", caminhoArquivo);
-                return false;
-            }
+            var caminho = ResolveSafePath(caminhoArquivo);
+            if (!File.Exists(caminho)) return Task.FromResult(false);
+            File.Delete(caminho);
+            return Task.FromResult(true);
         }
-
-        public async Task<(bool Success, byte[]? FileBytes, string? ContentType, string? FileName)> ObterArquivoAsync(string caminhoArquivo)
+        catch (Exception ex)
         {
-            try
-            {
-                if (string.IsNullOrEmpty(caminhoArquivo))
-                {
-                    return (false, null, null, null);
-                }
-
-                var caminhoCompleto = Path.Combine(_environment.WebRootPath, caminhoArquivo);
-
-                if (!File.Exists(caminhoCompleto))
-                {
-                    _logger.LogWarning("Arquivo n„o encontrado: {Caminho}", caminhoCompleto);
-                    return (false, null, null, null);
-                }
-
-                var bytes = await File.ReadAllBytesAsync(caminhoCompleto);
-                var nomeArquivo = Path.GetFileName(caminhoCompleto);
-                var contentType = ObterContentType(caminhoCompleto);
-
-                return (true, bytes, contentType, nomeArquivo);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao obter arquivo: {Caminho}", caminhoArquivo);
-                return (false, null, null, null);
-            }
+            _logger.LogError(ex, "Caminho de arquivo inv√°lido ou erro ao excluir");
+            return Task.FromResult(false);
         }
+    }
 
-        public bool ValidarArquivo(IFormFile arquivo, string[] extensoesPermitidas, long tamanhoMaximoBytes)
+    public async Task<(bool Success, byte[]? FileBytes, string? ContentType, string? FileName)> ObterArquivoAsync(string caminhoArquivo)
+    {
+        try
         {
-            if (arquivo == null || arquivo.Length == 0)
-                return false;
-
-            var extensao = Path.GetExtension(arquivo.FileName).ToLower();
-
-            if (!extensoesPermitidas.Contains(extensao))
-                return false;
-
-            if (arquivo.Length > tamanhoMaximoBytes)
-                return false;
-
-            return true;
+            var caminho = ResolveSafePath(caminhoArquivo);
+            if (!File.Exists(caminho)) return (false, null, null, null);
+            var tipo = ContentTypes.TryGetContentType(caminho, out var encontrado) ? encontrado : "application/octet-stream";
+            return (true, await File.ReadAllBytesAsync(caminho), tipo, Path.GetFileName(caminho));
         }
-
-        public string ObterCaminhoCompleto(string caminhoRelativo)
+        catch (Exception ex)
         {
-            return Path.Combine(_environment.WebRootPath, caminhoRelativo);
+            _logger.LogError(ex, "Caminho de arquivo inv√°lido ou erro ao ler");
+            return (false, null, null, null);
         }
+    }
 
-        private string ObterContentType(string caminho)
+    public bool ValidarArquivo(IFormFile arquivo, string[] extensoesPermitidas, long tamanhoMaximoBytes) =>
+        arquivo is { Length: > 0 } && arquivo.Length <= tamanhoMaximoBytes &&
+        extensoesPermitidas.Contains(Path.GetExtension(arquivo.FileName), StringComparer.OrdinalIgnoreCase);
+
+    public string ObterCaminhoCompleto(string caminhoRelativo) => ResolveSafePath(caminhoRelativo);
+
+    private string ResolveSafePath(string caminhoRelativo)
+    {
+        if (string.IsNullOrWhiteSpace(caminhoRelativo)) throw new ArgumentException("Caminho vazio");
+        var normalizado = caminhoRelativo.Replace('\\', '/').TrimStart('/');
+        if (normalizado.StartsWith("uploads/", StringComparison.OrdinalIgnoreCase)) normalizado = normalizado[8..];
+        var completo = Path.GetFullPath(Path.Combine(_storageRoot, normalizado));
+        var prefixo = _storageRoot.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+        if (!completo.StartsWith(prefixo, StringComparison.OrdinalIgnoreCase))
+            throw new UnauthorizedAccessException("Tentativa de acesso fora da √°rea de uploads");
+        return completo;
+    }
+
+    private static async Task<bool> AssinaturaValidaAsync(Stream stream, string extensao)
+    {
+        var header = new byte[12];
+        var lidos = await stream.ReadAsync(header);
+        return extensao switch
         {
-            var extensao = Path.GetExtension(caminho).ToLower();
-
-            return extensao switch
-            {
-                ".pdf" => "application/pdf",
-                ".jpg" or ".jpeg" => "image/jpeg",
-                ".png" => "image/png",
-                ".gif" => "image/gif",
-                ".bmp" => "image/bmp",
-                _ => "application/octet-stream"
-            };
-        }
+            ".pdf" => lidos >= 5 && header.AsSpan(0, 5).SequenceEqual("%PDF-"u8),
+            ".jpg" or ".jpeg" => lidos >= 3 && header[0] == 0xFF && header[1] == 0xD8 && header[2] == 0xFF,
+            ".png" => lidos >= 8 && header.AsSpan(0, 8).SequenceEqual(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }),
+            ".gif" => lidos >= 6 && (header.AsSpan(0, 6).SequenceEqual("GIF87a"u8) || header.AsSpan(0, 6).SequenceEqual("GIF89a"u8)),
+            ".bmp" => lidos >= 2 && header[0] == (byte)'B' && header[1] == (byte)'M',
+            _ => false
+        };
     }
 }

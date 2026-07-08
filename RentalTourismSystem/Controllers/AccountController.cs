@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -52,6 +52,14 @@ namespace RentalTourismSystem.Controllers
 
             if (ModelState.IsValid)
             {
+                var loginUser = await _userManager.FindByEmailAsync(model.Email);
+                if (loginUser is null || !loginUser.Ativo)
+                {
+                    _logger.LogWarning("Tentativa de login para conta inexistente ou inativa");
+                    ModelState.AddModelError(string.Empty, "Email ou senha inválidos.");
+                    return View(model);
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(
                     model.Email,
                     model.Password,
@@ -260,6 +268,10 @@ namespace RentalTourismSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeUserRole(string userId, string role)
         {
+            var allowedRoles = new[] { "Admin", "Manager", "Employee" };
+            if (!allowedRoles.Contains(role, StringComparer.Ordinal))
+                return BadRequest("Perfil de acesso inválido.");
+
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
                 return NotFound();
@@ -395,7 +407,8 @@ namespace RentalTourismSystem.Controllers
                 }
 
                 // Atualizar role se alterada
-                if (!string.IsNullOrEmpty(model.Role))
+                var allowedRoles = new[] { "Admin", "Manager", "Employee" };
+                if (!string.IsNullOrEmpty(model.Role) && allowedRoles.Contains(model.Role, StringComparer.Ordinal))
                 {
                     var currentRoles = await _userManager.GetRolesAsync(user);
                     if (!currentRoles.Contains(model.Role))

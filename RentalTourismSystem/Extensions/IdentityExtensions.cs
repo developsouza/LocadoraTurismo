@@ -5,7 +5,7 @@ using RentalTourismSystem.Models;
 namespace RentalTourismSystem.Extensions;
 
 /// <summary>
-/// Extensões para configuração de Identity e autenticação
+/// ExtensÃµes para configuraÃ§Ã£o de Identity e autenticaÃ§Ã£o
 /// </summary>
 public static class IdentityExtensions
 {
@@ -16,27 +16,27 @@ public static class IdentityExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        // Configuração do Identity
+        // ConfiguraÃ§Ã£o do Identity
         services.AddDefaultIdentity<ApplicationUser>(options =>
         {
-            // Configurações de senha
+            // ConfiguraÃ§Ãµes de senha
             options.Password.RequireDigit = true;
             options.Password.RequireLowercase = true;
-            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireNonAlphanumeric = true;
             options.Password.RequireUppercase = true;
-            options.Password.RequiredLength = 6;
+            options.Password.RequiredLength = 10;
             options.Password.RequiredUniqueChars = 1;
 
-            // Configurações de lockout
-            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            // ConfiguraÃ§Ãµes de lockout
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
             options.Lockout.MaxFailedAccessAttempts = 5;
             options.Lockout.AllowedForNewUsers = true;
 
-            // Configurações de usuário
+            // ConfiguraÃ§Ãµes de usuÃ¡rio
             options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
             options.User.RequireUniqueEmail = true;
 
-            // Configurações de signin
+            // ConfiguraÃ§Ãµes de signin
             options.SignIn.RequireConfirmedEmail = false;
             options.SignIn.RequireConfirmedPhoneNumber = false;
         })
@@ -44,7 +44,7 @@ public static class IdentityExtensions
         .AddEntityFrameworkStores<RentalTourismContext>()
         .AddDefaultTokenProviders();
 
-        // Configuração de cookie de autenticação
+        // ConfiguraÃ§Ã£o de cookie de autenticaÃ§Ã£o
         services.ConfigureApplicationCookie(options =>
         {
             options.LoginPath = "/Account/Login";
@@ -54,11 +54,11 @@ public static class IdentityExtensions
             options.ExpireTimeSpan = TimeSpan.FromHours(8);
             options.Cookie.Name = "RentalTourismAuth";
             options.Cookie.HttpOnly = true;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-            options.Cookie.SameSite = SameSiteMode.Lax;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            options.Cookie.SameSite = SameSiteMode.Strict;
         });
 
-        // Configurações de autenticação adicionais
+        // ConfiguraÃ§Ãµes de autenticaÃ§Ã£o adicionais
         services.Configure<SecurityStampValidatorOptions>(options =>
         {
             options.ValidationInterval = TimeSpan.FromMinutes(30);

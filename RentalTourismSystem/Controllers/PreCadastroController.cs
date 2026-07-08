@@ -1,38 +1,41 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using RentalTourismSystem.Data;
 using RentalTourismSystem.Models;
+using RentalTourismSystem.Services;
 
 namespace RentalTourismSystem.Controllers
 {
     /// <summary>
-    /// Controller público para pré-cadastro de clientes (sem autenticação)
+    /// Controller pÃºblico para prÃ©-cadastro de clientes (sem autenticaÃ§Ã£o)
     /// </summary>
+    [EnableRateLimiting("PublicFormPolicy")]
     public class PreCadastroController : Controller
     {
         private readonly RentalTourismContext _context;
         private readonly ILogger<PreCadastroController> _logger;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IFileService _fileService;
 
         public PreCadastroController(
             RentalTourismContext context,
             ILogger<PreCadastroController> logger,
-            IWebHostEnvironment webHostEnvironment)
+            IFileService fileService)
         {
             _context = context;
             _logger = logger;
-            _webHostEnvironment = webHostEnvironment;
+            _fileService = fileService;
         }
 
         // GET: PreCadastro
         public async Task<IActionResult> Index()
         {
-            _logger.LogInformation("Página de pré-cadastro acessada");
+            _logger.LogInformation("PÃ¡gina de prÃ©-cadastro acessada");
 
-            // Carregar lista de veículos disponíveis
+            // Carregar lista de veÃ­culos disponÃ­veis
             var veiculosDisponiveis = await _context.Veiculos
                 .Include(v => v.StatusCarro)
-                .Where(v => v.StatusCarroId == 1) // Apenas veículos disponíveis
+                .Where(v => v.StatusCarroId == 1) // Apenas veÃ­culos disponÃ­veis
                 .OrderBy(v => v.Marca)
                 .ThenBy(v => v.Modelo)
                 .Select(v => new
@@ -58,7 +61,7 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
-                // Recarregar lista de veículos para ViewBag em caso de erro
+                // Recarregar lista de veÃ­culos para ViewBag em caso de erro
                 await CarregarListaVeiculos();
 
                 if (!ModelState.IsValid)
@@ -66,35 +69,35 @@ namespace RentalTourismSystem.Controllers
                     return View(model);
                 }
 
-                // Validar se CPF já existe
+                // Validar se CPF jÃ¡ existe
                 var cpfLimpo = LimparCPF(model.CPF);
                 var cpfExiste = await _context.Clientes
                     .AnyAsync(c => c.CPF.Replace(".", "").Replace("-", "") == cpfLimpo);
 
                 if (cpfExiste)
                 {
-                    ModelState.AddModelError("CPF", "Este CPF já está cadastrado em nosso sistema.");
+                    ModelState.AddModelError("CPF", "Este CPF jÃ¡ estÃ¡ cadastrado em nosso sistema.");
                     return View(model);
                 }
 
-                // Validar se o veículo existe e está disponível
+                // Validar se o veÃ­culo existe e estÃ¡ disponÃ­vel
                 var veiculo = await _context.Veiculos
                     .Include(v => v.StatusCarro)
                     .FirstOrDefaultAsync(v => v.Id == model.VeiculoId);
 
                 if (veiculo == null)
                 {
-                    ModelState.AddModelError("VeiculoId", "Veículo não encontrado.");
+                    ModelState.AddModelError("VeiculoId", "VeÃ­culo nÃ£o encontrado.");
                     return View(model);
                 }
 
-                if (veiculo.StatusCarroId != 1) // Não está disponível
+                if (veiculo.StatusCarroId != 1) // NÃ£o estÃ¡ disponÃ­vel
                 {
-                    ModelState.AddModelError("VeiculoId", $"Veículo não está disponível. Status atual: {veiculo.StatusCarro?.Status ?? "Desconhecido"}");
+                    ModelState.AddModelError("VeiculoId", $"VeÃ­culo nÃ£o estÃ¡ disponÃ­vel. Status atual: {veiculo.StatusCarro?.Status ?? "Desconhecido"}");
                     return View(model);
                 }
 
-                // Verificar disponibilidade do veículo no período selecionado
+                // Verificar disponibilidade do veÃ­culo no perÃ­odo selecionado
                 var veiculoDisponivel = await VerificarDisponibilidadeVeiculoAsync(
                     model.VeiculoId,
                     model.DataInicioLocacao,
@@ -103,7 +106,7 @@ namespace RentalTourismSystem.Controllers
 
                 if (!veiculoDisponivel)
                 {
-                    // Calcular próximo período disponível
+                    // Calcular prÃ³ximo perÃ­odo disponÃ­vel
                     var proximoPeriodoDisponivel = await CalcularProximoPeriodoDisponivelAsync(
                         model.VeiculoId,
                         model.DataInicioLocacao,
@@ -113,14 +116,14 @@ namespace RentalTourismSystem.Controllers
                     if (proximoPeriodoDisponivel.HasValue)
                     {
                         ModelState.AddModelError("VeiculoId",
-                            $"O veículo {veiculo.Marca} {veiculo.Modelo} não está disponível no período selecionado. " +
-                            $"Próximo período disponível: a partir de {proximoPeriodoDisponivel.Value:dd/MM/yyyy}");
+                            $"O veÃ­culo {veiculo.Marca} {veiculo.Modelo} nÃ£o estÃ¡ disponÃ­vel no perÃ­odo selecionado. " +
+                            $"PrÃ³ximo perÃ­odo disponÃ­vel: a partir de {proximoPeriodoDisponivel.Value:dd/MM/yyyy}");
                     }
                     else
                     {
                         ModelState.AddModelError("VeiculoId",
-                            $"O veículo {veiculo.Marca} {veiculo.Modelo} não está disponível no período selecionado. " +
-                            "Por favor, escolha outro veículo ou entre em contato conosco.");
+                            $"O veÃ­culo {veiculo.Marca} {veiculo.Modelo} nÃ£o estÃ¡ disponÃ­vel no perÃ­odo selecionado. " +
+                            "Por favor, escolha outro veÃ­culo ou entre em contato conosco.");
                     }
                     return View(model);
                 }
@@ -128,7 +131,7 @@ namespace RentalTourismSystem.Controllers
                 // Validar arquivo de CNH
                 if (model.CNHUpload == null || model.CNHUpload.Length == 0)
                 {
-                    ModelState.AddModelError("CNHUpload", "O upload da CNH é obrigatório.");
+                    ModelState.AddModelError("CNHUpload", "O upload da CNH Ã© obrigatÃ³rio.");
                     return View(model);
                 }
 
@@ -138,31 +141,37 @@ namespace RentalTourismSystem.Controllers
 
                 if (!extensoesPermitidas.Contains(extensao))
                 {
-                    ModelState.AddModelError("CNHUpload", "Apenas arquivos JPG, JPEG, PNG ou PDF são permitidos.");
+                    ModelState.AddModelError("CNHUpload", "Apenas arquivos JPG, JPEG, PNG ou PDF sÃ£o permitidos.");
                     return View(model);
                 }
 
-                // Validar tamanho (máximo 5MB)
+                // Validar tamanho (mÃ¡ximo 5MB)
                 if (model.CNHUpload.Length > 5 * 1024 * 1024)
                 {
-                    ModelState.AddModelError("CNHUpload", "O arquivo deve ter no máximo 5MB.");
+                    ModelState.AddModelError("CNHUpload", "O arquivo deve ter no mÃ¡ximo 5MB.");
                     return View(model);
                 }
 
                 // Salvar arquivo da CNH
-                var cnhPath = await SalvarArquivoCNH(model.CNHUpload, cpfLimpo);
+                var upload = await _fileService.SalvarArquivoAsync(model.CNHUpload, "cnh", extensoesPermitidas, 5 * 1024 * 1024);
+                if (!upload.Success)
+                {
+                    ModelState.AddModelError("CNHUpload", upload.ErrorMessage);
+                    return View(model);
+                }
+                var cnhPath = upload.FilePath;
 
-                // Criar cliente com pré-cadastro
+                // Criar cliente com prÃ©-cadastro
                 var cliente = new Cliente
                 {
                     Nome = model.Nome.Trim(),
                     CPF = model.CPF,
                     Telefone = model.Telefone,
                     CNHPath = cnhPath,
-                    // Campos obrigatórios com valores temporários (serão completados posteriormente)
-                    Email = $"precadastro_{cpfLimpo}@temp.com", // Email temporário
+                    // Campos obrigatÃ³rios com valores temporÃ¡rios (serÃ£o completados posteriormente)
+                    Email = $"precadastro_{cpfLimpo}@temp.com", // Email temporÃ¡rio
                     Endereco = "A completar",
-                    DataNascimento = DateTime.Now.AddYears(-21), // Data temporária (21 anos)
+                    DataNascimento = DateTime.Now.AddYears(-21), // Data temporÃ¡ria (21 anos)
                     DataCadastro = DateTime.Now
                 };
 
@@ -172,11 +181,11 @@ namespace RentalTourismSystem.Controllers
                 // Calcular quantidade de dias
                 var quantidadeDias = (model.DataFinalLocacao - model.DataInicioLocacao).Days;
 
-                // Criar notificação para o sistema
+                // Criar notificaÃ§Ã£o para o sistema
                 var notificacao = new Notificacao
                 {
-                    Titulo = "Novo Pré-Cadastro e Reserva",
-                    Mensagem = $"Cliente {model.Nome} (CPF: {model.CPF}) realizou pré-cadastro e solicitou reserva do veículo {veiculo.Marca} {veiculo.Modelo} (Placa: {veiculo.Placa}) de {model.DataInicioLocacao:dd/MM/yyyy} a {model.DataFinalLocacao:dd/MM/yyyy} ({quantidadeDias} dias). Telefone: {model.Telefone}",
+                    Titulo = "Novo PrÃ©-Cadastro e Reserva",
+                    Mensagem = $"Cliente {model.Nome} (CPF: {model.CPF}) realizou prÃ©-cadastro e solicitou reserva do veÃ­culo {veiculo.Marca} {veiculo.Modelo} (Placa: {veiculo.Placa}) de {model.DataInicioLocacao:dd/MM/yyyy} a {model.DataFinalLocacao:dd/MM/yyyy} ({quantidadeDias} dias). Telefone: {model.Telefone}",
                     Tipo = "info",
                     Categoria = "PreCadastro",
                     ClienteId = cliente.Id,
@@ -190,10 +199,10 @@ namespace RentalTourismSystem.Controllers
                 _context.Notificacoes.Add(notificacao);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("Pré-cadastro realizado com sucesso. CPF: {CPF}, Veículo: {VeiculoId}, Período: {DataInicio} a {DataFim}",
+                _logger.LogInformation("PrÃ©-cadastro realizado com sucesso. CPF: {CPF}, VeÃ­culo: {VeiculoId}, PerÃ­odo: {DataInicio} a {DataFim}",
                     cpfLimpo, model.VeiculoId, model.DataInicioLocacao, model.DataFinalLocacao);
 
-                // Armazenar informações na TempData para exibir na página de sucesso
+                // Armazenar informaÃ§Ãµes na TempData para exibir na pÃ¡gina de sucesso
                 TempData["NomeCliente"] = model.Nome;
                 TempData["VeiculoDescricao"] = $"{veiculo.Marca} {veiculo.Modelo} ({veiculo.Ano})";
                 TempData["PeriodoInicio"] = model.DataInicioLocacao.ToString("dd/MM/yyyy");
@@ -204,7 +213,7 @@ namespace RentalTourismSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao realizar pré-cadastro");
+                _logger.LogError(ex, "Erro ao realizar prÃ©-cadastro");
                 ModelState.AddModelError("", "Ocorreu um erro ao processar seu cadastro. Tente novamente.");
                 await CarregarListaVeiculos();
                 return View(model);
@@ -217,13 +226,13 @@ namespace RentalTourismSystem.Controllers
             return View();
         }
 
-        #region Métodos Auxiliares
+        #region MÃ©todos Auxiliares
 
         private async Task CarregarListaVeiculos()
         {
             var veiculosDisponiveis = await _context.Veiculos
                 .Include(v => v.StatusCarro)
-                .Where(v => v.StatusCarroId == 1) // Apenas veículos disponíveis
+                .Where(v => v.StatusCarroId == 1) // Apenas veÃ­culos disponÃ­veis
                 .OrderBy(v => v.Marca)
                 .ThenBy(v => v.Modelo)
                 .Select(v => new
@@ -244,18 +253,18 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
-                // Verificar conflitos com locações existentes no período
+                // Verificar conflitos com locaÃ§Ãµes existentes no perÃ­odo
                 var conflitos = await _context.Locacoes
                     .Where(l => l.VeiculoId == veiculoId &&
-                               l.DataDevolucaoReal == null && // Apenas locações ativas (não finalizadas)
-                               ((l.DataRetirada < dataFim && l.DataDevolucao > dataInicio))) // Sobreposição de período
+                               l.DataDevolucaoReal == null && // Apenas locaÃ§Ãµes ativas (nÃ£o finalizadas)
+                               ((l.DataRetirada < dataFim && l.DataDevolucao > dataInicio))) // SobreposiÃ§Ã£o de perÃ­odo
                     .AnyAsync();
 
                 return !conflitos;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao verificar disponibilidade do veículo {VeiculoId}", veiculoId);
+                _logger.LogError(ex, "Erro ao verificar disponibilidade do veÃ­culo {VeiculoId}", veiculoId);
                 return false;
             }
         }
@@ -264,10 +273,10 @@ namespace RentalTourismSystem.Controllers
         {
             try
             {
-                // Buscar todas as locações futuras e ativas do veículo
+                // Buscar todas as locaÃ§Ãµes futuras e ativas do veÃ­culo
                 var locacoesFuturas = await _context.Locacoes
                     .Where(l => l.VeiculoId == veiculoId &&
-                               l.DataDevolucaoReal == null && // Apenas locações ativas
+                               l.DataDevolucaoReal == null && // Apenas locaÃ§Ãµes ativas
                                l.DataRetirada >= dataInicioDesejada.Date) // A partir da data desejada
                     .OrderBy(l => l.DataRetirada)
                     .Select(l => new { l.DataRetirada, l.DataDevolucao })
@@ -275,26 +284,26 @@ namespace RentalTourismSystem.Controllers
 
                 if (!locacoesFuturas.Any())
                 {
-                    // Não há locações futuras, disponível imediatamente
+                    // NÃ£o hÃ¡ locaÃ§Ãµes futuras, disponÃ­vel imediatamente
                     return dataInicioDesejada;
                 }
 
-                // Verificar se há gap entre a data desejada e a primeira locação
+                // Verificar se hÃ¡ gap entre a data desejada e a primeira locaÃ§Ã£o
                 var primeiraLocacao = locacoesFuturas.First();
                 var diasNecessarios = (dataFimDesejada - dataInicioDesejada).Days;
 
                 if (dataInicioDesejada < primeiraLocacao.DataRetirada)
                 {
-                    // Há um gap antes da primeira locação
+                    // HÃ¡ um gap antes da primeira locaÃ§Ã£o
                     var diasDisponiveis = (primeiraLocacao.DataRetirada - dataInicioDesejada).Days;
                     if (diasDisponiveis >= diasNecessarios)
                     {
-                        // O período cabe antes da primeira locação
+                        // O perÃ­odo cabe antes da primeira locaÃ§Ã£o
                         return dataInicioDesejada;
                     }
                 }
 
-                // Procurar gap entre locações consecutivas ou após a última
+                // Procurar gap entre locaÃ§Ãµes consecutivas ou apÃ³s a Ãºltima
                 for (int i = 0; i < locacoesFuturas.Count; i++)
                 {
                     var locacaoAtual = locacoesFuturas[i];
@@ -302,29 +311,29 @@ namespace RentalTourismSystem.Controllers
 
                     if (i < locacoesFuturas.Count - 1)
                     {
-                        // Há uma próxima locação
+                        // HÃ¡ uma prÃ³xima locaÃ§Ã£o
                         var proximaLocacao = locacoesFuturas[i + 1];
                         var diasDisponiveis = (proximaLocacao.DataRetirada - dataInicioDisponivel).Days;
 
                         if (diasDisponiveis >= diasNecessarios)
                         {
-                            // Período cabe entre as duas locações
+                            // PerÃ­odo cabe entre as duas locaÃ§Ãµes
                             return dataInicioDisponivel;
                         }
                     }
                     else
                     {
-                        // É a última locação, veículo fica disponível após ela
+                        // Ã‰ a Ãºltima locaÃ§Ã£o, veÃ­culo fica disponÃ­vel apÃ³s ela
                         return dataInicioDisponivel;
                     }
                 }
 
-                // Caso não encontre período disponível (não deveria chegar aqui)
+                // Caso nÃ£o encontre perÃ­odo disponÃ­vel (nÃ£o deveria chegar aqui)
                 return locacoesFuturas.Last().DataDevolucao.AddDays(1);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao calcular próximo período disponível para veículo {VeiculoId}", veiculoId);
+                _logger.LogError(ex, "Erro ao calcular prÃ³ximo perÃ­odo disponÃ­vel para veÃ­culo {VeiculoId}", veiculoId);
                 return null;
             }
         }
@@ -332,35 +341,6 @@ namespace RentalTourismSystem.Controllers
         private string LimparCPF(string cpf)
         {
             return cpf.Replace(".", "").Replace("-", "").Trim();
-        }
-
-        private async Task<string> SalvarArquivoCNH(IFormFile arquivo, string cpf)
-        {
-            try
-            {
-                // Criar pasta se não existir
-                var uploadsPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "cnh");
-                Directory.CreateDirectory(uploadsPath);
-
-                // Gerar nome único para o arquivo
-                var extensao = Path.GetExtension(arquivo.FileName);
-                var nomeArquivo = $"CNH_{cpf}_{DateTime.Now:yyyyMMddHHmmss}{extensao}";
-                var caminhoCompleto = Path.Combine(uploadsPath, nomeArquivo);
-
-                // Salvar arquivo
-                using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
-                {
-                    await arquivo.CopyToAsync(stream);
-                }
-
-                // Retornar caminho relativo
-                return $"/uploads/cnh/{nomeArquivo}";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao salvar arquivo CNH");
-                throw new Exception("Erro ao salvar arquivo da CNH", ex);
-            }
         }
 
         #endregion

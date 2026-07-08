@@ -11,17 +11,17 @@ namespace RentalTourismSystem.Models
         [Required]
         [StringLength(100)]
         [Display(Name = "Nome do Pacote")]
-        public string Nome { get; set; }
+        public string Nome { get; set; } = string.Empty;
 
         [Required]
         [StringLength(1000)]
         [Display(Name = "Descrição")]
-        public string Descricao { get; set; }
+        public string Descricao { get; set; } = string.Empty;
 
         [Required]
         [StringLength(100)]
         [Display(Name = "Destino")]
-        public string Destino { get; set; }
+        public string Destino { get; set; } = string.Empty;
 
         [Required]
         [Display(Name = "Duração")]
@@ -62,7 +62,6 @@ namespace RentalTourismSystem.Models
         [NotMapped]
         [Display(Name = "Última Reserva")]
         public DateTime? UltimaReserva => ReservasViagens?
-            .Where(r => r.DataReserva != null)
             .OrderByDescending(r => r.DataReserva)
             .FirstOrDefault()?.DataReserva;
     }

@@ -5,7 +5,7 @@ using RentalTourismSystem.Data;
 namespace RentalTourismSystem.HealthChecks;
 
 /// <summary>
-/// Health check customizado para verificar a saúde do banco de dados
+/// Health check customizado para verificar a saÃºde do banco de dados
 /// </summary>
 public class DatabaseHealthCheck : IHealthCheck
 {
@@ -29,9 +29,9 @@ public class DatabaseHealthCheck : IHealthCheck
 
             if (!canConnect)
             {
-                _logger.LogWarning("Health Check: Não foi possível conectar ao banco de dados");
+                _logger.LogWarning("Health Check: NÃ£o foi possÃ­vel conectar ao banco de dados");
                 return HealthCheckResult.Unhealthy(
-                    "Não foi possível conectar ao banco de dados",
+                    "NÃ£o foi possÃ­vel conectar ao banco de dados",
                     exception: null,
                     data: new Dictionary<string, object>
                     {
@@ -39,7 +39,7 @@ public class DatabaseHealthCheck : IHealthCheck
                     });
             }
 
-            // Verifica se há migrations pendentes
+            // Verifica se hÃ¡ migrations pendentes
             var pendingMigrations = await _context.Database.GetPendingMigrationsAsync(cancellationToken);
             var hasPendingMigrations = pendingMigrations.Any();
 
@@ -64,9 +64,9 @@ public class DatabaseHealthCheck : IHealthCheck
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Health Check: Erro ao verificar saúde do banco de dados");
+            _logger.LogError(ex, "Health Check: Erro ao verificar saÃºde do banco de dados");
             return HealthCheckResult.Unhealthy(
-                "Erro ao verificar saúde do banco de dados",
+                "Erro ao verificar saÃºde do banco de dados",
                 exception: ex,
                 data: new Dictionary<string, object>
                 {
@@ -77,7 +77,7 @@ public class DatabaseHealthCheck : IHealthCheck
 }
 
 /// <summary>
-/// Health check para verificar a saúde geral do sistema
+/// Health check para verificar a saÃºde geral do sistema
 /// </summary>
 public class SystemHealthCheck : IHealthCheck
 {
@@ -94,7 +94,7 @@ public class SystemHealthCheck : IHealthCheck
     {
         try
         {
-            // Verifica memória disponível
+            // Verifica memÃ³ria disponÃ­vel
             var totalMemory = GC.GetTotalMemory(false);
             var memoryInMB = totalMemory / 1024 / 1024;
 
@@ -106,12 +106,12 @@ public class SystemHealthCheck : IHealthCheck
                 { "is64BitProcess", Environment.Is64BitProcess }
             };
 
-            // Se estiver usando muita memória, retorna degraded
+            // Se estiver usando muita memÃ³ria, retorna degraded
             if (memoryInMB > 1024) // Mais de 1GB
             {
-                _logger.LogWarning("Health Check: Uso elevado de memória: {Memory}MB", memoryInMB);
+                _logger.LogWarning("Health Check: Uso elevado de memÃ³ria: {Memory}MB", memoryInMB);
                 return Task.FromResult(HealthCheckResult.Degraded(
-                    $"Sistema operacional com uso elevado de memória: {memoryInMB}MB",
+                    $"Sistema operacional com uso elevado de memÃ³ria: {memoryInMB}MB",
                     data: data));
             }
 
@@ -121,9 +121,9 @@ public class SystemHealthCheck : IHealthCheck
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Health Check: Erro ao verificar saúde do sistema");
+            _logger.LogError(ex, "Health Check: Erro ao verificar saÃºde do sistema");
             return Task.FromResult(HealthCheckResult.Unhealthy(
-                "Erro ao verificar saúde do sistema",
+                "Erro ao verificar saÃºde do sistema",
                 exception: ex));
         }
     }
@@ -145,7 +145,7 @@ public static class HealthCheckExtensions
 
     public static IApplicationBuilder UseHealthCheckConfiguration(this IApplicationBuilder app)
     {
-        // Endpoint básico de health
+        // Endpoint bÃ¡sico de health
         app.UseHealthChecks("/health");
 
         // Endpoint detalhado (JSON)
@@ -155,19 +155,11 @@ public static class HealthCheckExtensions
             ResponseWriter = async (context, report) =>
             {
                 context.Response.ContentType = "application/json";
+                // NÃ£o exponha versÃ£o do SO, provider, migrations, exceÃ§Ãµes ou mÃ©tricas internas.
                 var result = System.Text.Json.JsonSerializer.Serialize(new
                 {
                     status = report.Status.ToString(),
-                    timestamp = DateTime.UtcNow,
-                    duration = report.TotalDuration,
-                    checks = report.Entries.Select(e => new
-                    {
-                        name = e.Key,
-                        status = e.Value.Status.ToString(),
-                        description = e.Value.Description,
-                        duration = e.Value.Duration,
-                        data = e.Value.Data
-                    })
+                    timestamp = DateTime.UtcNow
                 });
                 await context.Response.WriteAsync(result);
             }

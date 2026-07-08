@@ -4,12 +4,12 @@ using System.Threading.RateLimiting;
 namespace RentalTourismSystem.Extensions;
 
 /// <summary>
-/// Extensıes para configuraÁ„o de seguranÁa
+/// Extens√µes para configura√ß√£o de seguran√ßa
 /// </summary>
 public static class SecurityExtensions
 {
     /// <summary>
-    /// Adiciona configuraÁ„o de seguranÁa (CORS, Rate Limiting, Antiforgery)
+    /// Adiciona configura√ß√£o de seguran√ßa (CORS, Rate Limiting, Antiforgery)
     /// </summary>
     public static IServiceCollection AddSecurityConfiguration(
         this IServiceCollection services,
@@ -42,7 +42,7 @@ public static class SecurityExtensions
         // Rate Limiting
         services.AddRateLimiter(options =>
         {
-            // PolÌtica global para API
+            // Pol√≠tica global para API
             options.AddFixedWindowLimiter("ApiPolicy", limiterOptions =>
             {
                 limiterOptions.PermitLimit = 100;
@@ -51,7 +51,19 @@ public static class SecurityExtensions
                 limiterOptions.QueueLimit = 10;
             });
 
-            // PolÌtica para validaÁ„o de CPF
+            // Limite por endere√ßo IP para o formul√°rio p√∫blico com upload.
+            options.AddPolicy("PublicFormPolicy", httpContext =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 5,
+                        Window = TimeSpan.FromMinutes(10),
+                        QueueLimit = 0,
+                        AutoReplenishment = true
+                    }));
+
+            // Pol√≠tica para valida√ß√£o de CPF
             options.AddFixedWindowLimiter("CpfValidationPolicy", limiterOptions =>
             {
                 limiterOptions.PermitLimit = 20;
@@ -60,7 +72,7 @@ public static class SecurityExtensions
                 limiterOptions.QueueLimit = 5;
             });
 
-            // PolÌtica para dashboard
+            // Pol√≠tica para dashboard
             options.AddFixedWindowLimiter("DashboardPolicy", limiterOptions =>
             {
                 limiterOptions.PermitLimit = 300;
@@ -69,7 +81,7 @@ public static class SecurityExtensions
                 limiterOptions.QueueLimit = 20;
             });
 
-            // PolÌtica de concorrÍncia para operaÁıes crÌticas
+            // Pol√≠tica de concorr√™ncia para opera√ß√µes cr√≠ticas
             options.AddConcurrencyLimiter("CriticalOperations", limiterOptions =>
             {
                 limiterOptions.PermitLimit = 10;
@@ -88,7 +100,7 @@ public static class SecurityExtensions
                     await context.HttpContext.Response.WriteAsJsonAsync(new
                     {
                         error = "Too many requests",
-                        message = "VocÍ excedeu o limite de requisiÁıes. Tente novamente em alguns instantes.",
+                        message = "Voc√™ excedeu o limite de requisi√ß√µes. Tente novamente em alguns instantes.",
                         retryAfter = retryAfter.TotalSeconds
                     }, cancellationToken);
                 }
@@ -97,7 +109,7 @@ public static class SecurityExtensions
                     await context.HttpContext.Response.WriteAsJsonAsync(new
                     {
                         error = "Too many requests",
-                        message = "VocÍ excedeu o limite de requisiÁıes. Tente novamente em alguns instantes."
+                        message = "Voc√™ excedeu o limite de requisi√ß√µes. Tente novamente em alguns instantes."
                     }, cancellationToken);
                 }
             };
@@ -108,12 +120,14 @@ public static class SecurityExtensions
         {
             options.HeaderName = "X-CSRF-TOKEN";
             options.Cookie.HttpOnly = true;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            options.Cookie.SecurePolicy = environment.IsDevelopment()
+                ? CookieSecurePolicy.SameAsRequest
+                : CookieSecurePolicy.Always;
             options.Cookie.Name = "__RequestVerificationToken";
             options.Cookie.SameSite = SameSiteMode.Strict;
         });
 
-        // Compress„o de resposta
+        // Compress√£o de resposta
         services.AddResponseCompression(options =>
         {
             options.EnableForHttps = true;
@@ -123,7 +137,7 @@ public static class SecurityExtensions
                 new[] { "application/json", "text/css", "text/javascript", "application/javascript" });
         });
 
-        // ConfiguraÁ„o de Brotli (melhor compress„o)
+        // Configura√ß√£o de Brotli (melhor compress√£o)
         services.Configure<Microsoft.AspNetCore.ResponseCompression.BrotliCompressionProviderOptions>(options =>
         {
             options.Level = System.IO.Compression.CompressionLevel.Fastest;
@@ -133,7 +147,7 @@ public static class SecurityExtensions
     }
 
     /// <summary>
-    /// Adiciona configuraÁ„o de cache e sess„o
+    /// Adiciona configura√ß√£o de cache e sess√£o
     /// </summary>
     public static IServiceCollection AddCacheConfiguration(this IServiceCollection services)
     {

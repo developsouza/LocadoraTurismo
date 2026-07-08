@@ -258,7 +258,7 @@ https://localhost:7000/Documentacao
 ### 3. Fazer Login
 ```
 Email: admin@litoralsul.com.br
-Senha: Admin@123456
+Senha: valor secreto de BootstrapAdmin__Password
 ```
 
 ### 4. Navegar

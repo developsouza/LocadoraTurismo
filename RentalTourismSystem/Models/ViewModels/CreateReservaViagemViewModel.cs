@@ -48,18 +48,21 @@ namespace RentalTourismSystem.Models.ViewModels
             _comparisonProperty = comparisonProperty;
         }
 
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            var currentValue = (DateTime)value;
+            if (value is not DateTime currentValue)
+                return new ValidationResult(ErrorMessage ?? "Data inválida");
+
             var property = validationContext.ObjectType.GetProperty(_comparisonProperty);
 
             if (property == null)
                 throw new ArgumentException("Property with this name not found");
 
-            var comparisonValue = (DateTime)property.GetValue(validationContext.ObjectInstance);
+            if (property.GetValue(validationContext.ObjectInstance) is not DateTime comparisonValue)
+                return new ValidationResult("Data de comparação inválida");
 
             if (currentValue <= comparisonValue)
-                return new ValidationResult(ErrorMessage);
+                return new ValidationResult(ErrorMessage ?? "A data deve ser posterior à data de comparação");
 
             return ValidationResult.Success;
         }

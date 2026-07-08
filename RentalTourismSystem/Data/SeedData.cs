@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using RentalTourismSystem.Models;
 
 namespace RentalTourismSystem.Data
@@ -25,8 +25,14 @@ namespace RentalTourismSystem.Data
                 }
             }
 
-            // Criar usuário admin padrão
-            var adminEmail = "admin@litoralsul.com.br";
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            var adminEmail = configuration["BootstrapAdmin:Email"];
+            var adminPassword = configuration["BootstrapAdmin:Password"];
+            if (string.IsNullOrWhiteSpace(adminEmail) || string.IsNullOrWhiteSpace(adminPassword))
+            {
+                logger.LogWarning("Bootstrap do administrador ignorado: configure BootstrapAdmin__Email e BootstrapAdmin__Password");
+                return;
+            }
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
             if (adminUser == null)
@@ -42,7 +48,7 @@ namespace RentalTourismSystem.Data
                     DataCadastro = DateTime.Now
                 };
 
-                var result = await userManager.CreateAsync(adminUser, "Admin@123456");
+                var result = await userManager.CreateAsync(adminUser, adminPassword);
 
                 if (result.Succeeded)
                 {

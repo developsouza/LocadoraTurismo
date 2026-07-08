@@ -440,6 +440,21 @@ namespace RentalTourismSystem.Controllers
                     return NotFound();
                 }
 
+                if (locacao.Veiculo == null)
+                {
+                    _logger.LogError("Locação {LocacaoId} está sem veículo relacionado", id);
+                    return Conflict("A locação possui dados inconsistentes. Contate o suporte.");
+                }
+
+                if (quilometragemDevolucao.HasValue &&
+                    quilometragemDevolucao.Value < locacao.Veiculo.Quilometragem)
+                {
+                    ModelState.AddModelError(nameof(quilometragemDevolucao),
+                        "A quilometragem de devolução não pode ser menor que a atual.");
+                    TempData["Erro"] = "Quilometragem de devolução inválida.";
+                    return RedirectToAction(nameof(Details), new { id });
+                }
+
                 if (locacao.DataDevolucaoReal.HasValue)
                 {
                     TempData["Erro"] = "Esta locação já foi finalizada.";
