@@ -198,9 +198,9 @@ namespace RentalTourismSystem.Controllers
                     if (manutencao.StatusManutencaoId == 2) // Em Andamento
                     {
                         var veiculo = await _context.Veiculos.FindAsync(manutencao.VeiculoId);
-                        if (veiculo != null && veiculo.StatusCarroId != 3) // Se não estiver em manutenção
+                        if (veiculo != null && veiculo.StatusCarroId != StatusCarro.ManutencaoId)
                         {
-                            veiculo.StatusCarroId = 3; // Manutenção
+                            veiculo.StatusCarroId = StatusCarro.ManutencaoId;
                         }
                     }
 
@@ -302,14 +302,14 @@ namespace RentalTourismSystem.Controllers
                     {
                         if (manutencao.StatusManutencaoId == 2) // Em Andamento
                         {
-                            if (veiculo.StatusCarroId != 3)
+                            if (veiculo.StatusCarroId != StatusCarro.ManutencaoId)
                             {
-                                veiculo.StatusCarroId = 3; // Manutenção
+                                veiculo.StatusCarroId = StatusCarro.ManutencaoId;
                             }
                         }
                         else if (manutencao.StatusManutencaoId == 3) // Concluída
                         {
-                            if (veiculo.StatusCarroId == 3) // Se estava em manutenção
+                            if (veiculo.StatusCarroId == StatusCarro.ManutencaoId)
                             {
                                 // Verificar se há outras manutenções em andamento
                                 var outraManutencaoEmAndamento = await _context.ManutencoesVeiculos
@@ -317,7 +317,7 @@ namespace RentalTourismSystem.Controllers
 
                                 if (!outraManutencaoEmAndamento)
                                 {
-                                    veiculo.StatusCarroId = 1; // Disponível
+                                    veiculo.StatusCarroId = StatusCarro.DisponivelId;
                                 }
                             }
 

@@ -58,6 +58,7 @@ namespace RentalTourismSystem.Controllers
         /// Marcar notificação como lida
         /// </summary>
         [HttpPut("{id}/marcar-lida")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> MarcarComoLida(int id)
         {
             try
@@ -78,6 +79,7 @@ namespace RentalTourismSystem.Controllers
         /// Marcar todas as notificações como lidas
         /// </summary>
         [HttpPut("marcar-todas-lidas")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> MarcarTodasComoLidas()
         {
             try
@@ -97,6 +99,7 @@ namespace RentalTourismSystem.Controllers
         /// </summary>
         [HttpPost("gerar-automaticas")]
         [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> GerarNotificacoesAutomaticas()
         {
             try

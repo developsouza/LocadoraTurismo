@@ -58,7 +58,7 @@ namespace RentalTourismSystem.Services
                 var veiculo = await _context.Veiculos.FindAsync(request.VeiculoId);
                 if (veiculo != null)
                 {
-                    veiculo.StatusCarroId = 2; // Alugado
+                    veiculo.StatusCarroId = StatusCarro.AlugadoId;
                     _context.Update(veiculo);
                     await _context.SaveChangesAsync();
                 }
@@ -136,7 +136,7 @@ namespace RentalTourismSystem.Services
                 _context.Update(locacao);
 
                 // Liberar veículo (status = Disponível)
-                locacao.Veiculo.StatusCarroId = 1; // Disponível
+                locacao.Veiculo.StatusCarroId = StatusCarro.DisponivelId;
                 _context.Update(locacao.Veiculo);
 
                 await _context.SaveChangesAsync();
@@ -247,7 +247,7 @@ namespace RentalTourismSystem.Services
                 // Liberar veículo
                 if (locacao.Veiculo != null)
                 {
-                    locacao.Veiculo.StatusCarroId = 1; // Disponível
+                    locacao.Veiculo.StatusCarroId = StatusCarro.DisponivelId;
                     _context.Update(locacao.Veiculo);
                 }
 
@@ -292,7 +292,7 @@ namespace RentalTourismSystem.Services
             {
                 // Verificar status do veículo
                 var veiculo = await _context.Veiculos.FindAsync(veiculoId);
-                if (veiculo == null || (veiculo.StatusCarroId != 1 && veiculo.StatusCarroId != 2)) // Disponível ou Alugado
+                if (veiculo == null || (veiculo.StatusCarroId != StatusCarro.DisponivelId && veiculo.StatusCarroId != StatusCarro.AlugadoId))
                 {
                     return false;
                 }
@@ -359,7 +359,7 @@ namespace RentalTourismSystem.Services
             {
                 erros.Add("Veículo não encontrado");
             }
-            else if (veiculo.StatusCarroId != 1) // Não está disponível
+            else if (veiculo.StatusCarroId != StatusCarro.DisponivelId)
             {
                 erros.Add($"Veículo está com status: {veiculo.StatusCarro.Status}");
             }

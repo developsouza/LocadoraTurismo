@@ -45,10 +45,10 @@ namespace RentalTourismSystem.Models
         [Range(1, int.MaxValue, ErrorMessage = "Selecione um veículo válido")]
         public int VeiculoId { get; set; }
 
-        [Required(ErrorMessage = "Você deve confirmar que não é um robô")]
-        [Display(Name = "Não sou um robô")]
-        [Range(typeof(bool), "true", "true", ErrorMessage = "Você deve confirmar que não é um robô")]
-        public bool ConfirmarHumano { get; set; }
+        [Required(ErrorMessage = "Você deve confirmar que está ciente do uso dos dados")]
+        [Display(Name = "Ciência do uso dos dados")]
+        [Range(typeof(bool), "true", "true", ErrorMessage = "Confirme que está ciente do uso dos dados")]
+        public bool CienteUsoDados { get; set; }
 
         // Propriedades calculadas
         [Display(Name = "Quantidade de Dias")]

@@ -28,6 +28,7 @@ namespace RentalTourismSystem.Services
 
         public async Task<List<NotificacaoResumoDto>> ObterNotificacoesAtivasAsync(int limite = 10)
         {
+            limite = Math.Clamp(limite, 1, 100);
             var notificacoes = await _context.Notificacoes
                 .Where(n => !n.Lida)
                 .OrderByDescending(n => n.Prioridade)

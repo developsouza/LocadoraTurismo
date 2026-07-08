@@ -104,7 +104,7 @@ namespace RentalTourismSystem.Services
                 // Definir status padrão como "Disponível" se não especificado
                 if (veiculo.StatusCarroId == 0)
                 {
-                    veiculo.StatusCarroId = 1; // Disponível
+                    veiculo.StatusCarroId = StatusCarro.DisponivelId;
                 }
 
                 _context.Veiculos.Add(veiculo);

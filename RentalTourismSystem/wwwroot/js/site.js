@@ -5,6 +5,17 @@
  */
 
 /* ===== SIDEBAR MANAGER ===== */
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>'"]/g, character => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    })[character]);
+}
+
+function safeInternalUrl(value) {
+    const url = String(value ?? '').trim();
+    return url.startsWith('/') && !url.startsWith('//') ? url : null;
+}
+
 class SidebarManager {
     constructor() {
         this.sidebar = document.getElementById('sidebar');
@@ -100,6 +111,7 @@ class SidebarManager {
             this.sidebar?.classList.add('mobile-visible');
             this.sidebarOverlay?.classList.add('active');
             document.body.style.overflow = 'hidden';
+            this.sidebarToggle?.setAttribute('aria-expanded', 'true');
             this.dispatchEvent('shown');
         }
     }
@@ -110,6 +122,7 @@ class SidebarManager {
             this.sidebar?.classList.remove('mobile-visible');
             this.sidebarOverlay?.classList.remove('active');
             document.body.style.overflow = '';
+            this.sidebarToggle?.setAttribute('aria-expanded', 'false');
             this.dispatchEvent('hidden');
         }
     }
@@ -138,6 +151,7 @@ class SidebarManager {
             this.sidebar.classList.remove('mobile-hidden', 'mobile-visible');
             this.sidebar.classList.toggle('collapsed', this.isCollapsed);
         }
+        this.sidebarToggle?.setAttribute('aria-expanded', String(this.isMobile ? this.isVisible() : !this.isCollapsed));
     }
 
     handleResize() {
@@ -230,6 +244,12 @@ class ThemeManager {
         setTimeout(() => {
             this.themeIcon.style.transform = 'rotate(0deg)';
         }, 300);
+        if (this.themeToggle) {
+            const nextTheme = theme === 'light' ? 'escuro' : 'claro';
+            this.themeToggle.setAttribute('aria-label', `Ativar tema ${nextTheme}`);
+            this.themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
+            this.themeToggle.title = `Ativar tema ${nextTheme}`;
+        }
     }
 
     updateMetaThemeColor(theme) {
@@ -322,7 +342,7 @@ class NotificationSystem {
         notification.innerHTML = `
             <div class="d-flex align-items-center">
                 <i class="fas fa-${icons[type] || icons.info} me-2"></i>
-                <div class="flex-grow-1">${message}</div>
+                <div class="flex-grow-1">${escapeHtml(message)}</div>
                 <button type="button" class="btn-close ms-2" onclick="this.parentNode.parentNode.remove()"></button>
             </div>
         `;
@@ -419,22 +439,24 @@ class NotificationSystem {
         };
 
         const icon = iconMap[notif.tipo] || iconMap['info'];
+        const link = safeInternalUrl(notif.linkAcao);
+        const id = Number.isInteger(Number(notif.id)) ? Number(notif.id) : 0;
 
         return `
-            <div class="notification-item" data-id="${notif.id}">
+            <div class="notification-item" data-id="${id}">
                 <div class="d-flex align-items-start">
                     <div class="flex-shrink-0 me-3">
                         <i class="fas fa-${icon} fa-lg"></i>
                     </div>
                     <div class="flex-grow-1" style="min-width: 0;">
-                        <h6 class="mb-1 text-truncate">${notif.titulo}</h6>
-                        <p class="mb-2 small text-muted" style="line-height: 1.4;">${notif.mensagem}</p>
+                        <h6 class="mb-1 text-truncate">${escapeHtml(notif.titulo)}</h6>
+                        <p class="mb-2 small text-muted" style="line-height: 1.4;">${escapeHtml(notif.mensagem)}</p>
                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <small class="text-muted">${notif.tempoDecorrido}</small>
-                            ${notif.linkAcao ? `<a href="${notif.linkAcao}" class="btn btn-sm btn-outline-primary">${notif.textoLinkAcao || 'Ver'}</a>` : ''}
+                            <small class="text-muted">${escapeHtml(notif.tempoDecorrido)}</small>
+                            ${link ? `<a href="${escapeHtml(link)}" class="btn btn-sm btn-outline-primary">${escapeHtml(notif.textoLinkAcao || 'Ver')}</a>` : ''}
                         </div>
                     </div>
-                    <button class="btn btn-sm btn-link text-muted p-1 ms-2" data-notification-id="${notif.id}" title="Marcar como lida">
+                    <button class="btn btn-sm btn-link text-muted p-1 ms-2" data-notification-id="${id}" title="Marcar como lida">
                         <i class="fas fa-check"></i>
                     </button>
                 </div>
@@ -447,7 +469,7 @@ class NotificationSystem {
         try {
             const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
             const headers = { 'Content-Type': 'application/json' };
-            if (token) headers['RequestVerificationToken'] = token;
+            if (token) headers['X-CSRF-TOKEN'] = token;
 
             const response = await fetch(`/api/Notificacoes/${id}/marcar-lida`, {
                 method: 'PUT',
@@ -469,7 +491,7 @@ class NotificationSystem {
         try {
             const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
             const headers = { 'Content-Type': 'application/json' };
-            if (token) headers['RequestVerificationToken'] = token;
+            if (token) headers['X-CSRF-TOKEN'] = token;
 
             const response = await fetch('/api/Notificacoes/marcar-todas-lidas', {
                 method: 'PUT',
@@ -599,6 +621,8 @@ class NotificationSystem {
         };
 
         const icon = iconMap[notif.tipo] || iconMap['info'];
+        const link = safeInternalUrl(notif.linkAcao);
+        const id = Number.isInteger(Number(notif.id)) ? Number(notif.id) : 0;
         const bgClass = {
             'danger': 'bg-danger-subtle',
             'warning': 'bg-warning-subtle',
@@ -607,24 +631,24 @@ class NotificationSystem {
         };
 
         return `
-            <div class="list-group-item ${bgClass[notif.tipo] || ''}" data-id="${notif.id}">
+            <div class="list-group-item ${bgClass[notif.tipo] || ''}" data-id="${id}">
                 <div class="d-flex align-items-start">
                     <div class="flex-shrink-0 me-3">
                         <i class="fas fa-${icon} fa-2x"></i>
                     </div>
                     <div class="flex-grow-1">
                         <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="mb-0 fw-bold">${notif.titulo}</h6>
-                            <small class="text-muted ms-2">${notif.tempoDecorrido}</small>
+                            <h6 class="mb-0 fw-bold">${escapeHtml(notif.titulo)}</h6>
+                            <small class="text-muted ms-2">${escapeHtml(notif.tempoDecorrido)}</small>
                         </div>
-                        <p class="mb-2">${notif.mensagem}</p>
+                        <p class="mb-2">${escapeHtml(notif.mensagem)}</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                ${notif.categoria ? `<span class="badge bg-secondary">${notif.categoria}</span>` : ''}
+                                ${notif.categoria ? `<span class="badge bg-secondary">${escapeHtml(notif.categoria)}</span>` : ''}
                             </div>
                             <div>
-                                ${notif.linkAcao ? `<a href="${notif.linkAcao}" class="btn btn-sm btn-primary me-2">${notif.textoLinkAcao || 'Ver Detalhes'}</a>` : ''}
-                                <button class="btn btn-sm btn-outline-secondary" data-notification-id="${notif.id}" title="Marcar como lida">
+                                ${link ? `<a href="${escapeHtml(link)}" class="btn btn-sm btn-primary me-2">${escapeHtml(notif.textoLinkAcao || 'Ver Detalhes')}</a>` : ''}
+                                <button class="btn btn-sm btn-outline-secondary" data-notification-id="${id}" title="Marcar como lida">
                                     <i class="fas fa-check"></i> Marcar como lida
                                 </button>
                             </div>
@@ -1034,7 +1058,7 @@ class FormattingSystem {
         feedback.innerHTML = `
             <small class="d-flex align-items-center">
                 <i class="fas fa-${type === 'success' ? 'check' : 'times'} me-1"></i>
-                ${message}
+                ${escapeHtml(message)}
             </small>
         `;
 
@@ -1421,7 +1445,7 @@ class ValidationSystem {
             field.parentNode.insertBefore(feedback, field.nextSibling);
         }
 
-        feedback.innerHTML = message;
+        feedback.textContent = message;
         feedback.style.display = 'block';
     }
 
@@ -1625,6 +1649,25 @@ function initializeTooltips() {
     }
 }
 
+function improveAccessibilityMetadata() {
+    document.querySelectorAll('button[title], a[title]').forEach(element => {
+        if (!element.hasAttribute('aria-label')) {
+            element.setAttribute('aria-label', element.getAttribute('title'));
+        }
+    });
+
+    document.querySelectorAll('a[target="_blank"]').forEach(link => {
+        const rel = new Set((link.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
+        rel.add('noopener');
+        rel.add('noreferrer');
+        link.setAttribute('rel', [...rel].join(' '));
+    });
+
+    document.querySelectorAll('.sidebar .nav-link.active').forEach(link => {
+        link.setAttribute('aria-current', 'page');
+    });
+}
+
 function setupDeleteConfirmations() {
     document.querySelectorAll('.btn-delete, .delete-confirm, [data-confirm]').forEach(button => {
         if (button.dataset.confirmReady === 'true') return;
@@ -1721,6 +1764,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setupAdvancedSearch('#searchInput, input[type="search"]', 'table');
         setupAdvancedTableSort('table.sortable, table[data-sortable]');
         initializeTooltips();
+        improveAccessibilityMetadata();
         setupDeleteConfirmations();
         initializeKeyboardShortcuts();
     }, 200);

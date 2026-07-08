@@ -1569,9 +1569,11 @@
 
             const iconData = iconMap[notif.tipo] || iconMap['info'];
             const priorityBadge = notif.prioridade >= 3 ? '<span class="badge bg-danger ms-2">Alta Prioridade</span>' : '';
+            const link = safeInternalUrl(notif.linkAcao);
+            const id = Number.isInteger(Number(notif.id)) ? Number(notif.id) : 0;
 
             return `
-                <div class="list-group-item border-0 px-4 py-3 list-group-item-action" data-id="${notif.id}">
+                <div class="list-group-item border-0 px-4 py-3 list-group-item-action" data-id="${id}">
                     <div class="d-flex align-items-start">
                         <div class="flex-shrink-0 me-3">
                             <div class="rounded-circle ${iconData.bg} bg-opacity-10 p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
@@ -1580,15 +1582,15 @@
                         </div>
                         <div class="flex-grow-1" style="min-width: 0;">
                             <div class="d-flex justify-content-between align-items-start mb-1">
-                                <h6 class="mb-0 fw-semibold text-truncate">${notif.titulo}${priorityBadge}</h6>
-                                <small class="text-muted ms-2 flex-shrink-0">${notif.tempoDecorrido}</small>
+                                <h6 class="mb-0 fw-semibold text-truncate">${escapeHtml(notif.titulo)}${priorityBadge}</h6>
+                                <small class="text-muted ms-2 flex-shrink-0">${escapeHtml(notif.tempoDecorrido)}</small>
                             </div>
-                            <p class="mb-2 small text-muted" style="line-height: 1.4;">${notif.mensagem}</p>
+                            <p class="mb-2 small text-muted" style="line-height: 1.4;">${escapeHtml(notif.mensagem)}</p>
                             <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
-                                ${notif.categoria ? `<span class="badge bg-secondary">${notif.categoria}</span>` : '<div></div>'}
+                                ${notif.categoria ? `<span class="badge bg-secondary">${escapeHtml(notif.categoria)}</span>` : '<div></div>'}
                                 <div class="btn-group btn-group-sm" role="group">
-                                    ${notif.linkAcao ? `<a href="${notif.linkAcao}" class="btn btn-outline-primary btn-sm">${notif.textoLinkAcao || 'Ver'}</a>` : ''}
-                                    <button class="btn btn-outline-secondary btn-sm" data-notification-id="${notif.id}" title="Marcar como lida">
+                                    ${link ? `<a href="${escapeHtml(link)}" class="btn btn-outline-primary btn-sm">${escapeHtml(notif.textoLinkAcao || 'Ver')}</a>` : ''}
+                                    <button class="btn btn-outline-secondary btn-sm" data-notification-id="${id}" title="Marcar como lida">
                                         <i class="fas fa-check"></i>
                                     </button>
                                 </div>

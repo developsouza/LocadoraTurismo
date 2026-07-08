@@ -24,6 +24,16 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body data-theme="light">
+    <script>
+        (() => {
+            try {
+                const savedTheme = localStorage.getItem('theme-preference');
+                const theme = savedTheme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                document.documentElement.dataset.theme = theme;
+                document.body.dataset.theme = theme;
+            } catch { /* Mantém o tema claro como fallback seguro. */ }
+        })();
+    </script>
     <a class="skip-link" href="#mainContent">Ir para o conteúdo principal</a>
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
@@ -34,6 +44,7 @@
     {
         <!-- App Wrapper - Apenas para usuários autenticados -->
         <div class="app-wrapper">
+            <div class="d-none" aria-hidden="true">@Html.AntiForgeryToken()</div>
             <!-- Sidebar -->
             <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
                 <!-- Sidebar Header -->
@@ -592,7 +603,7 @@
                                 <div class="spinner-border text-primary" role="status">
                                     <span class="visually-hidden">Buscando...</span>
                                 </div>
-                                <p class="mt-2 text-muted">Buscando por "${query}"...</p>
+                                <p class="mt-2 text-muted">Buscando por "${escapeHtml(query)}"...</p>
                             </div>
                         `;
 

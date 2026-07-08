@@ -154,8 +154,8 @@
         --bg-darker: #1e2530;
         --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         --text-light: #e0e6ed;
-        --text-muted: #8b95a5;
-        --border-color: #3d4a5c;
+        --pre-text-muted: #8b95a5;
+        --pre-border-color: #3d4a5c;
         --success-color: #10b981;
         --icon-cyan: #06b6d4;
         --icon-primary: #5b7cff;
@@ -181,7 +181,7 @@
     .success-card-dark {
         background-color: var(--bg-card);
         border-radius: 16px;
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--pre-border-color);
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     }
 
@@ -196,7 +196,7 @@
     }
 
     .success-subtitle {
-        color: var(--text-muted);
+        color: var(--pre-text-muted);
         font-size: 1.1rem;
     }
 
@@ -308,7 +308,7 @@
     /* Card de Ajuda */
     .help-card-dark {
         background-color: var(--bg-darker);
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--pre-border-color);
         border-radius: 12px;
         overflow: hidden;
     }
@@ -318,7 +318,7 @@
         color: var(--icon-primary);
         padding: 12px 20px;
         font-weight: 600;
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--pre-border-color);
     }
 
     .help-card-body {
@@ -354,7 +354,7 @@
     }
 
     .tip-card-body small {
-        color: var(--text-muted);
+        color: var(--pre-text-muted);
     }
 
     /* Botões */
@@ -388,7 +388,7 @@
         font-weight: 600;
         font-size: 1rem;
         padding: 14px 32px;
-        border: 2px solid var(--border-color);
+        border: 2px solid var(--pre-border-color);
         border-radius: 8px;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -424,8 +424,8 @@
             --bg-card: #ffffff;
             --bg-darker: #ffffff;
             --text-light: #1f2937;
-            --text-muted: #6b7280;
-            --border-color: #d1d5db;
+            --pre-text-muted: #6b7280;
+            --pre-border-color: #d1d5db;
             --success-color: #10b981;
             --icon-cyan: #06b6d4;
             --icon-primary: #5b7cff;
@@ -555,5 +555,28 @@
             color: #1f2937;
         }
     }
+
+    /* Respeita a preferência escolhida dentro do sistema. */
+    [data-theme="light"] {
+        --bg-card: #ffffff; --bg-darker: #f7f9fa; --text-light: #1e293b;
+        --pre-text-muted: #64748b; --pre-border-color: #e2e8f0;
+        --primary-gradient: linear-gradient(135deg, #0f766e 0%, #0d655e 100%);
+    }
+    [data-theme="dark"] {
+        --bg-card: #121c20; --bg-darker: #182529; --text-light: #f1f5f9;
+        --pre-text-muted: #94a3b8; --pre-border-color: #293a3f;
+        --primary-gradient: linear-gradient(135deg, #0f766e 0%, #064e47 100%);
+    }
+    [data-theme="dark"] .success-card-dark,
+    [data-theme="dark"] .success-card-body { background-color: var(--bg-card); border-color: var(--pre-border-color); }
+    [data-theme="dark"] .processing-card-dark,
+    [data-theme="dark"] .help-card-dark { background-color: var(--bg-darker); border-color: var(--pre-border-color); }
+    [data-theme="dark"] .summary-card-body,
+    [data-theme="dark"] .summary-item,
+    [data-theme="dark"] .steps-card-body,
+    [data-theme="dark"] .steps-list-success li,
+    [data-theme="dark"] .processing-card-body,
+    [data-theme="dark"] .help-card-body,
+    [data-theme="dark"] .contact-item { color: var(--text-light); }
 </style>
 

@@ -18,8 +18,8 @@
                     </div>
                     <h1 class="hero-title mb-3">Inicie Sua Jornada Conosco</h1>
                     <p class="hero-subtitle">
-                        Faça seu pré-cadastro e garanta o melhor veículo para sua viagem.<br>
-                        <strong>Processo rápido, simples e 100% seguro.</strong>
+                        Faça seu pré-cadastro e solicite o veículo ideal para sua viagem.<br>
+                        <strong>Processo rápido, simples e acompanhado pela nossa equipe.</strong>
                     </p>
                     <div class="trust-badges mt-4">
                         <span class="badge-item">
@@ -207,21 +207,21 @@
                             </div>
                         </div>
 
-                        <!-- Verificação Anti-Bot -->
+                        <!-- Ciência sobre o uso dos dados -->
                         <div class="form-group-modern mb-4">
                             <div class="captcha-box">
                                 <div class="captcha-content">
-                                    <input asp-for="ConfirmarHumano" 
-                                           class="captcha-checkbox" 
-                                           type="checkbox" 
-                                           id="confirmarHumano" />
-                                    <label class="captcha-label" for="confirmarHumano">
+                                    <input asp-for="CienteUsoDados"
+                                           class="captcha-checkbox"
+                                           type="checkbox"
+                                           id="cienteUsoDados" />
+                                    <label class="captcha-label" for="cienteUsoDados">
                                         <i class="fas fa-shield-alt"></i>
                                     </label>
-                                    <span class="captcha-text">Não sou um robô</span>
+                                    <span class="captcha-text">Estou ciente de que meus dados serão usados para analisar este pré-cadastro e entrar em contato comigo.</span>
                                     <span class="required ms-1">*</span>
                                 </div>
-                                <span asp-validation-for="ConfirmarHumano" class="text-danger small d-block mt-2"></span>
+                                <span asp-validation-for="CienteUsoDados" class="text-danger small d-block mt-2"></span>
                             </div>
                         </div>
 
@@ -279,13 +279,13 @@
                         <i class="fas fa-shield-alt"></i>
                     </div>
                     <div class="security-text">
-                        <strong>Seus dados estão 100% seguros e protegidos!</strong>
+                        <strong>Privacidade e cuidado com seus documentos</strong>
                         <p>
-                            Utilizamos criptografia de ponta para proteger todas as suas informações pessoais.
+                            As informações enviadas serão utilizadas para atendimento do pré-cadastro e análise da solicitação.
                             <br>
                             <span class="lgpd-badge">
-                                <i class="fas fa-check-circle me-1"></i>
-                                <strong>Em conformidade com a LGPD</strong> - Lei Geral de Proteção de Dados (Lei nº 13.709/2018)
+                                <i class="fas fa-lock me-1"></i>
+                                Os documentos enviados não são publicados como arquivos estáticos.
                             </span>
                         </p>
                     </div>
@@ -487,14 +487,22 @@
                 }
 
                 // Validar checkbox
-                if (!$('#confirmarHumano').is(':checked')) {
-                    erros.push('Você deve confirmar que não é um robô');
+                if (!$('#cienteUsoDados').is(':checked')) {
+                    erros.push('Confirme que está ciente do uso dos dados');
                     isValid = false;
                 }
 
                 if (!isValid) {
                     e.preventDefault();
-                    alert('⚠️ Por favor, corrija os seguintes erros:\n\n' + erros.join('\n'));
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            title: 'Revise os dados informados',
+                            html: erros.map(erro => `<div class="text-start mb-1">• ${erro}</div>`).join(''),
+                            icon: 'warning', confirmButtonText: 'Revisar formulário', confirmButtonColor: '#0f766e'
+                        });
+                    } else {
+                        alert('Por favor, corrija os seguintes erros:\n\n' + erros.join('\n'));
+                    }
                     return false;
                 }
 
@@ -513,11 +521,11 @@
        ============================================ */
     
     :root {
-        --primary-blue: #0066FF;
-        --primary-dark: #0052CC;
+        --primary-blue: #0F766E;
+        --primary-dark: #064E47;
         --secondary-green: #10B981;
-        --accent-gold: #F59E0B;
-        --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --accent-gold: #D4A72C;
+        --bg-gradient: linear-gradient(135deg, #064E47 0%, #0F766E 100%);
         --bg-light: #F8FAFC;
         --bg-white: #FFFFFF;
         --text-dark: #1E293B;
@@ -540,7 +548,7 @@
        ============================================ */
     
     .precadastro-hero {
-        background: linear-gradient(to top, rgba(135, 206, 250, 0.4), rgba(0, 119, 190, 0.6)), url('/img/fundologin.png');
+        background: linear-gradient(120deg, rgba(4, 47, 46, .9), rgba(15, 118, 110, .48)), url('/img/fundologin.png');
         background-size: cover;
         background-position: center;
         padding: 60px 0 80px;

@@ -35,7 +35,7 @@ namespace RentalTourismSystem.Controllers
             // Carregar lista de veículos disponíveis
             var veiculosDisponiveis = await _context.Veiculos
                 .Include(v => v.StatusCarro)
-                .Where(v => v.StatusCarroId == 1) // Apenas veículos disponíveis
+                .Where(v => v.StatusCarroId == StatusCarro.DisponivelId)
                 .OrderBy(v => v.Marca)
                 .ThenBy(v => v.Modelo)
                 .Select(v => new
@@ -91,7 +91,7 @@ namespace RentalTourismSystem.Controllers
                     return View(model);
                 }
 
-                if (veiculo.StatusCarroId != 1) // Não está disponível
+                if (veiculo.StatusCarroId != StatusCarro.DisponivelId)
                 {
                     ModelState.AddModelError("VeiculoId", $"Veículo não está disponível. Status atual: {veiculo.StatusCarro?.Status ?? "Desconhecido"}");
                     return View(model);
@@ -184,8 +184,8 @@ namespace RentalTourismSystem.Controllers
                 // Criar notificação para o sistema
                 var notificacao = new Notificacao
                 {
-                    Titulo = "Novo Pré-Cadastro e Reserva",
-                    Mensagem = $"Cliente {model.Nome} (CPF: {model.CPF}) realizou pré-cadastro e solicitou reserva do veículo {veiculo.Marca} {veiculo.Modelo} (Placa: {veiculo.Placa}) de {model.DataInicioLocacao:dd/MM/yyyy} a {model.DataFinalLocacao:dd/MM/yyyy} ({quantidadeDias} dias). Telefone: {model.Telefone}",
+                    Titulo = "Nova Solicitação de Locação",
+                    Mensagem = $"Cliente {model.Nome} (CPF: {model.CPF}) realizou pré-cadastro e demonstrou interesse no veículo {veiculo.Marca} {veiculo.Modelo} (Placa: {veiculo.Placa}) de {model.DataInicioLocacao:dd/MM/yyyy} a {model.DataFinalLocacao:dd/MM/yyyy} ({quantidadeDias} dias). Telefone: {model.Telefone}",
                     Tipo = "info",
                     Categoria = "PreCadastro",
                     ClienteId = cliente.Id,
@@ -232,7 +232,7 @@ namespace RentalTourismSystem.Controllers
         {
             var veiculosDisponiveis = await _context.Veiculos
                 .Include(v => v.StatusCarro)
-                .Where(v => v.StatusCarroId == 1) // Apenas veículos disponíveis
+                .Where(v => v.StatusCarroId == StatusCarro.DisponivelId)
                 .OrderBy(v => v.Marca)
                 .ThenBy(v => v.Modelo)
                 .Select(v => new
