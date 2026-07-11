@@ -225,22 +225,22 @@ namespace RentalTourismSystem.Controllers
 
                         // ✅ NOVO: Determinar status do veículo baseado na data de retirada
                         var veiculo = await _context.Veiculos.FirstOrDefaultAsync(v => v.Id == locacao.VeiculoId);
-                        
+
                         if (veiculo != null)
                         {
                             var dataRetiradaLocal = locacao.DataRetirada.Date;
                             var dataAtual = DateTime.Now.Date;
-                            
+
                             // Se a retirada é hoje ou no passado, marca como Alugado
                             // Se a retirada é no futuro, marca como Reservado
                             var novoStatusNome = dataRetiradaLocal <= dataAtual ? "Alugado" : "Reservado";
                             var novoStatus = await _context.StatusCarros.FirstOrDefaultAsync(s => s.Status == novoStatusNome);
-                            
+
                             if (novoStatus != null)
                             {
                                 veiculo.StatusCarroId = novoStatus.Id;
                                 _context.Veiculos.Update(veiculo);
-                                
+
                                 _logger.LogInformation("Veículo {VeiculoId} marcado como '{Status}' (retirada: {DataRetirada}, hoje: {DataAtual})",
                                     veiculo.Id, novoStatusNome, dataRetiradaLocal, dataAtual);
                             }
@@ -491,10 +491,10 @@ namespace RentalTourismSystem.Controllers
                         _context.Update(locacao);
                         _context.Update(locacao.Veiculo);
                         await _context.SaveChangesAsync();
-                        
+
                         // Atualizar status do veículo após devolução
                         await AtualizarStatusVeiculoAposDevolucao(locacao.VeiculoId);
-                        
+
                         await transaction.CommitAsync();
 
                         _logger.LogInformation("Locação {LocacaoId} finalizada por {User}", id, User.Identity?.Name);
@@ -726,7 +726,7 @@ namespace RentalTourismSystem.Controllers
             try
             {
                 var dataAtual = DateTime.Now.Date;
-                
+
                 // Buscar veículos com status "Reservado" que têm locações para hoje ou datas passadas
                 var veiculosReservados = await _context.Veiculos
                     .Include(v => v.StatusCarro)
@@ -754,7 +754,7 @@ namespace RentalTourismSystem.Controllers
                         veiculo.StatusCarroId = statusAlugado.Id;
                         _context.Veiculos.Update(veiculo);
                         ativadas++;
-                        
+
                         _logger.LogInformation("Reserva ativada: Veículo {VeiculoId} ({Placa}) alterado de 'Reservado' para 'Alugado' - Locação {LocacaoId}",
                             veiculo.Id, veiculo.Placa, locacaoParaAtivar.Id);
                     }
